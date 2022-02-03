@@ -1,6 +1,7 @@
 # This file maps icon names with Unicode code points.
 # Reference: https://www.nerdfonts.com/cheat-sheet
 
+audio:      "\ufc1d"  # nf-mdi-speaker_wireless
 broom:      "\uf5e1"  # nf-mdi-broom
 config:     "\ue615"  # nf-seti-config
 css:        "\ue749"  # nf-dev-css3
@@ -24,4 +25,5 @@ source:     "\uf668"  # nf-mdi-code_braces
 test:       "\ufb67"  # nf-mdi-test_tube
 text:       "\ue612"  # nf-seti-text
 typescript: "\ue628"  # nf-seti-typescript
+video:      "\ufa66"  # nf-mdi-video
 vuejs:      "\ufd42"  # nf-mdi-vuejs

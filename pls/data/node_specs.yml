@@ -54,14 +54,19 @@
 
 - extension: txt
   icon: text
-- extensions: [jpg, jpeg, png, svg]
-  icon: image
 - extension: ini
   icon: config
 - extensions: [json, toml, yml, yaml]
   icon: json
 - extension: md
   icon: markdown
+
+- extensions: [jpg, jpeg, png, svg, webp, gif, ico]
+  icon: image
+- extensions: [mov, mp4, mkv, webm, avi, flv]
+  icon: video
+- extensions: [mp3, flac, ogg, wav]
+  icon: audio
 
 - extension: sh
   icon: shell

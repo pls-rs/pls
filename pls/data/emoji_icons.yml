@@ -1,6 +1,7 @@
 # This file maps icon names with actual emoji.
 # Reference: https://emojipedia.org
 
+audio:      "🔈"
 broom:      "🧹"
 config:     "⚙️"
 css:        "🎨"
@@ -24,4 +25,5 @@ source:     "💻"
 test:       "🧪"
 text:       "📄"
 typescript: "🟦"
+video:      "🎥"
 vuejs:      "🟩"

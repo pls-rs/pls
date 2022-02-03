@@ -1,6 +1,8 @@
 # This file maps icon names with actual emoji.
 # Reference: https://emojipedia.org
 
+pls:        "⚪️"
+
 audio:      "🔈"
 broom:      "🧹"
 config:     "⚙️"

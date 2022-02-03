@@ -5,6 +5,9 @@
 # Name #
 ########
 
+- name: .pls.yml
+  icon: pls
+
 - name: .gitignore
   icon: git
 

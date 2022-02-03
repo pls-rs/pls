@@ -115,6 +115,10 @@ class Node:
             elif self.spec.importance == -1:
                 format_rules.append("dim")
 
+        # Italics
+        if self.name == ".pls.yml":
+            format_rules.append("italic")
+
         if format_rules:
             left = f"[{' '.join(format_rules)}]"
             right = f"[/{' '.join(format_rules[::-1])}]"

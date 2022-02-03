@@ -1,6 +1,8 @@
 # This file maps icon names with Unicode code points.
 # Reference: https://www.nerdfonts.com/cheat-sheet
 
+pls:        "\uf444"  # nf-oct-primitive_dot
+
 audio:      "\ufc1d"  # nf-mdi-speaker_wireless
 broom:      "\uf5e1"  # nf-mdi-broom
 config:     "\ue615"  # nf-seti-config

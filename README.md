@@ -14,6 +14,10 @@
   </a>
 </p>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/demo.png" alt="Demo of `pls`"/>
+</p>
+
 `pls` is a better `ls` for developers. The "p" stands for "pro" as in "professional" or "programmer".
 
 It works in a manner similar to `ls`, in  that it lists directories and files in a given directory, but it adds many more developer-friendly features.

@@ -1,0 +1,13 @@
+[flake8]
+# match black formatter's behavior
+# https://www.flake8rules.com/rules/E203.html
+# https://www.flake8rules.com/rules/W503.html
+ignore = E203, W503
+per-file-ignores =
+    # Ignore maximum line length rule for test files
+    *test*:E501
+    # https://www.flake8rules.com/rules/F401.html; init files act as re-exporters
+    *__init__*:F401
+    # https://www.flake8rules.com/rules/E402.html; patches are applied before all imports are finished
+    *wsgi.py:E402
+max-line-length = 88

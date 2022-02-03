@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "pls"
+description = "`pls` is a better `ls` for developers."
+version = "0.0.0"
+
+authors = ["Dhruv Bhanushali"]
+
+license = "GPL-3.0-or-later"
+readme = "README.md"
+
+homepage = "https://github.com/dhruvkb/pls"
+repository = "https://github.com/dhruvkb/pls"
+documentation = "https://github.com/dhruvkb/pls"
+
+[tool.poetry.scripts]
+pls = "pls.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+PyYAML = "^6.0"
+rich = "^11.1.0"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^2.17.0"
+ipython = "^8.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

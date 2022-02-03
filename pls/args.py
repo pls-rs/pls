@@ -61,7 +61,7 @@ parser.add_argument(
     help="the type of icons to show with the files",
 )
 parser.add_argument(
-    "--sort",
+    *["-s", "--sort"],
     type=SortOrder,
     choices=list(SortOrder),
     default=SortOrder.ASC,

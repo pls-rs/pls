@@ -21,6 +21,8 @@
   importance: -1
 - names: [.flake8, .pre-commit-config.yaml]
   icon: broom
+- name: __pycache__
+  importance: -2
 
 - name: Gemfile
   icon: package

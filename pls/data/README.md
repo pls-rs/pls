@@ -10,8 +10,10 @@ When a node is being matched against specs, the specs are compared in order of t
 
 Specs have two functions.
 
-- mark files with a leading dot as meaningful enough to be shown  
+- mark some files with a leading dot as meaningful enough to be shown  
   This can be accomplished with a simple spec containing just a `name`.
+- mark some files without a leading dot as meaningless  
+  This can be accomplished with a spec with -2 importance.
 - decorate files with icons and colors  
   These improve the output both aesthetically and functionally.
 
@@ -98,8 +100,6 @@ The visual importance to associate with nodes matching this spec. This must be a
   This corresponds to important files like source code
 - 2: the highest importance, _underline_  
   This corresponds to extremely important files that must be immediately seen
-
-By default, none of the specs have importance of -2 and 2 assigned. Nonetheless, they are supported by the formatting engine.
 
 ## Shorthand spec
 

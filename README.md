@@ -32,7 +32,9 @@ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trust
 - colour output to further distinguish important files
 - use a more nuanced approach to hidden files than plainly hiding files with a leading dot `.`
 - groups directories and shows them all before files
-- ignores leading dots `.` in sorting files
+- ignores leading dots `.` and normalises case when sorting files
+- cascade specs by based on specificity levels
+- read `.pls.yml` files from the directory to augment its configuration
 
 The icon, color and most behaviour in the application can be configured using plain-text YAML files for the pros who prefer to tweak their tools.
 

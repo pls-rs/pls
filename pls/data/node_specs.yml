@@ -1,0 +1,91 @@
+# Describes the nature of files and directories in the context of programming.
+# Refer to `./emoji_icons.yml` and `./nerd_icons.yml` for the icon names.
+
+########
+# Name #
+########
+
+- name: .gitignore
+  icon: git
+
+- names: [justfile, Makefile]
+  icon: runner
+
+- names: [pyproject.toml, Pipfile, setup.py, setup.cfg]
+  icon: package
+- names: [poetry.lock, Pipfile.lock]
+  icon: lock
+  importance: -1
+- names: [.flake8, .pre-commit-config.yaml]
+  icon: broom
+
+- name: package.json
+  icon: package
+- names: [package-lock.json, yarn.lock, pnpm-lock.yaml]
+  icon: lock
+  importance: -1
+- name: node_modules
+  icon: package
+  importance: -1
+
+############
+# Patterns #
+############
+
+- pattern: \.env\b
+  icon: env
+- pattern: LICENSE\b
+  icon: license
+
+- patterns: [docker-compose\b, Dockerfile\b]
+  icon: docker
+  color: "#2496ED"
+
+- pattern: v?env$
+  icon: package
+  importance: -1
+
+- pattern: \.eslintrc\.
+  icon: broom
+
+##############
+# Extensions #
+##############
+
+- extension: txt
+  icon: text
+- extensions: [jpg, jpeg, png, svg]
+  icon: image
+- extension: ini
+  icon: config
+- extensions: [json, toml, yml, yaml]
+  icon: json
+- extension: md
+  icon: markdown
+
+- extension: sh
+  icon: shell
+
+- extensions: [htm, html]
+  icon: html
+  color: "#E34F26"
+- extension: css
+  icon: css
+  color: "#1572B6"
+- extensions: [sass, scss]
+  icon: sass
+  color: "#CC6699"
+
+- extension: py
+  icon: python
+  color: "#3776AB"
+
+- extensions: [js, jsx]
+  icon: javascript
+  color: "#F7DF1E"
+- extensions: [ts, tsx]
+  icon: typescript
+  color: "#3178C6"
+- extension: vue
+  icon: vuejs
+  color: "#4FC08D"

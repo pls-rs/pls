@@ -11,6 +11,9 @@ from pls.enums.sort_order import SortOrder
 from pls.models.node import Node
 
 
+console = Console()
+
+
 def sort_key(node: Node) -> str:
     """
     Map a ``Node`` instance to a string that represents it. This string is used
@@ -50,6 +53,13 @@ def read_input() -> list[Node]:
         # Join dirs and files and then sort together
         all_nodes.sort(key=sort_key, reverse=is_reverse)
 
+    if not all_nodes:
+        console.print(
+            f"There are no files or folders in [bold]{args.directory}[/bold].",
+            highlight=False,
+            end="",
+        )
+
     return all_nodes
 
 
@@ -69,5 +79,4 @@ def write_output(nodes: list[Node]):
             continue
         table.add_row(*node.table_row)
 
-    console = Console()
     console.print(table)

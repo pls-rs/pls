@@ -18,6 +18,7 @@ markdown:   "\uf48a"  # nf-oct-markdown
 package:    "\uf487"  # nf-oct-package
 env:        "\ue22f"  # nf-fae-plant
 python:     "\uf81f"  # nf-mdi-language_python
+ruby:       "\ue791"  # nf-dev-ruby_rough
 runner:     "\ufc0c"  # nf-mdi-run
 sass:       "\ue603"  # nf-seti-sass
 shell:      "\ufcb5"  # nf-mdi-console_line

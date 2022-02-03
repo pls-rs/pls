@@ -4,9 +4,7 @@ The node spec is arguably the most important component of the codebase.
 
 ## Cascade
 
-When a node is being matched against specs, the specs are compared in order of their definition in the `node_specs.yml` file. All matching specs are stored in the node. Then attributes are then read from the first matching spec.
-
-The cascading behaviour is not implemented yet. When it is, the missing attributes will be read from the next match. This will enable the more specific specs to override certain attributes of the more generic ones.
+When a node is being matched against specs, the specs are compared in order of their definition in the `node_specs.yml` file. All matching specs are stored in the node. Then attributes are then read from the matches in first to last order. Any missing attributes will be read from the next match. This will enable the more specific specs to override certain attributes of the more generic ones.
 
 ## Importance
 

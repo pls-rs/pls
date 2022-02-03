@@ -44,12 +44,6 @@ class Node:
         return self.name.split(".")[-1] if "." in self.name else None
 
     @property
-    def spec(self) -> Union[NodeSpec, None]:
-        """the primary spec out of the list of matching specs"""
-
-        return self.specs[0] if self.specs else None
-
-    @property
     def icon(self) -> str:
         """the emoji or Nerd Font icon to show beside the node"""
 
@@ -60,8 +54,8 @@ class Node:
         else:  # args.icon == IconType.NONE:
             raise NotImplementedError("Icon should not be needed.")
 
-        if self.spec and self.spec.icon:
-            icon = icon_index.get(self.spec.icon)
+        if spec_icon := self.spec_attr("icon"):
+            icon = icon_index.get(spec_icon)
         elif self.node_type == NodeType.FOLDER:
             icon = icon_index.get("folder")
         else:
@@ -73,11 +67,11 @@ class Node:
         """whether the node deserves to be rendered to the screen"""
 
         # Nodes without spec and with a leading dot are hidden
-        if self.spec is None and self.name.startswith("."):
+        if not self.specs and self.name.startswith("."):
             return False
 
         # Nodes with importance -2 are hidden
-        if self.spec and self.spec.importance == -2:
+        if self.spec_attr("importance") == -2:
             return False
 
         return True
@@ -101,18 +95,18 @@ class Node:
         format_rules = []
 
         # Font color
-        if self.spec and self.spec.color:
-            format_rules.append(self.spec.color)
+        if spec_color := self.spec_attr("color"):
+            format_rules.append(spec_color)
         elif self.node_type == NodeType.FOLDER:
             format_rules.append("cyan")
 
         # Font weight
-        if self.spec:
-            if self.spec.importance == 2:
+        if spec_importance := self.spec_attr("importance"):
+            if spec_importance == 2:
                 format_rules.append("underline")
-            elif self.spec.importance == 1:
+            elif spec_importance == 1:
                 format_rules.append("bold")
-            elif self.spec.importance == -1:
+            elif spec_importance == -1:
                 format_rules.append("dim")
 
         # Italics
@@ -136,6 +130,19 @@ class Node:
 
         left, right = self.format_pair
         return [f"{left}{cell}{right}" for cell in cells]
+
+    def spec_attr(self, attr: str) -> Union[str, int, None]:
+        """
+        Get the requested attribute from the first matching spec to provide it.
+
+        :param attr: the requested attribute
+        :return: the value of the attribute if found, ``None`` otherwise
+        """
+
+        for spec in self.specs:
+            if attr_val := getattr(spec, attr, None):
+                return attr_val
+        return None
 
     def match(self, specs: list[NodeSpec]):
         """

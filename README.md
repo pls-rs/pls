@@ -44,7 +44,6 @@ In the future `pls` will be able to
 - add MIME type as another method for matching files to specs
 - use complete path based matching for files
 - cascade specs based on specificity levels
-- provide channels to extend specs per user, per project
 - link files and hide derived files behind the main ones
 - support more columns like permissions, owner and size
 - support for tree-like output

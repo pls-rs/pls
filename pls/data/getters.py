@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 import yaml
 
+from pls.args import args
 from pls.models.node_spec import NodeSpec
 
 
@@ -16,7 +17,7 @@ def load_yaml_file(file_path: Path) -> Any:
     :return: the parsed contents of the YAML file
     """
 
-    with open(file_path, "r") as data_file:
+    with file_path.open("r") as data_file:
         data = yaml.safe_load(data_file)
     return data
 
@@ -53,54 +54,53 @@ def split_specs(entry: dict) -> list[dict]:
     return [entry]
 
 
-def get_node_specs(
-    file_path: Path = internal_yml_path("node_specs.yml"),
-) -> list[NodeSpec]:
+def parse_node_specs(specs: list[dict]) -> list[NodeSpec]:
     """
-    Parse information about the list of all node specs for all languages.
-    This information is parsed from ``node_specs.yml`` unless specified.
+    Parse information about the list of all node specs for all languages. This
+    maps the POPO representation of the specs into the ``NodeSpec`` instances.
 
-    :param file_path: the path to the ``node_specs.yml`` file
+    :param specs: the list of POPO specs as read from the spec definition files
     :return: the list of all node specs for all languages
     """
 
-    data = load_yaml_file(file_path)
-    return [NodeSpec(**spec) for entry in data for spec in split_specs(entry)]
+    return [NodeSpec(**spec) for entry in specs for spec in split_specs(entry)]
 
 
-def get_nerd_icons(
-    file_path: Path = internal_yml_path("nerd_icons.yml"),
-) -> dict[str, str]:
+def locate_extension() -> Union[Path, None]:
     """
-    Parse information about the mapping of icon names to Unicode code-points.
-    This information is parsed from ``nerd_icons.yml`` unless specified.
+    Find a config file with the name ``.pls.yml`` in the directory or its
+    ancestors, upto a max depth based on CLI arguments.
 
-    :return: the mapping of icon names to Unicode code-points
+    :return: the path to the file if found, ``None`` otherwise
     """
 
-    return load_yaml_file(file_path)
+    extension_name = ".pls.yml"
+    curr_dir: Path = args.directory
+    for i in range(args.depth):
+        extension_path = curr_dir.joinpath(extension_name)
+        if extension_path.exists() and extension_path.is_file():
+            return extension_path
+        curr_dir = curr_dir.parent
+    return None
 
 
-def get_emoji_icons(
-    file_path: Path = internal_yml_path("emoji_icons.yml"),
-) -> dict[str, str]:
-    """
-    Parse information about the mapping of icon names to emoji.
-    This information is parsed from ``emoji_icons.yml`` unless specified.
+ext_data = load_yaml_file(ext_path) if (ext_path := locate_extension()) else {}
 
-    :return: the mapping of icon names to emoji
-    """
+node_specs: list[NodeSpec] = parse_node_specs(
+    load_yaml_file(internal_yml_path("node_specs.yml"))
+)
+"""a list of all node specs for all languages, read from ``node_specs.yml``"""
+if node_specs_ext := parse_node_specs(ext_data.get("node_specs")):
+    node_specs = node_specs_ext + node_specs
 
-    return load_yaml_file(file_path)
+nerd_icons: dict[str, str] = load_yaml_file(internal_yml_path("nerd_icons.yml"))
+"""a mapping of icon names to Unicode code-points, read from ``nerd_icons.yml``"""
+if nerd_icons_ext := ext_data.get("nerd_icons"):
+    nerd_icons.update(nerd_icons_ext)
 
-
-node_specs: list[NodeSpec] = get_node_specs()
-"""a list of all node specs for all languages"""
-
-nerd_icons: dict[str, str] = get_nerd_icons()
-"""a mapping of icon names to Unicode code-points"""
-
-emoji_icons: dict[str, str] = get_emoji_icons()
-"""a mapping of icon names to emoji"""
+emoji_icons: dict[str, str] = load_yaml_file(internal_yml_path("emoji_icons.yml"))
+"""a mapping of icon names to emoji, read from ``emoji_icons.yml``"""
+if emoji_icons_ext := ext_data.get("emoji_icons"):
+    emoji_icons.update(emoji_icons_ext)
 
 __all__ = ["node_specs", "nerd_icons", "emoji_icons"]

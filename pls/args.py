@@ -67,6 +67,12 @@ parser.add_argument(
     default=SortOrder.ASC,
     help="the direction in which to sort the files and directories",
 )
+parser.add_argument(
+    *["-d", "--depth"],
+    type=int,
+    default=4,
+    help="the max depth upto which to look for a `.pls.yml` file",
+)
 
 parser.add_argument(
     "--no-dirs",

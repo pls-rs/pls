@@ -6,7 +6,7 @@ default:
 
 # Install dependencies
 install:
-    poetry install --dev
+    poetry install
 
 # Setup pre-commit as a Git hook
 precommit:

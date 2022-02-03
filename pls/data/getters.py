@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Any
 
@@ -47,7 +49,7 @@ def split_specs(entry: dict) -> list[dict]:
         plural = f"{field}s"
         if plural in entry:
             common = {k: v for k, v in entry.items() if k != plural}
-            return [common | {field: value} for value in entry[plural]]
+            return [{field: value, **common} for value in entry[plural]]
     return [entry]
 
 

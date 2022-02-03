@@ -1,0 +1,10 @@
+node_specs:
+  - extension: py
+    importance: 1
+  - name: dist
+    importance: -1
+    icon: share
+nerd_icons:
+  share: "\uf14d"
+emoji_icons:
+  share: "🎁"

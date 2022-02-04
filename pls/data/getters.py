@@ -92,8 +92,8 @@ node_specs: list[NodeSpec] = parse_node_specs(
     load_yaml_file(internal_yml_path("node_specs.yml"))
 )
 """a list of all node specs for all languages, read from ``node_specs.yml``"""
-if node_specs_ext := parse_node_specs(ext_data.get("node_specs")):
-    node_specs = node_specs_ext + node_specs
+if node_specs_ext := ext_data.get("node_specs"):
+    node_specs = parse_node_specs(node_specs_ext) + node_specs
 
 nerd_icons: dict[str, str] = load_yaml_file(internal_yml_path("nerd_icons.yml"))
 """a mapping of icon names to Unicode code-points, read from ``nerd_icons.yml``"""

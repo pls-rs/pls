@@ -67,7 +67,7 @@ class NodeSpec:
 
         if format_rules:
             left = f"[{' '.join(format_rules)}]"
-            right = f"[/{' '.join(format_rules[::-1])}]"
+            right = "[/]"
         else:
             left = right = ""
         return left, right

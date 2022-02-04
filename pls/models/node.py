@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Union
 
 from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
+from pls.fs.stats import get_node_type
 from pls.models.node_spec import NodeSpec
 
 
@@ -17,9 +19,11 @@ class Node:
     Nodes are read from the file system directly using ``os.walk``.
     """
 
-    def __init__(self, name: str, node_type: NodeType):
+    def __init__(self, name: str, path: Path):
         self.name = name
-        self.node_type = node_type
+        self.path = path
+
+        self.stat = path.stat()
 
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 
@@ -36,6 +40,12 @@ class Node:
             name = f"{name}/"
 
         return name
+
+    @property
+    def node_type(self) -> NodeType:
+        """whether the node is a file, folder, symlink, FIFO etc."""
+
+        return get_node_type(self.stat.st_mode)
 
     @property
     def ext(self) -> Union[str, None]:

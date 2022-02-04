@@ -7,7 +7,7 @@ from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
-from pls.fs.stats import get_node_type
+from pls.fs.stats import get_node_type, get_permission_text, get_size, get_username
 from pls.models.node_spec import NodeSpec
 
 
@@ -131,15 +131,22 @@ class Node:
         return left, right
 
     @property
-    def table_row(self) -> list[str]:
-        """the list of cells when presenting the node as a row in a table"""
-
-        cells = [self.formatted_name]
-        if args.icon != IconType.NONE:
-            cells.insert(0, self.icon)
+    def table_row(self) -> dict[str, str]:
+        """the mapping of column names and value when tabulating the node"""
 
         left, right = self.format_pair
-        return [f"{left}{cell}{right}" for cell in cells]
+
+        cells = dict()
+        cells["name"] = f"{left}{self.formatted_name}{right}"
+        if args.icon != IconType.NONE:
+            cells["icon"] = f"{left}{self.icon}{right}"
+        if args.details:
+            cells["perms"] = get_permission_text(self.stat.st_mode)
+            cells["user"] = get_username(self.stat.st_uid)
+            if self.node_type == NodeType.FILE:
+                cells["size"] = get_size(self.stat.st_size)
+
+        return cells
 
     def spec_attr(self, attr: str) -> Union[str, int, None]:
         """

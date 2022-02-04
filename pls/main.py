@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from pls.data.getters import node_specs
-from pls.io import read_input, write_output
+from pls.fs.list import read_input
+from pls.table import write_output
 
 
 def main():

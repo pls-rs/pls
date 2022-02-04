@@ -35,6 +35,7 @@ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trust
 - ignores leading dots `.` and normalises case when sorting files
 - cascade specs by based on specificity levels
 - read `.pls.yml` files from the directory to augment its configuration
+- show more details like permissions, owner and size in columns
 
 The icon, color and most behaviour in the application can be configured using plain-text YAML files for the pros who prefer to tweak their tools.
 
@@ -46,7 +47,6 @@ In the future `pls` will be able to
 - add MIME type as another method for matching files to specs
 - use complete path based matching for files
 - link files and hide derived files behind the main ones
-- support more columns like permissions, owner and size
 - support for tree-like output
 
 If you want to help implement any of these features, feel free to submit a PR. `pls` is free and open-source software.

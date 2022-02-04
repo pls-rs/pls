@@ -5,6 +5,7 @@ from pathlib import Path
 from pls import __version__
 from pls.enums.icon_type import IconType
 from pls.enums.sort_order import SortOrder
+from pls.enums.unit_system import UnitSystem
 
 
 parser = argparse.ArgumentParser(
@@ -72,6 +73,19 @@ parser.add_argument(
     type=int,
     default=4,
     help="the max depth upto which to look for a `.pls.yml` file",
+)
+parser.add_argument(
+    *["-u", "--units"],
+    type=UnitSystem,
+    choices=list(UnitSystem),
+    default=UnitSystem.BINARY,
+    help="the units to use when listing the size of files",
+)
+
+parser.add_argument(
+    "--details",
+    action="store_true",
+    help="show details such as permissions, owner and size",
 )
 
 parser.add_argument(

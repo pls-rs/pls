@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from enum import auto
 from stat import S_ISBLK, S_ISCHR, S_ISDIR, S_ISFIFO, S_ISLNK, S_ISREG, S_ISSOCK
 from typing import Callable

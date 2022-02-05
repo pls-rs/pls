@@ -20,7 +20,7 @@
 
 `pls` is a better `ls` for developers. The "p" stands for ("pro" as in "professional"/"programmer") or "prettier".
 
-It works in a manner similar to `ls`, in  that it lists directories and files in a given directory, but it adds many more developer-friendly features.
+It works in a manner similar to `ls`, in  that it lists directories and files in a given directory, but it adds many more [developer-friendly features](#features).
 
 Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trusted tool with lots of features. `pls`, on the other hand, is a simple tool for people who just want to see the contents of their directories.
 
@@ -29,16 +29,17 @@ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trust
 `pls` provides many features over  `ls` command. `pls` can:
 
 - show Nerd Font icons or emoji next to files and directories making it easier to grep the output
-- colour output to further distinguish important files
+- colour output to elevate important files or dim unimportant ones
 - use a more nuanced approach to hidden files than plainly hiding files with a leading dot `.`
-- groups directories and shows them all before files
-- ignores leading dots `.` and normalises case when sorting files
-- cascade specs by based on specificity levels
-- read `.pls.yml` files from the directory to augment its configuration
+- group directories and shows them all before files
+- ignore leading dots `.` and normalise case when sorting files
+- align files names by first character
+- cascade formatting rule specs by based on specificity levels
+- read [`.pls.yml`](.pls.yml) files from the directory to augment its configuration
 - show more details like permissions, owner and size in columns
 - run quite fast, thanks to multiprocessing
 
-The icon, color and most behaviour in the application can be configured using plain-text YAML files for the pros who prefer to tweak their tools.
+The icon, color and most behaviour in the application can be [configured using plain-text YAML files](pls/data/README.md) for the pros who prefer to tweak their tools.
 
 ## Upcoming features
 
@@ -64,10 +65,10 @@ There are a lot of `ls` replacements. Here are some of the most popular ones.
 `pls` aims to stand out because of some very specific choices.
 
 - Does not intend to replace `ls`. `pls`, as a command, is just as easy to type.
-- Sane configuration for developers. Features are targeted towards a more tech-savvy audience.
-- Intelligently maps file type. Just comparing the file extension would be too generic.
+- Targets a more tech-savvy audience in its [features](#features).
+- Intelligently [maps file type](pls/data/README.md). Just comparing the file extension would be too generic.
 - Meticulously chosen iconography for the appreciating eyes.
-- Highly customisable at a project level using a simple `.pls.yml` file.
+- Highly customisable at a project level using a simple [`.pls.yml`](.pls.yml) file.
 - Built in a friendly language, Python. This makes it easy to fork and change it yourself.
 
 ## Installation

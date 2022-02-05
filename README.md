@@ -36,6 +36,7 @@ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trust
 - cascade specs by based on specificity levels
 - read `.pls.yml` files from the directory to augment its configuration
 - show more details like permissions, owner and size in columns
+- run quite fast, thanks to multiprocessing
 
 The icon, color and most behaviour in the application can be configured using plain-text YAML files for the pros who prefer to tweak their tools.
 
@@ -50,6 +51,24 @@ In the future `pls` will be able to
 - support for tree-like output
 
 If you want to help implement any of these features, feel free to submit a PR. `pls` is free and open-source software.
+
+## Comparison with similar tools
+
+There are a lot of `ls` replacements. Here are some of the most popular ones.
+
+- [`exa`](https://github.com/ogham/exa)
+- [`lsd`](https://github.com/Peltoche/lsd)
+- [`colorls`](https://github.com/athityakumar/colorls)
+- [`ls-go`](https://github.com/acarl005/ls-go)
+
+`pls` aims to stand out because of some very specific choices.
+
+- Does not intend to replace `ls`. `pls`, as a command, is just as easy to type.
+- Sane configuration for developers. Features are targeted towards a more tech-savvy audience.
+- Intelligently maps file type. Just comparing the file extension would be too generic.
+- Meticulously chosen iconography for the appreciating eyes.
+- Highly customisable at a project level using a simple `.pls.yml` file.
+- Built in a friendly language, Python. This makes it easy to fork and change it yourself.
 
 ## Installation
 

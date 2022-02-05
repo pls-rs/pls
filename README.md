@@ -18,17 +18,17 @@
   <img src="https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/demo.png" alt="Demo of `pls`"/>
 </p>
 
-`pls` is a better `ls` for developers. The "p" stands for ("pro" as in "professional"/"programmer") or "prettier".
+`pls` is a better `ls` for developers. The "p" stands for "pro" (as in "professional"/"programmer") or "prettier", whichever helps you remember the command name.
 
 It works in a manner similar to `ls`, in  that it lists directories and files in a given directory, but it adds many more [developer-friendly features](#features).
 
-Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trusted tool with lots of features. `pls`, on the other hand, is a simple tool for people who just want to see the contents of their directories.
+Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trusted command with lots of features. `pls`, on the other hand, is a simple tool for people who just want to see the contents of their directories.
 
 ## Features
 
 `pls` provides many features over  `ls` command. `pls` can:
 
-- show Nerd Font icons or emoji next to files and directories making it easier to grep the output
+- show Nerd Font icons or emoji next to files and directories making it easier to read the output
 - colour output to elevate important files or dim unimportant ones
 - use a more nuanced approach to hidden files than plainly hiding files with a leading dot `.`
 - group directories and shows them all before files

@@ -34,7 +34,7 @@ class NodeSpec:
 
         # Plurals should be split before making ``NodeSpec`` instances
         for method in identification_methods:
-            if type(loc.get(method)) == list:
+            if isinstance(loc.get(method), list):
                 raise ConfigException(f"`{method}` cannot be a list. Use `{method}s`.")
 
         self.name = name

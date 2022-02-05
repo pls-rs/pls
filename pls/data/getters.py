@@ -49,7 +49,7 @@ def split_specs(entry: dict) -> list[dict]:
     for field in group_fields:
         plural = f"{field}s"
         if plural in entry:
-            if type(entry[plural]) != list:
+            if not isinstance(entry[plural], list):
                 raise ValueError(f"`{field}s` must be a list. Use `{field}`.")
             common = {k: v for k, v in entry.items() if k != plural}
             return [{field: value, **common} for value in entry[plural]]

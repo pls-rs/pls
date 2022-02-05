@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from enum import auto
-from stat import S_ISBLK, S_ISCHR, S_ISDIR, S_ISFIFO, S_ISLNK, S_ISREG, S_ISSOCK
-from typing import Callable
 
 from pls.enums.base import AutoEnum
 
@@ -18,23 +16,16 @@ class NodeType(AutoEnum):
     This enum lists these possibilities.
     """
 
-    FOLDER = auto()  # directory
+    DIR = auto()  # directory
     FILE = auto()  # regular file
-    # TODO: Handle these types of nodes
-    CHR = auto()  # character special device file
-    BLK = auto()  # block special device file
     FIFO = auto()  # named pipe
-    LNK = auto()  # symbolic link
-    SOCK = auto()  # socket
+    CHAR_DEVICE = auto()  # character special device file
+    BLOCK_DEVICE = auto()  # block special device file
+    SYMLINK = auto()  # symbolic link
+    SOCKET = auto()  # socket
 
 
-type_test_map: dict[NodeType, Callable[[int], bool]] = {
-    NodeType.FOLDER: S_ISDIR,
-    NodeType.FILE: S_ISREG,
-    NodeType.CHR: S_ISCHR,
-    NodeType.BLK: S_ISBLK,
-    NodeType.FIFO: S_ISFIFO,
-    NodeType.LNK: S_ISLNK,
-    NodeType.SOCK: S_ISSOCK,
+type_test_map: dict[NodeType, str] = {
+    node_type: f"is_{node_type.value}" for node_type in list(NodeType)
 }
 """a mapping of node types with specific functions that evaluate it"""

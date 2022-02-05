@@ -23,7 +23,7 @@ class Node:
         self.name = name
         self.path = path
 
-        self.stat = path.stat()
+        self.stat = path.lstat()
 
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 
@@ -45,7 +45,7 @@ class Node:
     def node_type(self) -> NodeType:
         """whether the node is a file, folder, symlink, FIFO etc."""
 
-        return get_node_type(self.stat.st_mode)
+        return get_node_type(self.path)
 
     @property
     def ext(self) -> Union[str, None]:
@@ -66,7 +66,7 @@ class Node:
 
         if spec_icon := self.spec_attr("icon"):
             icon = icon_index.get(spec_icon)
-        elif self.node_type == NodeType.FOLDER:
+        elif self.node_type == NodeType.DIR:
             icon = icon_index.get("folder")
         else:
             icon = None
@@ -111,7 +111,7 @@ class Node:
         # Font color
         if spec_color := self.spec_attr("color"):
             format_rules.append(spec_color)
-        elif self.node_type == NodeType.FOLDER:
+        elif self.node_type == NodeType.DIR:
             format_rules.append("cyan")
 
         # Font weight
@@ -147,7 +147,7 @@ class Node:
         if args.details:
             cells["perms"] = get_permission_text(self.stat.st_mode)
             cells["user"] = get_username(self.stat.st_uid)
-            if self.node_type == NodeType.FILE:
+            if self.node_type != NodeType.DIR:
                 cells["size"] = get_size(self.stat.st_size)
 
         return cells

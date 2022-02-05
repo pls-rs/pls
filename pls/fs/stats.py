@@ -1,3 +1,4 @@
+from pathlib import Path
 from pwd import getpwuid
 
 from pls.args import args
@@ -64,17 +65,17 @@ def get_username(st_uid: int) -> str:
     return getpwuid(st_uid).pw_name
 
 
-def get_node_type(st_mode: int) -> NodeType:
+def get_node_type(path: Path) -> NodeType:
     """
     Get the ``NodeType`` that corresponds to the given mode. This function uses
     functions defined in the ``stat`` module to identify the type.
 
-    :param st_mode :the st_mode value of the ``os.stat_result`` instance
+    :param path :the st_mode value of the ``os.stat_result`` instance
     :return: the right ``NodeType`` enum based on the mode
     """
 
     for node_type, node_type_test in type_test_map.items():
-        if node_type_test(st_mode):
+        if getattr(path, node_type_test)():
             return node_type
     else:
         raise ValueError("Could not determine type of the node.")

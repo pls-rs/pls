@@ -25,7 +25,7 @@ def sort_key(node: Node) -> str:
 
     key = node.name.lstrip(".").lower()
     if not args.no_dirs_first:
-        prefix = "0" if node.node_type == NodeType.FOLDER else "1"
+        prefix = "0" if node.node_type == NodeType.DIR else "1"
         key = f"{prefix}{key}"
     return key
 

@@ -36,8 +36,17 @@ class Node:
         """
 
         name = self.name
-        if self.node_type == NodeType.FOLDER:
-            name = f"{name}/"
+        suffix = ""
+        if self.node_type == NodeType.DIR:
+            suffix = "/"
+        if self.node_type == NodeType.SYMLINK:
+            suffix = f"@ -> {self.path.resolve()}"
+        if self.node_type == NodeType.SOCKET:
+            suffix = "="
+        if self.node_type == NodeType.FIFO:
+            suffix = "|"
+        if suffix:
+            name = f"{name}[dim]{suffix}[/]"
 
         return name
 

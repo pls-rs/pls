@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/pypi/pyversions/pls" alt="Python versions"/>
   </a>
   <a href="https://github.com/dhruvkb/pls/blob/main/LICENSE">
-    <img src="https://img.shields.io/pypi/l/pls" alt="GPL-3.0-or-later"/>
+    <img src="https://img.shields.io/github/license/dhruvkb/pls" alt="GPL-3.0"/>
   </a>
 </p>
 

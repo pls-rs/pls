@@ -76,6 +76,10 @@ class Node:
     def is_visible(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
+        # If explicitly requested for all files, show all
+        if args.all:
+            return True
+
         # Nodes without spec and with a leading dot are hidden
         if not self.specs and self.name.startswith("."):
             return False

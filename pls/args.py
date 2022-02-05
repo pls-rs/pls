@@ -87,6 +87,11 @@ parser.add_argument(
     action="store_true",
     help="show details such as permissions, owner and size",
 )
+parser.add_argument(
+    "--all",
+    action="store_true",
+    help="show all files, including those that would otherwise be hidden",
+)
 
 parser.add_argument(
     "--no-dirs",

@@ -93,7 +93,7 @@ $ pls path/to/somewhere/else
 
 ### Filtering
 
-You can choose to hide files or folders from the output using `--no-files` and `--no-dirs` respectively. Passing both will lead to a blank output.
+You can choose to hide files or folders from the output using `--no-files` and `--no-dirs` respectively. Passing both will lead to a blank output. On the other hand if you want to see files and directories that `pls` would not show otherwise, pass `--all`.
 
 ### Sorting
 
@@ -103,7 +103,6 @@ By default `pls` will place all directories first, followed by files with both s
 
 A lot of code related files start with a leading dot `.` for no valid reason. `pls` by default
 
-- lists those files
 - moves their name left by one character to line up the actual alphabets
 - dims their leading dot
 

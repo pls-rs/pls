@@ -44,11 +44,11 @@ The icon, color and most behaviour in the application can be configured using pl
 
 In the future `pls` will be able to
 
-- generate visibility rules by parsing `.gitingore`
+- generate visibility rules by parsing `.gitignore`
 - add MIME type as another method for matching files to specs
 - use complete path based matching for files
 - link files and hide derived files behind the main ones
-- support for tree-like output
+- generate tree-like output for subdirectories
 
 If you want to help implement any of these features, feel free to submit a PR. `pls` is free and open-source software.
 

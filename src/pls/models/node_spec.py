@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from functools import cached_property
 
 from pls.exceptions import ConfigException
 
@@ -55,7 +56,7 @@ class NodeSpec:
 
         return self.name or f"<{self.pattern.pattern}>" or f"*.{self.extension}"
 
-    @property
+    @cached_property
     def format_pair(self) -> tuple[str, str]:
         """the opening and closing tags of Rich console formatting markup"""
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from functools import cached_property
 from pathlib import Path
 from typing import Union
 
@@ -42,13 +43,13 @@ class Node:
 
         return name
 
-    @property
+    @cached_property
     def node_type(self) -> NodeType:
         """whether the node is a file, folder, symlink, FIFO etc."""
 
         return get_node_type(self.path)
 
-    @property
+    @cached_property
     def suffix(self) -> str:
         """the symbol after the filename representing its type"""
 
@@ -68,7 +69,7 @@ class Node:
         suffix = mapping.get(self.node_type, "")
         return f"[dim]{suffix}[/]"
 
-    @property
+    @cached_property
     def type_char(self) -> str:
         """the single character representing the file type"""
 
@@ -82,13 +83,13 @@ class Node:
         }
         return mapping.get(self.node_type, "")
 
-    @property
+    @cached_property
     def ext(self) -> Union[str, None]:
         """the extension of the node, i.e. the portion after the last dot"""
 
         return self.name.split(".")[-1] if "." in self.name else None
 
-    @property
+    @cached_property
     def icon(self) -> str:
         """the emoji or Nerd Font icon to show beside the node"""
 
@@ -107,7 +108,7 @@ class Node:
             icon = None
         return icon or ""
 
-    @property
+    @cached_property
     def is_visible(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
@@ -125,7 +126,7 @@ class Node:
 
         return True
 
-    @property
+    @cached_property
     def formatted_name(self) -> str:
         """the name, formatted using Rich console formatting markup"""
 
@@ -137,7 +138,7 @@ class Node:
                 name = f" {name}"
         return name
 
-    @property
+    @cached_property
     def format_pair(self) -> tuple[str, str]:
         """the opening and closing tags of Rich console formatting markup"""
 
@@ -169,7 +170,7 @@ class Node:
             left = right = ""
         return left, right
 
-    @property
+    @cached_property
     def table_row(self) -> dict[str, str]:
         """the mapping of column names and value when tabulating the node"""
 

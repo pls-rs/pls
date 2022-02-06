@@ -51,17 +51,16 @@ def read_input() -> list[Node]:
     """
 
     all_nodes = os.listdir(args.directory)
-    with multiprocessing.Pool() as pool:
-        comp_nodes = pool.map(parse_nodes, all_nodes)
-    all_nodes = comp_nodes
 
     if not all_nodes:
         console.print(
             f"There are no files or folders in [bold]{args.directory}[/bold].",
             highlight=False,
-            end="",
         )
     else:
+        with multiprocessing.Pool() as pool:
+            comp_nodes = pool.map(parse_nodes, all_nodes)
+        all_nodes = comp_nodes
         all_nodes.sort(key=sort_key, reverse=args.sort == SortOrder.DESC)
 
     return all_nodes

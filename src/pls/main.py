@@ -14,6 +14,8 @@ def main():
     """
 
     nodes = read_input()
+    if not nodes:
+        return
     for node in nodes:
         node.match(node_specs)
     write_output(nodes)

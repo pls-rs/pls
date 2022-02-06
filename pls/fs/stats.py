@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from itertools import cycle
 from pathlib import Path
 from pwd import getpwuid
 
@@ -15,20 +18,35 @@ def get_permission_text(st_mode: int) -> str:
     :return: the text to render as the permissions of the node
     """
 
-    perms = {"r": "yellow", "w": "red", "x": "green"}
-    perm_set = [[] for _ in range(3)]
+    perms = ["r", "w", "x"]
+    color_map = {
+        "r": "yellow",
+        "w": "red",
+        "x": "green",
+        "T": "magenta",
+        "s": "magenta",
+    }
+    perm_sets: list[list[str]] = [["-" for _ in range(3)] for _ in range(3)]
 
-    octal_text = oct(st_mode)[-3:]
-    for index, mode in enumerate(octal_text):
-        bit = int(mode)
-        for perm_index, (perm, color) in enumerate(perms.items()):
-            if bit >= (perm_val := 2 ** (len(perms) - perm_index - 1)):
-                perm_set[index].append(f"[{color}]{perm}[/]")
-                bit -= perm_val
-            else:
-                perm_set[index].append("-")
+    text_rep = bin(st_mode)[-9:]
+    for index, (bit, perm) in enumerate(zip(text_rep, cycle(perms))):
+        if int(bit):
+            perm_sets[int(index / 3)][index % 3] = perm
 
-    return " ".join("".join(perms) for perms in perm_set)
+    if st_mode & 0o4000 == 0o4000:  # setuid
+        perm_sets[0][-1] = "s"
+    if st_mode & 0o2000 == 0o2000:  # setgid
+        perm_sets[1][-1] = "s"
+    if st_mode & 0o1000 == 0o1000:  # sticky
+        perm_sets[2][-1] = "T"
+
+    return " ".join(
+        "".join(
+            f"[{color}]{perm}[/]" if (color := color_map.get(perm, "")) else perm
+            for perm in perm_set
+        )
+        for perm_set in perm_sets
+    )
 
 
 def get_size(st_size: int) -> str:

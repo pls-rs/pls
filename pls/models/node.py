@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Union
 
@@ -36,17 +37,8 @@ class Node:
         """
 
         name = self.name
-        suffix = ""
-        if self.node_type == NodeType.DIR:
-            suffix = "/"
-        if self.node_type == NodeType.SYMLINK:
-            suffix = f"@ -> {self.path.resolve()}"
-        if self.node_type == NodeType.SOCKET:
-            suffix = "="
-        if self.node_type == NodeType.FIFO:
-            suffix = "|"
-        if suffix:
-            name = f"{name}[dim]{suffix}[/]"
+        if self.suffix:
+            name = f"{name}{self.suffix}"
 
         return name
 
@@ -55,6 +47,40 @@ class Node:
         """whether the node is a file, folder, symlink, FIFO etc."""
 
         return get_node_type(self.path)
+
+    @property
+    def suffix(self) -> str:
+        """the symbol after the filename representing its type"""
+
+        if self.node_type == NodeType.SYMLINK:
+            act_path = Path(os.readlink(self.path))
+            if not act_path.exists():
+                act_path = f"[red]{act_path}[/]"
+            elif act_path.is_dir():
+                act_path = f"[cyan]{act_path}[/]"
+            return f"[dim]@ → [/]{act_path}"
+
+        mapping = {
+            NodeType.DIR: "/",
+            NodeType.SOCKET: "=",
+            NodeType.FIFO: "|",
+        }
+        suffix = mapping.get(self.node_type, "")
+        return f"[dim]{suffix}[/]"
+
+    @property
+    def type_char(self) -> str:
+        """the single character representing the file type"""
+
+        mapping = {
+            NodeType.DIR: "[cyan]d[/]",
+            NodeType.SYMLINK: "l",
+            NodeType.SOCKET: "s",
+            NodeType.FIFO: "p",
+            NodeType.BLOCK_DEVICE: "b",
+            NodeType.CHAR_DEVICE: "c",
+        }
+        return mapping.get(self.node_type, "")
 
     @property
     def ext(self) -> Union[str, None]:

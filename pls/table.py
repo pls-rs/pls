@@ -11,12 +11,18 @@ from pls.models.node import Node
 console = Console()
 
 column_spec = {
+    "": {"name": ""},  # dummy column acts like spacer
+    "type": {
+        # 'type' is a pseudo-column linked to 'perms', so it has no name
+        "name": ""
+    },
     "perms": {"name": "Permissions"},
     "user": {"name": "User"},
     "size": {"name": "Size", "attrs": {"justify": "right"}},
     "icon": {
-        # icon is a pseudo-column linked to the name, so it has no name
-        "name": ""
+        # 'icon' is a pseudo-column linked to 'name', so it has no name
+        "name": "",
+        "attrs": {"width": 2},
     },
     "name": {
         # name has a leading space when the leading dots are aligned
@@ -28,7 +34,7 @@ column_spec = {
 """a mapping of column keys to column spec"""
 
 settings = {
-    "padding": (0, 2, 0, 0),
+    "padding": (0, 1, 0, 0),
     "box": None,
     "show_header": args.details,
     "header_style": "underline",
@@ -45,7 +51,7 @@ def get_columns() -> list[str]:
 
     cols = []
     if args.details:
-        cols.extend(["perms", "user", "size"])
+        cols.extend(["type", "perms", "", "user", "", "size", ""])
     if args.icon != IconType.NONE:
         cols.append("icon")
     cols.append("name")

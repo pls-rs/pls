@@ -180,6 +180,7 @@ class Node:
         if args.icon != IconType.NONE:
             cells["icon"] = f"{left}{self.icon}{right}"
         if args.details:
+            cells["type"] = self.type_char
             cells["perms"] = get_permission_text(self.stat.st_mode)
             cells["user"] = get_username(self.stat.st_uid)
             if self.node_type != NodeType.DIR:

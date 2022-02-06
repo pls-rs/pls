@@ -68,7 +68,7 @@ def get_size(st_size: int) -> str:
             unit = f"{unit}B".rjust(pad, " ")
 
             return f"{magnitude}[dim]{unit}[/]"
-    return f"{st_size}? "
+    return f"{st_size}  [dim]B[/]"
 
 
 def get_username(st_uid: int) -> str:

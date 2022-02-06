@@ -1,4 +1,9 @@
 node_specs:
+  - name: src
+    importance: 1
+    icon: source
+  - name: tests
+    icon: test
   - extension: py
     importance: 1
   - name: dist

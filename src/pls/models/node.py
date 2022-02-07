@@ -37,6 +37,12 @@ class Node:
         :return: the string representation
         """
 
+        return f"{self.name} @ {self.path}"
+
+    @cached_property
+    def full_name(self) -> str:
+        """the name of the node with the appropriate suffix"""
+
         name = self.name
         if self.suffix:
             name = f"{name}{self.suffix}"
@@ -130,7 +136,7 @@ class Node:
     def formatted_name(self) -> str:
         """the name, formatted using Rich console formatting markup"""
 
-        name = str(self)
+        name = self.full_name
         if not args.no_align:
             if name.startswith("."):
                 name = name.replace(".", "[dim].[/dim]", 1)

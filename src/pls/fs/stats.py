@@ -101,7 +101,7 @@ def get_node_type(path: Path) -> NodeType:
     Get the ``NodeType`` that corresponds to the given mode. This function uses
     functions defined in the ``stat`` module to identify the type.
 
-    :param path :the st_mode value of the ``os.stat_result`` instance
+    :param path: the path to the node
     :return: the right ``NodeType`` enum based on the mode
     """
 

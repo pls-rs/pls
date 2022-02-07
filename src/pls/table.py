@@ -18,6 +18,7 @@ column_spec = {
     },
     "perms": {"name": "Permissions"},
     "user": {"name": "User"},
+    "group": {"name": "Group"},
     "size": {"name": "Size", "attrs": {"justify": "right"}},
     "icon": {
         # 'icon' is a pseudo-column linked to 'name', so it has no name
@@ -51,7 +52,7 @@ def get_columns() -> list[str]:
 
     cols = []
     if args.details:
-        cols.extend(["type", "perms", "", "user", "", "size", ""])
+        cols.extend(["type", "perms", "", "user", "group", "", "size", ""])
     if args.icon != IconType.NONE:
         cols.append("icon")
     cols.append("name")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from grp import getgrgid
 from itertools import cycle
 from pathlib import Path
 from pwd import getpwuid
@@ -71,7 +72,7 @@ def get_size(st_size: int) -> str:
     return f"{st_size}  [dim]B[/]"
 
 
-def get_username(st_uid: int) -> str:
+def get_user(st_uid: int) -> str:
     """
     Get the name of the user that owns the node. This requires a ``passwd``
     lookup for the user ID found in the node stats.
@@ -81,6 +82,18 @@ def get_username(st_uid: int) -> str:
     """
 
     return getpwuid(st_uid).pw_name
+
+
+def get_group(st_gid: int) -> str:
+    """
+    Get the name of the group that owns the node. This requires a group database
+    lookup for the group ID found in the node stats.
+
+    :param st_gid: the group ID mapped to the owner of the node
+    :return: the name of the group that owns the node
+    """
+
+    return getgrgid(st_gid).gr_name
 
 
 def get_node_type(path: Path) -> NodeType:

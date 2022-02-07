@@ -79,12 +79,10 @@ class Node:
         """the symbol after the filename representing its type"""
 
         if self.node_type == NodeType.SYMLINK:
-            act_path = Path(os.readlink(self.path))
-            if not act_path.exists():
-                act_path = f"[red]{act_path}[/]"
-            elif act_path.is_dir():
-                act_path = f"[cyan]{act_path}[/]"
-            return f"[dim]@ → [/]{act_path}"
+            dest: Node = self.dest_node
+            name = dest.full_name if dest.exists else f"⚠ {dest.name}"
+            left, right = dest.format_pair
+            return f"[dim]@ →[/] {left}{name}{right}"
 
         mapping = {
             NodeType.DIR: "/",
@@ -92,7 +90,9 @@ class Node:
             NodeType.FIFO: "|",
         }
         suffix = mapping.get(self.node_type, "")
-        return f"[dim]{suffix}[/]"
+        if suffix:
+            suffix = f"[dim]{suffix}[/]"
+        return suffix
 
     @cached_property
     def type_char(self) -> str:

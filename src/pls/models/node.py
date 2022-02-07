@@ -145,7 +145,9 @@ class Node:
         format_rules = []
 
         # Font color
-        if spec_color := self.spec_attr("color"):
+        if not self.exists:
+            format_rules.append("red")  # only happens for broken symlinks
+        elif spec_color := self.spec_attr("color"):
             format_rules.append(spec_color)
         elif self.node_type == NodeType.DIR:
             format_rules.append("cyan")

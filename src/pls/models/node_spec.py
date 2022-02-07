@@ -46,7 +46,7 @@ class NodeSpec:
         self.color = color
         self.importance = importance
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Get the string representation of the ``NodeSpec`` instance. This is also
         used by ``__str__`` automatically.

@@ -29,7 +29,7 @@ class Node:
 
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Get the string representation of the ``Node`` instance. This is also
         used by ``__str__`` automatically.

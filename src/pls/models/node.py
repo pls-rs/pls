@@ -25,8 +25,14 @@ class Node:
         self.name = name
         self.path = path
 
-        self.stat = path.lstat()
+        self.stat: Union[os.stat_result, None] = None
+        try:
+            self.stat = path.lstat()
+            self.exists = True
+        except FileNotFoundError:
+            self.exists = False
 
+        self.dest_node: Union[Node, None] = None  # only populated for symlinks
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 
     def __repr__(self) -> str:
@@ -53,7 +59,20 @@ class Node:
     def node_type(self) -> NodeType:
         """whether the node is a file, folder, symlink, FIFO etc."""
 
-        return get_node_type(self.path)
+        node_type = get_node_type(self.path)
+
+        # Symlinks need to set their destination node
+        if node_type == NodeType.SYMLINK and self.dest_node is None:
+            # Using this instead of ``Path.resolve`` to be able to step through
+            # chained symlinks one by one
+            link_path = os.readlink(self.path)
+            link = Path(link_path)
+            if not link.is_absolute():
+                link = self.path.parent.joinpath(link)
+
+            self.dest_node = Node(name=link_path, path=link)
+
+        return node_type
 
     @cached_property
     def suffix(self) -> str:

@@ -9,20 +9,27 @@ class NodeType(AutoEnum):
     """
     A node can be either of these:
 
-    - a file
     - a directory
-    - a symlink to a different file or directory.
+    - a regular file
+    - a name FIFO pipe
+    - a file-based socket
+    - a char device
+    - a block device
+    - a symlink to any of the above
 
-    This enum lists these possibilities.
+    This enum lists these possibilities. Refer to `the Wikipedia article on Unix
+    file types`_ for more info.
+
+    .. _: https://en.wikipedia.org/wiki/Unix_file_types
     """
 
     SYMLINK = auto()  # symbolic link
     DIR = auto()  # directory
     FILE = auto()  # regular file
     FIFO = auto()  # named pipe
+    SOCKET = auto()  # socket
     CHAR_DEVICE = auto()  # character special device file
     BLOCK_DEVICE = auto()  # block special device file
-    SOCKET = auto()  # socket
 
 
 type_test_map: dict[NodeType, str] = {

@@ -84,10 +84,9 @@ def write_output(all_nodes: list[Node]):
     table = get_table()
 
     for node in all_nodes:
-        if not node.is_visible:
-            continue
         data = node.table_row
-        cells = [data.get(col, "") for col in get_columns()]
-        table.add_row(*cells)
+        if data is not None:
+            cells = [data.get(col, "") for col in get_columns()]
+            table.add_row(*cells)
 
     console.print(table)

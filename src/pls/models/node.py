@@ -41,6 +41,16 @@ class Node:
         self.dest_node: Union[Node, None] = None  # only populated for symlinks
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 
+    def __eq__(self, other: Node) -> bool:
+        """
+        Compare the object ``self`` to the other instance of ``Node``.
+
+        :param other: the node to compare this node with for equality
+        :return: ``True`` if the node instances are equal, ``False`` otherwise
+        """
+
+        return self.path.resolve() == other.path.resolve()
+
     def __repr__(self) -> str:
         """
         Get the string representation of the ``Node`` instance. This is also
@@ -50,16 +60,6 @@ class Node:
         """
 
         return f"{self.name} @ {self.path}"
-
-    @cached_property
-    def full_name(self) -> str:
-        """the name of the node with the appropriate suffix"""
-
-        name = self.name
-        if self.suffix:
-            name = f"{name}{self.suffix}"
-
-        return name
 
     @cached_property
     def node_type(self) -> NodeType:
@@ -81,93 +81,10 @@ class Node:
         return node_type
 
     @cached_property
-    def suffix(self) -> str:
-        """the symbol after the filename representing its type"""
-
-        if self.node_type == NodeType.SYMLINK:
-            dest: Node = self.dest_node
-            name = dest.full_name if dest.exists else f"⚠ {dest.name}"
-            left, right = dest.format_pair
-            return f"[dim]@ →[/] {left}{name}{right}"
-
-        mapping = {
-            NodeType.DIR: "/",
-            NodeType.SOCKET: "=",
-            NodeType.FIFO: "|",
-        }
-        suffix = mapping.get(self.node_type, "")
-        if suffix:
-            suffix = f"[dim]{suffix}[/]"
-        return suffix
-
-    @cached_property
-    def type_char(self) -> str:
-        """the single character representing the file type"""
-
-        mapping = {
-            NodeType.DIR: "[cyan]d[/]",
-            NodeType.SYMLINK: "l",
-            NodeType.SOCKET: "s",
-            NodeType.FIFO: "p",
-            NodeType.BLOCK_DEVICE: "b",
-            NodeType.CHAR_DEVICE: "c",
-        }
-        return mapping.get(self.node_type, "")
-
-    @cached_property
     def ext(self) -> Union[str, None]:
         """the extension of the node, i.e. the portion after the last dot"""
 
         return self.name.split(".")[-1] if "." in self.name else None
-
-    @cached_property
-    def icon(self) -> str:
-        """the emoji or Nerd Font icon to show beside the node"""
-
-        if args.icon == IconType.EMOJI:
-            icon_index = emoji_icons
-        elif args.icon == IconType.NERD:
-            icon_index = nerd_icons
-        else:  # args.icon == IconType.NONE:
-            raise NotImplementedError("Icon should not be needed.")
-
-        if spec_icon := self.spec_attr("icon"):
-            icon = icon_index.get(spec_icon)
-        elif self.node_type == NodeType.DIR:
-            icon = icon_index.get("folder")
-        else:
-            icon = None
-        return icon or ""
-
-    @cached_property
-    def is_visible(self) -> bool:
-        """whether the node deserves to be rendered to the screen"""
-
-        # If explicitly requested for all files, show all
-        if args.all:
-            return True
-
-        # Nodes without spec and with a leading dot are hidden
-        if not self.specs and self.name.startswith("."):
-            return False
-
-        # Nodes with importance -2 are hidden
-        if self.spec_attr("importance") == -2:
-            return False
-
-        return True
-
-    @cached_property
-    def formatted_name(self) -> str:
-        """the name, formatted using Rich console formatting markup"""
-
-        name = self.full_name
-        if not args.no_align:
-            if name.startswith("."):
-                name = name.replace(".", "[dim].[/dim]", 1)
-            else:
-                name = f" {name}"
-        return name
 
     @cached_property
     def format_pair(self) -> tuple[str, str]:
@@ -204,15 +121,114 @@ class Node:
         return left, right
 
     @cached_property
-    def table_row(self) -> dict[str, str]:
+    def formatted_suffix(self) -> str:
+        """the symbol after the filename representing its type"""
+
+        if not self.exists:
+            return "⚠"
+
+        if self.node_type == NodeType.SYMLINK:
+            return f"[dim]@ →[/] {self.dest_node.formatted_name}"
+
+        mapping = {
+            NodeType.DIR: "/",
+            NodeType.SOCKET: "=",
+            NodeType.FIFO: "|",
+        }
+        suffix = mapping.get(self.node_type, "")
+        if suffix:
+            suffix = f"[dim]{suffix}[/]"
+        return suffix
+
+    @cached_property
+    def formatted_name(self) -> str:
+        """the name, formatted using Rich console formatting markup"""
+
+        name = self.name
+        if self.formatted_suffix:
+            name = f"{name}{self.formatted_suffix}"
+
+        if name.startswith(".") and not args.no_align:
+            name = name.replace(".", "[dim].[/dim]", 1)
+
+        # Apply format pair
+        left, right = self.format_pair
+        return f"{left}{name}{right}"
+
+    @cached_property
+    def formatted_icon(self) -> str:
+        """the emoji or Nerd Font icon to show beside the node"""
+
+        if args.icon == IconType.EMOJI:
+            icon_index = emoji_icons
+        elif args.icon == IconType.NERD:
+            icon_index = nerd_icons
+        else:  # args.icon == IconType.NONE:
+            raise NotImplementedError("Icon should not be needed.")
+
+        if spec_icon := self.spec_attr("icon"):
+            icon = icon_index.get(spec_icon)
+        elif self.node_type == NodeType.DIR:
+            icon = icon_index.get("folder")
+        else:
+            icon = None
+
+        if icon:
+            left, right = self.format_pair
+            return f"{left}{icon}{right}"
+        return ""
+
+    @cached_property
+    def is_visible(self) -> bool:
+        """whether the node deserves to be rendered to the screen"""
+
+        # If explicitly requested for all files, show all
+        if args.all:
+            return True
+
+        # Nodes without spec and with a leading dot are hidden
+        if not self.specs and self.name.startswith("."):
+            return False
+
+        # Nodes with importance -2 are hidden
+        if self.spec_attr("importance") == -2:
+            return False
+
+        return True
+
+    @cached_property
+    def type_char(self) -> str:
+        """the single character representing the file type"""
+
+        mapping = {
+            NodeType.SYMLINK: "l",
+            NodeType.DIR: "d",
+            NodeType.FILE: "-",
+            NodeType.FIFO: "p",
+            NodeType.SOCKET: "s",
+            NodeType.CHAR_DEVICE: "c",
+            NodeType.BLOCK_DEVICE: "b",
+        }
+        return mapping[self.node_type]
+
+    @cached_property
+    def table_row(self) -> Union[dict[str, str], None]:
         """the mapping of column names and value when tabulating the node"""
 
-        left, right = self.format_pair
+        if not self.is_visible:
+            return None
 
         cells = dict()
-        cells["name"] = f"{left}{self.formatted_name}{right}"
+
+        name = self.formatted_name
+        if not self.name.startswith(".") and not args.no_align:
+            # Left pad name with a space to account for leading dots
+            name = f" {name}"
+        cells["name"] = name
+
         if args.icon != IconType.NONE:
-            cells["icon"] = f"{left}{self.icon}{right}"
+            cells["icon"] = self.formatted_icon
+
         if args.details:
             cells["type"] = self.type_char
             cells["perms"] = get_permission_text(self.stat.st_mode)

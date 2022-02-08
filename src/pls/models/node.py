@@ -67,10 +67,10 @@ class Node:
 
         node_type = get_node_type(self.path)
 
-        # Symlinks need to set their destination node
+        # Symlinks need to set their destination node.
         if node_type == NodeType.SYMLINK and self.dest_node is None:
-            # Using this instead of ``Path.resolve`` to be able to step through
-            # chained symlinks one by one
+            # using ``os.readlink`` instead of ``Path.resolve`` to be able to
+            # step through chained symlinks one-by-one
             link_path = os.readlink(self.path)
             link = Path(link_path)
             if not link.is_absolute():
@@ -92,7 +92,7 @@ class Node:
 
         format_rules = []
 
-        # Font color
+        # font color
         if not self.exists:
             format_rules.append("red")  # only happens for broken symlinks
         elif spec_color := self.spec_attr("color"):
@@ -100,7 +100,7 @@ class Node:
         elif self.node_type == NodeType.DIR:
             format_rules.append("cyan")
 
-        # Font weight
+        # font weight
         if spec_importance := self.spec_attr("importance"):
             if spec_importance == 2:
                 format_rules.append("underline")
@@ -109,7 +109,7 @@ class Node:
             elif spec_importance == -1:
                 format_rules.append("dim")
 
-        # Italics
+        # italics
         if self.name == ".pls.yml":
             format_rules.append("italic")
 
@@ -151,7 +151,7 @@ class Node:
         if name.startswith(".") and not args.no_align:
             name = name.replace(".", "[dim].[/dim]", 1)
 
-        # Apply format pair
+        # Apply format pair.
         left, right = self.format_pair
         return f"{left}{name}{right}"
 
@@ -182,15 +182,15 @@ class Node:
     def is_visible(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
-        # If explicitly requested for all files, show all
+        # If explicitly requested for all files, show all.
         if args.all:
             return True
 
-        # Nodes without spec and with a leading dot are hidden
+        # Nodes without spec and with a leading dot are hidden.
         if not self.specs and self.name.startswith("."):
             return False
 
-        # Nodes with importance -2 are hidden
+        # Nodes with importance -2 are hidden.
         if self.spec_attr("importance") == -2:
             return False
 
@@ -222,7 +222,7 @@ class Node:
 
         name = self.formatted_name
         if not self.name.startswith(".") and not args.no_align:
-            # Left pad name with a space to account for leading dots
+            # Left pad name with a space to account for leading dots.
             name = f" {name}"
         cells["name"] = name
 

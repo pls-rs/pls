@@ -25,14 +25,14 @@ class NodeSpec:
         identification_methods = ["name", "pattern", "extension"]
         loc = locals()
 
-        # Exactly one identification method should be present
+        # Exactly one identification method should be present.
         if [loc.get(method) is not None for method in identification_methods].count(
             True
         ) != 1:
             methods = ", ".join([f"`{method}`" for method in identification_methods])
             raise ConfigException(f"Exactly one of {methods} is required.")
 
-        # Plurals should be split before making ``NodeSpec`` instances
+        # Plurals should be split before making ``NodeSpec`` instances.
         for method in identification_methods:
             if isinstance(loc.get(method), list):
                 raise ConfigException(f"`{method}` cannot be a list. Use `{method}s`.")

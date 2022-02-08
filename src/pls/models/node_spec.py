@@ -53,7 +53,12 @@ class NodeSpec:
         :return: the string representation
         """
 
-        return self.name or f"<{self.pattern.pattern}>" or f"*.{self.extension}"
+        if self.name:
+            return self.name
+        if self.extension:
+            return f"*.{self.extension}"
+        if self.pattern:
+            return f"<{self.pattern.pattern}>"
 
     def match(self, name: str) -> bool:
         """

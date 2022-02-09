@@ -7,7 +7,7 @@ from pwd import getpwuid
 
 from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
-from pls.enums.unit_system import UnitSystem, get_base_and_units
+from pls.enums.unit_system import get_base_and_pad_and_units
 
 
 def get_permission_text(st_mode: int) -> str:
@@ -59,13 +59,11 @@ def get_size(st_size: int) -> str:
     :return: the size of the node as a human-readable value
     """
 
-    base, units = get_base_and_units(args.units)
+    base, pad, units = get_base_and_pad_and_units(args.units)
     for index, unit in reversed(list(enumerate(units))):
         order_of_magnitude = base ** index
         if st_size >= order_of_magnitude:
             magnitude = round(st_size / order_of_magnitude)  # Pop! Pop!
-
-            pad = 2 if args.units == UnitSystem.DECIMAL else 3
             unit = f"{unit}B".rjust(pad, " ")
 
             return f"{magnitude}[dim]{unit}[/]"

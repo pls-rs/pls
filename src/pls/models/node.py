@@ -38,7 +38,9 @@ class Node:
         except FileNotFoundError:
             self.exists = False
 
-        self.dest_node: Union[Node, None] = None  # only populated for symlinks
+        self.is_loop: bool = False  # only ``True`` for cyclic symlinks
+        self.dest_node: Union[Node, str, None] = None  # only populated for symlinks
+
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 
     def __eq__(self, other: Node) -> bool:
@@ -69,14 +71,21 @@ class Node:
 
         # Symlinks need to set their destination node.
         if node_type == NodeType.SYMLINK and self.dest_node is None:
-            # using ``os.readlink`` instead of ``Path.resolve`` to be able to
-            # step through chained symlinks one-by-one
             link_path = os.readlink(self.path)
-            link = Path(link_path)
-            if not link.is_absolute():
-                link = self.path.parent.joinpath(link)
+            try:
+                self.path.resolve()  # raises exception if cyclic
 
-            self.dest_node = Node(name=link_path, path=link)
+                # Use ``os.readlink`` instead of ``Path.resolve`` to step
+                # through chained symlinks one-by-one.
+                link = Path(link_path)
+                if not link.is_absolute():
+                    link = self.path.parent.joinpath(link)
+
+                self.dest_node = Node(name=link_path, path=link)
+            except RuntimeError as exc:
+                if "Symlink loop" in str(exc):
+                    self.is_loop = True
+                    self.dest_node = link_path
 
         return node_type
 
@@ -128,6 +137,8 @@ class Node:
             return "⚠"
 
         if self.node_type == NodeType.SYMLINK:
+            if self.is_loop:
+                return f"[dim]@ ↺[/] [red]{self.dest_node}[/red]"
             return f"[dim]@ →[/] {self.dest_node.formatted_name}"
 
         mapping = {

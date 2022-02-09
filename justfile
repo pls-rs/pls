@@ -17,8 +17,8 @@ lint:
     poetry run pre-commit run --all-files
 
 # Run unit tests using pytest
-test:
-    poetry run pytest
+test *args:
+    poetry run pytest {{ args }}
 
 # Open an IPython shell
 shell:

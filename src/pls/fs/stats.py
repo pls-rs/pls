@@ -29,7 +29,7 @@ def get_permission_text(st_mode: int) -> str:
     }
     perm_sets: list[list[str]] = [["-" for _ in range(3)] for _ in range(3)]
 
-    text_rep = bin(st_mode)[-9:]
+    text_rep = format(st_mode, "09b")[-9:]
     for index, (bit, perm) in enumerate(zip(text_rep, cycle(perms))):
         if int(bit):
             perm_sets[int(index / 3)][index % 3] = perm

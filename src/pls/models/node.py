@@ -170,12 +170,13 @@ class Node:
     def formatted_icon(self) -> str:
         """the emoji or Nerd Font icon to show beside the node"""
 
+        if args.icon == IconType.NONE:
+            return ""
+
         if args.icon == IconType.EMOJI:
             icon_index = emoji_icons
-        elif args.icon == IconType.NERD:
+        else:  # args.icon == IconType.NERD
             icon_index = nerd_icons
-        else:  # args.icon == IconType.NONE:
-            raise NotImplementedError("Icon should not be needed.")
 
         if spec_icon := self.spec_attr("icon"):
             icon = icon_index.get(spec_icon)
@@ -237,8 +238,7 @@ class Node:
             name = f" {name}"
         cells["name"] = name
 
-        if args.icon != IconType.NONE:
-            cells["icon"] = self.formatted_icon
+        cells["icon"] = self.formatted_icon
 
         if args.details:
             cells["type"] = self.type_char

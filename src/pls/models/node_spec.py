@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import re
 
-from pls.exceptions import ConfigException
-
 
 class NodeSpec:
     """
     A spec describes the nature of a class of FS nodes that determine its
-    presentation. This model stores attributes pertaining to a single spec.
+    presentation. This model stores attributes pertaining to a single spec. Make
+    sure to massage spec entries using :py:func:`pls.data.getters.massage_specs`
+    before initialising.
 
     Node specs are read from ``node_spec.yml``.
     """
@@ -24,18 +24,6 @@ class NodeSpec:
     ):
         identification_methods = ["name", "pattern", "extension"]
         loc = locals()
-
-        # Exactly one identification method should be present.
-        if [loc.get(method) is not None for method in identification_methods].count(
-            True
-        ) != 1:
-            methods = ", ".join([f"`{method}`" for method in identification_methods])
-            raise ConfigException(f"Exactly one of {methods} is required.")
-
-        # Plurals should be split before making ``NodeSpec`` instances.
-        for method in identification_methods:
-            if isinstance(loc.get(method), list):
-                raise ConfigException(f"`{method}` cannot be a list. Use `{method}s`.")
 
         self.name = name
         self.pattern = re.compile(pattern) if pattern else None

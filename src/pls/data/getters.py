@@ -6,6 +6,7 @@ from typing import Any, Union
 import yaml
 
 from pls.args import args
+from pls.exceptions import ConfigException
 from pls.models.node_spec import NodeSpec
 
 
@@ -34,7 +35,7 @@ def internal_yml_path(file_name: str) -> Path:
     return Path(__file__).parent.joinpath(file_name)
 
 
-def split_specs(entry: dict) -> list[dict]:
+def massage_specs(entry: dict) -> list[dict]:
     """
     For convenience, specs can be written as group combining several names,
     patterns or extensions. This function splits such groups into its
@@ -45,14 +46,32 @@ def split_specs(entry: dict) -> list[dict]:
     :return: a list of specs split from entry
     """
 
-    group_fields = ["name", "pattern", "extension"]
-    for field in group_fields:
-        plural = f"{field}s"
+    id_fields = ["name", "pattern", "extension"]
+    singular_plural_map = {field: f"{field}s" for field in id_fields}
+    all_id_fields = [*singular_plural_map.keys(), *singular_plural_map.values()]
+
+    # Exactly one identification method should be present.
+    if [field in entry for field in all_id_fields].count(True) != 1:
+        methods = ", ".join([f"`{method}`" for method in all_id_fields])
+        raise ConfigException(f"Exactly one of {methods} is required.")
+
+    # Split plurals if present.
+    for singular, plural in singular_plural_map.items():
         if plural in entry:
             if not isinstance(entry[plural], list):
-                raise ValueError(f"`{field}s` must be a list. Use `{field}`.")
+                raise ConfigException(
+                    f"`{plural}` must be a list. Use `{singular}` instead."
+                )
             common = {k: v for k, v in entry.items() if k != plural}
-            return [{field: value, **common} for value in entry[plural]]
+            return [{singular: value, **common} for value in entry[plural]]
+
+    # Ensure no singular is list.
+    for singular, plural in singular_plural_map.items():
+        if singular in entry and isinstance(entry[singular], list):
+            raise ConfigException(
+                f"`{singular}` cannot be a list. Use `{plural}` instead."
+            )
+
     return [entry]
 
 
@@ -65,7 +84,7 @@ def parse_node_specs(specs: list[dict]) -> list[NodeSpec]:
     :return: the list of all node specs for all languages
     """
 
-    return [NodeSpec(**spec) for entry in specs for spec in split_specs(entry)]
+    return [NodeSpec(**spec) for entry in specs for spec in massage_specs(entry)]
 
 
 def locate_extension() -> Union[Path, None]:
@@ -104,5 +123,3 @@ emoji_icons: dict[str, str] = load_yaml_file(internal_yml_path("emoji_icons.yml"
 """a mapping of icon names to emoji, read from ``emoji_icons.yml``"""
 if emoji_icons_ext := ext_data.get("emoji_icons"):
     emoji_icons.update(emoji_icons_ext)
-
-__all__ = ["node_specs", "nerd_icons", "emoji_icons"]

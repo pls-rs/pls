@@ -8,6 +8,7 @@ from pwd import getpwuid
 from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
 from pls.enums.unit_system import get_base_and_pad_and_units
+from pls.exceptions import ExecException
 
 
 def get_permission_text(st_mode: int) -> str:
@@ -107,4 +108,4 @@ def get_node_type(path: Path) -> NodeType:
         if getattr(path, node_type_test)():
             return node_type
     else:
-        raise ValueError("Could not determine type of the node.")
+        raise ExecException("Could not determine type of the node.")

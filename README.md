@@ -12,6 +12,9 @@
   <a href="https://github.com/dhruvkb/pls/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/dhruvkb/pls" alt="GPL-3.0"/>
   </a>
+  <a href="https://github.com/dhruvkb/pls/actions/workflows/ci.yml">
+    <img src="https://github.com/dhruvkb/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
+  </a>
 </p>
 
 <p align="center">

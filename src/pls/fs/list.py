@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import multiprocessing
 import os
+from pathlib import Path
+from typing import Union
 
 from rich.console import Console
 
@@ -30,7 +32,7 @@ def sort_key(node: Node) -> str:
     return key
 
 
-def parse_nodes(node_name: str) -> Node:
+def parse_nodes(node_name: str) -> Union[Node, None]:
     """
     Parse the node name into a ``Node`` instance. Most of the heavy lifting is
     handled in the ``Node`` class definition itself.
@@ -39,7 +41,15 @@ def parse_nodes(node_name: str) -> Node:
     :return: a ``Node`` instance
     """
 
-    node_path = args.directory.joinpath(node_name)
+    node_path: Path = args.directory.joinpath(node_name)
+
+    if node_path.is_dir():
+        if args.no_dirs:
+            return None
+    else:  # is some kind of file
+        if args.no_files:
+            return None
+
     return Node(node_name, path=node_path)
 
 
@@ -60,7 +70,7 @@ def read_input() -> list[Node]:
     else:
         with multiprocessing.Pool() as pool:
             comp_nodes = pool.map(parse_nodes, all_nodes)
-        all_nodes = comp_nodes
+        all_nodes = [node for node in comp_nodes if node is not None]
         all_nodes.sort(key=sort_key, reverse=args.sort == SortOrder.DESC)
 
     return all_nodes

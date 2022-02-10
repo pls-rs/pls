@@ -6,6 +6,7 @@ from pls import __version__
 from pls.enums.icon_type import IconType
 from pls.enums.sort_order import SortOrder
 from pls.enums.unit_system import UnitSystem
+from pls.exceptions import ExecException
 
 
 parser = argparse.ArgumentParser(
@@ -26,12 +27,12 @@ def directory(path: str) -> Path:
     Parse the given path into a ``Path`` instance. Raise
     :param path: the path supplied as a CLI argument
     :return: the ``Path`` instance wrapping the supplied path
-    :raise: ``ValueError``, if the path does not point to an actual directory
+    :raise: ``ExecException``, if the path does not point to an actual directory
     """
 
     path = Path(path)
     if not os.path.isdir(path):
-        raise ValueError("`directory` must be a path to a directory")
+        raise ExecException("`directory` must be a path to a directory")
     return path
 
 

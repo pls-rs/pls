@@ -87,7 +87,7 @@ def parse_node_specs(specs: list[dict]) -> list[NodeSpec]:
     return [NodeSpec(**spec) for entry in specs for spec in massage_specs(entry)]
 
 
-def locate_extension() -> Union[Path, None]:
+def locate_config() -> Union[Path, None]:
     """
     Find a config file with the name ``.pls.yml`` in the directory or its
     ancestors, upto a max depth based on CLI arguments.
@@ -95,31 +95,31 @@ def locate_extension() -> Union[Path, None]:
     :return: the path to the file if found, ``None`` otherwise
     """
 
-    extension_name = ".pls.yml"
+    config_name = ".pls.yml"
     curr_dir: Path = args.directory
     for i in range(args.depth):
-        extension_path = curr_dir.joinpath(extension_name)
-        if extension_path.exists() and extension_path.is_file():
-            return extension_path
+        config_path = curr_dir.joinpath(config_name)
+        if config_path.exists() and config_path.is_file():
+            return config_path
         curr_dir = curr_dir.parent
     return None
 
 
-ext_data = load_yaml_file(ext_path) if (ext_path := locate_extension()) else {}
+conf_data = load_yaml_file(conf_path) if (conf_path := locate_config()) else {}
 
 node_specs: list[NodeSpec] = parse_node_specs(
     load_yaml_file(internal_yml_path("node_specs.yml"))
 )
 """a list of all node specs for all languages, read from ``node_specs.yml``"""
-if node_specs_ext := ext_data.get("node_specs"):
+if node_specs_ext := conf_data.get("node_specs"):
     node_specs = parse_node_specs(node_specs_ext) + node_specs
 
 nerd_icons: dict[str, str] = load_yaml_file(internal_yml_path("nerd_icons.yml"))
 """a mapping of icon names to Unicode code-points, read from ``nerd_icons.yml``"""
-if nerd_icons_ext := ext_data.get("nerd_icons"):
+if nerd_icons_ext := conf_data.get("nerd_icons"):
     nerd_icons.update(nerd_icons_ext)
 
 emoji_icons: dict[str, str] = load_yaml_file(internal_yml_path("emoji_icons.yml"))
 """a mapping of icon names to emoji, read from ``emoji_icons.yml``"""
-if emoji_icons_ext := ext_data.get("emoji_icons"):
+if emoji_icons_ext := conf_data.get("emoji_icons"):
     emoji_icons.update(emoji_icons_ext)

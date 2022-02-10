@@ -24,6 +24,7 @@ rich = "^11.1.0"
 pre-commit = "^2.17.0"
 ipython = "^8.0.1"
 pytest = "^7.0.0"
+pytest-lazy-fixture = "^0.6.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

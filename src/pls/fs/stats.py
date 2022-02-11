@@ -70,8 +70,9 @@ def get_size(st_size: int) -> str:
             return f"{magnitude}[dim]{unit}[/]"
     return f"{st_size}  [dim]B[/]"
 
-if platform != "win32":
-    def get_user(st_uid: int) -> str:
+
+def get_user(st_uid: int) -> str:
+    try:
         """
         Get the name of the user that owns the node. This requires a ``passwd``
         lookup for the user ID found in the node stats.
@@ -81,9 +82,13 @@ if platform != "win32":
         """
 
         return getpwuid(st_uid).pw_name
+    except ModuleNotFoundError:
+        return None
 
 
-    def get_group(st_gid: int) -> str:
+def get_group(st_gid: int) -> str:
+    try:
+        from grp import getgrgid
         """
         Get the name of the group that owns the node. This requires a group database
         lookup for the group ID found in the node stats.
@@ -93,6 +98,8 @@ if platform != "win32":
         """
 
         return getgrgid(st_gid).gr_name
+    except ModuleNotFoundError:
+        return None
 
 
 def get_node_type(path: Path) -> NodeType:

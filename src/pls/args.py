@@ -30,7 +30,7 @@ def directory(path: str) -> Path:
     :raise: ``ExecException``, if the path does not point to an actual directory
     """
 
-    path = Path(path)
+    path = Path(path).resolve()
     if not os.path.isdir(path):
         raise ExecException("`directory` must be a path to a directory")
     return path

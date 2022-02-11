@@ -9,6 +9,7 @@ from pls.args import args
 from pls.enums.icon_type import IconType
 from pls.models.node import Node
 
+
 console = Console()
 if platform != "win32":
     column_spec = {

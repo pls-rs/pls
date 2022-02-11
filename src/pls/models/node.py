@@ -11,11 +11,11 @@ from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
 from pls.fs.stats import (
-get_group,
-get_node_type,
-get_permission_text,
-get_size,
-get_user,
+    get_group,
+    get_node_type,
+    get_permission_text,
+    get_size,
+    get_user,
 )
 from pls.models.node_spec import NodeSpec
 

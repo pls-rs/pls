@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from sys import platform
+
 from rich.console import Console
 from rich.table import Table
 
 from pls.args import args
 from pls.enums.icon_type import IconType
 from pls.models.node import Node
-from sys import platform
 
 console = Console()
 if platform != "win32":

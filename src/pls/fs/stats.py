@@ -1,8 +1,4 @@
 from __future__ import annotations
-from sys import platform
-if platform != "win32":
-    from grp import getgrgid
-    from pwd import getpwuid
 from itertools import cycle
 from pathlib import Path
 
@@ -73,6 +69,7 @@ def get_size(st_size: int) -> str:
 
 def get_user(st_uid: int) -> str:
     try:
+        from pwd import getpwuid
         """
         Get the name of the user that owns the node. This requires a ``passwd``
         lookup for the user ID found in the node stats.

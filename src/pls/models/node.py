@@ -3,13 +3,13 @@ from __future__ import annotations
 import os
 from functools import cached_property
 from pathlib import Path
+from sys import platform
 from typing import Union
 
 from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
-from sys import platform
 from pls.fs.stats import (
 get_group,
 get_node_type,

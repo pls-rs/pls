@@ -17,6 +17,7 @@ from pls.fs.stats import (
     get_user,
 )
 from pls.models.node_spec import NodeSpec
+from pls.state import State
 
 
 class Node:
@@ -27,9 +28,17 @@ class Node:
     Nodes are read from the file system directly using ``os.walk``.
     """
 
-    def __init__(self, name: str, path: Path):
+    def __init__(self, name: str, path: Path, state: State):
         self.name = name
         self.path = path
+
+        self.is_git_managed = state.is_git_managed
+        if self.is_git_managed:
+            self.path_wrt_git = path.relative_to(state.git_root)
+            self.git_status = state.git_status_map.get(self.path_wrt_git, "  ")
+        else:
+            self.path_wrt_git = None
+            self.git_status = None
 
         self.stat: Union[os.stat_result, None] = None
         try:

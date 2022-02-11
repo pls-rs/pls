@@ -11,6 +11,7 @@ from pls.args import args
 from pls.enums.node_type import NodeType
 from pls.enums.sort_order import SortOrder
 from pls.models.node import Node
+from pls.state import State, state
 
 
 console = Console()
@@ -32,12 +33,16 @@ def sort_key(node: Node) -> str:
     return key
 
 
-def parse_nodes(node_name: str) -> Union[Node, None]:
+def parse_nodes(node_name: str, parent_state: State) -> Union[Node, None]:
     """
     Parse the node name into a ``Node`` instance. Most of the heavy lifting is
     handled in the ``Node`` class definition itself.
 
+    This function is executed by multiprocessing workers and thus must be
+    passed the state explicitly from the main process.
+
     :param node_name: the name of a node inside the working directory
+    :param parent_state: the global state of the parent application
     :return: a ``Node`` instance
     """
 
@@ -50,7 +55,7 @@ def parse_nodes(node_name: str) -> Union[Node, None]:
         if args.no_files:
             return None
 
-    return Node(node_name, path=node_path)
+    return Node(node_name, path=node_path, state=parent_state)
 
 
 def read_input() -> list[Node]:
@@ -69,7 +74,10 @@ def read_input() -> list[Node]:
         )
     else:
         with multiprocessing.Pool() as pool:
-            comp_nodes = pool.map(parse_nodes, all_nodes)
+            comp_nodes = pool.starmap(
+                parse_nodes,
+                [(node, state) for node in all_nodes],
+            )
         all_nodes = [node for node in comp_nodes if node is not None]
         all_nodes.sort(key=sort_key, reverse=args.sort == SortOrder.DESC)
 

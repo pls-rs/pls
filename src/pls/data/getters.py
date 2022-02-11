@@ -18,7 +18,7 @@ def load_yaml_file(file_path: Path) -> Any:
     :return: the parsed contents of the YAML file
     """
 
-    with file_path.open("r") as data_file:
+    with file_path.open("r", encoding="utf8") as data_file:
         data = yaml.safe_load(data_file)
     return data
 

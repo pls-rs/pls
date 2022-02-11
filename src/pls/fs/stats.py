@@ -1,9 +1,10 @@
 from __future__ import annotations
-
-from grp import getgrgid
+from sys import platform
+if platform != "win32":
+    from grp import getgrgid
+    from pwd import getpwuid
 from itertools import cycle
 from pathlib import Path
-from pwd import getpwuid
 
 from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
@@ -69,29 +70,29 @@ def get_size(st_size: int) -> str:
             return f"{magnitude}[dim]{unit}[/]"
     return f"{st_size}  [dim]B[/]"
 
+if platform != "win32":
+    def get_user(st_uid: int) -> str:
+        """
+        Get the name of the user that owns the node. This requires a ``passwd``
+        lookup for the user ID found in the node stats.
 
-def get_user(st_uid: int) -> str:
-    """
-    Get the name of the user that owns the node. This requires a ``passwd``
-    lookup for the user ID found in the node stats.
+        :param st_uid: the user ID mapped to the owner of the node
+        :return: the name of the user who owns the node
+        """
 
-    :param st_uid: the user ID mapped to the owner of the node
-    :return: the name of the user who owns the node
-    """
-
-    return getpwuid(st_uid).pw_name
+        return getpwuid(st_uid).pw_name
 
 
-def get_group(st_gid: int) -> str:
-    """
-    Get the name of the group that owns the node. This requires a group database
-    lookup for the group ID found in the node stats.
+    def get_group(st_gid: int) -> str:
+        """
+        Get the name of the group that owns the node. This requires a group database
+        lookup for the group ID found in the node stats.
 
-    :param st_gid: the group ID mapped to the owner of the node
-    :return: the name of the group that owns the node
-    """
+        :param st_gid: the group ID mapped to the owner of the node
+        :return: the name of the group that owns the node
+        """
 
-    return getgrgid(st_gid).gr_name
+        return getgrgid(st_gid).gr_name
 
 
 def get_node_type(path: Path) -> NodeType:

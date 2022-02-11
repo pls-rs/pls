@@ -200,6 +200,30 @@ class Node:
         return ""
 
     @cached_property
+    def formatted_git_status(self) -> str:
+        """formatted two-letter Git status as returned by ``git-status``"""
+
+        if self.git_status == "  ":
+            return self.git_status
+
+        format_map: dict[str, str] = {
+            "M": "yellow",  # modified
+            "A": "green",  # added
+            "D": "red",  # deleted
+            "!": "dim",  # ignored
+            "-": "dim",  # padding
+        }
+        fmt_status = ""
+        for letter in self.git_status:
+            if letter == " ":
+                letter = "-"
+            if letter in format_map:
+                fmt_status = f"{fmt_status}[{format_map[letter]}]{letter}[/]"
+            else:
+                fmt_status = f"{fmt_status}{letter}"
+        return fmt_status
+
+    @cached_property
     def is_visible(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
@@ -256,6 +280,9 @@ class Node:
             cells["group"] = get_group(self.stat.st_gid)
             if self.node_type != NodeType.DIR:
                 cells["size"] = get_size(self.stat.st_size)
+
+        if self.is_git_managed:
+            cells["git"] = self.formatted_git_status
 
         return cells
 

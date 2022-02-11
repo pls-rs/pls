@@ -6,6 +6,7 @@ from rich.table import Table
 from pls.args import args
 from pls.enums.icon_type import IconType
 from pls.models.node import Node
+from pls.state import state
 
 
 console = Console()
@@ -20,6 +21,7 @@ column_spec = {
     "user": {"name": "User"},
     "group": {"name": "Group"},
     "size": {"name": "Size", "attrs": {"justify": "right"}},
+    "git": {"name": "Git"},
     "icon": {
         # 'icon' is a pseudo-column linked to 'name', so it has no name.
         "name": "",
@@ -53,6 +55,8 @@ def get_columns() -> list[str]:
     cols = []
     if args.details:
         cols.extend(["type", "perms", "", "user", "group", "", "size", ""])
+    if args.details and state.is_git_managed:
+        cols.extend(["git", ""])
     if args.icon != IconType.NONE:
         cols.append("icon")
     cols.append("name")

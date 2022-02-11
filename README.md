@@ -42,7 +42,7 @@ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trust
 - show more details like permissions, owner and size in columns
 - run quite fast, thanks to multiprocessing
 
-The icon, color and most behaviour in the application can be [configured using plain-text YAML files](pls/data/README.md) for the pros who prefer to tweak their tools.
+The icon, color and most behaviour in the application can be [configured using plain-text YAML files](src/pls/data/README.md) for the pros who prefer to tweak their tools.
 
 ## Upcoming features
 
@@ -69,7 +69,7 @@ There are a lot of `ls` replacements. Here are some of the most popular ones.
 
 - Does not intend to replace `ls`. `pls`, as a command, is just as easy to type.
 - Targets a more tech-savvy audience in its [features](#features).
-- Intelligently [maps file type](pls/data/README.md). Just comparing the file extension would be too generic.
+- Intelligently [maps file type](src/pls/data/README.md). Just comparing the file extension would be too generic.
 - Meticulously chosen iconography for the appreciating eyes.
 - Highly customisable at a project level using a simple [`.pls.yml`](.pls.yml) file.
 - Built in a friendly language, Python. This makes it easy to fork and change it yourself.
@@ -112,7 +112,7 @@ $ pls path/to/somewhere/else
 
 `pls` supports many icons for popular languages out of the box and will show icons by default. If you don't have a Nerd Font (why?), you can switch to emoji icons using `--icons emoji` or `-iemoji`. Be warned they are quite bad. If you are a sad person, you turn icons off using `--icon none` or `-inone`.
 
-**Note:** The built-in icon configuration is intentionally lean. The whole idea is for `pls` to be [customisable by you](pls/data/README.md).
+**Note:** The built-in icon configuration is intentionally lean. The whole idea is for `pls` to be [customisable by you](src/pls/data/README.md).
 
 ### Filtering
 

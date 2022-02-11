@@ -126,6 +126,9 @@ class Node:
                 format_rules.append("bold")
             elif spec_importance == -1:
                 format_rules.append("dim")
+        elif self.is_git_managed:
+            if self.git_status == "!!":  # Git-ignored file
+                format_rules.append("dim")
 
         # italics
         if self.name == ".pls.yml":

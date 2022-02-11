@@ -6,32 +6,53 @@ from rich.table import Table
 from pls.args import args
 from pls.enums.icon_type import IconType
 from pls.models.node import Node
-
+from sys import platform
 
 console = Console()
-
-column_spec = {
-    "": {"name": ""},  # dummy column to act like spacer
-    "type": {
-        # 'type' is a pseudo-column linked to 'perms', so it has no name.
-        "name": ""
-    },
-    "perms": {"name": "Permissions"},
-    "user": {"name": "User"},
-    "group": {"name": "Group"},
-    "size": {"name": "Size", "attrs": {"justify": "right"}},
-    "icon": {
-        # 'icon' is a pseudo-column linked to 'name', so it has no name.
-        "name": "",
-        "attrs": {"width": 2},
-    },
-    "name": {
-        # The names have a leading space when the leading dots are aligned.
-        "name": "Name"
-        if args.no_align
-        else " Name"
-    },
-}
+if platform != "win32":
+    column_spec = {
+        "": {"name": ""},  # dummy column to act like spacer
+        "type": {
+            # 'type' is a pseudo-column linked to 'perms', so it has no name.
+            "name": ""
+        },
+        "perms": {"name": "Permissions"},
+        "user": {"name": "User"},
+        "group": {"name": "Group"},
+        "size": {"name": "Size", "attrs": {"justify": "right"}},
+        "icon": {
+            # 'icon' is a pseudo-column linked to 'name', so it has no name.
+            "name": "",
+            "attrs": {"width": 2},
+        },
+        "name": {
+            # The names have a leading space when the leading dots are aligned.
+            "name": "Name"
+            if args.no_align
+            else " Name"
+        },
+    }
+else:
+    column_spec = {
+        "": {"name": ""},  # dummy column to act like spacer
+        "type": {
+            # 'type' is a pseudo-column linked to 'perms', so it has no name.
+            "name": ""
+        },
+        "perms": {"name": "Permissions"},
+        "size": {"name": "Size", "attrs": {"justify": "right"}},
+        "icon": {
+            # 'icon' is a pseudo-column linked to 'name', so it has no name.
+            "name": "",
+            "attrs": {"width": 2},
+        },
+        "name": {
+            # The names have a leading space when the leading dots are aligned.
+            "name": "Name"
+            if args.no_align
+            else " Name"
+        },
+    }
 """a mapping of column keys to column spec"""
 
 settings = {
@@ -52,7 +73,10 @@ def get_columns() -> list[str]:
 
     cols = []
     if args.details:
-        cols.extend(["type", "perms", "", "user", "group", "", "size", ""])
+        if platform != "win32":
+            cols.extend(["type", "perms", "", "user", "group", "", "size", ""])
+        else:
+            cols.extend(["type", "perms", "", "", "size", ""])
     if args.icon != IconType.NONE:
         cols.append("icon")
     cols.append("name")

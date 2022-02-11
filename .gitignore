@@ -20,9 +20,3 @@ __pycache__/
 
 # pytest cache
 tests/.pytest_cache
-
-# venv
-pyvenv.cfg
-/Lib
-/Scripts
-/share

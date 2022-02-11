@@ -18,9 +18,7 @@ class NodeType(AutoEnum):
     - a symlink to any of the above
 
     This enum lists these possibilities. Refer to `the Wikipedia article on Unix
-    file types`_ for more info.
-
-    .. _: https://en.wikipedia.org/wiki/Unix_file_types
+    file types <https://en.wikipedia.org/wiki/Unix_file_types>`_ for more info.
     """
 
     SYMLINK = auto()  # symbolic link

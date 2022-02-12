@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 from functools import cached_property
 from pathlib import Path
-from sys import platform
 from typing import Union
 
 from pls.args import args
@@ -244,9 +243,8 @@ class Node:
         if args.details:
             cells["type"] = self.type_char
             cells["perms"] = get_permission_text(self.stat.st_mode)
-            if platform != "win32":
-                cells["user"] = get_user(self.stat.st_uid)
-                cells["group"] = get_group(self.stat.st_gid)
+            cells["user"] = get_user(self.stat.st_uid)
+            cells["group"] = get_group(self.stat.st_gid)
             if self.node_type != NodeType.DIR:
                 cells["size"] = get_size(self.stat.st_size)
 

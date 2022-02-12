@@ -9,7 +9,7 @@ from pathlib import Path
 proj_dir = Path(__file__).parents[2]
 
 
-def run_pls(args: list[str]) -> subprocess.CompletedProcess:
+def run_pls(args: list[str] = None) -> subprocess.CompletedProcess:
     """
     Run ``pls`` under Poetry's virtual environment.
 
@@ -17,6 +17,8 @@ def run_pls(args: list[str]) -> subprocess.CompletedProcess:
     :return: the ``CompletedProcess`` instance
     """
 
+    if args is None:
+        args = []
     cmd = ["poetry", "run", "pls", *args]
     proc = subprocess.run(
         cmd,

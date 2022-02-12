@@ -19,4 +19,4 @@ __pycache__/
 /dist
 
 # pytest cache
-tests/.pytest_cache
+.pytest_cache

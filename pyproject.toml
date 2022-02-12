@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pls"
 description = "`pls` is a better `ls` for developers."
-version = "1.6.1"
+version = "1.8.2"
 
 authors = ["Dhruv Bhanushali"]
 
@@ -25,6 +25,9 @@ pre-commit = "^2.17.0"
 ipython = "^8.0.1"
 pytest = "^7.0.0"
 pytest-lazy-fixture = "^0.6.3"
+
+[tool.pytest.ini_options]
+cache_dir = ".pytest_cache"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -17,6 +17,7 @@ from pls.fs.stats import (
     get_user,
 )
 from pls.models.node_spec import NodeSpec
+from pls.state import State
 
 
 class Node:
@@ -27,9 +28,18 @@ class Node:
     Nodes are read from the file system directly using ``os.walk``.
     """
 
-    def __init__(self, name: str, path: Path):
+    def __init__(self, name: str, path: Path, state: State):
         self.name = name
         self.path = path
+
+        self.state = state  # keeping a copy to pass to dest_nodes
+        self.is_git_managed = state.is_git_managed
+        if self.is_git_managed:
+            self.path_wrt_git = path.relative_to(state.git_root)
+            self.git_status = state.git_status_map.get(self.path_wrt_git, "  ")
+        else:
+            self.path_wrt_git = None
+            self.git_status = None
 
         self.stat: Union[os.stat_result, None] = None
         try:
@@ -81,7 +91,7 @@ class Node:
                 if not link.is_absolute():
                     link = self.path.parent.joinpath(link)
 
-                self.dest_node = Node(name=link_path, path=link)
+                self.dest_node = Node(name=link_path, path=link, state=self.state)
             except RuntimeError as exc:
                 if "Symlink loop" in str(exc):
                     self.is_loop = True
@@ -116,6 +126,9 @@ class Node:
             elif spec_importance == 1:
                 format_rules.append("bold")
             elif spec_importance == -1:
+                format_rules.append("dim")
+        elif self.is_git_managed:
+            if self.git_status == "!!":  # Git-ignored file
                 format_rules.append("dim")
 
         # italics
@@ -170,12 +183,13 @@ class Node:
     def formatted_icon(self) -> str:
         """the emoji or Nerd Font icon to show beside the node"""
 
+        if args.icon == IconType.NONE:
+            return ""
+
         if args.icon == IconType.EMOJI:
             icon_index = emoji_icons
-        elif args.icon == IconType.NERD:
+        else:  # args.icon == IconType.NERD
             icon_index = nerd_icons
-        else:  # args.icon == IconType.NONE:
-            raise NotImplementedError("Icon should not be needed.")
 
         if spec_icon := self.spec_attr("icon"):
             icon = icon_index.get(spec_icon)
@@ -188,6 +202,30 @@ class Node:
             left, right = self.format_pair
             return f"{left}{icon}{right}"
         return ""
+
+    @cached_property
+    def formatted_git_status(self) -> str:
+        """formatted two-letter Git status as returned by ``git-status``"""
+
+        if self.git_status == "  ":
+            return self.git_status
+
+        format_map: dict[str, str] = {
+            "M": "yellow",  # modified
+            "A": "green",  # added
+            "D": "red",  # deleted
+            "!": "dim",  # ignored
+            "-": "dim",  # padding
+        }
+        fmt_status = ""
+        for letter in self.git_status:
+            if letter == " ":
+                letter = "-"
+            if letter in format_map:
+                fmt_status = f"{fmt_status}[{format_map[letter]}]{letter}[/]"
+            else:
+                fmt_status = f"{fmt_status}{letter}"
+        return fmt_status
 
     @cached_property
     def is_visible(self) -> bool:
@@ -237,8 +275,7 @@ class Node:
             name = f" {name}"
         cells["name"] = name
 
-        if args.icon != IconType.NONE:
-            cells["icon"] = self.formatted_icon
+        cells["icon"] = self.formatted_icon
 
         if args.details:
             cells["type"] = self.type_char
@@ -247,6 +284,9 @@ class Node:
             cells["group"] = get_group(self.stat.st_gid)
             if self.node_type != NodeType.DIR:
                 cells["size"] = get_size(self.stat.st_size)
+
+        if self.is_git_managed:
+            cells["git"] = self.formatted_git_status
 
         return cells
 

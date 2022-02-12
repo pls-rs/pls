@@ -8,9 +8,11 @@ from rich.table import Table
 from pls.args import args
 from pls.enums.icon_type import IconType
 from pls.models.node import Node
+from pls.state import state
 
 
 console = Console()
+
 column_spec = {
     "": {"name": ""},  # dummy column to act like spacer
     "type": {
@@ -21,6 +23,7 @@ column_spec = {
     "user": {"name": "User"},
     "group": {"name": "Group"},
     "size": {"name": "Size", "attrs": {"justify": "right"}},
+    "git": {"name": "Git"},
     "icon": {
         # 'icon' is a pseudo-column linked to 'name', so it has no name.
         "name": "",
@@ -57,6 +60,8 @@ def get_columns() -> list[str]:
         if platform != "win32":
             cols.extend(["user", "group", ""])
         cols.extend(["size", ""])
+        if args.details and state.is_git_managed:
+            cols.extend(["git", ""])
     if args.icon != IconType.NONE:
         cols.append("icon")
     cols.append("name")

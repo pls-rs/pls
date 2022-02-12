@@ -7,6 +7,7 @@ from typing import Union
 from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
 from pls.enums.unit_system import get_base_and_pad_and_units
+from pls.exceptions import ExecException
 
 
 def get_permission_text(st_mode: int) -> str:
@@ -34,11 +35,11 @@ def get_permission_text(st_mode: int) -> str:
             perm_sets[int(index / 3)][index % 3] = perm
 
     if st_mode & 0o4000 == 0o4000:  # setuid
-        perm_sets[0][-1] = "s"
+        perm_sets[0][-1] = "s" if perm_sets[0][-1] == "x" else "S"
     if st_mode & 0o2000 == 0o2000:  # setgid
-        perm_sets[1][-1] = "s"
+        perm_sets[1][-1] = "s" if perm_sets[1][-1] == "x" else "S"
     if st_mode & 0o1000 == 0o1000:  # sticky
-        perm_sets[2][-1] = "T"
+        perm_sets[2][-1] = "t" if perm_sets[2][-1] == "x" else "T"
 
     return " ".join(
         "".join(
@@ -116,4 +117,4 @@ def get_node_type(path: Path) -> NodeType:
         if getattr(path, node_type_test)():
             return node_type
     else:
-        raise ValueError("Could not determine type of the node.")
+        raise ExecException("Could not determine type of the node.")

@@ -18,5 +18,6 @@ __pycache__/
 # Output files
 /dist
 
-# pytest cache
+# Tool caches
 .pytest_cache
+.mypy_cache

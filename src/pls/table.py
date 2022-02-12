@@ -11,50 +11,28 @@ from pls.models.node import Node
 
 
 console = Console()
-if platform != "win32":
-    column_spec = {
-        "": {"name": ""},  # dummy column to act like spacer
-        "type": {
-            # 'type' is a pseudo-column linked to 'perms', so it has no name.
-            "name": ""
-        },
-        "perms": {"name": "Permissions"},
-        "user": {"name": "User"},
-        "group": {"name": "Group"},
-        "size": {"name": "Size", "attrs": {"justify": "right"}},
-        "icon": {
-            # 'icon' is a pseudo-column linked to 'name', so it has no name.
-            "name": "",
-            "attrs": {"width": 2},
-        },
-        "name": {
-            # The names have a leading space when the leading dots are aligned.
-            "name": "Name"
-            if args.no_align
-            else " Name"
-        },
-    }
-else:
-    column_spec = {
-        "": {"name": ""},  # dummy column to act like spacer
-        "type": {
-            # 'type' is a pseudo-column linked to 'perms', so it has no name.
-            "name": ""
-        },
-        "perms": {"name": "Permissions"},
-        "size": {"name": "Size", "attrs": {"justify": "right"}},
-        "icon": {
-            # 'icon' is a pseudo-column linked to 'name', so it has no name.
-            "name": "",
-            "attrs": {"width": 2},
-        },
-        "name": {
-            # The names have a leading space when the leading dots are aligned.
-            "name": "Name"
-            if args.no_align
-            else " Name"
-        },
-    }
+column_spec = {
+    "": {"name": ""},  # dummy column to act like spacer
+    "type": {
+        # 'type' is a pseudo-column linked to 'perms', so it has no name.
+        "name": ""
+    },
+    "perms": {"name": "Permissions"},
+    "user": {"name": "User"},
+    "group": {"name": "Group"},
+    "size": {"name": "Size", "attrs": {"justify": "right"}},
+    "icon": {
+        # 'icon' is a pseudo-column linked to 'name', so it has no name.
+        "name": "",
+        "attrs": {"width": 2},
+    },
+    "name": {
+        # The names have a leading space when the leading dots are aligned.
+        "name": "Name"
+        if args.no_align
+        else " Name"
+    },
+}
 """a mapping of column keys to column spec"""
 
 settings = {

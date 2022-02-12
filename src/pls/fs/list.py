@@ -3,7 +3,7 @@ from __future__ import annotations
 import multiprocessing
 import os
 from pathlib import Path
-from typing import Union
+from typing import Optional
 
 from rich.console import Console
 
@@ -33,7 +33,7 @@ def sort_key(node: Node) -> str:
     return key
 
 
-def parse_nodes(node_name: str, parent_state: State) -> Union[Node, None]:
+def parse_nodes(node_name: str, parent_state: State) -> Optional[Node]:
     """
     Parse the node name into a ``Node`` instance. Most of the heavy lifting is
     handled in the ``Node`` class definition itself.

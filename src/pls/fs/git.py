@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import subprocess
 from pathlib import Path
-from typing import Union
+from typing import Optional
 
 from pls.exceptions import ExecException
 
@@ -29,7 +29,7 @@ def exec_git(cmd_args: list[str], cwd: Path) -> subprocess.CompletedProcess:
     return proc
 
 
-def get_git_root(working_dir: Path) -> Union[Path, None]:
+def get_git_root(working_dir: Path) -> Optional[Path]:
     """
     Identify the Git root for the working directory. To get the root directory,
     this uses following command::
@@ -69,16 +69,16 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
 
     status_lines: set[str] = set()
     try:
-        status = ["status", "--porcelain"]
+        status_args = ["status", "--porcelain"]
 
         proc = exec_git(
-            [*status, "--untracked-files", "--ignored"],
+            [*status_args, "--untracked-files", "--ignored"],
             cwd=git_root,
         )
         status_lines.update(proc.stdout.rstrip().split("\n"))
 
         proc = exec_git(
-            [*status, "--untracked-files=normal", "--ignored=matching"],
+            [*status_args, "--untracked-files=normal", "--ignored=matching"],
             cwd=git_root,
         )
         status_lines.update(proc.stdout.rstrip().split("\n"))
@@ -90,12 +90,12 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
 
         components: list[str] = line[3:].split(" ")
         if len(components) == 1:
-            path = components[0]
+            path_str = components[0]
         elif len(components) == 3:
-            _, __, path = components
+            _, __, path_str = components
         else:
             raise ExecException("Could not parse Git status code")
-        path = Path(path)
+        path = Path(path_str)
 
         status_map[path] = status
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from functools import cached_property
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
@@ -34,14 +34,14 @@ class Node:
 
         self.state = state  # keeping a copy to pass to dest_nodes
         self.is_git_managed = state.is_git_managed
+
+        self.path_wrt_git: Optional[Path] = None
+        self.git_status: Optional[str] = None
         if self.is_git_managed:
             self.path_wrt_git = path.relative_to(state.git_root)
             self.git_status = state.git_status_map.get(self.path_wrt_git, "  ")
-        else:
-            self.path_wrt_git = None
-            self.git_status = None
 
-        self.stat: Union[os.stat_result, None] = None
+        self.stat: Optional[os.stat_result] = None
         try:
             self.stat = path.lstat()
             self.exists = True
@@ -49,11 +49,11 @@ class Node:
             self.exists = False
 
         self.is_loop: bool = False  # only ``True`` for cyclic symlinks
-        self.dest_node: Union[Node, str, None] = None  # only populated for symlinks
+        self.dest_node: Optional[Union[Node, str]] = None  # only populated for symlinks
 
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 
-    def __eq__(self, other: Node) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Compare the object ``self`` to the other instance of ``Node``.
 
@@ -61,6 +61,8 @@ class Node:
         :return: ``True`` if the node instances are equal, ``False`` otherwise
         """
 
+        if not isinstance(other, Node):
+            return False
         return self.path.resolve() == other.path.resolve()
 
     def __repr__(self) -> str:
@@ -100,7 +102,7 @@ class Node:
         return node_type
 
     @cached_property
-    def ext(self) -> Union[str, None]:
+    def ext(self) -> Optional[str]:
         """the extension of the node, i.e. the portion after the last dot"""
 
         return self.name.split(".")[-1] if "." in self.name else None
@@ -115,7 +117,7 @@ class Node:
         if not self.exists:
             format_rules.append("red")  # only happens for broken symlinks
         elif spec_color := self.spec_attr("color"):
-            format_rules.append(spec_color)
+            format_rules.append(str(spec_color))
         elif self.node_type == NodeType.DIR:
             format_rules.append("cyan")
 
@@ -150,8 +152,13 @@ class Node:
             return "⚠"
 
         if self.node_type == NodeType.SYMLINK:
+            assert self.dest_node is not None
+
             if self.is_loop:
+                assert isinstance(self.dest_node, str)
                 return f"[dim]@ ↺[/] [red]{self.dest_node}[/red]"
+
+            assert isinstance(self.dest_node, Node)
             return f"[dim]@ →[/] {self.dest_node.formatted_name}"
 
         mapping = {
@@ -192,7 +199,7 @@ class Node:
             icon_index = nerd_icons
 
         if spec_icon := self.spec_attr("icon"):
-            icon = icon_index.get(spec_icon)
+            icon = icon_index.get(str(spec_icon))
         elif self.node_type == NodeType.DIR:
             icon = icon_index.get("folder")
         else:
@@ -207,6 +214,8 @@ class Node:
     def formatted_git_status(self) -> str:
         """formatted two-letter Git status as returned by ``git-status``"""
 
+        if self.git_status is None:
+            return "  "
         if self.git_status == "  ":
             return self.git_status
 
@@ -261,13 +270,13 @@ class Node:
         return mapping[self.node_type]
 
     @cached_property
-    def table_row(self) -> Union[dict[str, str], None]:
+    def table_row(self) -> Optional[dict[str, Optional[str]]]:
         """the mapping of column names and value when tabulating the node"""
 
         if not self.is_visible:
             return None
 
-        cells = dict()
+        cells: dict[str, Optional[str]] = dict()
 
         name = self.formatted_name
         if not self.name.startswith(".") and not args.no_align:
@@ -279,18 +288,21 @@ class Node:
 
         if args.details:
             cells["type"] = self.type_char
-            cells["perms"] = get_permission_text(self.stat.st_mode)
-            cells["user"] = get_user(self.stat.st_uid)
-            cells["group"] = get_group(self.stat.st_gid)
-            if self.node_type != NodeType.DIR:
-                cells["size"] = get_size(self.stat.st_size)
+            if self.exists:
+                assert self.stat is not None
+
+                cells["perms"] = get_permission_text(self.stat.st_mode)
+                cells["user"] = get_user(self.stat.st_uid)
+                cells["group"] = get_group(self.stat.st_gid)
+                if self.node_type != NodeType.DIR:
+                    cells["size"] = get_size(self.stat.st_size)
 
         if self.is_git_managed:
             cells["git"] = self.formatted_git_status
 
         return cells
 
-    def spec_attr(self, attr: str) -> Union[str, int, None]:
+    def spec_attr(self, attr: str) -> Optional[Union[str, int]]:
         """
         Get the requested attribute from the first matching spec to provide it.
 

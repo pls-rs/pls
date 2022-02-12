@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from itertools import cycle
 from pathlib import Path
-from typing import Union
+from typing import Optional
 
 from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
@@ -70,7 +70,7 @@ def get_size(st_size: int) -> str:
     return f"{st_size}  [dim]B[/]"
 
 
-def get_user(st_uid: int) -> Union[str, None]:
+def get_user(st_uid: int) -> Optional[str]:
     """
     Get the name of the user that owns the node. This requires a ``passwd``
     lookup for the user ID found in the node stats.
@@ -87,7 +87,7 @@ def get_user(st_uid: int) -> Union[str, None]:
         return None
 
 
-def get_group(st_gid: int) -> Union[str, None]:
+def get_group(st_gid: int) -> Optional[str]:
     """
     Get the name of the group that owns the node. This requires a group database
     lookup for the group ID found in the node stats.

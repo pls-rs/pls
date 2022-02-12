@@ -7,13 +7,14 @@ from rich.table import Table
 
 from pls.args import args
 from pls.enums.icon_type import IconType
+from pls.models.col_spec import ColumnSpec
 from pls.models.node import Node
 from pls.state import state
 
 
 console = Console()
 
-column_spec = {
+column_spec_map: dict[str, ColumnSpec] = {
     "": {"name": ""},  # dummy column to act like spacer
     "type": {
         # 'type' is a pseudo-column linked to 'perms', so it has no name.
@@ -37,14 +38,6 @@ column_spec = {
     },
 }
 """a mapping of column keys to column spec"""
-
-settings = {
-    "padding": (0, 1, 0, 0),
-    "box": None,
-    "show_header": args.details,
-    "header_style": "underline",
-}
-"""the settings for the Rich table"""
 
 
 def get_columns() -> list[str]:
@@ -76,10 +69,16 @@ def get_table() -> Table:
     :return: a Rich table
     """
 
-    table = Table(**settings)
+    table = Table(
+        padding=(0, 1, 0, 0),
+        box=None,
+        show_header=args.details,
+        header_style="underline",
+    )
     for col_key in get_columns():
-        col = column_spec.get(col_key)
-        table.add_column(col.get("name"), **col.get("attrs", {}))
+        col = column_spec_map.get(col_key)
+        if col is not None:
+            table.add_column(col.get("name", ""), **col.get("attrs", {}))
     return table
 
 

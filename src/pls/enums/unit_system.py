@@ -19,7 +19,7 @@ class UnitSystem(AutoEnum):
     DECIMAL = auto()
 
 
-def get_base_and_pad_and_units(us: UnitSystem) -> [int, list[str]]:
+def get_base_and_pad_and_units(us: UnitSystem) -> tuple[int, int, list[str]]:
     """
     Get the base factor i.e. the ratio between any two successive orders of
     magnitude and the units corresponding to each multiplication of the base

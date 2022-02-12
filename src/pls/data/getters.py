@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Optional
 
 import yaml
 
@@ -87,7 +87,7 @@ def parse_node_specs(specs: list[dict]) -> list[NodeSpec]:
     return [NodeSpec(**spec) for entry in specs for spec in massage_specs(entry)]
 
 
-def locate_config() -> Union[Path, None]:
+def locate_config() -> Optional[Path]:
     """
     Find a config file with the name ``.pls.yml`` in the directory or its
     ancestors, upto a max depth based on CLI arguments.

@@ -47,6 +47,7 @@ class NodeSpec:
             return f"*.{self.extension}"
         if self.pattern:
             return f"<{self.pattern.pattern}>"
+        return "[No ID]"
 
     def match(self, name: str) -> bool:
         """

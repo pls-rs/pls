@@ -22,15 +22,15 @@ parser = argparse.ArgumentParser(
 ########################
 
 
-def directory(path: str) -> Path:
+def directory(path_str: str) -> Path:
     """
     Parse the given path into a ``Path`` instance. Raise
-    :param path: the path supplied as a CLI argument
+    :param path_str: the path supplied as a CLI argument
     :return: the ``Path`` instance wrapping the supplied path
     :raise: ``ExecException``, if the path does not point to an actual directory
     """
 
-    path = Path(path).resolve()
+    path = Path(path_str).resolve()
     if not os.path.isdir(path):
         raise ExecException("`directory` must be a path to a directory")
     return path

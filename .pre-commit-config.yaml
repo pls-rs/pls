@@ -51,6 +51,12 @@ repos:
         args:
           - --safe
 
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.931
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-PyYAML]
+
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.5.0
     hooks:

@@ -142,5 +142,6 @@ When you need more infomation about your files, pass the `--details` flag. This 
 - permissions
 - owner name
 - size
+- Git status _(if available)_
 
 added to the output. The permissions are presented as `rwx` triplets. The size is presented in binary compound-units (the ones with the "i" like "*iB"). You can switch to decimal units by passing `--units decimal` or `-udecimal`. This flag has no effect unless the `--detail` flag is passed too.

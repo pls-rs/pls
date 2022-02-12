@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from sys import platform
+
 from rich.console import Console
 from rich.table import Table
 
@@ -54,9 +56,12 @@ def get_columns() -> list[str]:
 
     cols = []
     if args.details:
-        cols.extend(["type", "perms", "", "user", "group", "", "size", ""])
-    if args.details and state.is_git_managed:
-        cols.extend(["git", ""])
+        cols.extend(["type", "perms", ""])
+        if platform != "win32":
+            cols.extend(["user", "group", ""])
+        cols.extend(["size", ""])
+        if args.details and state.is_git_managed:
+            cols.extend(["git", ""])
     if args.icon != IconType.NONE:
         cols.append("icon")
     cols.append("name")

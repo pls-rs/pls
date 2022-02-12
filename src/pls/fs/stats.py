@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from grp import getgrgid
 from itertools import cycle
 from pathlib import Path
-from pwd import getpwuid
+from typing import Union
 
 from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
@@ -71,7 +70,7 @@ def get_size(st_size: int) -> str:
     return f"{st_size}  [dim]B[/]"
 
 
-def get_user(st_uid: int) -> str:
+def get_user(st_uid: int) -> Union[str, None]:
     """
     Get the name of the user that owns the node. This requires a ``passwd``
     lookup for the user ID found in the node stats.
@@ -80,10 +79,15 @@ def get_user(st_uid: int) -> str:
     :return: the name of the user who owns the node
     """
 
-    return getpwuid(st_uid).pw_name
+    try:
+        from pwd import getpwuid
+
+        return getpwuid(st_uid).pw_name
+    except ModuleNotFoundError:  # on non-POSIX systems like Windows
+        return None
 
 
-def get_group(st_gid: int) -> str:
+def get_group(st_gid: int) -> Union[str, None]:
     """
     Get the name of the group that owns the node. This requires a group database
     lookup for the group ID found in the node stats.
@@ -92,7 +96,12 @@ def get_group(st_gid: int) -> str:
     :return: the name of the group that owns the node
     """
 
-    return getgrgid(st_gid).gr_name
+    try:
+        from grp import getgrgid
+
+        return getgrgid(st_gid).gr_name
+    except ModuleNotFoundError:  # on non-POSIX systems like Windows
+        return None
 
 
 def get_node_type(path: Path) -> NodeType:

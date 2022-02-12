@@ -46,7 +46,7 @@ def get_git_root(working_dir: Path) -> Union[Path, None]:
         )
         root_path = Path(proc.stdout.rstrip())
         return root_path
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return None
 
 
@@ -82,7 +82,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
             cwd=git_root,
         )
         status_lines.update(proc.stdout.rstrip().split("\n"))
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return status_map
 
     for line in status_lines:

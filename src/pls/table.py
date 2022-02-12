@@ -53,10 +53,10 @@ def get_columns() -> list[str]:
 
     cols = []
     if args.details:
+        cols.extend(["type", "perms", ""])
         if platform != "win32":
-            cols.extend(["type", "perms", "", "user", "group", "", "size", ""])
-        else:
-            cols.extend(["type", "perms", "", "size", ""])
+            cols.extend(["user", "group", ""])
+        cols.extend(["size", ""])
     if args.icon != IconType.NONE:
         cols.append("icon")
     cols.append("name")

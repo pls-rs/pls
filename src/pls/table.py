@@ -47,18 +47,21 @@ def get_columns() -> list[str]:
     :return: the list of column keys
     """
 
-    cols = []
+    col_groups = []
     if args.details:
-        cols.extend(["type", "perms", ""])
+        col_groups.append(["type", "perms"])
         if platform != "win32":
-            cols.extend(["user", "group", ""])
-        cols.extend(["size", ""])
+            col_groups.append(["user", "group"])
+        col_groups.append(["size"])
         if args.details and state.is_git_managed:
-            cols.extend(["git", ""])
+            col_groups.append(["git"])
+
+    name_group = ["name"]
     if args.icon != IconType.NONE:
-        cols.append("icon")
-    cols.append("name")
-    return cols
+        name_group.insert(0, "icon")
+    col_groups.append(name_group)
+
+    return [col for col_group in col_groups for col in [*col_group, ""]]
 
 
 def get_table() -> Table:

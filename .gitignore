@@ -1,0 +1,21 @@
+# System files
+.DS_Store
+
+# Modules
+node_modules
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# VuePress
+.cache
+.temp
+
+# Output files
+dist

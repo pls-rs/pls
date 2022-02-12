@@ -32,6 +32,7 @@ class Node:
         self.name = name
         self.path = path
 
+        self.state = state  # keeping a copy to pass to dest_nodes
         self.is_git_managed = state.is_git_managed
         if self.is_git_managed:
             self.path_wrt_git = path.relative_to(state.git_root)
@@ -90,7 +91,7 @@ class Node:
                 if not link.is_absolute():
                     link = self.path.parent.joinpath(link)
 
-                self.dest_node = Node(name=link_path, path=link)
+                self.dest_node = Node(name=link_path, path=link, state=self.state)
             except RuntimeError as exc:
                 if "Symlink loop" in str(exc):
                     self.is_loop = True

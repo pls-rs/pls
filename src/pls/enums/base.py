@@ -2,8 +2,9 @@ from enum import Enum
 
 
 class AutoEnum(Enum):
-    def _generate_next_value_(self: str, *args) -> str:
-        return self.lower()
+    @staticmethod
+    def _generate_next_value_(name: str, *args) -> str:
+        return name.lower()
 
     def __str__(self):
         """

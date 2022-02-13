@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shlex
 import subprocess
 from pathlib import Path
 from typing import Optional
@@ -88,7 +89,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
     for line in status_lines:
         status = line[0:2]
 
-        components: list[str] = line[3:].split(" ")
+        components: list[str] = shlex.split(line[3:])
         if len(components) == 1:
             path_str = components[0]
         elif len(components) == 3:

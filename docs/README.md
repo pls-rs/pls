@@ -4,7 +4,7 @@ tagline: ~
 
 actions:
 - text: Get Started →
-  link: '/get_started'
+  link: 'get_started'
 
 footerHtml: true
 footer: |
@@ -60,4 +60,4 @@ footer: |
   </div>
 </div>
 
-and many [more features](/features)!
+and many [more features](features)!

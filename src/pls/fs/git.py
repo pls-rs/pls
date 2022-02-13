@@ -73,13 +73,13 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
         status_args = ["status", "--porcelain"]
 
         proc = exec_git(
-            [*status_args, "--untracked-files", "--ignored"],
+            [*status_args, "--untracked-files"],
             cwd=git_root,
         )
         status_lines.update(proc.stdout.rstrip().split("\n"))
 
         proc = exec_git(
-            [*status_args, "--untracked-files=normal", "--ignored=matching"],
+            [*status_args, "--untracked-files=normal"],
             cwd=git_root,
         )
         status_lines.update(proc.stdout.rstrip().split("\n"))

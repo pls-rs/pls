@@ -49,7 +49,6 @@ The docs are built from the [`docs` branch](https://github.com/dhruvkb/pls/tree/
 - group directories and shows them all before files
 - ignore leading dots `.` and normalise case when sorting files
 - align files names by first character
-- generate visibility rules by parsing `.gitignore`
 - show technical two-letter Git status for files and directories
 - cascade formatting rule specs by based on specificity levels
 - read [`.pls.yml`](.pls.yml) files from the directory to augment its configuration
@@ -62,6 +61,7 @@ The icon, color and most behaviour in the application can be [configured using p
 
 In the future `pls` will be able to
 
+- generate visibility rules by parsing `.gitignore`
 - add MIME type as another method for matching files to specs
 - use complete path based matching for files
 - link files and hide derived files behind the main ones

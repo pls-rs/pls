@@ -8,9 +8,9 @@ authors = ["Dhruv Bhanushali"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 
-homepage = "https://github.com/dhruvkb/pls"
+homepage = "https://dhruvkb.github.io/pls"
 repository = "https://github.com/dhruvkb/pls"
-documentation = "https://github.com/dhruvkb/pls"
+documentation = "https://dhruvkb.github.io/pls"
 
 [tool.poetry.scripts]
 pls = "pls.main:main"

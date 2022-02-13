@@ -13,7 +13,10 @@
     <img src="https://img.shields.io/github/license/dhruvkb/pls" alt="GPL-3.0"/>
   </a>
   <a href="https://pypi.org/project/pls/">
-    <img src="https://img.shields.io/static/v1?label=supported%20OS&message=mac,%20win&color=informational" alt="CI status"/>
+    <img src="https://img.shields.io/static/v1?label=supported%20OS&message=mac,%20win&color=informational" alt="Supported OS"/>
+  </a>
+  <a href="https://dhruvkb.github.io/pls/">
+    <img src="https://img.shields.io/static/v1?label=docs&message=dhruvkb/pls:docs&color=informational" alt="Docs"/>
   </a>
   <a href="https://github.com/dhruvkb/pls/actions/workflows/ci.yml">
     <img src="https://github.com/dhruvkb/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
@@ -29,6 +32,12 @@
 It works in a manner similar to `ls`, in  that it lists directories and files in a given directory, but it adds many more [developer-friendly features](#features).
 
 Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trusted command with lots of features. `pls`, on the other hand, is a simple tool for people who just want to see the contents of their directories.
+
+## Documentation
+
+[Documentation](https://dhruvkb.github.io/pls/)
+
+The docs are built from the [`docs` branch](https://github.com/dhruvkb/pls/tree/docs) in the same repository.
 
 ## Features
 

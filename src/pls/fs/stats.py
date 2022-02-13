@@ -8,6 +8,7 @@ from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
 from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
 from pls.exceptions import ExecException
+from pls.state import state
 
 
 def get_permission_text(st_mode: int) -> str:
@@ -73,7 +74,7 @@ def get_size(st_size: int) -> str:
     return f"{st_size}  [dim]B[/]"
 
 
-def get_user(st_uid: int) -> Optional[str]:
+def get_formatted_user(st_uid: int) -> Optional[str]:
     """
     Get the name of the user that owns the node. This requires a ``passwd``
     lookup for the user ID found in the node stats.
@@ -85,12 +86,15 @@ def get_user(st_uid: int) -> Optional[str]:
     try:
         from pwd import getpwuid
 
-        return getpwuid(st_uid).pw_name
+        pw_name = getpwuid(st_uid).pw_name
+        if pw_name != state.username:
+            pw_name = f"[dim]{pw_name}[/]"
+        return pw_name
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 
 
-def get_group(st_gid: int) -> Optional[str]:
+def get_formatted_group(st_gid: int) -> Optional[str]:
     """
     Get the name of the group that owns the node. This requires a group database
     lookup for the group ID found in the node stats.
@@ -102,7 +106,10 @@ def get_group(st_gid: int) -> Optional[str]:
     try:
         from grp import getgrgid
 
-        return getgrgid(st_gid).gr_name
+        gr_name = getgrgid(st_gid).gr_name
+        if gr_name not in state.groups:
+            gr_name = f"[dim]{gr_name}[/]"
+        return gr_name
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 

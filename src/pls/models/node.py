@@ -10,11 +10,11 @@ from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
 from pls.fs.stats import (
-    get_group,
+    get_formatted_group,
+    get_formatted_user,
     get_node_type,
     get_permission_text,
     get_size,
-    get_user,
 )
 from pls.models.node_spec import NodeSpec
 from pls.state import State
@@ -292,8 +292,8 @@ class Node:
                 assert self.stat is not None
 
                 cells["perms"] = get_permission_text(self.stat.st_mode)
-                cells["user"] = get_user(self.stat.st_uid)
-                cells["group"] = get_group(self.stat.st_gid)
+                cells["user"] = get_formatted_user(self.stat.st_uid)
+                cells["group"] = get_formatted_group(self.stat.st_gid)
                 if self.node_type != NodeType.DIR:
                     cells["size"] = get_size(self.stat.st_size)
 

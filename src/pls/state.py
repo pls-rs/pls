@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from functools import cached_property
 from pathlib import Path
 
@@ -17,6 +18,20 @@ class State:
         self.git_status_map: dict[Path, str] = dict()
         if self.is_git_managed:
             self.git_status_map = get_git_statuses(self.git_root)
+
+        try:
+            from grp import getgrall, getgrgid
+            from pwd import getpwnam, getpwuid
+
+            self.username = getpwuid(os.getuid()).pw_name
+            self.groups = set(
+                group.gr_name for group in getgrall() if self.username in group.gr_mem
+            )
+            gid = getpwnam(self.username).pw_gid
+            self.groups.add(getgrgid(gid).gr_name)
+        except ModuleNotFoundError:  # on non-POSIX systems like Windows
+            self.username = None
+            self.groups = set()
 
     def __repr__(self) -> str:
         """

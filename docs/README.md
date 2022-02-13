@@ -3,8 +3,8 @@ home: true
 tagline: ~
 
 actions:
-- text: Get Started →
-  link: 'get_started'
+  - text: Get Started →
+    link: "get_started"
 
 footerHtml: true
 footer: |

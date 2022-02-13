@@ -1,0 +1,6 @@
+# VuePress
+.cache
+.temp
+
+# Output files
+dist

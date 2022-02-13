@@ -1,0 +1,22 @@
+.home {
+  .hero {
+    h1 {
+      color: var(--c-brand);
+      font-family: var(--font-family-code);
+    }
+
+    img {
+      height: 128px;
+    }
+  }
+
+  .feature {
+    h2, p {
+      color: var(--c-text);
+    }
+  }
+
+  .footer {
+    color: var(--c-text);
+  }
+}

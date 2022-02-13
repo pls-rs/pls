@@ -11,12 +11,14 @@ class UnitSystem(AutoEnum):
 
     - the decimal system where powers of 10 (factor: 10^3) are used
     - the binary system where powers of 2 (factor: 2^10) are used
+    - no system where higher units are not used
 
     This enum lists these possibilities.
     """
 
     BINARY = auto()
     DECIMAL = auto()
+    NONE = auto()
 
 
 def get_base_and_pad_and_units(us: UnitSystem) -> tuple[int, int, list[str]]:

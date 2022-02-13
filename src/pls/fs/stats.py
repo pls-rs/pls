@@ -6,7 +6,7 @@ from typing import Optional
 
 from pls.args import args
 from pls.enums.node_type import NodeType, type_test_map
-from pls.enums.unit_system import get_base_and_pad_and_units
+from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
 from pls.exceptions import ExecException
 
 
@@ -58,6 +58,9 @@ def get_size(st_size: int) -> str:
     :param st_size: the size of the node in bytes
     :return: the size of the node as a human-readable value
     """
+
+    if args.units == UnitSystem.NONE:
+        return f"{st_size}[dim]B[/]"
 
     base, pad, units = get_base_and_pad_and_units(args.units)
     for index, unit in reversed(list(enumerate(units))):

@@ -1,7 +1,35 @@
+from __future__ import annotations
+
 from pathlib import Path
 from unittest.mock import Mock, patch
 
+import pytest
+
 from pls.fs.git import get_git_statuses
+
+
+@pytest.mark.parametrize(
+    "entry, statuses",
+    [
+        ("XY file", {"file": "XY"}),
+        (" Y file", {"file": " Y"}),
+        ("X  file", {"file": "X "}),
+        ("!! file", {"file": "!!"}),
+        ("?? file", {"file": "??"}),
+        (" R old_file -> new_file", {"new_file": " R"}),
+        ('XY "file with space"', {"file with space": "XY"}),
+        (
+            ' R "old file with space" -> "new file with space"',
+            {"new file with space": " R"},
+        ),
+    ],
+)
+def test_statuses_handles_all_cases(entry: str, statuses: dict[Path, str]):
+    entries = [entry]
+    exec_git = Mock(return_value=Mock(stdout="\n".join(entries)))
+    with patch("pls.fs.git.exec_git", exec_git):
+        git_statuses = get_git_statuses(Path("."))
+    assert git_statuses == {Path(key): value for key, value in statuses.items()}
 
 
 def test_statuses_combines_two_git_cmds():

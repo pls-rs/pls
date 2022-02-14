@@ -27,7 +27,14 @@
   <img src="https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/demo.png" alt="Demo of `pls`"/>
 </p>
 
-`pls` is a better `ls` for developers. The "p" stands for "pro" (as in "professional"/"programmer") or "prettier", whichever helps you remember the command name.
+`pls` is a prettier `ls` for the pros.
+
+The "p" stands for
+- pretty (the output from `pls` surely looks better)
+- programmer (`pls` is geared towards developers)
+- professional (`pls` can be extensively tweaked by the pros)
+
+Just pick whichever helps you remember the command name.
 
 It works in a manner similar to `ls`, in  that it lists directories and files in a given directory, but it adds many more [developer-friendly features](#features).
 

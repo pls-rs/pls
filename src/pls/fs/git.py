@@ -92,7 +92,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
         components: list[str] = shlex.split(line[3:])
         if len(components) == 0:  # It might be windows
             win_components: list[str] = shlex.split(line[3:], posix=False)
-            if len(win_components) != 0:  # If diferent result use those
+            if len(win_components) != 0:  # If different result use those
                 components = win_components
         if len(components) == 1:
             path_str = components[0]

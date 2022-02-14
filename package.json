@@ -12,13 +12,19 @@
   "repository": "github:dhruvkb/pls",
   "bugs": "https://github.com/dhruvkb/pls/issues",
   "scripts": {
+    "prepare": "husky install",
     "lint": "prettier --check .",
     "format": "prettier --write .",
     "dev": "vuepress dev docs",
     "build": "vuepress build docs"
   },
   "devDependencies": {
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.4",
     "prettier": "2.5.1",
     "vuepress": "^2.0.0-beta.35"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }

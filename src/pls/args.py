@@ -1,6 +1,7 @@
 import argparse
 import os
 from pathlib import Path
+from typing import Optional
 
 from pls import __version__
 from pls.enums.icon_type import IconType
@@ -24,10 +25,12 @@ parser = argparse.ArgumentParser(
 
 def directory(path_str: str) -> Path:
     """
-    Parse the given path into a ``Path`` instance. Raise
+    Parse the given path into a ``Path`` instance. The path is considered valid
+    if it points to an existing directory.
+
     :param path_str: the path supplied as a CLI argument
     :return: the ``Path`` instance wrapping the supplied path
-    :raise: ``ExecException``, if the path does not point to an actual directory
+    :raise: ``ExecException``, if the path is invalid
     """
 
     path = Path(path_str).resolve()
@@ -53,6 +56,31 @@ parser.add_argument(
     action="version",
     version=f"%(prog)s {__version__}",
     help="show the version of the codebase",
+)
+
+
+def file(path_str: str) -> Optional[Path]:
+    """
+    Parse the given path into a ``Path`` instance. The path is considered valid
+    if nothing exists there or if it points to a file.
+
+    :param path_str: the path supplied as a CLI argument
+    :return: the ``Path`` instance wrapping the supplied path if it is valid,
+        ``None`` otherwise
+    """
+
+    path = Path(path_str).resolve()
+    if not path.exists() or (path.exists() and path.is_file()):
+        return path
+    else:
+        return None
+
+
+parser.add_argument(
+    *["-e", "--export"],
+    type=file,
+    default=None,
+    help="the path to the file where to write the exported HTML",
 )
 
 parser.add_argument(

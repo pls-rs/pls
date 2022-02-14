@@ -1,18 +1,20 @@
 from __future__ import annotations
 
+import textwrap
 from sys import platform
 
 from rich.console import Console
 from rich.table import Table
 
 from pls.args import args
+from pls.data.solarized import solarized_theme
 from pls.enums.icon_type import IconType
 from pls.models.col_spec import ColumnSpec
 from pls.models.node import Node
 from pls.state import state
 
 
-console = Console()
+console = Console(record=(args.export is not None))
 
 column_spec_map: dict[str, ColumnSpec] = {
     "": {"name": ""},  # dummy column to act like spacer
@@ -101,3 +103,21 @@ def write_output(all_nodes: list[Node]):
             table.add_row(*cells)
 
     console.print(table)
+
+    if args.export:
+        html_body = textwrap.dedent(
+            """
+            <div
+                style="background-color: {background}; color: {foreground};"
+                class="language-">
+              <pre style="color: inherit;"><code style="color: inherit;">{code}</code></pre>
+            </div>
+            """  # noqa: E501
+        )
+        with args.export.open("w", encoding="utf-8") as out_file:
+            out_file.write(
+                console.export_html(
+                    theme=solarized_theme, code_format=html_body, inline_styles=True
+                )
+            )
+        print("Output written to file.")

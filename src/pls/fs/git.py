@@ -3,6 +3,7 @@ from __future__ import annotations
 import shlex
 import subprocess
 from pathlib import Path
+from sys import platform
 from typing import Optional
 
 from pls.exceptions import ExecException
@@ -89,11 +90,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
     for line in status_lines:
         status = line[0:2]
 
-        components: list[str] = shlex.split(line[3:])
-        if len(components) == 0:  # It might be windows
-            win_components: list[str] = shlex.split(line[3:], posix=False)
-            if len(win_components) != 0:  # If different result use those
-                components = win_components
+        components: list[str] = shlex.split(line[3:], posix=(platform != "win32"))
         if len(components) == 1:
             path_str = components[0]
         elif len(components) == 3:

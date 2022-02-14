@@ -101,7 +101,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
             path_str = ""
         else:
             raise ExecException("Could not parse Git status code")
-        path = Path(path_str)
+        path = Path(path_str.strip('"'))
 
         status_map[path] = status
 

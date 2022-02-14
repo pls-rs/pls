@@ -1,5 +1,10 @@
 const packageInfo = require("../../package.json");
 
+const features = {
+  text: "Features",
+  children: ["/features/colors", "/features/icons"],
+};
+
 module.exports = {
   lang: "en-GB",
   title: "pls",
@@ -13,14 +18,13 @@ module.exports = {
     docsDir: "docs",
 
     navbar: [
-      {
-        text: "Get started",
-        link: "/get_started",
-      },
-      {
-        text: "PyPI",
-        link: "https://pypi.org/project/pls/",
-      },
+      { text: "Get started", link: "/get_started" },
+      features,
+      { text: "PyPI", link: "https://pypi.org/project/pls/" },
     ],
+
+    sidebar: {
+      "/features/": [features],
+    },
   },
 };

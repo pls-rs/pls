@@ -98,6 +98,10 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
             path_str = components[0]
         elif len(components) == 3:
             _, __, path_str = components
+        # If the return code was 0 but there were no results
+        # then no changes where made
+        elif len(components) == 0 and proc.returncode == 0:
+            path_str = ""
         else:
             raise ExecException("Could not parse Git status code")
         path = Path(path_str)

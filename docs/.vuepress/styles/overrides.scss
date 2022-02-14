@@ -6,4 +6,8 @@ html.dark {
   --c-brand-light: var(--c-brand);
 
   --font-family-code: "JetBrains Mono Nerd Font", "Fira Code", monospace;
+
+  --c-warning-bg: var(--c-tip-bg);
+  --c-warning-title: var(--c-tip-title);
+  --c-warning-text: var(--c-tip-text);
 }

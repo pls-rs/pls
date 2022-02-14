@@ -28,16 +28,17 @@ class Node:
     Nodes are read from the file system directly using ``os.walk``.
     """
 
-    def __init__(self, name: str, path: Path, state: State):
+    def __init__(self, name: str, path: Path, state: Optional[State] = None):
         self.name = name
         self.path = path
 
         self.state = state  # keeping a copy to pass to dest_nodes
-        self.is_git_managed = state.is_git_managed
 
+        self.is_git_managed: bool = False
         self.path_wrt_git: Optional[Path] = None
         self.git_status: Optional[str] = None
-        if self.is_git_managed:
+        if state is not None and state.is_git_managed:
+            self.is_git_managed = True
             self.path_wrt_git = path.relative_to(state.git_root)
             self.git_status = state.git_status_map.get(self.path_wrt_git, "  ")
 

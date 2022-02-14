@@ -2,7 +2,7 @@ const packageInfo = require("../../package.json");
 
 const features = {
   text: "Features",
-  children: ["/features/colors", "/features/icons"],
+  children: ["/features/colors", "/features/icons", "/features/suffixes"],
 };
 
 module.exports = {

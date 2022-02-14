@@ -1,12 +1,16 @@
 @font-face {
-  font-family: "Fira Code Nerd Font";
-  src: url("/pls/fonts/FiraCodeRegular.ttf") format("truetype"),
-    url("/pls/fonts/FiraCodeRegular.otf") format("opentype");
+  font-family: "JetBrains Mono Nerd Font";
+  src: url("/pls/fonts/JetBrainsMonoRegular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: "Fira Code Nerd Font";
+  font-family: "JetBrains Mono Nerd Font";
+  font-style: italic;
+  src: url("/pls/fonts/JetBrainsMonoItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "JetBrains Mono Nerd Font";
   font-weight: 700;
-  src: url("/pls/fonts/FiraCodeBold.ttf") format("truetype"),
-    url("/pls/fonts/FiraCodeBold.otf") format("opentype");
+  src: url("/pls/fonts/JetBrainsMonoBold.ttf") format("truetype");
 }

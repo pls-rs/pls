@@ -13,9 +13,13 @@ from pls.exceptions import ExecException
 parser = argparse.ArgumentParser(
     prog="pls",
     description=(
-        "`pls` is a better `ls` for developers. "
-        "See https://github.com/dhruvkb/pls for more information."
+        """
+        `pls` is a prettier `ls` for the pros.
+        You can read the docs at https://dhruvkb.github.io/pls and
+        obtain the source code at https://github.com/dhruvkb/pls.
+        """
     ),
+    add_help=False,  # added via the 'meta' group later
 )
 
 ########################
@@ -47,16 +51,189 @@ parser.add_argument(
     help="the directory whose contents are to be listed",
 )
 
-######################
-# Optional arguments #
-######################
+########
+# Meta #
+########
 
-parser.add_argument(
+meta = parser.add_argument_group(
+    title="meta",
+    description="meta-arguments for `pls` itself",
+)
+meta.add_argument(
+    *["-h", "--help"],
+    action="help",
+    help="show this help message and exit",
+)
+meta.add_argument(
     *["-v", "--version"],
     action="version",
     version=f"%(prog)s {__version__}",
     help="show the version of the codebase",
 )
+
+################
+# Presentation #
+################
+
+presentation = parser.add_argument_group(
+    title="presentation",
+    description="arguments for controlling the presentation of nodes",
+)
+presentation.add_argument(
+    *["-i", "--icon"],
+    type=IconType,
+    choices=list(IconType),
+    default=IconType.NERD,
+    help="the type of icons to show with the files",
+)
+presentation.add_argument(
+    "--no-align",
+    action="store_true",
+    help="turn off character alignment for leading dots",
+)
+
+########
+# Info #
+########
+
+
+class DetailsAction(argparse.Action):
+    """
+    Slightly modified ``_AppendAction`` to deal with sets. This allows ``const``
+    to be a set that is merged with the ``dest`` set instead of nested in it.
+    """
+
+    def __call__(self, parser, namespace, value, option_string=None):
+        items = getattr(namespace, self.dest, None)
+
+        if items is None:
+            items = set()
+        elif isinstance(items, set):
+            items = set(items)
+
+        if isinstance(value, set):
+            # ``--details`` flag without values means ``value`` = ``const``
+            items.update(value)
+        else:
+            # add each ``value`` to ``items``
+            items.add(value)
+
+        setattr(namespace, self.dest, items)
+
+
+info = parser.add_argument_group(
+    title="info",
+    description="arguments for controlling the amount of info for nodes",
+)
+info.add_argument(
+    *["-d", "--details"],
+    action=DetailsAction,
+    nargs="?",
+    dest="details",
+    help="the data points to show for each node in the output",
+    default=None,  # when there is no --details flag
+    const={"type", "perms"},  # when there is a --details flag without value
+    choices={
+        "inode",
+        "links",
+        "type",
+        "perms",
+        "user",
+        "group",
+        "size",
+        "ctime",
+        "mtime",
+        "atime",
+        "git",
+        "+",  # means all
+    },
+)
+
+#####################
+# Info modification #
+#####################
+
+info_mod = parser.add_argument_group(
+    title="info modification",
+    description="arguments for modifying the presentation of information",
+)
+info_mod.add_argument(
+    *["-u", "--units"],
+    type=UnitSystem,
+    choices=list(UnitSystem),
+    default=UnitSystem.BINARY,
+    help="the units to use when listing the size of files",
+)
+info_mod.add_argument(
+    *["-t", "--time_fmt"],
+    type=str,
+    default="[dim]%Y-[/]%m-%d %H:%M[dim]:%S ",
+    help="the template for formatting the timestamps on the file",
+)
+
+###########
+# Sorting #
+###########
+
+sorting = parser.add_argument_group(
+    title="sorting",
+    description="arguments used for sorting nodes in the output",
+)
+sorting.add_argument(
+    *["-s", "--sort"],
+    type=SortOrder,
+    choices=list(SortOrder),
+    default=SortOrder.ASC,
+    help="the direction in which to sort the files and directories",
+)
+sorting.add_argument(
+    "--no-dirs-first",
+    action="store_true",
+    help="mix directories and files, sorting them together",
+)
+
+#############
+# Filtering #
+#############
+
+filtering = parser.add_argument_group(
+    title="filtering",
+    description="arguments used for filtering nodes in the output",
+)
+filtering.add_argument(
+    "--all",
+    action="store_true",
+    help="show all files, including those that would otherwise be hidden",
+)
+filtering.add_argument(
+    "--no-dirs",
+    action="store_true",
+    help="hide directories in the output",
+)
+filtering.add_argument(
+    "--no-files",
+    action="store_true",
+    help="hide files in the output",
+)
+
+#################
+# Configuration #
+#################
+
+configuration = parser.add_argument_group(
+    title="configuration",
+    description="arguments for controlling `pls` using config files",
+)
+configuration.add_argument(
+    *["--depth"],
+    type=int,
+    default=4,
+    help="the max depth upto which to look for a `.pls.yml` file",
+)
+
+#############
+# Exporting #
+#############
 
 
 def file(path_str: str) -> Optional[Path]:
@@ -76,71 +253,15 @@ def file(path_str: str) -> Optional[Path]:
         return None
 
 
-parser.add_argument(
+exporting = parser.add_argument_group(
+    title="exporting",
+    description="arguments for exporting the output to a file",
+)
+exporting.add_argument(
     *["-e", "--export"],
     type=file,
     default=None,
     help="the path to the file where to write the exported HTML",
-)
-
-parser.add_argument(
-    *["-i", "--icon"],
-    type=IconType,
-    choices=list(IconType),
-    default=IconType.NERD,
-    help="the type of icons to show with the files",
-)
-parser.add_argument(
-    *["-s", "--sort"],
-    type=SortOrder,
-    choices=list(SortOrder),
-    default=SortOrder.ASC,
-    help="the direction in which to sort the files and directories",
-)
-parser.add_argument(
-    *["-d", "--depth"],
-    type=int,
-    default=4,
-    help="the max depth upto which to look for a `.pls.yml` file",
-)
-parser.add_argument(
-    *["-u", "--units"],
-    type=UnitSystem,
-    choices=list(UnitSystem),
-    default=UnitSystem.BINARY,
-    help="the units to use when listing the size of files",
-)
-
-parser.add_argument(
-    "--details",
-    action="store_true",
-    help="show details such as permissions, owner and size",
-)
-parser.add_argument(
-    "--all",
-    action="store_true",
-    help="show all files, including those that would otherwise be hidden",
-)
-
-parser.add_argument(
-    "--no-dirs",
-    action="store_true",
-    help="hide directories in the output",
-)
-parser.add_argument(
-    "--no-files",
-    action="store_true",
-    help="hide files in the output",
-)
-parser.add_argument(
-    "--no-align",
-    action="store_true",
-    help="turn off character alignment for leading dots",
-)
-parser.add_argument(
-    "--no-dirs-first",
-    action="store_true",
-    help="mix directories and files, sorting them together",
 )
 
 

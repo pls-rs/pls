@@ -11,6 +11,7 @@ from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
 from pls.fs.stats import (
     get_formatted_group,
+    get_formatted_time,
     get_formatted_user,
     get_node_type,
     get_permission_text,
@@ -288,18 +289,30 @@ class Node:
         cells["icon"] = self.formatted_icon
 
         if args.details:
-            cells["type"] = self.type_char
             if self.exists:
                 assert self.stat is not None
 
+                cells["inode"] = str(self.stat.st_ino)
+                nlink = self.stat.st_nlink
+                cells["links"] = str(nlink)
+                if self.node_type != NodeType.DIR and nlink > 1:
+                    cells["links"] = f"[yellow]{nlink}[/]"
+
+                cells["type"] = self.type_char
                 cells["perms"] = get_permission_text(self.stat.st_mode)
+
                 cells["user"] = get_formatted_user(self.stat.st_uid)
                 cells["group"] = get_formatted_group(self.stat.st_gid)
+
                 if self.node_type != NodeType.DIR:
                     cells["size"] = get_size(self.stat.st_size)
 
-        if self.is_git_managed:
-            cells["git"] = self.formatted_git_status
+                cells["ctime"] = get_formatted_time(int(self.stat.st_ctime))
+                cells["mtime"] = get_formatted_time(int(self.stat.st_mtime))
+                cells["atime"] = get_formatted_time(int(self.stat.st_atime))
+
+            if self.is_git_managed:
+                cells["git"] = self.formatted_git_status
 
         return cells
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from itertools import cycle
 from pathlib import Path
 from typing import Optional
@@ -25,7 +26,7 @@ def get_permission_text(st_mode: int) -> str:
         "r": "yellow",
         "w": "red",
         "x": "green",
-        "T": "magenta",
+        "t": "magenta",
         "s": "magenta",
     }
     perm_sets: list[list[str]] = [["-" for _ in range(3)] for _ in range(3)]
@@ -44,7 +45,9 @@ def get_permission_text(st_mode: int) -> str:
 
     return " ".join(
         "".join(
-            f"[{color}]{perm}[/]" if (color := color_map.get(perm, "")) else perm
+            f"[{color}]{perm}[/]"
+            if (color := color_map.get(perm.lower(), ""))
+            else perm
             for perm in perm_set
         )
         for perm_set in perm_sets
@@ -112,6 +115,20 @@ def get_formatted_group(st_gid: int) -> Optional[str]:
         return gr_name
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
+
+
+def get_formatted_time(st_time: int) -> str:
+    """
+    Get the given UNIX timestamp as a formatted human/machine-readable date time
+    value. The formatting can be controlled via CLI arguments.
+
+    :param st_time: the UNIX timestamp for creation, modification or access
+    :return: the readable date time value for the timestamp
+    """
+
+    dt = datetime.datetime.fromtimestamp(st_time)
+    fmt = args.time_fmt
+    return dt.strftime(fmt)
 
 
 def get_node_type(path: Path) -> NodeType:

@@ -22,7 +22,7 @@ def test_help(arg: str):
     proc = run_pls([arg])
     expected_lines = [
         "usage: pls [-h] [-v]",
-        "`pls` is a better `ls` for developers.",
+        "`pls` is a prettier `ls` for the pros.",
         "directory",
         "-h, --help",
         "-v, --version",

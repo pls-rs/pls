@@ -76,13 +76,15 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
             [*status_args, "--untracked-files"],
             cwd=git_root,
         )
-        status_lines.update(proc.stdout.rstrip().split("\n"))
+        if proc.stdout:
+            status_lines.update(proc.stdout.rstrip().split("\n"))
 
         proc = exec_git(
             [*status_args, "--untracked-files=normal"],
             cwd=git_root,
         )
-        status_lines.update(proc.stdout.rstrip().split("\n"))
+        if proc.stdout:
+            status_lines.update(proc.stdout.rstrip().split("\n"))
     except (subprocess.CalledProcessError, FileNotFoundError):
         return status_map
 

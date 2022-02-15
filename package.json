@@ -1,6 +1,6 @@
 {
   "name": "pls-docs",
-  "description": "`pls` is a better `ls` for developers.",
+  "description": "`pls` is a prettier `ls` for the pros.",
   "version": "1.0.0",
   "private": true,
   "author": {

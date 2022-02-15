@@ -14,7 +14,7 @@ footer: |
   software.
 ---
 
-`pls` is a better `ls` for developers.
+`pls` is a prettier `ls` for the pros.
 
 <div class="features">
   <div class="feature">

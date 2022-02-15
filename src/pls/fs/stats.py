@@ -1,22 +1,44 @@
 from __future__ import annotations
 
 import datetime
+import os
 from itertools import cycle
-from typing import Optional
+from stat import S_ISDIR
+from typing import Literal, Optional
 
 from pls.args import args
 from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
 from pls.state import state
 
 
-def get_permission_text(st_mode: int) -> str:
+def get_formatted_links(stat: os.stat_result) -> str:
+    """
+    Get the number of hard links pointing to the file. This is usually higher
+    than 1 for directories (as all files and folders within in it counted) but
+    usually exactly 1 for files.
+
+    :param stat: the stat results of the node
+    :return: the number of links of a file
+    """
+
+    st_nlink = stat.st_nlink
+
+    nlink = str(st_nlink)
+    if not S_ISDIR(stat.st_mode) and st_nlink > 1:
+        nlink = f"[yellow]{nlink}[/]"
+    return nlink
+
+
+def get_formatted_perms(stat: os.stat_result) -> str:
     """
     Get the permission text for the node in the form of a triplet of 'rwx'
-    strings.
+    strings. Uses ``st_mode`` from the stat results.
 
-    :param st_mode: the st_mode value of the ``os.stat_result`` instance
+    :param stat: the stat results of the node
     :return: the text to render as the permissions of the node
     """
+
+    st_mode = stat.st_mode
 
     perms = ["r", "w", "x"]
     color_map = {
@@ -51,14 +73,62 @@ def get_permission_text(st_mode: int) -> str:
     )
 
 
-def get_size(st_size: int) -> str:
+def get_formatted_user(stat: os.stat_result) -> Optional[str]:
+    """
+    Get the name of the user that owns the node. This requires a ``passwd``
+    lookup for the user ID found in the node stats. Uses ``st_uid`` from the
+    stat results.
+
+    :param stat: the stat results of the node
+    :return: the name of the user who owns the node, ``None`` on Windows
+    """
+
+    try:
+        from pwd import getpwuid
+
+        pw_name = getpwuid(stat.st_uid).pw_name
+        if pw_name != state.username:
+            pw_name = f"[dim]{pw_name}[/]"
+        return pw_name
+    except ModuleNotFoundError:  # on non-POSIX systems like Windows
+        return None
+
+
+def get_formatted_group(stat: os.stat_result) -> Optional[str]:
+    """
+    Get the name of the group that owns the node. This requires a group database
+    lookup for the group ID found in the node stats. Uses ``st_gid`` from the
+    stat results.
+
+    :param stat: the stat results of the node
+    :return: the name of the group that owns the node, ``None`` on Windows
+    """
+
+    try:
+        from grp import getgrgid
+
+        gr_name = getgrgid(stat.st_gid).gr_name
+        if gr_name not in state.groups:
+            gr_name = f"[dim]{gr_name}[/]"
+        return gr_name
+    except ModuleNotFoundError:  # on non-POSIX systems like Windows
+        return None
+
+
+def get_formatted_size(stat: os.stat_result) -> str:
     """
     Get the human-readable size of the node in the form of a number followed by
-    a compound unit of a byte.
+    a compound unit of a byte. Uses ``st_size`` from the stat results.
 
-    :param st_size: the size of the node in bytes
+    :param stat: the stat results of the node
+    :param is_dir: whether the node is a directory
     :return: the size of the node as a human-readable value
     """
+
+    st_size = stat.st_size
+
+    if S_ISDIR(stat.st_mode):
+        return "[dim]-[/dim]"
 
     if args.units == UnitSystem.NONE:
         return f"{st_size}[dim]B[/]"
@@ -74,54 +144,20 @@ def get_size(st_size: int) -> str:
     return f"{st_size}  [dim]B[/]"
 
 
-def get_formatted_user(st_uid: int) -> Optional[str]:
-    """
-    Get the name of the user that owns the node. This requires a ``passwd``
-    lookup for the user ID found in the node stats.
-
-    :param st_uid: the user ID mapped to the owner of the node
-    :return: the name of the user who owns the node
-    """
-
-    try:
-        from pwd import getpwuid
-
-        pw_name = getpwuid(st_uid).pw_name
-        if pw_name != state.username:
-            pw_name = f"[dim]{pw_name}[/]"
-        return pw_name
-    except ModuleNotFoundError:  # on non-POSIX systems like Windows
-        return None
-
-
-def get_formatted_group(st_gid: int) -> Optional[str]:
-    """
-    Get the name of the group that owns the node. This requires a group database
-    lookup for the group ID found in the node stats.
-
-    :param st_gid: the group ID mapped to the owner of the node
-    :return: the name of the group that owns the node
-    """
-
-    try:
-        from grp import getgrgid
-
-        gr_name = getgrgid(st_gid).gr_name
-        if gr_name not in state.groups:
-            gr_name = f"[dim]{gr_name}[/]"
-        return gr_name
-    except ModuleNotFoundError:  # on non-POSIX systems like Windows
-        return None
-
-
-def get_formatted_time(st_time: int) -> str:
+def get_formatted_time(
+    stat: os.stat_result, attr_name: Literal["ctime", "mtime", "atime"]
+) -> str:
     """
     Get the given UNIX timestamp as a formatted human/machine-readable date time
-    value. The formatting can be controlled via CLI arguments.
+    value. The formatting can be controlled via CLI arguments. The name of the
+    stat result attribute to use is passed via argument.
 
-    :param st_time: the UNIX timestamp for creation, modification or access
+    :param stat: the stat results of the node
+    :param attr_name: the name of the UNIX timestamp attribute to use
     :return: the readable date time value for the timestamp
     """
+
+    st_time = getattr(stat, attr_name)
 
     dt = datetime.datetime.fromtimestamp(st_time)
     fmt = args.time_fmt

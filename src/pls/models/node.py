@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from functools import cached_property
 from pathlib import Path
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
@@ -13,10 +13,11 @@ from pls.exceptions import ExecException
 from pls.fs.git import formatted_status
 from pls.fs.stats import (
     get_formatted_group,
+    get_formatted_links,
+    get_formatted_perms,
+    get_formatted_size,
     get_formatted_time,
     get_formatted_user,
-    get_permission_text,
-    get_size,
 )
 from pls.models.node_spec import NodeSpec
 from pls.state import State
@@ -240,10 +241,11 @@ class Node:
     def table_row(self) -> Optional[dict[str, Optional[str]]]:
         """the mapping of column names and value when tabulating the node"""
 
-        if not self.is_visible:
+        if not (self.exists and self.is_visible):
             return None
+        assert self.stat is not None
 
-        cells: dict[str, Optional[str]] = dict()
+        cells: dict[str, Optional[str]] = {}
 
         name = self.formatted_name
         if not self.name.startswith(".") and not args.no_align:
@@ -253,31 +255,26 @@ class Node:
 
         cells["icon"] = self.formatted_icon
 
-        if args.details:
-            if self.exists:
-                assert self.stat is not None
+        if not args.details:
+            return cells  # return early as no more data needed
 
-                cells["inode"] = str(self.stat.st_ino)
-                nlink = self.stat.st_nlink
-                cells["links"] = str(nlink)
-                if self.node_type != NodeType.DIR and nlink > 1:
-                    cells["links"] = f"[yellow]{nlink}[/]"
+        cells["inode"] = str(self.stat.st_ino)
+        cells["type"] = self.type_char
+        column_function_map: dict[str, tuple[Callable, tuple]] = {
+            "links": (get_formatted_links, ()),
+            "perms": (get_formatted_perms, ()),
+            "user": (get_formatted_user, ()),
+            "group": (get_formatted_group, ()),
+            "size": (get_formatted_size, ()),
+            "ctime": (get_formatted_time, ("st_ctime",)),
+            "mtime": (get_formatted_time, ("st_mtime",)),
+            "atime": (get_formatted_time, ("st_atime",)),
+        }
+        for column, (function, func_args) in column_function_map.items():
+            cells[column] = function(self.stat, *func_args)
 
-                cells["type"] = self.type_char
-                cells["perms"] = get_permission_text(self.stat.st_mode)
-
-                cells["user"] = get_formatted_user(self.stat.st_uid)
-                cells["group"] = get_formatted_group(self.stat.st_gid)
-
-                if self.node_type != NodeType.DIR:
-                    cells["size"] = get_size(self.stat.st_size)
-
-                cells["ctime"] = get_formatted_time(int(self.stat.st_ctime))
-                cells["mtime"] = get_formatted_time(int(self.stat.st_mtime))
-                cells["atime"] = get_formatted_time(int(self.stat.st_atime))
-
-            if self.is_git_managed:
-                cells["git"] = self.formatted_git_status
+        if self.is_git_managed:
+            cells["git"] = self.formatted_git_status
 
         return cells
 

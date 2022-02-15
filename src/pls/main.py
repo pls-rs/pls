@@ -2,7 +2,7 @@
 
 from pls.data.getters import node_specs
 from pls.fs.list import read_input
-from pls.table import write_output
+from pls.table.table import write_output
 
 
 def main():

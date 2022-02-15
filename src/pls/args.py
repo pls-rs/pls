@@ -8,6 +8,7 @@ from pls.enums.icon_type import IconType
 from pls.enums.sort_order import SortOrder
 from pls.enums.unit_system import UnitSystem
 from pls.exceptions import ExecException
+from pls.table.detail_columns import detail_columns
 
 
 parser = argparse.ArgumentParser(
@@ -133,20 +134,7 @@ info.add_argument(
     help="the data points to show for each node in the output",
     default=None,  # when there is no --details flag
     const={"type", "perms"},  # when there is a --details flag without value
-    choices={
-        "inode",
-        "links",
-        "type",
-        "perms",
-        "user",
-        "group",
-        "size",
-        "ctime",
-        "mtime",
-        "atime",
-        "git",
-        "+",  # means all
-    },
+    choices={"+"}.union(detail_columns.keys()),  # + means all
 )
 
 #####################

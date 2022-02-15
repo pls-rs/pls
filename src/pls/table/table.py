@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import textwrap
-from sys import platform
 
 from rich.console import Console
 from rich.table import Table
@@ -9,45 +8,14 @@ from rich.table import Table
 from pls.args import args
 from pls.data.solarized import solarized_theme
 from pls.enums.icon_type import IconType
-from pls.models.col_spec import ColumnSpec
 from pls.models.node import Node
-from pls.state import state
+from pls.table.column_spec import column_groups, column_spec_map
 
 
 console = Console(record=(args.export is not None))
 
-column_spec_map: dict[str, ColumnSpec] = {
-    "spacer": {"name": " "},  # dummy column to act like spacer
-    "inode": {"name": "inode"},
-    "links": {"name": "Link#", "attrs": {"justify": "right"}},
-    "type": {
-        # 'type' is a pseudo-column linked to 'perms', so it has no name.
-        "name": ""
-    },
-    "perms": {"name": "Permissions"},
-    "user": {"name": "User"},
-    "group": {"name": "Group"},
-    "size": {"name": "Size", "attrs": {"justify": "right"}},
-    "ctime": {"name": "Created at"},
-    "mtime": {"name": "Modified at"},
-    "atime": {"name": "Accessed at"},
-    "git": {"name": "Git"},
-    "icon": {
-        # 'icon' is a pseudo-column linked to 'name', so it has no name.
-        "name": "",
-        "attrs": {"width": 2},
-    },
-    "name": {
-        # The names have a leading space when the leading dots are aligned.
-        "name": "Name"
-        if args.no_align
-        else " Name"
-    },
-}
-"""a mapping of column keys to column spec"""
 
-
-def column_in_details(col_name):
+def column_chosen(col_name):
     return col_name in args.details or "+" in args.details
 
 
@@ -60,19 +28,8 @@ def get_columns() -> list[str]:
 
     selected_col_groups = []
     if args.details:
-        col_groups = [
-            ["inode", "links"],
-            ["type", "perms"],
-            ["size"],
-            ["ctime", "mtime", "atime"],
-        ]
-        if platform != "win32":
-            col_groups.insert(2, ["user", "group"])
-        if state.is_git_managed:
-            col_groups.append(["git"])
-
-        for col_group in col_groups:
-            filtered_group = [col for col in col_group if column_in_details(col)]
+        for col_group in column_groups:
+            filtered_group = [col for col in col_group if column_chosen(col)]
             selected_col_groups.append(filtered_group)
 
     name_group = ["name"]

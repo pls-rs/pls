@@ -34,3 +34,13 @@ type_test_map: dict[NodeType, str] = {
     node_type: f"is_{node_type.value}" for node_type in list(NodeType)
 }
 """a mapping of node types with specific functions that evaluate it"""
+
+type_char_map: dict[NodeType, str] = {
+    NodeType.SYMLINK: "l",
+    NodeType.DIR: "d",
+    NodeType.FILE: "-",
+    NodeType.FIFO: "p",
+    NodeType.SOCKET: "s",
+    NodeType.CHAR_DEVICE: "c",
+    NodeType.BLOCK_DEVICE: "b",
+}

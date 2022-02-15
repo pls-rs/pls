@@ -8,7 +8,7 @@ from typing import Optional, Union
 from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
-from pls.enums.node_type import NodeType
+from pls.enums.node_type import NodeType, type_char_map
 from pls.fs.stats import (
     get_formatted_group,
     get_formatted_time,
@@ -263,16 +263,7 @@ class Node:
     def type_char(self) -> str:
         """the single character representing the file type"""
 
-        mapping = {
-            NodeType.SYMLINK: "l",
-            NodeType.DIR: "d",
-            NodeType.FILE: "-",
-            NodeType.FIFO: "p",
-            NodeType.SOCKET: "s",
-            NodeType.CHAR_DEVICE: "c",
-            NodeType.BLOCK_DEVICE: "b",
-        }
-        return mapping[self.node_type]
+        return type_char_map[self.node_type]
 
     @cached_property
     def table_row(self) -> Optional[dict[str, Optional[str]]]:

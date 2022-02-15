@@ -208,9 +208,12 @@ class Node:
             icon = None
 
         if icon:
+            # Apply format pair.
             left, right = self.format_pair
-            return f"{left}{icon}{right}"
-        return ""
+            icon = f"{left}{icon}{right}"
+        else:
+            icon = ""
+        return icon
 
     @cached_property
     def formatted_git_status(self) -> str:

@@ -15,7 +15,7 @@ class State:
 
     def __init__(self):
         self.git_root = get_git_root(args.directory)
-        self.git_status_map: dict[Path, str] = dict()
+        self.git_status_map: dict[Path, str] = {}
         if self.is_git_managed:
             self.git_status_map = get_git_statuses(self.git_root)
 

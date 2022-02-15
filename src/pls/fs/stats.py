@@ -2,13 +2,10 @@ from __future__ import annotations
 
 import datetime
 from itertools import cycle
-from pathlib import Path
 from typing import Optional
 
 from pls.args import args
-from pls.enums.node_type import NodeType, type_test_map
 from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
-from pls.exceptions import ExecException
 from pls.state import state
 
 
@@ -129,19 +126,3 @@ def get_formatted_time(st_time: int) -> str:
     dt = datetime.datetime.fromtimestamp(st_time)
     fmt = args.time_fmt
     return dt.strftime(fmt)
-
-
-def get_node_type(path: Path) -> NodeType:
-    """
-    Get the ``NodeType`` that corresponds to the given mode. This function uses
-    functions defined in the ``stat`` module to identify the type.
-
-    :param path: the path to the node
-    :return: the right ``NodeType`` enum based on the mode
-    """
-
-    for node_type, node_type_test in type_test_map.items():
-        if getattr(path, node_type_test)():
-            return node_type
-    else:
-        raise ExecException("Could not determine type of the node.")

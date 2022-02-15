@@ -8,12 +8,12 @@ from typing import Optional, Union
 from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
-from pls.enums.node_type import NodeType, type_char_map
+from pls.enums.node_type import NodeType, type_char_map, type_test_map
+from pls.exceptions import ExecException
 from pls.fs.stats import (
     get_formatted_group,
     get_formatted_time,
     get_formatted_user,
-    get_node_type,
     get_permission_text,
     get_size,
 )
@@ -81,27 +81,15 @@ class Node:
     def node_type(self) -> NodeType:
         """whether the node is a file, folder, symlink, FIFO etc."""
 
-        node_type = get_node_type(self.path)
-
-        # Symlinks need to set their destination node.
-        if node_type == NodeType.SYMLINK and self.dest_node is None:
-            link_path = os.readlink(self.path)
-            try:
-                self.path.resolve()  # raises exception if cyclic
-
-                # Use ``os.readlink`` instead of ``Path.resolve`` to step
-                # through chained symlinks one-by-one.
-                link = Path(link_path)
-                if not link.is_absolute():
-                    link = self.path.parent.joinpath(link)
-
-                self.dest_node = Node(name=link_path, path=link, state=self.state)
-            except RuntimeError as exc:
-                if "Symlink loop" in str(exc):
-                    self.is_loop = True
-                    self.dest_node = link_path
-
-        return node_type
+        for node_type, node_type_test in type_test_map.items():
+            if getattr(self.path, node_type_test)():
+                # Symlinks need to set their destination node.
+                if node_type == NodeType.SYMLINK and self.dest_node is None:
+                    self.populate_dest()
+                return node_type
+        else:
+            # Practically this should never happen.
+            raise ExecException("Could not determine type of the node.")
 
     @cached_property
     def ext(self) -> Optional[str]:
@@ -332,3 +320,26 @@ class Node:
         """
 
         self.specs = [spec for spec in specs if spec.match(self.name)]
+
+    def populate_dest(self):
+        """
+        This sets the dest node for symlinks to a ``Node`` instance pointing to
+        the next step in the link. This function ensures that the
+        symlink is not unresolvable.
+        """
+
+        link_path = os.readlink(self.path)
+        try:
+            self.path.resolve()  # raises exception if cyclic
+
+            # Use ``os.readlink`` instead of ``Path.resolve`` to step
+            # through chained symlinks one-by-one.
+            link = Path(link_path)
+            if not link.is_absolute():
+                link = self.path.parent.joinpath(link)
+
+            self.dest_node = Node(name=link_path, path=link, state=self.state)
+        except RuntimeError as exc:
+            if "Symlink loop" in str(exc):
+                self.is_loop = True
+                self.dest_node = link_path

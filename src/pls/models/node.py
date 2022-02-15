@@ -47,6 +47,8 @@ class Node:
             self.path_wrt_git = path.relative_to(state.git_root)
             self.git_status = state.git_status_map.get(self.path_wrt_git, "  ")
 
+        # Stats
+
         self.stat: Optional[os.stat_result] = None
         try:
             self.stat = path.lstat()
@@ -54,8 +56,12 @@ class Node:
         except FileNotFoundError:
             self.exists = False
 
+        # Symlinks
+
         self.is_loop: bool = False  # only ``True`` for cyclic symlinks
         self.dest_node: Optional[Union[Node, str]] = None  # only populated for symlinks
+
+        # Specs
 
         self.specs: list[NodeSpec] = []  # matched later (see ``map_specs``)
 

@@ -8,6 +8,38 @@ from typing import Optional
 from pls.exceptions import ExecException
 
 
+def formatted_status(status: str) -> str:
+    """
+    Get the given Git status formatted using Rich console markup. Expects the
+    two-letter Git status as returned by git-status with the ``--porcelain``
+    flag.
+
+    :param status: the status to format
+    :return: the formatted Git status
+    """
+
+    if status == "  ":
+        return status
+
+    format_map: dict[str, str] = {
+        "D": "red",  # deleted
+        "M": "yellow",  # modified
+        "R": "yellow",  # renamed
+        "A": "green",  # added
+        "!": "dim",  # ignored
+        "-": "dim",  # padding
+    }
+    fmt_status = ""
+    for letter in status:
+        if letter == " ":
+            letter = "-"
+        if letter in format_map:
+            fmt_status = f"{fmt_status}[{format_map[letter]}]{letter}[/]"
+        else:
+            fmt_status = f"{fmt_status}{letter}"
+    return fmt_status
+
+
 def exec_git(cmd_args: list[str], cwd: Path) -> subprocess.CompletedProcess:
     """
     Execute a ``git`` command from the given directory.

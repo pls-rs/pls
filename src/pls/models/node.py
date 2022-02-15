@@ -10,6 +10,7 @@ from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType, type_char_map, type_test_map
 from pls.exceptions import ExecException
+from pls.fs.git import formatted_status
 from pls.fs.stats import (
     get_formatted_group,
     get_formatted_time,
@@ -35,9 +36,11 @@ class Node:
 
         self.state = state  # keeping a copy to pass to dest_nodes
 
+        # Git
+
         self.is_git_managed: bool = False
         self.path_wrt_git: Optional[Path] = None
-        self.git_status: Optional[str] = None
+        self.git_status: str = "  "
         if state is not None and state.is_git_managed:
             self.is_git_managed = True
             self.path_wrt_git = path.relative_to(state.git_root)
@@ -207,27 +210,7 @@ class Node:
     def formatted_git_status(self) -> str:
         """formatted two-letter Git status as returned by ``git-status``"""
 
-        if self.git_status is None:
-            return "  "
-        if self.git_status == "  ":
-            return self.git_status
-
-        format_map: dict[str, str] = {
-            "M": "yellow",  # modified
-            "A": "green",  # added
-            "D": "red",  # deleted
-            "!": "dim",  # ignored
-            "-": "dim",  # padding
-        }
-        fmt_status = ""
-        for letter in self.git_status:
-            if letter == " ":
-                letter = "-"
-            if letter in format_map:
-                fmt_status = f"{fmt_status}[{format_map[letter]}]{letter}[/]"
-            else:
-                fmt_status = f"{fmt_status}{letter}"
-        return fmt_status
+        return formatted_status(self.git_status)
 
     @cached_property
     def is_visible(self) -> bool:

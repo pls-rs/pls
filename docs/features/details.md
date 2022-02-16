@@ -347,3 +347,8 @@ This column only appears when the following conditions are met.
 
 In all other cases, including it will have no effect.
 :::
+
+::: warning
+Older versions of Git seem to inconsistently quote files on Windows. If you run
+into issues with Git, try updating your Git binaries.
+:::

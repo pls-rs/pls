@@ -21,10 +21,20 @@ You see, `pls` has very few needs.
 
 ## Installing
 
+### `pip`
+
 To install `pls`, install it as you would any other Python package.
 
 ```:no-line-numbers
 $ pip install --user pls
+```
+
+### `pipx`
+
+You can also install `pls` via [`pipx`](https://pypa.github.io/pipx/).
+
+```:no-line-numbers
+$ pipx install pls
 ```
 
 ## Updating

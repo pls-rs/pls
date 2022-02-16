@@ -31,12 +31,12 @@ def get_column_groups() -> list[list[str]]:
     """
 
     col_groups = [
-        ["inode", "links"],
         ["type", "perms"],
         ["size"],
         ["ctime", "mtime", "atime"],
     ]
     if platform != "win32":
+        col_groups.insert(0, ["inode", "links"])
         col_groups.insert(2, ["user", "group"])
     if state.is_git_managed:
         col_groups.append(["git"])

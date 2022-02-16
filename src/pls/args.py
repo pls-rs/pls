@@ -5,11 +5,16 @@ from typing import Optional
 
 from pls import __version__
 from pls.enums.icon_type import IconType
-from pls.enums.sort_order import SortOrder
 from pls.enums.unit_system import UnitSystem
 from pls.exceptions import ExecException
 from pls.table.detail_columns import detail_columns
 
+
+detail_column_keys = detail_columns.keys()
+
+##########
+# Parser #
+##########
 
 parser = argparse.ArgumentParser(
     prog="pls",
@@ -163,16 +168,20 @@ info_mod.add_argument(
 # Sorting #
 ###########
 
+invalid_keys = {"perms", "user", "group", "git"}
+sort_choices = ["name", "ext"]
+sort_choices += [item for item in detail_column_keys if item not in invalid_keys]
+sort_choices += [f"{key}-" for key in sort_choices]
+
 sorting = parser.add_argument_group(
     title="sorting",
     description="arguments used for sorting nodes in the output",
 )
 sorting.add_argument(
     *["-s", "--sort"],
-    type=SortOrder,
-    choices=list(SortOrder),
-    default=SortOrder.ASC,
-    help="the direction in which to sort the files and directories",
+    help="the field based on which to sort the files and directories",
+    default="name",
+    choices=sort_choices,
 )
 sorting.add_argument(
     "--no-dirs-first",

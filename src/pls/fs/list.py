@@ -9,7 +9,6 @@ from rich.console import Console
 
 from pls.args import args
 from pls.enums.node_type import NodeType
-from pls.enums.sort_order import SortOrder
 from pls.models.node import Node
 from pls.state import State, state
 
@@ -17,7 +16,9 @@ from pls.state import State, state
 console = Console()
 
 
-def sort_key(node: Node) -> str:
+def sort_key(
+    node: Node,
+) -> tuple:
     """
     Map a ``Node`` instance to a string that represents it. This string is used
     to sort a list of ``Node`` instances.
@@ -26,11 +27,15 @@ def sort_key(node: Node) -> str:
     :return: a string representative of the node
     """
 
-    key = node.name.lstrip(".").lower()
+    key = node.sort_key(args.sort.rstrip("-"))
+    is_reversed = args.sort.endswith("-")
     if not args.no_dirs_first:
-        prefix = "0" if node.node_type == NodeType.DIR else "1"
-        key = f"{prefix}{key}"
-    return key
+        if is_reversed:
+            type_key = 1 if node.node_type == NodeType.DIR else 0
+        else:
+            type_key = 0 if node.node_type == NodeType.DIR else 1
+        return type_key, key, node.sort_key("name")
+    return key, node.name
 
 
 def parse_nodes(node_name: str, parent_state: State) -> Optional[Node]:
@@ -79,6 +84,6 @@ def read_input() -> list[Node]:
                 [(node, state) for node in all_nodes],
             )
         all_nodes = [node for node in comp_nodes if node is not None]
-        all_nodes.sort(key=sort_key, reverse=args.sort == SortOrder.DESC)
+        all_nodes.sort(key=sort_key, reverse=args.sort.endswith("-"))
 
     return all_nodes

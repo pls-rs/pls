@@ -41,6 +41,7 @@ def get_formatted_perms(stat: os.stat_result) -> str:
     st_mode = stat.st_mode
 
     perms = ["r", "w", "x"]
+    specials = ["s", "s", "t"]
     color_map = {
         "r": "yellow",
         "w": "red",
@@ -50,17 +51,14 @@ def get_formatted_perms(stat: os.stat_result) -> str:
     }
     perm_sets: list[list[str]] = [["-" for _ in range(3)] for _ in range(3)]
 
-    text_rep = format(st_mode, "09b")[-9:]
-    for index, (bit, perm) in enumerate(zip(text_rep, cycle(perms))):
+    text_rep = format(st_mode, "012b")[-12:]
+
+    for index, (bit, perm) in enumerate(zip(text_rep[3:], cycle(perms))):
         if int(bit):
             perm_sets[int(index / 3)][index % 3] = perm
-
-    if st_mode & 0o4000 == 0o4000:  # setuid
-        perm_sets[0][-1] = "s" if perm_sets[0][-1] == "x" else "S"
-    if st_mode & 0o2000 == 0o2000:  # setgid
-        perm_sets[1][-1] = "s" if perm_sets[1][-1] == "x" else "S"
-    if st_mode & 0o1000 == 0o1000:  # sticky
-        perm_sets[2][-1] = "t" if perm_sets[2][-1] == "x" else "T"
+    for index, (bit, spl) in enumerate(zip(text_rep[:3], specials)):
+        if int(bit):
+            perm_sets[index][2] = spl if perm_sets[index][2] == "x" else spl.upper()
 
     return " ".join(
         "".join(

@@ -127,6 +127,8 @@ class DetailsAction(argparse.Action):
         setattr(namespace, self.dest, items)
 
 
+detail_choices = list(detail_column_keys) + ["+"]  # + means all
+
 info = parser.add_argument_group(
     title="info",
     description="arguments for controlling the amount of info for nodes",
@@ -138,8 +140,13 @@ info.add_argument(
     dest="details",
     help="the data points to show for each node in the output",
     default=None,  # when there is no --details flag
-    const={"type", "perms"},  # when there is a --details flag without value
-    choices={"+"}.union(detail_columns.keys()),  # + means all
+    const={
+        "type",
+        "perms",
+        "user",
+        "group",
+    },  # when there is a --details flag without value
+    choices=detail_choices,
 )
 
 #####################

@@ -100,10 +100,16 @@ class Node:
             return NodeType.UNKNOWN
 
     @cached_property
-    def ext(self) -> Optional[str]:
+    def pure_name(self) -> str:
+        """the case-normalised name of the node with leading dots stripped"""
+
+        return self.name.lstrip(".").lower()
+
+    @cached_property
+    def ext(self) -> str:
         """the extension of the node, i.e. the portion after the last dot"""
 
-        return self.name.split(".")[-1] if "." in self.name else None
+        return self.name.split(".")[-1] if "." in self.name else ""
 
     @cached_property
     def format_pair(self) -> tuple[str, str]:
@@ -281,6 +287,33 @@ class Node:
             cells["git"] = self.formatted_git_status
 
         return cells
+
+    def sort_key(self, field_name: str) -> Union[str, int, float]:
+        """
+        Get the value of the given field cleaned up in a way that enables it to
+        be used for sorting the nodes.
+
+        :param field_name: the name of the field by which to sort
+        :return: the sort key formed by normalising the value of the field
+        """
+
+        field_value_map: dict[str, Union[str, int, float]] = {
+            "name": self.pure_name,
+            "ext": self.ext,
+        }
+        if self.stat is not None:
+            field_value_map.update(
+                {
+                    "inode": self.stat.st_ino,
+                    "links": self.stat.st_nlink,
+                    "type": self.type_char,
+                    "size": self.stat.st_size,
+                    "ctime": self.stat.st_ctime,
+                    "mtime": self.stat.st_mtime,
+                    "atime": self.stat.st_atime,
+                }
+            )
+        return field_value_map[field_name]
 
     def spec_attr(self, attr: str) -> Optional[Union[str, int]]:
         """

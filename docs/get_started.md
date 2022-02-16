@@ -46,6 +46,9 @@ command.
 $ pip install --user --upgrade pls
 ```
 
+If you used any alternative methods to install `pls`, follow the documentation
+for the respective tool to update packages.
+
 ## Verifying
 
 To check if `pls` is installed and discoverable in your path, run the following

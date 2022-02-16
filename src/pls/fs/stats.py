@@ -143,7 +143,7 @@ def get_formatted_size(stat: os.stat_result) -> str:
 
 
 def get_formatted_time(
-    stat: os.stat_result, attr_name: Literal["ctime", "mtime", "atime"]
+    stat: os.stat_result, attr_name: Literal["st_ctime", "st_mtime", "st_atime"]
 ) -> str:
     """
     Get the given UNIX timestamp as a formatted human/machine-readable date time

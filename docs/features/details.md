@@ -122,6 +122,14 @@ d <span style="color: #b58900; text-decoration-color: #b58900">r</span><span sty
 Describing what these details mean is beyond the scope of this guide. How `pls`
 is concerned with them is described below.
 
+### inode (`inode`)
+
+Gives the inode number of the file.
+
+::: warning
+This column is not available on Windows. Including it will have no effect.
+:::
+
 ### Type character (`type`)
 
 This is a character that denotes the type of the file.
@@ -314,9 +322,18 @@ $ pls -d ctime -d mtime -t '[red]%Y[/]-[green]%m[/]-[blue]%d[/] %H:%M '
 </code></pre>
 </div>
 
-### Git status
+### Git status (`git`)
 
 For all files (and some folders) `pls` shows the Git status as a two-letter
 code. Refer to
 [the `git-status` documentation](https://git-scm.com/docs/git-status#_output) to
 understand the interpretation of this code.
+
+::: warning
+This column only appears when the following conditions are met.
+
+- Git is installed on the system.
+- The directory lies inside a Git repository.
+
+In all other cases, including it will have no effect.
+:::

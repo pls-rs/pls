@@ -12,19 +12,19 @@ Sometimes just a list of file names is not enough. When you need more
 information, `pls` can deliver. `pls` can query the system for all the following
 attributes.
 
-| Default            | Key   | Meaning        |
-| ------------------ | ----- | -------------- |
-|                    | inode | inode          |
-|                    | links | Link#          |
-| :white_check_mark: | type  | Type character |
-| :white_check_mark: | perms | Permissions    |
-| :white_check_mark: | user  | Owner user     |
-| :white_check_mark: | group | Owner group    |
-|                    | size  | Size           |
-|                    | ctime | Created at     |
-|                    | mtime | Modified at    |
-|                    | atime | Accessed at    |
-|                    | git   | Git status     |
+| Default            | Key   | Meaning        | Note                       |
+| ------------------ | ----- | -------------- | -------------------------- |
+|                    | inode | inode          | Not on Windows             |
+|                    | links | Link#          | Not on Windows             |
+| :white_check_mark: | type  | Type character |                            |
+| :white_check_mark: | perms | Permissions    |                            |
+| :white_check_mark: | user  | Owner user     | Not on Windows             |
+| :white_check_mark: | group | Owner group    | Not on Windows             |
+|                    | size  | Size           |                            |
+|                    | ctime | Created at     |                            |
+|                    | mtime | Modified at    |                            |
+|                    | atime | Accessed at    |                            |
+|                    | git   | Git status     | [Conditional](#git-status) |
 
 Since all these queries happen in parallel using `multiprocessing`, the
 performance is not impacted.

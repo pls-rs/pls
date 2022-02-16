@@ -130,6 +130,16 @@ Gives the inode number of the file.
 This column is not available on Windows. Including it will have no effect.
 :::
 
+### Link# (`links`)
+
+Gives the number of links pointing to the file. For a directory, this number is
+usually quite large as it includes all files within it. `pls` highlights link
+count larger than one for files.
+
+::: warning
+This column is not available on Windows. Including it will have no effect.
+:::
+
 ### Type character (`type`)
 
 This is a character that denotes the type of the file.

@@ -9,7 +9,6 @@ from pls.args import args
 from pls.data.getters import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType, type_char_map, type_test_map
-from pls.exceptions import ExecException
 from pls.fs.git import formatted_status
 from pls.fs.stats import (
     get_formatted_group,
@@ -98,8 +97,7 @@ class Node:
                     self.populate_dest()
                 return node_type
         else:
-            # Practically this should never happen.
-            raise ExecException("Could not determine type of the node.")
+            return NodeType.UNKNOWN
 
     @cached_property
     def ext(self) -> Optional[str]:

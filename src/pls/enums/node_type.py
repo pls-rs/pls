@@ -28,10 +28,13 @@ class NodeType(AutoEnum):
     SOCKET = auto()  # socket
     CHAR_DEVICE = auto()  # character special device file
     BLOCK_DEVICE = auto()  # block special device file
+    UNKNOWN = auto()  # graceful handling of unrecognised type
 
 
 type_test_map: dict[NodeType, str] = {
-    node_type: f"is_{node_type.value}" for node_type in list(NodeType)
+    node_type: f"is_{node_type.value}"
+    for node_type in list(NodeType)
+    if node_type != NodeType.UNKNOWN
 }
 """a mapping of node types with specific functions that evaluate it"""
 
@@ -43,4 +46,5 @@ type_char_map: dict[NodeType, str] = {
     NodeType.SOCKET: "s",
     NodeType.CHAR_DEVICE: "c",
     NodeType.BLOCK_DEVICE: "b",
+    NodeType.UNKNOWN: "?",
 }

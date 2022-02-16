@@ -11,3 +11,15 @@ html.dark {
   --c-warning-title: var(--c-tip-title);
   --c-warning-text: var(--c-tip-text);
 }
+
+a {
+  font-weight: normal;
+
+  code {
+    color: inherit;
+  }
+}
+
+.custom-container-title {
+  display: none;
+}

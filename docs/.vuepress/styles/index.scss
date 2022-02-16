@@ -3,15 +3,3 @@
 @use "./navbar";
 @use "./home";
 @use "./typography";
-
-a {
-  font-weight: normal;
-
-  code {
-    color: inherit;
-  }
-}
-
-.custom-container-title {
-  display: none;
-}

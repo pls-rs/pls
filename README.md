@@ -33,6 +33,7 @@ The "p" stands for
 - pretty (the output from `pls` surely looks better)
 - programmer (`pls` is geared towards developers)
 - professional (`pls` can be extensively tweaked by the pros)
+- Python (`pls` is written in Python!)
 
 Just pick whichever helps you remember the command name.
 
@@ -42,9 +43,13 @@ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trust
 
 ## Documentation
 
-[Documentation](https://dhruvkb.github.io/pls/)
+[Documentation](https://dhruvkb.github.io/pls)
 
 The docs are built from the [`docs` branch](https://github.com/dhruvkb/pls/tree/docs) in the same repository.
+
+---
+
+🚧 Everything below this line will move to the [documentation](https://dhruvkb.github.io/pls).
 
 ## Features
 

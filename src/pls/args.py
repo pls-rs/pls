@@ -166,7 +166,6 @@ info_mod.add_argument(
 )
 info_mod.add_argument(
     *["-t", "--time_fmt"],
-    type=str,
     default="[dim]%Y-[/]%m-%d %H:%M[dim]:%S ",
     help="the template for formatting the timestamps on the file",
 )
@@ -264,7 +263,6 @@ exporting = parser.add_argument_group(
 exporting.add_argument(
     *["-e", "--export"],
     type=file,
-    default=None,
     help="the path to the file where to write the exported HTML",
 )
 

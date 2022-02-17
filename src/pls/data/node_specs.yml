@@ -8,6 +8,10 @@
 - name: .pls.yml
   icon: pls
 
+- name: .DS_Store
+  icon: apple
+  importance: -2
+
 - name: .gitignore
   icon: git
 

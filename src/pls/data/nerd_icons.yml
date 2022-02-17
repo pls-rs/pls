@@ -3,6 +3,7 @@
 
 pls:        "\uf444"  # nf-oct-primitive_dot
 
+apple:      "\ue711"  # nf-dev-apple
 audio:      "\ufc1d"  # nf-mdi-speaker_wireless
 broom:      "\uf5e1"  # nf-mdi-broom
 config:     "\ue615"  # nf-seti-config

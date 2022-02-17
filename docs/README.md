@@ -14,7 +14,10 @@ footer: |
   software.
 ---
 
-`pls` is a prettier `ls` for the pros.
+`pls` lists the contents of your directories but formats the output to be
+prettier and easier to interpret and understand. It includes a number of
+[developer-friendly features](/features) that other tools targeting a wider
+audience do not have.
 
 <div class="features">
   <div class="feature">
@@ -60,4 +63,4 @@ footer: |
   </div>
 </div>
 
-and many [more features](features)!
+Read more about its [features](features)!

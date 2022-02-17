@@ -1,3 +1,4 @@
+const { path } = require("@vuepress/utils");
 const packageInfo = require("../../package.json");
 
 const features = {
@@ -34,5 +35,9 @@ module.exports = {
     sidebar: {
       "/features/": [features],
     },
+  },
+
+  alias: {
+    "@theme/HomeHero.vue": path.resolve(__dirname, "./components/HomeHero.vue"),
   },
 };

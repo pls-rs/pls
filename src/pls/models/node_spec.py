@@ -22,9 +22,6 @@ class NodeSpec:
         color: str = None,
         importance: int = 0,
     ):
-        identification_methods = ["name", "pattern", "extension"]
-        loc = locals()
-
         self.name = name
         self.pattern = re.compile(pattern) if pattern else None
         self.extension = extension

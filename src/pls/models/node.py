@@ -19,7 +19,7 @@ from pls.fs.stats import (
     get_formatted_user,
 )
 from pls.models.node_spec import NodeSpec
-from pls.state import State
+from pls.state import state
 
 
 class Node:
@@ -30,11 +30,9 @@ class Node:
     Nodes are read from the file system directly using ``os.walk``.
     """
 
-    def __init__(self, name: str, path: Path, state: Optional[State] = None):
+    def __init__(self, name: str, path: Path):
         self.name = name
         self.path = path
-
-        self.state = state  # keeping a copy to pass to dest_nodes
 
         # Git
 
@@ -355,7 +353,7 @@ class Node:
             if not link.is_absolute():
                 link = self.path.parent.joinpath(link)
 
-            self.dest_node = Node(name=link_path, path=link, state=self.state)
+            self.dest_node = Node(name=link_path, path=link)
         except RuntimeError as exc:
             if "Symlink loop" in str(exc):
                 self.is_loop = True

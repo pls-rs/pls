@@ -65,7 +65,6 @@ The docs are built from the [`docs` branch](https://github.com/dhruvkb/pls/tree/
 - cascade formatting rule specs by based on specificity levels
 - read [`.pls.yml`](.pls.yml) files from the directory to augment its configuration
 - show more details like permissions, owner and size in columns
-- run quite fast, thanks to multiprocessing
 
 The icon, color and most behaviour in the application can be [configured using plain-text YAML files](src/pls/data/README.md) for the pros who prefer to tweak their tools.
 

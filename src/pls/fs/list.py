@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import multiprocessing
 import os
 from pathlib import Path
 from typing import Optional
@@ -10,7 +9,6 @@ from rich.console import Console
 from pls.args import args
 from pls.enums.node_type import NodeType
 from pls.models.node import Node
-from pls.state import State, state
 
 
 console = Console()
@@ -38,16 +36,12 @@ def sort_key(
     return key, node.name
 
 
-def parse_nodes(node_name: str, parent_state: State) -> Optional[Node]:
+def parse_node(node_name: str) -> Optional[Node]:
     """
     Parse the node name into a ``Node`` instance. Most of the heavy lifting is
     handled in the ``Node`` class definition itself.
 
-    This function is executed by multiprocessing workers and thus must be
-    passed the state explicitly from the main process.
-
     :param node_name: the name of a node inside the working directory
-    :param parent_state: the global state of the parent application
     :return: a ``Node`` instance
     """
 
@@ -60,7 +54,7 @@ def parse_nodes(node_name: str, parent_state: State) -> Optional[Node]:
         if args.no_files:
             return None
 
-    return Node(node_name, path=node_path, state=parent_state)
+    return Node(node_name, path=node_path)
 
 
 def read_input() -> list[Node]:
@@ -78,12 +72,11 @@ def read_input() -> list[Node]:
             highlight=False,
         )
     else:
-        with multiprocessing.Pool() as pool:
-            comp_nodes = pool.starmap(
-                parse_nodes,
-                [(node, state) for node in all_nodes],
-            )
-        all_nodes = [node for node in comp_nodes if node is not None]
+        all_nodes = [
+            parsed_node
+            for node in all_nodes
+            if (parsed_node := parse_node(node)) is not None
+        ]
         all_nodes.sort(key=sort_key, reverse=args.sort.endswith("-"))
 
     return all_nodes

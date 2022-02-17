@@ -12,19 +12,19 @@ Sometimes just a list of file names is not enough. When you need more
 information, `pls` can deliver. `pls` can query the system for all the following
 attributes.
 
-| Default            | Key   | Meaning        | Note                       |
-| ------------------ | ----- | -------------- | -------------------------- |
-|                    | inode | inode          | Not on Windows             |
-|                    | links | Link#          | Not on Windows             |
-| :white_check_mark: | type  | Type character |                            |
-| :white_check_mark: | perms | Permissions    |                            |
-| :white_check_mark: | user  | Owner user     | Not on Windows             |
-| :white_check_mark: | group | Owner group    | Not on Windows             |
-|                    | size  | Size           |                            |
-|                    | ctime | Created at     |                            |
-|                    | mtime | Modified at    |                            |
-|                    | atime | Accessed at    |                            |
-|                    | git   | Git status     | [Conditional](#git-status) |
+| Default            | Key   | Meaning        | Note                           |
+| ------------------ | ----- | -------------- | ------------------------------ |
+|                    | inode | inode          | Not on Windows                 |
+|                    | links | Link#          | Not on Windows                 |
+| :white_check_mark: | type  | Type character |                                |
+| :white_check_mark: | perms | Permissions    |                                |
+| :white_check_mark: | user  | Owner user     | Not on Windows                 |
+| :white_check_mark: | group | Owner group    | Not on Windows                 |
+|                    | size  | Size           |                                |
+|                    | ctime | Created at     |                                |
+|                    | mtime | Modified at    |                                |
+|                    | atime | Accessed at    |                                |
+|                    | git   | Git status     | [Conditional](#git-status-git) |
 
 Since all these queries happen in parallel using `multiprocessing`, the
 performance is not impacted.
@@ -155,7 +155,7 @@ This is a character that denotes the type of the file.
 | `b` | block device |
 
 ::: tip
-This is different from the [suffix](/features/suffix) after the file name, and
+This is different from the [suffixes](./suffixes) after the file name, and
 aligns more closely with `ls`.
 :::
 

@@ -16,7 +16,7 @@ footer: |
 
 `pls` lists the contents of your directories but formats the output to be
 prettier and easier to interpret and understand. It includes a number of
-[developer-friendly features](/features) that other tools targeting a wider
+[developer-friendly features](./features) that other tools targeting a wider
 audience do not have.
 
 <div class="features">
@@ -63,4 +63,4 @@ audience do not have.
   </div>
 </div>
 
-Read more about its [features](features)!
+Read more about its [features](./features)!

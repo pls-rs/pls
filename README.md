@@ -43,13 +43,15 @@ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and trust
 
 ## Documentation
 
-[Documentation](https://dhruvkb.github.io/pls)
-
-The docs are built from the [`docs` branch](https://github.com/dhruvkb/pls/tree/docs) in the same repository.
+We have some very beautiful [documentation](https://dhruvkb.github.io/pls) over
+on our GitHub pages site. These docs are built from the
+[`docs` branch](https://github.com/dhruvkb/pls/tree/docs) in the same
+repository, so contributions to the docs are most welcome.
 
 ---
 
-🚧 Everything below this line will move to the [documentation](https://dhruvkb.github.io/pls).
+🚧 Everything below this line will eventually be transferred to the
+[documentation](https://dhruvkb.github.io/pls).
 
 ## Features
 

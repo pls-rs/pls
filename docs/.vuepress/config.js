@@ -40,4 +40,16 @@ module.exports = {
   alias: {
     "@theme/HomeHero.vue": path.resolve(__dirname, "./components/HomeHero.vue"),
   },
+
+  plugins: [
+    [
+      "@vuepress/plugin-docsearch",
+      {
+        apiKey: "aab9e7596d3aa3ef1a9834543eadbf60",
+        indexName: "pls",
+        appId: "V3X44L2GDB",
+        placeholder: "Search...",
+      },
+    ],
+  ],
 };

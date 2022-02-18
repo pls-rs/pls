@@ -19,6 +19,7 @@
     "build": "vuepress build docs"
   },
   "devDependencies": {
+    "@vuepress/plugin-docsearch": "^2.0.0-beta.35",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
     "prettier": "2.5.1",

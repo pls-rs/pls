@@ -23,6 +23,12 @@
 - names: [poetry.lock, Pipfile.lock]
   icon: lock
   importance: -1
+- name: poetry.lock
+  collapse:
+    name: pyproject.toml
+- name: Pipfile.lock
+  collapse:
+    name: Pipfile
 - names: [.flake8, .pre-commit-config.yaml]
   icon: broom
 - name: __pycache__
@@ -33,6 +39,8 @@
 - name: Gemfile.lock
   icon: lock
   importance: -1
+  collapse:
+    name: Gemfile
 - names: [vendor, .bundle]
   icon: package
   importance: -1
@@ -44,6 +52,8 @@
 - names: [package-lock.json, yarn.lock, pnpm-lock.yaml]
   icon: lock
   importance: -1
+  collapse:
+    name: package.json
 - name: node_modules
   icon: package
   importance: -1
@@ -117,6 +127,12 @@
 - extensions: [ts, tsx]
   icon: typescript
   color: "#3178C6"
+- extension: js
+  collapse:
+    extension: ts
+- extension: jsx
+  collapse:
+    extension: tsx
 - extension: vue
   icon: vuejs
   color: "#4FC08D"

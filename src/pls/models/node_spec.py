@@ -21,6 +21,7 @@ class NodeSpec:
         icon: str = None,
         color: str = None,
         importance: int = 0,
+        collapse: dict = None,
     ):
         self.name = name
         self.pattern = re.compile(pattern) if pattern else None
@@ -29,6 +30,7 @@ class NodeSpec:
         self.icon = icon
         self.color = color
         self.importance = importance
+        self.collapse = collapse
 
     def __repr__(self) -> str:
         """

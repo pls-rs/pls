@@ -29,6 +29,14 @@ def massage_specs(entry: dict) -> list[dict]:
         methods = ", ".join([f"`{method}`" for method in all_id_fields])
         raise ConfigException(f"Exactly one of {methods} is required.")
 
+    if collapse := entry.get("collapse"):
+        collapse_fields = ["name", "extension"]
+
+        # Exactly one collapse method should be present.
+        if [field in collapse for field in collapse_fields].count(True) != 1:
+            methods = ", ".join([f"`{method}`" for method in collapse_fields])
+            raise ConfigException(f"Exactly one of {methods} is required")
+
     # Split plurals if present.
     for singular, plural in singular_plural_map.items():
         if plural in entry:

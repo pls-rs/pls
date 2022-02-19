@@ -204,9 +204,10 @@ filtering = parser.add_argument_group(
     description="arguments used for filtering nodes in the output",
 )
 filtering.add_argument(
-    "--all",
-    action="store_true",
-    help="show all files, including those that would otherwise be hidden",
+    *["-a", "--all"],
+    action="count",
+    default=0,
+    help="increasingly show low-importance files that would otherwise be hidden",
 )
 filtering.add_argument(
     "--no-dirs",

@@ -28,7 +28,7 @@ dots `.`). A different criterion can be specified using the `--sort`/`-s` flag.
 
 ## Options
 
-The `--sort`/`-s` flag takes any of options.
+The `--sort`/`-s` flag works in two ways.
 
 - Pass any single key with the `--sort`/`-s` flag to sort the output based on
   the value of the field. This will use the order A &rarr; Z for strings and

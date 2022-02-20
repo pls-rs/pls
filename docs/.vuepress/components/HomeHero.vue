@@ -34,7 +34,8 @@ const actions = computed(() => {
   \ \ \/ \/____/\/___/
    \ \_\
     \/_/
-</pre>
+</pre
+      >
     </div>
 
     <p class="description">

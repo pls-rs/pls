@@ -20,6 +20,9 @@ lint:
 test *args:
     poetry run pytest {{ args }}
 
+mypy *args="--all-files":
+    poetry run pre-commit run mypy {{ args }}
+
 # Open an IPython shell
 shell:
     poetry run ipython

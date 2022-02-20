@@ -15,7 +15,14 @@ from pls.table.column_spec import column_groups, column_spec_map
 console = Console(record=(args.export is not None))
 
 
-def column_chosen(col_name):
+def column_chosen(col_name: str) -> bool:
+    """
+    Determine whether the given column name has been asked for in the details.
+
+    :param col_name: the name of the column to check
+    :return: ``True`` if the column is to be shown, ``False`` otherwise
+    """
+
     return col_name in args.details or "+" in args.details
 
 
@@ -39,9 +46,12 @@ def get_columns() -> list[str]:
 
     flattened_cols = []
     for index, col_group in enumerate(selected_col_groups):
-        if len(col_group) == 0:  # skip groups with zero chosen columns
+        # Skip groups with zero chosen columns.
+        if len(col_group) == 0:
             continue
-        if index != len(selected_col_groups) - 1:  # no spacer after last group
+
+        # Don't add spacer after last group.
+        if index != len(selected_col_groups) - 1:
             col_group.append("spacer")
         flattened_cols.extend(col_group)
 
@@ -69,20 +79,39 @@ def get_table() -> Table:
     return table
 
 
+def tabulate_node(table: Table, node: Node):
+    """
+    Add all cells for the given node to the given table. If a node has sub-nodes
+    this will recursively tabulate them as well.
+
+    :param table: the table in which to print the node
+    :param node: the node to insert into the table
+    """
+
+    data = node.table_row
+    if data is not None:
+        cells = [data.get(col, "") for col in get_columns()]
+        table.add_row(*cells)
+        for sub_node in node.children:
+            tabulate_node(table, sub_node)
+
+
 def write_output(all_nodes: list[Node]):
     """
-    Write the list of directories and files to the screen as a table.
+    Write the list of directories and files to the screen as a table. If the
+    ``--export`` flag is set, the output is also written as HTML markup to the
+    given file.
 
-    :param all_nodes: the list of directories and files
+    :param all_nodes: the list of all directories and files
     """
 
     table = get_table()
 
     for node in all_nodes:
-        data = node.table_row
-        if data is not None:
-            cells = [data.get(col, "") for col in get_columns()]
-            table.add_row(*cells)
+        # Sub-nodes are not tabulated with the rest of the top-level nodes.
+        if node.is_sub:
+            continue
+        tabulate_node(table, node)
 
     console.print(table)
 
@@ -97,9 +126,10 @@ def write_output(all_nodes: list[Node]):
             """  # noqa: E501
         )
         with args.export.open("w", encoding="utf-8") as out_file:
-            out_file.write(
-                console.export_html(
-                    theme=solarized_theme, code_format=html_body, inline_styles=True
-                )
+            content = console.export_html(
+                theme=solarized_theme,
+                code_format=html_body,
+                inline_styles=True,
             )
-        print("Output written to file.")
+            out_file.write(content)
+            print("Output written to file.")

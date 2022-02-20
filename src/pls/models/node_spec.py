@@ -1,6 +1,11 @@
 from __future__ import annotations
 
 import re
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from pls.models.base_node import BaseNode
 
 
 class NodeSpec:
@@ -17,6 +22,7 @@ class NodeSpec:
         self,
         name: str = None,
         pattern: str = None,
+        glob: str = None,
         extension: str = None,
         icon: str = None,
         color: str = None,
@@ -25,6 +31,7 @@ class NodeSpec:
     ):
         self.name = name
         self.pattern = re.compile(pattern) if pattern else None
+        self.glob = glob
         self.extension = extension
 
         self.icon = icon
@@ -45,22 +52,28 @@ class NodeSpec:
         if self.extension:
             return f"*.{self.extension}"
         if self.pattern:
-            return f"<{self.pattern.pattern}>"
+            return f"/{self.pattern.pattern}/"
+        if self.glob:
+            return f"<{self.glob}>"
         return "[No ID]"
 
-    def match(self, name: str) -> bool:
+    def match(self, node: BaseNode) -> bool:
         """
-        Check whether the given file name matches this spec.
+        Check whether the given node matches this spec. The criterion for
+        evaluating a match is based on whether the spec defines the name,
+        regular expression, glob pattern or extension.
 
-        :param name: the name of the file to match against this spec
-        :return: ``True`` if the file matches this entry, ``False`` otherwise
+        :param node: the node to compare against the spec for a match
+        :return: ``True`` if the node matches this entry, ``False`` otherwise
         """
 
         if self.name:
-            return self.name == name
+            return self.name == node.name
         elif self.pattern:
-            return re.match(self.pattern, name) is not None
+            return re.match(self.pattern, node.name) is not None
+        elif self.glob:
+            return node.path.match(self.glob)
         elif self.extension:
-            return name.endswith(f".{self.extension}")
+            return self.extension == node.extension
         else:
             return False

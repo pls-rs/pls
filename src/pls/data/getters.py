@@ -9,52 +9,90 @@ from pls.exceptions import ConfigException
 from pls.models.node_spec import NodeSpec
 
 
+def break_plurals(entry: dict, singular_plural_map: dict[str, str]) -> list[dict]:
+    """
+    Split a dict with a key containing a list into separate dictionaries, with
+    the singular form of the key containing one item of the list.
+
+    The function checks against:
+
+    - singular keys containing a list
+    - plural keys not containing a list
+
+    :param entry: the dict to split from plural to singular
+    :param singular_plural_map: the map of singular and plural keys
+    :return: a list of dictionaries from splitting the plurals
+    :raise: ``ConfigException``, if the fields have the wrong type of value
+    """
+
+    for singular, plural in singular_plural_map.items():
+        if singular_value := entry.get(singular):
+            # Singular keys cannot not contain a list.
+            if isinstance(singular_value, list):
+                raise ConfigException(
+                    f"`{singular}` cannot be a list; use `{plural}`: {entry}"
+                )
+
+        if plural_value := entry.get(plural):
+            # Plural keys should contain a list.
+            if not isinstance(plural_value, list):
+                raise ConfigException(
+                    f"`{plural}` must be a list; use `{singular}`: {entry}"
+                )
+
+            common = {k: v for k, v in entry.items() if k != plural}
+            return [{singular: item, **common} for item in plural_value]
+
+    # If no match, wrap the entry and return as-is.
+    return [entry]
+
+
+def check_conflicts(entry: dict, conflict_keys: list[str]):
+    """
+    Check for the presence of conflicting keys in the given dict. If more or
+    less than one key is present in the dict, raise a ``ConfigException``.
+
+    :param entry: the entry to check for conflict
+    :param conflict_keys: the list of mutually exclusive keys
+    :raise: ``ConfigException``, if conflicting keys are present
+    """
+
+    if [field in entry for field in conflict_keys].count(True) != 1:
+        fields = ", ".join([f"`{field}`" for field in conflict_keys])
+        raise ConfigException(f"Exactly one of {fields} is allowed: {entry}.")
+
+
 def massage_specs(entry: dict) -> list[dict]:
     """
-    For convenience, specs can be written as group combining several names,
+    For convenience, specs can be written as groups combining several names,
     patterns or extensions. This function splits such groups into its
     constituent specs.
-    Grouping does not allow mixing names, patterns and extensions.
+
+    Grouping does not allow mixing multiple forms of identification. This
+    function checks against mixing multiple modes of identification.
 
     :param entry: a single entry from the node specs
     :return: a list of specs split from entry
     """
 
-    id_fields = ["name", "pattern", "extension"]
-    singular_plural_map = {field: f"{field}s" for field in id_fields}
-    all_id_fields = [*singular_plural_map.keys(), *singular_plural_map.values()]
-
-    # Exactly one identification method should be present.
-    if [field in entry for field in all_id_fields].count(True) != 1:
-        methods = ", ".join([f"`{method}`" for method in all_id_fields])
-        raise ConfigException(f"Exactly one of {methods} is required.")
-
+    # Split collapse names/extensions into collapses name/extension.
     if collapse := entry.get("collapse"):
-        collapse_fields = ["name", "extension"]
+        collapse_fields = {sing: f"{sing}s" for sing in ["name", "extension"]}
+        check_conflicts(collapse, [*collapse_fields.keys(), *collapse_fields.values()])
 
-        # Exactly one collapse method should be present.
-        if [field in collapse for field in collapse_fields].count(True) != 1:
-            methods = ", ".join([f"`{method}`" for method in collapse_fields])
-            raise ConfigException(f"Exactly one of {methods} is required")
+        split_fields = collapse_fields
+        collapses = break_plurals(collapse, split_fields)
+        if len(collapses) > 1:
+            del entry["collapse"]
+            entry["collapses"] = collapses
 
-    # Split plurals if present.
-    for singular, plural in singular_plural_map.items():
-        if plural in entry:
-            if not isinstance(entry[plural], list):
-                raise ConfigException(
-                    f"`{plural}` must be a list. Use `{singular}` instead."
-                )
-            common = {k: v for k, v in entry.items() if k != plural}
-            return [{singular: value, **common} for value in entry[plural]]
+    id_fields = {sing: f"{sing}s" for sing in ["name", "pattern", "extension"]}
+    check_conflicts(entry, [*id_fields.keys(), *id_fields.values()])
 
-    # Ensure no singular is list.
-    for singular, plural in singular_plural_map.items():
-        if singular in entry and isinstance(entry[singular], list):
-            raise ConfigException(
-                f"`{singular}` cannot be a list. Use `{plural}` instead."
-            )
+    split_fields = {**id_fields, "collapse": "collapses"}
+    specs = break_plurals(entry, split_fields)
 
-    return [entry]
+    return specs
 
 
 def parse_node_specs(specs: list[dict]) -> list[NodeSpec]:

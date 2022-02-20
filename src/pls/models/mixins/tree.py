@@ -111,9 +111,7 @@ class TreeMixin(Generic[T], BaseNode):
         :param node_map: the mapping of names and ``Node`` instances
         """
 
-        if (collapse := self.spec_attr("collapse")) is None:
-            return
-        else:
+        if collapse := self.spec_attr("collapse"):
             if "extension" in collapse:
                 extension = collapse["extension"]
                 name = self.name.replace(self.extension, extension)

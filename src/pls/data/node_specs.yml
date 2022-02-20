@@ -107,6 +107,8 @@
 - extension: css
   icon: css
   color: "#1572B6"
+  collapse:
+    extensions: [scss, sass, less]
 - extensions: [sass, scss]
   icon: sass
   color: "#CC6699"

@@ -9,6 +9,7 @@ const features = {
     "/features/suffixes",
     "/features/details",
     "/features/sorting",
+    "/features/collapse",
   ],
 };
 

@@ -45,7 +45,7 @@ def directory(path_str: str) -> Path:
 
     path = Path(path_str).resolve()
     if not os.path.isdir(path):
-        raise ExecException("`directory` must be a path to a directory")
+        raise ExecException(f"`directory` arg should be a valid directory: {path_str}")
     return path
 
 
@@ -223,6 +223,14 @@ filtering.add_argument(
     "--no-files",
     action="store_true",
     help="hide files in the output",
+)
+filtering.add_argument(
+    *["-r", "--re"],
+    help="only show files that match the given regular expression",
+)
+filtering.add_argument(
+    *["-g", "--glob"],
+    help="only show files that match the given glob pattern",
 )
 
 #################

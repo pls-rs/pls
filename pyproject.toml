@@ -25,6 +25,7 @@ pre-commit = "^2.17.0"
 ipython = "^8.0.1"
 pytest = "^7.0.0"
 pytest-lazy-fixture = "^0.6.3"
+freezegun = "^1.1.0"
 
 [tool.pytest.ini_options]
 cache_dir = ".pytest_cache"

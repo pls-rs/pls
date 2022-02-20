@@ -55,7 +55,9 @@ repos:
     rev: v0.931
     hooks:
       - id: mypy
-        additional_dependencies: [types-PyYAML]
+        additional_dependencies:
+          - types-PyYAML
+          - types-freezegun
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.5.0

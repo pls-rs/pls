@@ -1,8 +1,8 @@
-import os
 from typing import Literal
 from unittest.mock import MagicMock, patch
 
 import pytest
+from freezegun import freeze_time
 
 from pls.enums.unit_system import UnitSystem
 from pls.fs.stats import (
@@ -155,13 +155,13 @@ def test_shows_blank_size_for_directory():
     "attr_name",
     ["st_ctime", "st_mtime", "st_atime"],
 )
+@freeze_time(tz_offset=+4.0)
 def test_formats_timestamp_in_local_tz(
     attr_name: Literal["st_ctime", "st_mtime", "st_atime"]
 ):
     mock_stat = MagicMock(st_ctime=0, st_mtime=0, st_atime=0)
     exp = "1970-01-01 04:00:00 "
-    with patch.dict(os.environ, {"TZ": "Asia/Dubai"}, clear=True):
-        assert strip_formatting(get_formatted_time(mock_stat, attr_name)) == exp
+    assert strip_formatting(get_formatted_time(mock_stat, attr_name)) == exp
 
 
 @pytest.mark.parametrize(
@@ -173,10 +173,9 @@ def test_formats_timestamp_in_local_tz(
         ),
     ],
 )
+@freeze_time(tz_offset=+5.5)
 def test_formats_timestamp_as_asked(time_fmt, formatted_time):
     mock_args = MagicMock(time_fmt=time_fmt)
     mock_stat = MagicMock(st_ctime=3_133_637_400)
-    with patch("pls.fs.stats.args", mock_args), patch.dict(
-        os.environ, {"TZ": "Asia/Kolkata"}, clear=True
-    ):
+    with patch("pls.fs.stats.args", mock_args):
         assert get_formatted_time(mock_stat, "st_ctime") == formatted_time

@@ -1,3 +1,4 @@
+from sys import platform
 from typing import Literal
 from unittest.mock import MagicMock, patch
 
@@ -84,6 +85,7 @@ def test_gets_correct_permission_text_for_rw_with_special_bit(
     assert strip_formatting(get_formatted_perms(mock_stat)) == text
 
 
+@pytest.mark.skipif(platform == "win32", reason="Feature unsupported on Windows")
 def test_user_is_dimmed_if_not_current():
     mock_getpwuid = MagicMock(return_value=MagicMock(pw_name="x"))
     mock_state = MagicMock(username="y")
@@ -92,6 +94,7 @@ def test_user_is_dimmed_if_not_current():
         assert get_formatted_user(mock_stat) == "[dim]x[/]"
 
 
+@pytest.mark.skipif(platform == "win32", reason="Feature unsupported on Windows")
 def test_group_is_dimmed_if_not_current():
     mock_getgrgid = MagicMock(return_value=MagicMock(gr_name="x"))
     mock_state = MagicMock(groups={"y", "z"})

@@ -23,10 +23,19 @@ class BaseNode:
         self.specs: list[NodeSpec] = []  # matched in ``match_specs``
 
     @cached_property
-    def canonical_name(self) -> str:
-        """the case-normalised name of the node with leading dots stripped"""
+    def pure_name(self) -> str:
+        """the name of the node with the leading dot stripped"""
 
-        return self.name.lstrip(".").lower()
+        if self.name.startswith("."):
+            return self.name.replace(".", "", 1)
+        else:
+            return self.name
+
+    @cached_property
+    def canonical_name(self) -> str:
+        """the case-normalised pure name of the node"""
+
+        return self.pure_name.lower()
 
     @cached_property
     def extension(self) -> str:

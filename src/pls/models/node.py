@@ -116,13 +116,17 @@ class Node(
     def formatted_name(self) -> str:
         """the name, formatted using Rich console formatting markup"""
 
-        name = self.name
+        name = self.pure_name
         if self.formatted_suffix:
             name = f"{name}{self.formatted_suffix}"
 
+        # Apply format pair.
+        left, right = self.format_pair
+        name = f"{left}{name}{right}"
+
         if not args.no_align:
-            if name.startswith("."):
-                name = name.replace(".", "[dim].[/dim]", 1)
+            if self.name.startswith("."):
+                name = f"[dim].[/dim]{name}"
             else:
                 # Left pad name with a space to account for leading dots.
                 name = f" {name}"
@@ -130,9 +134,7 @@ class Node(
         if self.is_sub:
             name = f"[dim]{self.tree_prefix}[/]{name}"
 
-        # Apply format pair.
-        left, right = self.format_pair
-        return f"{left}{name}{right}"
+        return name
 
     @cached_property
     def formatted_icon(self) -> str:
@@ -160,20 +162,6 @@ class Node(
         else:
             icon = ""
         return icon
-
-    @cached_property
-    def is_visible(self) -> bool:
-        """whether the node deserves to be rendered to the screen"""
-
-        # If explicitly requested for all files, show all.
-        if args.all:
-            return True
-
-        # Nodes with importance -2 are hidden.
-        if self.importance == -2:
-            return False
-
-        return True
 
     @cached_property
     def table_row(self) -> Optional[dict[str, Optional[str]]]:

@@ -3,6 +3,7 @@ from __future__ import annotations
 from functools import cached_property
 from typing import TYPE_CHECKING
 
+from pls.args import args
 from pls.models.base_node import BaseNode
 
 
@@ -19,7 +20,7 @@ class ImpMixin(BaseNode):
     def importance(self) -> int:
         """the numerical importance level of a node"""
 
-        imp = -2 if self.name.startswith(".") else 0
+        imp = -1 if self.specs else -2 if self.name.startswith(".") else 0
         if spec_imp := self.spec_attr("importance"):
             # If importance is set, use the given value.
             imp = spec_imp
@@ -29,8 +30,21 @@ class ImpMixin(BaseNode):
         return imp
 
     @cached_property
+    def is_visible(self) -> bool:
+        """whether the node deserves to be rendered to the screen"""
+
+        return self.importance + args.all >= -1
+
+    @cached_property
     def importance_format(self) -> Optional[str]:
         """the formatting associated with a node's importance level"""
 
-        importance_format_map = {-1: "dim", 1: "bold", 2: "underline"}
-        return importance_format_map.get(self.importance)
+        if self.importance <= -1:
+            return "dim"
+        if self.importance == 1:
+            return "bold"
+        if self.importance == 2:
+            return "underline"
+        if self.importance >= 3:
+            return "bold underline"
+        return None

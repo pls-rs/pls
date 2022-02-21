@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://dhruvkb.github.io/pls
+    about: Read documentation on how to install and use pls.

@@ -38,10 +38,12 @@ module.exports = {
       "/features/": [features],
     },
   },
-
-  alias: {
-    "@theme/HomeHero.vue": path.resolve(__dirname, "./components/HomeHero.vue"),
-  },
+  alias: Object.fromEntries(
+    ["HomeHero", "HomeFooter"].map((component) => [
+      `@theme/${component}.vue`,
+      path.resolve(__dirname, `./components/overrides/${component}.vue`),
+    ])
+  ),
 
   plugins: [
     [
@@ -51,6 +53,17 @@ module.exports = {
         indexName: "pls",
         appId: "V3X44L2GDB",
         placeholder: "Search...",
+      },
+    ],
+    [
+      "@vuepress/plugin-register-components",
+      {
+        components: Object.fromEntries(
+          ["GitHubStars"].map((component) => [
+            component,
+            path.resolve(__dirname, `./components/custom/${component}.vue`),
+          ])
+        ),
       },
     ],
   ],

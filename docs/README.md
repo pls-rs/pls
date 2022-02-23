@@ -5,13 +5,6 @@ tagline: ~
 actions:
   - text: Get Started →
     link: "get_started"
-
-footerHtml: true
-footer: |
-  <code>pls</code> is
-  <a href="https://pypi.org/project/pls/" target="_blank">free</a> and
-  <a href="https://github.com/dhruvkb/pls" target="_blank">open-source</a> 
-  software.
 ---
 
 `pls` lists the contents of your directories but formats the output to be

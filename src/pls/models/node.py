@@ -116,7 +116,7 @@ class Node(
     def formatted_name(self) -> str:
         """the name, formatted using Rich console formatting markup"""
 
-        name = self.pure_name
+        name = self.name if args.no_align else self.pure_name
         if self.formatted_suffix:
             name = f"{name}{self.formatted_suffix}"
 

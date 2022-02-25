@@ -20,7 +20,7 @@ module.exports = {
   description: packageInfo.description,
   base: "/pls/",
 
-  head: [["link", { rel: "icon", href: "/favicon.png" }]],
+  head: [["link", { rel: "icon", href: "/pls/favicon.png" }]],
 
   theme: "@vuepress/theme-default",
   themeConfig: {

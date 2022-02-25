@@ -25,8 +25,12 @@ class GitMixin(BaseNode):
         self.git_status: str = "  "
 
         if state.is_git_managed:
-            self.path_wrt_git = self.path.relative_to(state.git_root)
-            self.git_status = state.git_status_map.get(self.path_wrt_git, "  ")
+            try:
+                self.path_wrt_git = self.path.relative_to(state.git_root)
+                self.git_status = state.git_status_map.get(self.path_wrt_git, "  ")
+            except ValueError:
+                # This is dest node for absolute symlink to file outside Git repo.
+                pass
 
     @cached_property
     def git_cells(self) -> dict[str, str]:

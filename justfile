@@ -4,28 +4,42 @@ set dotenv-load := false
 default:
     @just --list --unsorted
 
-# Install dependencies
+###############
+# Development #
+###############
+
+# Install dependencies and set up pre-commit Git hook
 install:
     poetry install
-
-# Setup pre-commit as a Git hook
-precommit:
     poetry run pre-commit install
 
 # Run pre-commit to lint and reformat all files
 lint:
     poetry run pre-commit run --all-files
 
+# Run mypy under pre-commit to typecheck code
+mypy *args="--all-files":
+    poetry run pre-commit run mypy {{ args }}
+
+# Run Black under pre-commit to reformat code
+black *args="--all-files":
+    poetry run pre-commit run black {{ args }}
+
 # Run unit tests using pytest
 test *args:
     poetry run pytest {{ args }}
 
-mypy *args="--all-files":
-    poetry run pre-commit run mypy {{ args }}
-
 # Open an IPython shell
 shell:
     poetry run ipython
+
+# Remove all Python cache files
+pyclean:
+    find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+
+##############
+# Deployment #
+##############
 
 # Print the current version of `pls` from the `pyproject.toml` file
 ver:

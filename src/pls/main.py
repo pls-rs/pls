@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from pls.args import args
-from pls.data.getters import node_specs
+from pls import globals
+from pls.config.specs import node_specs
 from pls.fs.list import read_input
-from pls.table.table import write_output
+from pls.output.table import write_output
 
 
 def main() -> None:
@@ -13,6 +13,9 @@ def main() -> None:
     - returns no outputs: output is written to ``STDOUT`` using ``rich``
     """
 
+    # Replace default state with actual state
+    globals.state.parse_args(None)
+
     node_map, node_list = read_input()
 
     if not node_list:
@@ -20,9 +23,9 @@ def main() -> None:
 
     for node in node_list:
         node.match_specs(node_specs)
-        if args.collapse:
+        if globals.state.collapse:
             node.find_main(node_map)
-    if args.collapse:
+    if globals.state.collapse:
         for node in node_list:
             if node.is_sub:
                 continue

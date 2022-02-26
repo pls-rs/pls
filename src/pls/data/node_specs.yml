@@ -1,140 +1,141 @@
 # Describes the nature of files and directories in the context of programming.
 # Refer to `./emoji_icons.yml` and `./nerd_icons.yml` for the icon names.
 
-########
-# Name #
-########
+node_specs:
+  ########
+  # Name #
+  ########
 
-- name: .pls.yml
-  icon: pls
+  - name: .pls.yml
+    icon: pls
 
-- name: .DS_Store
-  icon: apple
-  importance: -2
+  - name: .DS_Store
+    icon: apple
+    importance: -2
 
-- name: .gitignore
-  icon: git
+  - name: .gitignore
+    icon: git
 
-- names: [justfile, Makefile, Rakefile]
-  icon: runner
+  - names: [justfile, Makefile, Rakefile]
+    icon: runner
 
-- names: [pyproject.toml, Pipfile, setup.py, setup.cfg]
-  icon: package
-- names: [poetry.lock, Pipfile.lock]
-  icon: lock
-  importance: -1
-- name: poetry.lock
-  collapse:
-    name: pyproject.toml
-- name: Pipfile.lock
-  collapse:
-    name: Pipfile
-- names: [.flake8, .pre-commit-config.yaml]
-  icon: broom
-- name: __pycache__
-  importance: -2
+  - names: [pyproject.toml, Pipfile, setup.py, setup.cfg]
+    icon: package
+  - names: [poetry.lock, Pipfile.lock]
+    icon: lock
+    importance: -1
+  - name: poetry.lock
+    collapse:
+      name: pyproject.toml
+  - name: Pipfile.lock
+    collapse:
+      name: Pipfile
+  - names: [.flake8, .pre-commit-config.yaml]
+    icon: broom
+  - name: __pycache__
+    importance: -2
 
-- name: Gemfile
-  icon: package
-- name: Gemfile.lock
-  icon: lock
-  importance: -1
-  collapse:
-    name: Gemfile
-- names: [vendor, .bundle]
-  icon: package
-  importance: -1
-- name: .rubocop.yml
-  icon: broom
+  - name: Gemfile
+    icon: package
+  - name: Gemfile.lock
+    icon: lock
+    importance: -1
+    collapse:
+      name: Gemfile
+  - names: [vendor, .bundle]
+    icon: package
+    importance: -1
+  - name: .rubocop.yml
+    icon: broom
 
-- name: package.json
-  icon: package
-- names: [package-lock.json, yarn.lock, pnpm-lock.yaml]
-  icon: lock
-  importance: -1
-  collapse:
-    name: package.json
-- name: node_modules
-  icon: package
-  importance: -1
+  - name: package.json
+    icon: package
+  - names: [package-lock.json, yarn.lock, pnpm-lock.yaml]
+    icon: lock
+    importance: -1
+    collapse:
+      name: package.json
+  - name: node_modules
+    icon: package
+    importance: -1
 
-############
-# Patterns #
-############
+  ############
+  # Patterns #
+  ############
 
-- pattern: \.env\b
-  icon: env
-- pattern: LICENSE\b
-  icon: license
+  - pattern: \.env\b
+    icon: env
+  - pattern: LICENSE\b
+    icon: license
 
-- patterns: [docker-compose\b, Dockerfile\b]
-  icon: docker
-  color: "#2496ED"
+  - patterns: [docker-compose\b, Dockerfile\b]
+    icon: docker
+    color: "#2496ED"
 
-- pattern: v?env$
-  icon: package
-  importance: -1
+  - pattern: v?env$
+    icon: package
+    importance: -1
 
-- pattern: \.eslintrc\.
-  icon: broom
+  - pattern: \.eslintrc\.
+    icon: broom
 
-##############
-# Extensions #
-##############
+  ##############
+  # Extensions #
+  ##############
 
-- extension: txt
-  icon: text
-- extension: ini
-  icon: config
-- extensions: [json, toml, yml, yaml]
-  icon: json
-- extension: md
-  icon: markdown
+  - extension: txt
+    icon: text
+  - extension: ini
+    icon: config
+  - extensions: [json, toml, yml, yaml]
+    icon: json
+  - extension: md
+    icon: markdown
 
-- extensions: [jpg, jpeg, png, svg, webp, gif, ico]
-  icon: image
-- extensions: [mov, mp4, mkv, webm, avi, flv]
-  icon: video
-- extensions: [mp3, flac, ogg, wav]
-  icon: audio
+  - extensions: [jpg, jpeg, png, svg, webp, gif, ico]
+    icon: image
+  - extensions: [mov, mp4, mkv, webm, avi, flv]
+    icon: video
+  - extensions: [mp3, flac, ogg, wav]
+    icon: audio
 
-- extension: sh
-  icon: shell
+  - extension: sh
+    icon: shell
 
-- extensions: [htm, html]
-  icon: html
-  color: "#E34F26"
-- extension: css
-  icon: css
-  color: "#1572B6"
-  collapse:
-    extensions: [scss, sass, less]
-- extensions: [sass, scss]
-  icon: sass
-  color: "#CC6699"
+  - extensions: [htm, html]
+    icon: html
+    color: "#E34F26"
+  - extension: css
+    icon: css
+    color: "#1572B6"
+    collapse:
+      extensions: [scss, sass, less]
+  - extensions: [sass, scss]
+    icon: sass
+    color: "#CC6699"
 
-- extension: py
-  icon: python
-  color: "#3776AB"
+  - extension: py
+    icon: python
+    color: "#3776AB"
 
-- extension: rb
-  icon: ruby
-  color: "#CC342D"
-- extension: gemspec
-  icon: package
+  - extension: rb
+    icon: ruby
+    color: "#CC342D"
+  - extension: gemspec
+    icon: package
 
-- extensions: [js, jsx]
-  icon: javascript
-  color: "#F7DF1E"
-- extensions: [ts, tsx]
-  icon: typescript
-  color: "#3178C6"
-- extension: js
-  collapse:
-    extension: ts
-- extension: jsx
-  collapse:
-    extension: tsx
-- extension: vue
-  icon: vuejs
-  color: "#4FC08D"
+  - extensions: [js, jsx]
+    icon: javascript
+    color: "#F7DF1E"
+  - extensions: [ts, tsx]
+    icon: typescript
+    color: "#3178C6"
+  - extension: js
+    collapse:
+      extension: ts
+  - extension: jsx
+    collapse:
+      extension: tsx
+  - extension: vue
+    icon: vuejs
+    color: "#4FC08D"

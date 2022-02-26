@@ -1,4 +1,4 @@
-from pls.args import args
+from pls import globals
 
 
 PIPE = "│"
@@ -10,7 +10,7 @@ NONE = ""
 # Pre shapes
 PIPE_SPACE = f"{PIPE} "
 SPACE_SPACE = "  "
-if not args.no_align:
+if not globals.state.no_align:
     PIPE_SPACE = f"{PIPE_SPACE} "
     SPACE_SPACE = f"{SPACE_SPACE} "
 

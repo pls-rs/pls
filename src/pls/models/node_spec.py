@@ -12,7 +12,7 @@ class NodeSpec:
     """
     A spec describes the nature of a class of FS nodes that determine its
     presentation. This model stores attributes pertaining to a single spec. Make
-    sure to massage spec entries using :py:func:`pls.data.getters.massage_specs`
+    sure to massage spec entries using :py:func:`pls.data.config.massage_specs`
     before initialising.
 
     Node specs are read from ``node_spec.yml``.

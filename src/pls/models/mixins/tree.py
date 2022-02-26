@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar, cast
 
-from pls.args import args
-from pls.data import box_drawing
+from pls import globals
+from pls.constants import tree
 from pls.models.base_node import BaseNode
 
 
@@ -40,7 +40,7 @@ class TreeMixin(Generic[T], BaseNode):
         """the complete string to draw the tree lines before the node name"""
 
         tree_chars = "".join([*self.pre_shapes, self.last_shape])
-        if not args.no_align:
+        if not globals.state.no_align:
             tree_chars = f" {tree_chars}"
         return tree_chars
 
@@ -55,7 +55,7 @@ class TreeMixin(Generic[T], BaseNode):
         """
 
         if not self.is_sub:
-            return box_drawing.NONE
+            return tree.NONE
 
         assert self.parent is not None
         siblings = self.parent.children
@@ -77,7 +77,7 @@ class TreeMixin(Generic[T], BaseNode):
         :return: the set of box-drawing characters before the node's own
         """
 
-        return self.get_shape(box_drawing.SPACE_SPACE, box_drawing.PIPE_SPACE)
+        return self.get_shape(tree.SPACE_SPACE, tree.PIPE_SPACE)
 
     def _get_last_shape(self) -> str:
         """
@@ -89,7 +89,7 @@ class TreeMixin(Generic[T], BaseNode):
         :return: the node's own box-drawing characters
         """
 
-        return self.get_shape(box_drawing.BEND_DASH, box_drawing.TEE_DASH)
+        return self.get_shape(tree.BEND_DASH, tree.TEE_DASH)
 
     def set_sub_pre_shapes(self):
         """

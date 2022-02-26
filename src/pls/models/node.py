@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import re
 from functools import cached_property
-from typing import TYPE_CHECKING
+from typing import Optional, Union
 
-from pls.args import args
-from pls.data.getters import emoji_icons, nerd_icons
+from pls import globals
+from pls.config.icons import emoji_icons, nerd_icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
 from pls.models.base_node import BaseNode
@@ -13,10 +14,6 @@ from pls.models.mixins.imp import ImpMixin
 from pls.models.mixins.stat import StatMixin
 from pls.models.mixins.tree import TreeMixin
 from pls.models.mixins.type import TypeMixin
-
-
-if TYPE_CHECKING:
-    from typing import Optional, Union
 
 
 class Node(
@@ -32,6 +29,11 @@ class Node(
     attributes pertaining to a single FS node. Nodes are read from the file
     system directly.
     """
+
+    def __init__(self, is_pseudo: bool = False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.is_pseudo = is_pseudo  # true for symlink destinations
 
     def __eq__(self, other: object) -> bool:
         """
@@ -116,7 +118,7 @@ class Node(
     def formatted_name(self) -> str:
         """the name, formatted using Rich console formatting markup"""
 
-        name = self.name if args.no_align else self.pure_name
+        name = self.name if globals.state.no_align else self.pure_name
         if self.formatted_suffix:
             name = f"{name}{self.formatted_suffix}"
 
@@ -124,8 +126,8 @@ class Node(
         left, right = self.format_pair
         name = f"{left}{name}{right}"
 
-        if not args.no_align:
-            if self.name.startswith("."):
+        if not globals.state.no_align and not self.is_pseudo:
+            if re.match(r"\.[^.]", self.name):
                 name = f"[dim].[/dim]{name}"
             else:
                 # Left pad name with a space to account for leading dots.
@@ -140,10 +142,10 @@ class Node(
     def formatted_icon(self) -> str:
         """the emoji or Nerd Font icon to show beside the node"""
 
-        if args.icon == IconType.NONE:
+        if globals.state.icon == IconType.NONE:
             return ""
 
-        if args.icon == IconType.EMOJI:
+        if globals.state.icon == IconType.EMOJI:
             icon_index = emoji_icons
         else:  # args.icon == IconType.NERD
             icon_index = nerd_icons
@@ -177,7 +179,7 @@ class Node(
             "type": self.type_char,
         }
 
-        if not args.details:
+        if not globals.state.details:
             return cells  # return early as no more data needed
 
         cells.update(self.stat_cells)

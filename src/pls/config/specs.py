@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
-from pls.args import args
+from pls.config.files import conf_files
 from pls.data.utils import internal_yml_path, load_yaml_file
 from pls.exceptions import ConfigException
 from pls.models.node_spec import NodeSpec
@@ -95,51 +94,28 @@ def massage_specs(entry: dict) -> list[dict]:
     return specs
 
 
-def parse_node_specs(specs: list[dict]) -> list[NodeSpec]:
+def get_specs(conf_paths: list[Path]) -> list[NodeSpec]:
     """
     Parse information about the list of all node specs for all languages. This
     maps the POPO representation of the specs into the ``NodeSpec`` instances.
 
-    :param specs: the list of POPO specs as read from the spec definition files
+    :param conf_paths: the list of config files from which to import spec POPOs
     :return: the list of all node specs for all languages
     """
 
-    return [NodeSpec(**spec) for entry in specs for spec in massage_specs(entry)]
+    entries = []
+
+    for conf_path in conf_paths:
+        conf = load_yaml_file(conf_path)
+        entries.extend(conf.get("node_specs", []))
+
+    return [NodeSpec(**spec) for entry in entries for spec in massage_specs(entry)]
 
 
-def locate_config() -> Optional[Path]:
-    """
-    Find a config file with the name ``.pls.yml`` in the directory or its
-    ancestors, upto a max depth based on CLI arguments.
-
-    :return: the path to the file if found, ``None`` otherwise
-    """
-
-    config_name = ".pls.yml"
-    curr_dir: Path = args.directory
-    for i in range(args.depth):
-        config_path = curr_dir.joinpath(config_name)
-        if config_path.exists() and config_path.is_file():
-            return config_path
-        curr_dir = curr_dir.parent
-    return None
-
-
-conf_data = load_yaml_file(conf_path) if (conf_path := locate_config()) else {}
-
-node_specs: list[NodeSpec] = parse_node_specs(
-    load_yaml_file(internal_yml_path("node_specs.yml"))
+node_specs = get_specs(
+    [
+        internal_yml_path("node_specs.yml"),
+        *conf_files,
+    ]
 )
-"""a list of all node specs for all languages, read from ``node_specs.yml``"""
-if node_specs_ext := conf_data.get("node_specs"):
-    node_specs = parse_node_specs(node_specs_ext) + node_specs
-
-nerd_icons: dict[str, str] = load_yaml_file(internal_yml_path("nerd_icons.yml"))
-"""a mapping of icon names to Unicode code-points, read from ``nerd_icons.yml``"""
-if nerd_icons_ext := conf_data.get("nerd_icons"):
-    nerd_icons.update(nerd_icons_ext)
-
-emoji_icons: dict[str, str] = load_yaml_file(internal_yml_path("emoji_icons.yml"))
-"""a mapping of icon names to emoji, read from ``emoji_icons.yml``"""
-if emoji_icons_ext := conf_data.get("emoji_icons"):
-    emoji_icons.update(emoji_icons_ext)
+"""the list of all node specs for all types of nodes"""

@@ -6,9 +6,8 @@ from itertools import cycle
 from stat import S_ISDIR
 from typing import Literal, Optional
 
-from pls.args import args
+from pls import globals
 from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
-from pls.state import state
 
 
 def get_formatted_links(stat: os.stat_result) -> str:
@@ -85,7 +84,7 @@ def get_formatted_user(stat: os.stat_result) -> Optional[str]:
         from pwd import getpwuid
 
         pw_name = getpwuid(stat.st_uid).pw_name
-        if pw_name != state.username:
+        if pw_name != globals.state.username:
             pw_name = f"[dim]{pw_name}[/]"
         return pw_name
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
@@ -106,7 +105,7 @@ def get_formatted_group(stat: os.stat_result) -> Optional[str]:
         from grp import getgrgid
 
         gr_name = getgrgid(stat.st_gid).gr_name
-        if gr_name not in state.groups:
+        if gr_name not in globals.state.groups:
             gr_name = f"[dim]{gr_name}[/]"
         return gr_name
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
@@ -128,10 +127,10 @@ def get_formatted_size(stat: os.stat_result) -> str:
     if S_ISDIR(stat.st_mode):
         return "[dim]-[/dim]"
 
-    if args.units == UnitSystem.NONE:
+    if globals.state.units == UnitSystem.NONE:
         return f"{st_size}[dim]B[/]"
 
-    base, pad, units = get_base_and_pad_and_units(args.units)
+    base, pad, units = get_base_and_pad_and_units(globals.state.units)
     for index, unit in reversed(list(enumerate(units))):
         order_of_magnitude = base ** index
         if st_size >= order_of_magnitude:
@@ -158,5 +157,5 @@ def get_formatted_time(
     st_time = getattr(stat, attr_name)
 
     dt = datetime.datetime.fromtimestamp(st_time)
-    fmt = args.time_fmt
+    fmt = globals.state.time_fmt
     return dt.strftime(fmt)

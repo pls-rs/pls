@@ -1,33 +1,34 @@
 # This file maps icon names with Unicode code points.
 # Reference: https://www.nerdfonts.com/cheat-sheet
 
-pls:        "\uf444"  # nf-oct-primitive_dot
+nerd_icons:
+  pls:        "\uf444"  # nf-oct-primitive_dot
 
-apple:      "\ue711"  # nf-dev-apple
-audio:      "\ufc1d"  # nf-mdi-speaker_wireless
-broom:      "\uf5e1"  # nf-mdi-broom
-config:     "\ue615"  # nf-seti-config
-css:        "\ue749"  # nf-dev-css3
-docker:     "\uf308"  # nf-linux-docker
-folder:     "\uf07b"  # nf-fa-folder
-git:        "\uf7a1"  # nf-mdi-git
-html:       "\ue736"  # nf-dev-html5
-image:      "\uf7e8"  # nf-mdi-image
-javascript: "\ue60c"  # nf-seti-javascript
-json:       "\ue60b"  # nf-seti-json
-license:    "\uf495"  # nf-oct-law
-lock:       "\uf456"  # nf-oct-lock
-markdown:   "\uf48a"  # nf-oct-markdown
-package:    "\uf487"  # nf-oct-package
-env:        "\ue22f"  # nf-fae-plant
-python:     "\uf81f"  # nf-mdi-language_python
-ruby:       "\ue791"  # nf-dev-ruby_rough
-runner:     "\ufc0c"  # nf-mdi-run
-sass:       "\ue603"  # nf-seti-sass
-shell:      "\ufcb5"  # nf-mdi-console_line
-source:     "\uf668"  # nf-mdi-code_braces
-test:       "\ufb67"  # nf-mdi-test_tube
-text:       "\ue612"  # nf-seti-text
-typescript: "\ue628"  # nf-seti-typescript
-video:      "\ufa66"  # nf-mdi-video
-vuejs:      "\ufd42"  # nf-mdi-vuejs
+  apple:      "\ue711"  # nf-dev-apple
+  audio:      "\ufc1d"  # nf-mdi-speaker_wireless
+  broom:      "\uf5e1"  # nf-mdi-broom
+  config:     "\ue615"  # nf-seti-config
+  css:        "\ue749"  # nf-dev-css3
+  docker:     "\uf308"  # nf-linux-docker
+  folder:     "\uf07b"  # nf-fa-folder
+  git:        "\uf7a1"  # nf-mdi-git
+  html:       "\ue736"  # nf-dev-html5
+  image:      "\uf7e8"  # nf-mdi-image
+  javascript: "\ue60c"  # nf-seti-javascript
+  json:       "\ue60b"  # nf-seti-json
+  license:    "\uf495"  # nf-oct-law
+  lock:       "\uf456"  # nf-oct-lock
+  markdown:   "\uf48a"  # nf-oct-markdown
+  package:    "\uf487"  # nf-oct-package
+  env:        "\ue22f"  # nf-fae-plant
+  python:     "\uf81f"  # nf-mdi-language_python
+  ruby:       "\ue791"  # nf-dev-ruby_rough
+  runner:     "\ufc0c"  # nf-mdi-run
+  sass:       "\ue603"  # nf-seti-sass
+  shell:      "\ufcb5"  # nf-mdi-console_line
+  source:     "\uf668"  # nf-mdi-code_braces
+  test:       "\ufb67"  # nf-mdi-test_tube
+  text:       "\ue612"  # nf-seti-text
+  typescript: "\ue628"  # nf-seti-typescript
+  video:      "\ufa66"  # nf-mdi-video
+  vuejs:      "\ufd42"  # nf-mdi-vuejs

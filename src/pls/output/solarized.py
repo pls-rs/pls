@@ -15,7 +15,7 @@ def get_color(name) -> tuple[int, int, int]:
     :return: a tuple with the red, green and blue channel values
     """
 
-    solarized = load_yaml_file(internal_yml_path("solarized.yml"))
+    solarized = load_yaml_file(internal_yml_path("../data/solarized.yml"))
     color = solarized[name]
     return cast(Tuple[int, int, int], tuple(color))
 

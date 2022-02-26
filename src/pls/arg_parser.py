@@ -7,7 +7,7 @@ from pls import __version__
 from pls.enums.icon_type import IconType
 from pls.enums.unit_system import UnitSystem
 from pls.exceptions import ExecException
-from pls.table.detail_columns import detail_columns
+from pls.output.detail_columns import detail_columns
 
 
 detail_column_keys = detail_columns.keys()
@@ -279,9 +279,3 @@ exporting.add_argument(
     type=file,
     help="the path to the file where to write the exported HTML",
 )
-
-
-args = parser.parse_args()
-"""the CLI arguments parsed by ``argparse``"""
-
-__all__ = ["args"]

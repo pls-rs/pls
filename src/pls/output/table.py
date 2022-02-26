@@ -5,14 +5,14 @@ import textwrap
 from rich.console import Console
 from rich.table import Table
 
-from pls.args import args
-from pls.data.solarized import solarized_theme
+from pls import globals
 from pls.enums.icon_type import IconType
 from pls.models.node import Node
-from pls.table.column_spec import column_groups, column_spec_map
+from pls.output.column_spec import column_groups, column_spec_map
+from pls.output.solarized import solarized_theme
 
 
-console = Console(record=(args.export is not None))
+console = Console(record=(globals.state.export is not None))
 
 
 def column_chosen(col_name: str) -> bool:
@@ -23,7 +23,7 @@ def column_chosen(col_name: str) -> bool:
     :return: ``True`` if the column is to be shown, ``False`` otherwise
     """
 
-    return col_name in args.details or "+" in args.details
+    return col_name in globals.state.details or "+" in globals.state.details
 
 
 def get_columns() -> list[str]:
@@ -34,13 +34,13 @@ def get_columns() -> list[str]:
     """
 
     selected_col_groups = []
-    if args.details:
+    if globals.state.details:
         for col_group in column_groups:
             filtered_group = [col for col in col_group if column_chosen(col)]
             selected_col_groups.append(filtered_group)
 
     name_group = ["name"]
-    if args.icon != IconType.NONE:
+    if globals.state.icon != IconType.NONE:
         name_group.insert(0, "icon")
     selected_col_groups.append(name_group)
 
@@ -69,7 +69,7 @@ def get_table() -> Table:
     table = Table(
         padding=(0, 1, 0, 0),
         box=None,
-        show_header=args.details is not None,
+        show_header=globals.state.details is not None,
         header_style="underline",
     )
     for col_key in get_columns():
@@ -115,7 +115,7 @@ def write_output(all_nodes: list[Node]):
 
     console.print(table)
 
-    if args.export:
+    if globals.state.export:
         html_body = textwrap.dedent(
             """
             <div
@@ -125,7 +125,7 @@ def write_output(all_nodes: list[Node]):
             </div>
             """  # noqa: E501
         )
-        with args.export.open("w", encoding="utf-8") as out_file:
+        with globals.state.export.open("w", encoding="utf-8") as out_file:
             content = console.export_html(
                 theme=solarized_theme,
                 code_format=html_body,

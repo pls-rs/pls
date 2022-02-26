@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from sys import platform
 
-from pls.args import args
+from pls import globals
 from pls.models.col_spec import ColumnSpec
-from pls.state import state
-from pls.table.detail_columns import detail_columns
+from pls.output.detail_columns import detail_columns
 
 
 column_spec_map: dict[str, ColumnSpec] = {
@@ -16,7 +15,7 @@ column_spec_map: dict[str, ColumnSpec] = {
         "name": "",
         "attrs": {"width": 2},
     },
-    "name": {"name": "Name" if args.no_align else " Name"},
+    "name": {"name": "Name" if globals.state.no_align else " Name"},
 }
 """a mapping of column keys to column spec"""
 
@@ -38,7 +37,7 @@ def get_column_groups() -> list[list[str]]:
     if platform != "win32":
         col_groups.insert(0, ["inode", "links"])
         col_groups.insert(2, ["user", "group"])
-    if state.is_git_managed:
+    if globals.state.git_root is not None:
         col_groups.append(["git"])
     return col_groups
 

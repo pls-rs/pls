@@ -66,7 +66,7 @@ class TypeMixin(Generic[T], BaseNode):
             if not link.is_absolute():
                 link = self.path.parent.joinpath(link)
 
-            self.dest_node = self.__class__(name=link_path, path=link)
+            self.dest_node = self.__class__(name=link_path, path=link, is_pseudo=True)
         except RuntimeError as exc:
             if "Symlink loop" in str(exc):
                 self.is_loop = True

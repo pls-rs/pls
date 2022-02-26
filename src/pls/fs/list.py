@@ -6,7 +6,7 @@ from typing import Optional
 
 from rich.console import Console
 
-from pls.args import args
+from pls import globals
 from pls.enums.node_type import NodeType
 from pls.models.node import Node
 
@@ -23,9 +23,9 @@ def sort_key(node: Node) -> tuple:
     :return: a string representative of the node
     """
 
-    key = node.sort_keys[args.sort.rstrip("-")]
-    is_reversed = args.sort.endswith("-")
-    if not args.no_dirs_first:
+    key = node.sort_keys[globals.state.sort.rstrip("-")]
+    is_reversed = globals.state.sort.endswith("-")
+    if not globals.state.no_dirs_first:
         if is_reversed:
             type_key = 1 if node.node_type == NodeType.DIR else 0
         else:
@@ -43,16 +43,16 @@ def parse_node(node_name: str) -> Optional[Node]:
     :return: a ``Node`` instance
     """
 
-    node_path: Path = args.directory.joinpath(node_name)
+    node_path: Path = globals.state.directory.joinpath(node_name)
 
     if node_path.is_dir():
-        if args.no_dirs:
+        if globals.state.no_dirs:
             return None
     else:  # is some kind of file
-        if args.no_files:
+        if globals.state.no_files:
             return None
 
-    return Node(node_name, path=node_path)
+    return Node(name=node_name, path=node_path)
 
 
 def read_input() -> tuple[dict[str, Node], list[Node]]:
@@ -62,14 +62,14 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
     :return: the list of directories and files inside the given directory
     """
 
-    all_nodes = os.listdir(args.directory)
+    all_nodes = os.listdir(globals.state.directory)
 
     node_map = {}
     node_list = []
 
     if not all_nodes:
         console.print(
-            f"There are no files or folders in [bold]{args.directory}[/bold].",
+            f"There are no files or folders in [bold]{globals.state.directory}[/bold].",
             highlight=False,
         )
     else:
@@ -79,6 +79,6 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
             if (parsed_node := parse_node(node)) is not None
         }
         node_list = list(node_map.values())
-        node_list.sort(key=sort_key, reverse=args.sort.endswith("-"))
+        node_list.sort(key=sort_key, reverse=globals.state.sort.endswith("-"))
 
     return node_map, node_list

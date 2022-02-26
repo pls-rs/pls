@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -26,7 +26,7 @@ from pls.fs.git import get_git_statuses
 )
 def test_statuses_handles_all_cases(entry: str, statuses: dict[Path, str]):
     entries = [entry]
-    exec_git = Mock(return_value=Mock(stdout="\n".join(entries)))
+    exec_git = MagicMock(return_value=MagicMock(stdout="\n".join(entries)))
     with patch("pls.fs.git.exec_git", exec_git):
         git_statuses = get_git_statuses(Path("."))
     assert git_statuses == {Path(key): value for key, value in statuses.items()}
@@ -40,7 +40,7 @@ def test_statuses_combines_two_git_cmds():
         " R renamed_worktree -> new_worktree",
     ]
     # git status --porcelain --untracked-files --ignored
-    u_i = Mock(
+    u_i = MagicMock(
         stdout="\n".join(
             [
                 *common_entries,
@@ -50,7 +50,7 @@ def test_statuses_combines_two_git_cmds():
         )
     )
     # git status --porcelain --untracked-files=normal --ignored=matching
-    u_normal_i_matching = Mock(
+    u_normal_i_matching = MagicMock(
         stdout="\n".join(
             [
                 *common_entries,
@@ -59,7 +59,7 @@ def test_statuses_combines_two_git_cmds():
             ]
         )
     )
-    exec_git = Mock(side_effect=[u_i, u_normal_i_matching])
+    exec_git = MagicMock(side_effect=[u_i, u_normal_i_matching])
 
     with patch("pls.fs.git.exec_git", exec_git):
         statuses = get_git_statuses(Path("."))

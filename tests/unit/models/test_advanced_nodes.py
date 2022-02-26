@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from sys import platform
 from typing import Callable
 
 import pytest
@@ -9,12 +10,15 @@ from pls.models.node import Node
 from tests.unit.utils import strip_formatting
 
 
+if platform == "win32":
+    pytest.skip(reason="Node types unsupported on Windows", allow_module_level=True)
+
+
 @pytest.mark.parametrize(
     "name, node_type",
     [
-        ("dir", NodeType.DIR),
-        ("file", NodeType.FILE),
-        ("broken", NodeType.UNKNOWN),
+        ("fifo", NodeType.FIFO),
+        ("socket", NodeType.SOCKET),
     ],
 )
 def test_node_has_correct_type(
@@ -27,9 +31,8 @@ def test_node_has_correct_type(
 @pytest.mark.parametrize(
     "name, suffix",
     [
-        ("dir", "/"),
-        ("file", ""),
-        ("broken", "⚠"),
+        ("fifo", "|"),
+        ("socket", "="),
     ],
 )
 def test_node_has_correct_suffix(
@@ -42,9 +45,8 @@ def test_node_has_correct_suffix(
 @pytest.mark.parametrize(
     "name, type_char",
     [
-        ("dir", "d"),
-        ("file", "-"),
-        ("broken", "?"),
+        ("fifo", "p"),
+        ("socket", "s"),
     ],
 )
 def test_node_has_correct_type_char(
@@ -56,7 +58,7 @@ def test_node_has_correct_type_char(
 
 @pytest.mark.parametrize(
     "name",
-    ["dir", "file", "broken"],
+    ["fifo", "socket"],
 )
 def test_nodes_have_no_dest(name: str, get_node: Callable[[str], Node]):
     node = get_node(name)
@@ -66,9 +68,8 @@ def test_nodes_have_no_dest(name: str, get_node: Callable[[str], Node]):
 @pytest.mark.parametrize(
     "name, format_left, format_right",
     [
-        ("dir", "[cyan]", "[/]"),
-        ("file", "", ""),
-        ("broken", "[red]", "[/]"),
+        ("fifo", "", ""),
+        ("socket", "", ""),
     ],
 )
 def test_node_has_correct_format_pair(
@@ -80,13 +81,8 @@ def test_node_has_correct_format_pair(
 
 @pytest.mark.parametrize(
     "name",
-    ["dir", "file"],
+    ["fifo", "socket"],
 )
 def test_non_broken_nodes_exist(name: str, get_node: Callable[[str], Node]):
     node = get_node(name)
     assert node.exists
-
-
-def test_broken_node_does_not_exist(get_node: Callable[[str], Node]):
-    node = get_node("broken")
-    assert not node.exists

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from sys import platform
 from typing import Callable
 
 import pytest
@@ -9,13 +10,15 @@ from pls.models.node import Node
 from tests.unit.utils import strip_formatting
 
 
+if platform == "win32":
+    pytest.skip(reason="Node types unsupported on Windows", allow_module_level=True)
+
+
 @pytest.mark.parametrize(
     "name",
     [
-        "symlink_dir",
-        "symlink_file",
-        "symlink_broken",
-        "symlink_symlink_dir",
+        "symlink_fifo",
+        "symlink_socket",
     ],
 )
 def test_symlink_has_correct_type(name: str, get_symlink: Callable[[str], Node]):
@@ -23,18 +26,11 @@ def test_symlink_has_correct_type(name: str, get_symlink: Callable[[str], Node])
     assert symlink.node_type == NodeType.SYMLINK
 
 
-def test_symlink_has_correct_type_char(get_symlink: Callable[[str], Node]):
-    symlink = get_symlink("symlink_dir")
-    assert symlink.type_char == "l"
-
-
 @pytest.mark.parametrize(
     "name, dest",
     [
-        ("symlink_dir", "dir"),
-        ("symlink_file", "file"),
-        ("symlink_broken", "broken"),
-        ("symlink_symlink_dir", "symlink_dir"),
+        ("symlink_fifo", "fifo"),
+        ("symlink_socket", "socket"),
     ],
 )
 def test_symlinks_have_dest(
@@ -51,10 +47,8 @@ def test_symlinks_have_dest(
 @pytest.mark.parametrize(
     "name, suffix_chain",
     [
-        ("symlink_dir", ["dir/"]),
-        ("symlink_file", ["file"]),
-        ("symlink_broken", ["broken⚠"]),
-        ("symlink_symlink_dir", ["symlink_dir@", "dir/"]),
+        ("symlink_fifo", ["fifo|"]),
+        ("symlink_socket", ["socket="]),
     ],
 )
 def test_symlink_has_dest_in_suffix(

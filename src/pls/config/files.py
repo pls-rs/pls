@@ -23,13 +23,14 @@ def find_configs() -> list[Path]:
         conf_paths.append(test_path)
 
     # Find a config in the current path's ancestors
-    conf_paths.extend(
-        [
-            test_path
-            for i in range(globals.state.depth)
-            if is_valid(test_path := curr_dir.parents[i].joinpath(conf_name))
-        ]
-    )
+    for i in range(globals.state.depth):
+        try:
+            test_path = curr_dir.parents[i].joinpath(conf_name)
+            if is_valid(test_path):
+                conf_paths.append(test_path)
+        except IndexError:
+            # Ran out of parent directories
+            break
 
     # Find a config in the Git root.
     if globals.state.git_root is not None:

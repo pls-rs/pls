@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from pls.data.getters import break_plurals, massage_specs
+from pls.config.specs import break_plurals, massage_specs
 from pls.exceptions import ConfigException
 
 

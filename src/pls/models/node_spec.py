@@ -70,7 +70,7 @@ class NodeSpec:
         if self.name:
             return self.name == node.name
         elif self.pattern:
-            return re.match(self.pattern, node.name) is not None
+            return self.pattern.match(node.name) is not None
         elif self.glob:
             return node.path.match(self.glob)
         elif self.extension:

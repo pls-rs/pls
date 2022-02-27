@@ -104,6 +104,7 @@ such as lockfiles for package managers.
 Some especially useless files are bestowed the importance of -2.
 
 - `.DS_Store`
+
 - Python
   - `__pycache__`
 

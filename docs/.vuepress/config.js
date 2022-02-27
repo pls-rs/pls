@@ -8,6 +8,7 @@ const features = {
     "/features/icons",
     "/features/suffixes",
     "/features/details",
+    "/features/filtering",
     "/features/sorting",
     "/features/importance",
     "/features/collapse",

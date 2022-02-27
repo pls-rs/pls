@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -226,12 +227,9 @@ filtering.add_argument(
     help="hide files in the output",
 )
 filtering.add_argument(
-    *["-r", "--re"],
-    help="only show files that match the given regular expression",
-)
-filtering.add_argument(
-    *["-g", "--glob"],
-    help="only show files that match the given glob pattern",
+    *["-e", "--exclude"],
+    type=lambda val: re.compile(val),
+    help="exclude nodes that match the given regular expression",
 )
 
 #################
@@ -276,7 +274,7 @@ exporting = parser.add_argument_group(
     description="arguments for exporting the output to a file",
 )
 exporting.add_argument(
-    *["-e", "--export"],
+    *["-x", "--export"],
     type=file,
     help="the path to the file where to write the exported HTML",
 )

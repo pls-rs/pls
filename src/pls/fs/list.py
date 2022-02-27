@@ -19,8 +19,8 @@ def sort_key(node: Node) -> tuple:
     Map a ``Node`` instance to a string that represents it. This string is used
     to sort a list of ``Node`` instances.
 
-    :param node: the node item to reduce to a string
-    :return: a string representative of the node
+    :param node: the node item for which to get the sorting key
+    :return: the value to use as the sort key for the node
     """
 
     key = node.sort_keys[globals.state.sort.rstrip("-")]
@@ -32,6 +32,20 @@ def sort_key(node: Node) -> tuple:
             type_key = 0 if node.node_type == NodeType.DIR else 1
         return type_key, key, node.sort_keys["name"]
     return key, node.name
+
+
+def passes_filters(node: Node) -> bool:
+    """
+    Determine whether the given node fulfils the filtering criteria.
+
+    :param node: the node to test against the filters
+    :return: ``True`` if the node passes the filters, ``False`` otherwise
+    """
+
+    if not globals.state.exclude:
+        return True
+
+    return globals.state.exclude.match(node.name) is None
 
 
 def parse_node(node_name: str) -> Optional[Node]:
@@ -76,7 +90,7 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
         node_map = {
             parsed_node.name: parsed_node
             for node in all_nodes
-            if (parsed_node := parse_node(node)) is not None
+            if (parsed_node := parse_node(node)) and passes_filters(parsed_node)
         }
         node_list = list(node_map.values())
         node_list.sort(key=sort_key, reverse=globals.state.sort.endswith("-"))

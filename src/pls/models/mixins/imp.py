@@ -30,7 +30,7 @@ class ImpMixin(BaseNode):
         return imp
 
     @cached_property
-    def is_visible(self) -> bool:
+    def is_visible_imp(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
         return self.importance + globals.state.all >= -1

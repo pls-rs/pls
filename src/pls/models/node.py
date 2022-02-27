@@ -58,6 +58,12 @@ class Node(
 
         return f"{self.name} @ {self.path}"
 
+    @property
+    def is_visible(self):
+        """whether the node deserves to be rendered to the screen"""
+
+        return self.is_visible_imp and self.is_visible_tree
+
     @cached_property
     def format_pair(self) -> tuple[str, str]:
         """the opening and closing tags of Rich console formatting markup"""

@@ -1,9 +1,18 @@
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Callable
+from unittest.mock import patch
+
 import pytest
 
-from pls.config.specs import break_plurals, massage_specs
+from pls import globals
+from pls.config.files import find_configs
+from pls.config.icons import get_icons
+from pls.config.specs import break_plurals, get_specs, massage_specs
 from pls.exceptions import ConfigException
+from pls.models.node import Node
+from tests.unit.utils import strip_formatting
 
 
 @pytest.mark.parametrize(
@@ -118,3 +127,37 @@ def test_massaging_singular_value_in_plural_fields_raises_error(entry: dict):
 )
 def test_massages_plurals_fields_to_singular(entry: dict, specs: list[dict]):
     assert massage_specs(entry) == specs
+
+
+def test_specs_union(
+    work_dirs: tuple[Path, Path, Path], get_conf: Callable[[Path], Path]
+):
+    _, two, three = work_dirs
+    get_conf(two)
+    get_conf(three)
+
+    with patch.multiple(globals.state, directory=three, git_root=None):
+        configs = find_configs()
+        node_specs = get_specs(configs)
+
+    assert len(node_specs) == 2
+
+
+def test_specs_cascade(
+    work_dirs: tuple[Path, Path, Path], get_conf: Callable[[Path], Path]
+):
+    _, two, three = work_dirs
+    get_conf(two)
+    get_conf(three)
+
+    with patch.multiple(globals.state, directory=three, git_root=None):
+        configs = find_configs()
+        node_specs = get_specs(configs)
+        nerd_icons, _ = get_icons(configs)
+    with patch("pls.models.node.nerd_icons", nerd_icons):
+        test_node = Node(name="cat.py", path=three.joinpath("cat.py"))
+        test_node.match_specs(node_specs)
+        icon = test_node.formatted_icon
+
+    assert strip_formatting(icon) == "ﯙ"
+    assert test_node.importance == 1

@@ -19,7 +19,7 @@ def get_icons(conf_paths: list[Path]) -> tuple[dict[str, str], dict[str, str]]:
     nerd: dict[str, str] = {}
     emoji: dict[str, str] = {}
 
-    for conf_path in conf_paths:
+    for conf_path in reversed(conf_paths):
         conf = load_yaml_file(conf_path)
         nerd.update(conf.get("nerd_icons", {}))
         emoji.update(conf.get("emoji_icons", {}))

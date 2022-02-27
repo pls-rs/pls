@@ -63,9 +63,3 @@ def test_symlink_has_dest_in_suffix(
     symlink = get_symlink(name)
     suffix = f"@ → {' → '.join(suffix_chain)}"
     assert strip_formatting(symlink.formatted_suffix) == suffix
-
-
-def test_handles_cyclic_symlinks(cyclic_symlinks: tuple[Node, Node]):
-    a, b = cyclic_symlinks
-    assert strip_formatting(a.formatted_suffix) == "@ ↺ symlink_b"
-    assert strip_formatting(b.formatted_suffix) == "@ ↺ symlink_a"

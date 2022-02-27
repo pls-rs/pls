@@ -83,10 +83,13 @@ def get_formatted_user(stat: os.stat_result) -> Optional[str]:
     try:
         from pwd import getpwuid
 
-        pw_name = getpwuid(stat.st_uid).pw_name
-        if pw_name != globals.state.username:
-            pw_name = f"[dim]{pw_name}[/]"
-        return pw_name
+        try:
+            pw_name = getpwuid(stat.st_uid).pw_name
+            if pw_name != globals.state.username:
+                pw_name = f"[dim]{pw_name}[/]"
+            return pw_name
+        except KeyError:  # user does not exist anymore
+            return f"[dim red]{stat.st_uid}[/]"
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 
@@ -104,10 +107,13 @@ def get_formatted_group(stat: os.stat_result) -> Optional[str]:
     try:
         from grp import getgrgid
 
-        gr_name = getgrgid(stat.st_gid).gr_name
-        if gr_name not in globals.state.groups:
-            gr_name = f"[dim]{gr_name}[/]"
-        return gr_name
+        try:
+            gr_name = getgrgid(stat.st_gid).gr_name
+            if gr_name not in globals.state.groups:
+                gr_name = f"[dim]{gr_name}[/]"
+            return gr_name
+        except KeyError:  # group does not exist anymore
+            return f"[dim red]{stat.st_gid}[/]"
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 

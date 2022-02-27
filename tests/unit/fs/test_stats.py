@@ -97,6 +97,14 @@ def test_user_is_dimmed_if_not_current():
 
 
 @pytest.mark.skipif(platform == "win32", reason="Feature unsupported on Windows")
+def test_gone_user_is_shown_as_int():
+    mock_getpwuid = MagicMock(side_effect=KeyError("uid not found"))
+    mock_stat = MagicMock(st_uid=123)
+    with patch("pwd.getpwuid", mock_getpwuid):
+        assert get_formatted_user(mock_stat) == "[dim red]123[/]"
+
+
+@pytest.mark.skipif(platform == "win32", reason="Feature unsupported on Windows")
 def test_group_is_dimmed_if_not_current():
     mock_getgrgid = MagicMock(return_value=MagicMock(gr_name="x"))
     mock_stat = MagicMock(st_gid=None)
@@ -104,6 +112,14 @@ def test_group_is_dimmed_if_not_current():
         globals.state, groups={"y", "z"}
     ):
         assert get_formatted_group(mock_stat) == "[dim]x[/]"
+
+
+@pytest.mark.skipif(platform == "win32", reason="Feature unsupported on Windows")
+def test_gone_group_is_shown_as_int():
+    mock_getgrgid = MagicMock(side_effect=KeyError("gid not found"))
+    mock_stat = MagicMock(st_gid=123)
+    with patch("grp.getgrgid", mock_getgrgid):
+        assert get_formatted_group(mock_stat) == "[dim red]123[/]"
 
 
 @pytest.mark.parametrize(

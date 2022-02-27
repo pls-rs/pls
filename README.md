@@ -13,7 +13,7 @@
     <img src="https://img.shields.io/github/license/dhruvkb/pls" alt="GPL-3.0"/>
   </a>
   <a href="https://pypi.org/project/pls/">
-    <img src="https://img.shields.io/static/v1?label=supported%20OS&message=mac,%20win&color=informational" alt="Supported OS"/>
+    <img src="https://img.shields.io/static/v1?label=supported%20OS&message=posix,%20win&color=informational" alt="Platforms"/>
   </a>
   <a href="https://dhruvkb.github.io/pls/">
     <img src="https://img.shields.io/static/v1?label=docs&message=dhruvkb/pls:docs&color=informational" alt="Docs"/>

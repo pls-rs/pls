@@ -8,46 +8,71 @@ description: >-
 
 # Get started
 
-Thanks for using `pls`!
+Thanks for giving `pls` a try. `pls`, being a Python package, needs Python 3.8
+or newer.
 
-## Prerequisites
+## With `pip`
 
-`pls`, being a Python package needs the following:
+This is the simplest way to install and use `pls`. It does have one major
+drawback: it installs lots of packages to the global namespace that will be left
+behind after `pls` is uninstalled.
 
-- Python ≥ 3.8
-- `pip`
+We recommend [giving `pipx` a try](#with-pipx).
 
-You see, `pls` has very few needs.
+### Prerequisites
 
-## Installing
+To install using `pip`, you need to have `pip`. If you have Python installed, it
+is very likely you also have `pip` installed too.
 
-### `pip`
-
-To install `pls`, install it as you would any other Python package.
+### Installing
 
 ```:no-line-numbers
 $ pip install --user pls
 ```
 
-### `pipx`
-
-You can also install `pls` via [`pipx`](https://pypa.github.io/pipx/).
-
-```:no-line-numbers
-$ pipx install pls
-```
-
-## Updating
-
-To update `pls` when you've fallen behind the latest version, run the following
-command.
+### Updating
 
 ```:no-line-numbers
 $ pip install --user --upgrade pls
 ```
 
-If you used any alternative methods to install `pls`, follow the documentation
-for the respective tool to update packages.
+### Uninstalling
+
+```:no-line-numbers
+$ pip uninstall pls
+```
+
+## With `pipx`
+
+[`pipx`](https://pypa.github.io/pipx/) is a fine way to install executable
+Python packages globally while still isolating them in virtual environments.
+This allows for clean upgrades and uninstalls. You can learn more about `pipx`
+from their documentation.
+
+For new installs, we recommend using this approach.
+
+### Prerequisites
+
+To install `pls` using `pipx` you need to first install `pipx`! Read the `pipx`
+documentation to [learn how](https://pypa.github.io/pipx/installation/).
+
+### Installing
+
+```:no-line-numbers
+$ pipx install pls
+```
+
+### Updating
+
+```:no-line-numbers
+$ pipx upgrade pls
+```
+
+### Uninstalling
+
+```:no-line-numbers
+$ pipx uninstall poetry
+```
 
 ## Verifying
 

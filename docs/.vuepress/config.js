@@ -35,7 +35,8 @@ module.exports = {
     ],
 
     sidebar: {
-      "/features/": [features],
+      "/get_started": ["/get_started"],
+      "/features": [features],
     },
   },
   alias: Object.fromEntries(

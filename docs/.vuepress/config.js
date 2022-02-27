@@ -1,6 +1,11 @@
 const { path } = require("@vuepress/utils");
 const packageInfo = require("../../package.json");
 
+const about = {
+  text: "About",
+  children: ["/about/faq", "/about/comparison"],
+};
+
 const features = {
   text: "Features",
   children: [
@@ -31,12 +36,14 @@ module.exports = {
 
     navbar: [
       { text: "Get started", link: "/get_started" },
+      about,
       features,
       { text: "PyPI", link: "https://pypi.org/project/pls/" },
     ],
 
     sidebar: {
       "/get_started": ["/get_started"],
+      "/about": [about],
       "/features": [features],
     },
   },

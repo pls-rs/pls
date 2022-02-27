@@ -12,9 +12,6 @@ from pls.output.column_spec import column_groups, column_spec_map
 from pls.output.solarized import solarized_theme
 
 
-console = Console(record=(globals.state.export is not None))
-
-
 def column_chosen(col_name: str) -> bool:
     """
     Determine whether the given column name has been asked for in the details.
@@ -105,6 +102,7 @@ def write_output(all_nodes: list[Node]):
     :param all_nodes: the list of all directories and files
     """
 
+    console = Console(record=(globals.state.export is not None))
     table = get_table()
 
     for node in all_nodes:

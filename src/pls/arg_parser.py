@@ -229,7 +229,12 @@ filtering.add_argument(
 filtering.add_argument(
     *["-e", "--exclude"],
     type=lambda val: re.compile(val),
-    help="exclude nodes that match the given regular expression",
+    help="do not show nodes that match the given regular expression",
+)
+filtering.add_argument(
+    *["-o", "--only"],
+    type=lambda val: re.compile(val),
+    help="only show nodes that match the given regular expression",
 )
 
 #################

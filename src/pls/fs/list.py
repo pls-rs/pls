@@ -42,10 +42,11 @@ def passes_filters(node: Node) -> bool:
     :return: ``True`` if the node passes the filters, ``False`` otherwise
     """
 
-    if not globals.state.exclude:
-        return True
-
-    return globals.state.exclude.match(node.name) is None
+    if globals.state.exclude and globals.state.exclude.match(node.name) is not None:
+        return False
+    if globals.state.only and globals.state.only.match(node.name) is None:
+        return False
+    return True
 
 
 def parse_node(node_name: str) -> Optional[Node]:

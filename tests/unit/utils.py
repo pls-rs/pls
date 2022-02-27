@@ -10,5 +10,5 @@ def strip_formatting(fmt_text: str) -> str:
     :return: the text stripped of all formatting
     """
 
-    fmt_pattern = re.compile(r"\[/?\w*]")
+    fmt_pattern = re.compile(r"\[/?[\w\s]*]")
     return re.sub(fmt_pattern, "", fmt_text)

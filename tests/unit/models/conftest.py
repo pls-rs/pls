@@ -30,16 +30,16 @@ def get_node(workbench: Path):
     def _get_node(name: str):
         path = workbench.joinpath(name)
         if not path.exists():
-            if name == "dir":
+            if name == "broken":
+                pass
+            elif name == "dir":
                 path.mkdir(mode=0o755)
-            elif name == "file":
-                path.touch(mode=0o644)
             elif name == "fifo":
                 os.mkfifo(path, mode=0o644)
             elif name == "socket":
                 socket.socket(socket.AF_UNIX).bind(str(path.resolve()))
-            elif name == "broken":
-                pass
+            else:  # name == "file" or anything else
+                path.touch(mode=0o644)
         return Node(name=name, path=path)
 
     return _get_node

@@ -3,6 +3,8 @@ from __future__ import annotations
 from functools import cached_property
 from typing import TYPE_CHECKING
 
+from rich.markup import escape
+
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -17,7 +19,7 @@ class BaseNode:
     """
 
     def __init__(self, name: str, path: Path):
-        self.name = name
+        self.name = escape(name)
         self.path = path
 
         self.specs: list[NodeSpec] = []  # matched in ``match_specs``

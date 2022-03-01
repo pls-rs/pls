@@ -77,7 +77,7 @@ $ pipx uninstall poetry
 ## Verifying
 
 To check if `pls` is installed and discoverable in your path, run the following
-command. If you see the same version number as on
+command. If the version number you see is the same as the latest version on
 [PyPI](https://pypi.org/project/pls/), you're all set!
 
 ```

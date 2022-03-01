@@ -63,7 +63,7 @@ d <span style="color: #b58900; text-decoration-color: #b58900">r</span><span sty
 </div>
 
 - Pass the `--details`/`-d` flag with the value `+` to get all the details. This
-  is probably too much infomation, and you'll need a wider monitor.
+  is probably too much information, and you'll need a wider monitor.
 
 ```
 $ pls -d +

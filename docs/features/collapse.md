@@ -2,7 +2,7 @@
 lang: en-GB
 title: Collapse
 description: >-
-  When the code contains auto-generated files such as lockfiles for dependencies
+  When the code contains auto-generated files such as dependency lock-files
   and compiled files from higher-order languages, pls can nest them for you.
 ---
 

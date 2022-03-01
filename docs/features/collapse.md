@@ -19,7 +19,7 @@ and effort while others are generated automatically.
 `pls` does not collapse files by default. You can choose to collapse files by
 passing the `--collapse`/`-c` flag.
 
-```:no-line-numbers
+```
 $ pls --collapse
 $ pls -c
 ```
@@ -27,7 +27,7 @@ $ pls -c
 You can hide collapsed files altogether by passing the `--collapse`/`-c` flag
 twice.
 
-```:no-line-numbers
+```
 $ pls --collapse --collapse
 $ pls -c -c
 $ pls -cc

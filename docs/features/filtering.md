@@ -22,7 +22,7 @@ There are a number of flags that control the filter criteria.
 - Pass the `--no-dirs` flag to hide all directories from the output, and show
   files.
 
-```:no-line-numbers
+```
 $ pls --no-dirs
 ```
 
@@ -46,7 +46,7 @@ $ pls --no-dirs
 - Pass the `--no-files` flag to hide all files from the output, and only show
   directories.
 
-```:no-line-numbers
+```
 $ pls --no-files
 ```
 
@@ -62,7 +62,7 @@ $ pls --no-files
 - Pass the `--exclude`/`-e` option with a regular expression to hide all files
   matching the pattern.
 
-```:no-line-numbers
+```
 $ pls -e '.*\.ya?ml'
 ```
 
@@ -87,7 +87,7 @@ $ pls -e '.*\.ya?ml'
 - Pass the `--only`/`-o` option with a regular expression to only show files
   matching the pattern.
 
-```:no-line-numbers
+```
 $ pls -o '.*\.ya?ml'
 ```
 
@@ -120,7 +120,7 @@ with it.
 Passing both `--only`/`-o` and `--exclude`/`-e` will lead to a combined effect
 where only files matching both conditions will be shown.
 
-```:no-line-numbers
+```
 $ poetry run pls -e 'README' -o '.*\.md'
 ```
 

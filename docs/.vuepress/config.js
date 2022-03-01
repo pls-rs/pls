@@ -28,6 +28,12 @@ module.exports = {
 
   head: [["link", { rel: "icon", href: "/pls/favicon.png" }]],
 
+  markdown: {
+    code: {
+      lineNumbers: false,
+    },
+  },
+
   theme: "@vuepress/theme-default",
   themeConfig: {
     repo: packageInfo.repository.replace("github:", ""),

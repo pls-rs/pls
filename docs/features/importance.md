@@ -14,7 +14,7 @@ project is filled with scaffolding and configuration files for toolchains.
 
 Consider this root directory of `pls` itself.
 
-```:no-line-numbers
+```
 dist
 justfile
 LICENSE
@@ -29,7 +29,7 @@ tests
 It's very difficult to identify your source code in this mess. Here's how `pls`
 formats it.
 
-```:no-line-numbers
+```
 $ pls
 ```
 
@@ -64,14 +64,14 @@ one, so
 
 - use the flag once to see importance -2 and above
 
-```:no-line-numbers
+```
 $ pls -all
 $ pls -a
 ```
 
 - use the flag twice to see importance -3 and above
 
-```:no-line-numbers
+```
 $ pls --all --all
 $ pls -a -a
 $ pls -aa

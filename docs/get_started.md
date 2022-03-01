@@ -26,19 +26,19 @@ is very likely you also have `pip` installed too.
 
 ### Installing
 
-```:no-line-numbers
+```
 $ pip install --user pls
 ```
 
 ### Updating
 
-```:no-line-numbers
+```
 $ pip install --user --upgrade pls
 ```
 
 ### Uninstalling
 
-```:no-line-numbers
+```
 $ pip uninstall pls
 ```
 
@@ -58,19 +58,19 @@ documentation to [learn how](https://pypa.github.io/pipx/installation/).
 
 ### Installing
 
-```:no-line-numbers
+```
 $ pipx install pls
 ```
 
 ### Updating
 
-```:no-line-numbers
+```
 $ pipx upgrade pls
 ```
 
 ### Uninstalling
 
-```:no-line-numbers
+```
 $ pipx uninstall poetry
 ```
 
@@ -80,7 +80,7 @@ To check if `pls` is installed and discoverable in your path, run the following
 command. If you see the same version number as on
 [PyPI](https://pypi.org/project/pls/), you're all set!
 
-```:no-line-numbers
+```
 $ pls -v
 pls x.y.z
 ```
@@ -89,12 +89,12 @@ pls x.y.z
 
 To run `pls`, type the command into any terminal.
 
-```:no-line-numbers
+```
 $ pls
 ```
 
 To get help, run `pls` with the `--help`/`-h` flag or _read this documentation_!
 
-```:no-line-numbers
+```
 $ pls --help
 ```

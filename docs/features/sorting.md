@@ -34,7 +34,7 @@ The `--sort`/`-s` flag works in two ways.
   the value of the field. This will use the order A &rarr; Z for strings and
   0 &rarr; 9 for numbers.
 
-```:no-line-numbers
+```
 $ pls -s ext
 ```
 
@@ -61,7 +61,7 @@ $ pls -s ext
   reverse the sorting order to be Z &rarr; A for strings and 9 &rarr; 0 for
   numbers.
 
-```:no-line-numbers
+```
 $ pls -s ext-
 ```
 
@@ -87,7 +87,7 @@ $ pls -s ext-
 By default, `pls` also puts directories above files and sorts them separately.
 To mix files and directories, pass the `--no-dirs-first` option.
 
-```:no-line-numbers
+```
 $ pls --no-dirs-first
 ```
 

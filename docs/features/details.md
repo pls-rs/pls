@@ -38,7 +38,7 @@ The `--details`/`-d` flag is very multifaceted.
 - Pass just the `-details`/`-d` flag once without any values to get the default
   details. This is quite little, you might want more fields.
 
-```:no-line-numbers
+```
 $ pls -d
 ```
 
@@ -65,7 +65,7 @@ d <span style="color: #b58900; text-decoration-color: #b58900">r</span><span sty
 - Pass the `--details`/`-d` flag with the value `+` to get all the details. This
   is probably too much infomation, and you'll need a wider monitor.
 
-```:no-line-numbers
+```
 $ pls -d +
 ```
 
@@ -93,7 +93,7 @@ $ pls -d +
   them. This makes the most sense. You can also toss in a blank `-d` to include
   the default columns.
 
-```:no-line-numbers
+```
 $ pls -d -d mtime
 ```
 
@@ -193,7 +193,7 @@ megabytes (MB) by using the `--units/-u` flag.
 
 - `binary`: use binary units like KiB, MiB, GiB etc. (default)
 
-```:no-line-numbers
+```
 $ pls -d size
 ```
 
@@ -219,7 +219,7 @@ $ pls -d size
 
 - `decimal`: use decimal units like KB, MB, GB etc.
 
-```:no-line-numbers
+```
 $ pls -d size -u decimal
 ```
 
@@ -245,7 +245,7 @@ $ pls -d size -u decimal
 
 - `none`: show the exact number of bytes
 
-```:no-line-numbers
+```
 $ pls -d size -u none
 ```
 
@@ -274,7 +274,7 @@ $ pls -d size -u none
 `pls` displays the timestamps in the format `%Y-%m-%d %H:%M:%S `. The year and
 seconds are dimmed.
 
-```:no-line-numbers
+```
 $ pls -d ctime -d mtime -d atime
 ```
 
@@ -308,7 +308,7 @@ This accepts a string, which can include Rich
 Since the date columns can get too close, leave a trailing space in the format.
 :::
 
-```:no-line-numbers
+```
 $ pls -d ctime -d mtime -t '[red]%Y[/]-[green]%m[/]-[blue]%d[/] %H:%M '
 ```
 

@@ -17,6 +17,7 @@ const features = {
     "/features/sorting",
     "/features/importance",
     "/features/collapse",
+    "/features/upcoming",
   ],
 };
 

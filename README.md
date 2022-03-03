@@ -84,33 +84,3 @@ the following:
 The icon, color and most behaviour in the application can be [configured using
 plain-text YAML files](src/pls/data/README.md) for the pros who prefer to tweak
 their tools.
-
-## Upcoming features
-
-In the future `pls` will be able to
-
-- generate visibility rules by parsing `.gitignore`
-- add MIME type as another method for matching files to specs
-- use complete path based matching for files
-- generate tree-like output for subdirectories
-
-If you want to help implement any of these features, feel free to submit a PR.
-`pls` is free and open-source software.
-
-## Comparison with similar tools
-
-There are a lot of `ls` replacements. Here are some of the most popular ones.
-
-- [`exa`](https://github.com/ogham/exa)
-- [`lsd`](https://github.com/Peltoche/lsd)
-- [`colorls`](https://github.com/athityakumar/colorls)
-- [`ls-go`](https://github.com/acarl005/ls-go)
-
-`pls` aims to stand out because of some very specific choices.
-
-- Does not intend to replace `ls`. `pls`, as a command, is just as easy to type.
-- Targets a more tech-savvy audience in its [features](#features).
-- Intelligently [maps file type](src/pls/data/README.md). Just comparing the file extension would be too generic.
-- Meticulously chosen iconography for the appreciating eyes.
-- Highly customisable at a project level using a simple [`.pls.yml`](.pls.yml) file.
-- Built in a friendly language, Python. This makes it easy to fork and change it yourself.

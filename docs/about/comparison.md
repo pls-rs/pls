@@ -18,12 +18,23 @@ There are lots of alternatives to `ls`. Here are some of the most popular ones.
 `pls` stands out from all of these, thanks to some very specific choices. Here
 are some examples of how `pls` is a whole class apart from these tools.
 
-## exa
+## General differences
 
-exa is likely the most popular alternative to `ls`. `pls` makes some very
-different choices, considering its target audience, programmers. Programmers
-usually have needs above that of the average user, which means different
-defaults and unique features.
+- A lot of `ls` replacements try to maintain compatibility with `ls`'s options.
+  `pls` does not do that which allows it to have a way more fluent API.
+- While `pls` works for everyone, it targets the tech-savvy pro users,
+  specifically developers using features tailored to their needs.
+- Highly customisable using simple configuration that can be checked-in with
+  your code. No other tool offers this level of customisation.
+- Very meticulously chosen iconography with support for Nerd Fonts, emoji and
+  even no icons at all.
+
+### Specific differences
+
+### exa
+
+exa is likely the most popular alternative to `ls`. Here is some ways in which
+`pls` differs from exa.
 
 - `pls` shows dotted files (with specs) by default; exa requires the `--all`
   flag.

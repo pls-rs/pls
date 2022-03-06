@@ -30,6 +30,8 @@ jobs:
   deploy:
     name: Deploy docs
     runs-on: ubuntu-latest
+    needs:
+      - lint
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

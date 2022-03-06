@@ -34,6 +34,8 @@ class State(argparse.Namespace, metaclass=Singleton):
     def __init__(self):
         super().__init__()
 
+        self.home_dir: Optional[Path] = None
+
         self.git_root: Optional[Path] = None
         self.git_status_map: dict[Path, str] = {}
 
@@ -67,8 +69,19 @@ class State(argparse.Namespace, metaclass=Singleton):
         function is invoked by ``parse_args`` automatically.
         """
 
-        for setup_fn in ["git", "user_groups"]:
+        for setup_fn in ["home", "git", "user_groups"]:
             getattr(self, f"setup_{setup_fn}")()
+
+    def setup_home(self):
+        """
+        Set up the home directory of the current user.
+        """
+
+        try:
+            self.home_dir = Path.home()
+        except RuntimeError:
+            # Home directory could not be determined.
+            pass
 
     def setup_git(self):
         """

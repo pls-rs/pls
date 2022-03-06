@@ -16,7 +16,7 @@ def test_icons_union(
     get_conf(two)
     get_conf(three)
 
-    with patch.multiple(globals.state, directory=three, git_root=None):
+    with patch.multiple(globals.state, directory=three, home_dir=None, git_root=None):
         configs = find_configs()
         nerd_icons, emoji_icons = get_icons(configs)
 
@@ -31,7 +31,7 @@ def test_icons_cascade(
     get_conf(two)
     get_conf(three)
 
-    with patch.multiple(globals.state, directory=three, git_root=None):
+    with patch.multiple(globals.state, directory=three, home_dir=None, git_root=None):
         configs = find_configs()
         nerd_icons, emoji_icons = get_icons(configs)
 

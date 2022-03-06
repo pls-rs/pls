@@ -39,13 +39,10 @@ def find_configs() -> list[Path]:
             conf_paths.append(test_path)
 
     # Find a config in the user's home directory.
-    try:
-        test_path = Path.home().joinpath(conf_name)
+    if globals.state.home_dir is not None:
+        test_path = globals.state.home_dir.joinpath(conf_name)
         if is_valid(test_path):
             conf_paths.append(test_path)
-    except RuntimeError:
-        # If home directory cannot be determined, skip it.
-        pass
 
     return conf_paths
 

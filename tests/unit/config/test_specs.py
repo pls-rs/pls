@@ -104,23 +104,35 @@ def test_massaging_singular_value_in_plural_fields_raises_error(entry: dict):
 @pytest.mark.parametrize(
     "entry, specs",
     [
+        # (
+        #     {"names": ["name_a", "name_b"]},
+        #     [{"name": "name_a"}, {"name": "name_b"}],
+        # ),
+        # (
+        #     {"extensions": ["ext_a", "ext_b"]},
+        #     [{"extension": "ext_a"}, {"extension": "ext_b"}],
+        # ),
+        # (
+        #     {"patterns": [r"pattern_a", r"pattern_b"]},
+        #     [{"pattern": r"pattern_a"}, {"pattern": r"pattern_b"}],
+        # ),
+        # (
+        #     {"name": "name", "collapse": {"names": ["name_a", "name_b"]}},
+        #     [
+        #         {"name": "name", "collapse": {"name": "name_a"}},
+        #         {"name": "name", "collapse": {"name": "name_b"}},
+        #     ],
+        # ),
         (
-            {"names": ["name_a", "name_b"]},
-            [{"name": "name_a"}, {"name": "name_b"}],
-        ),
-        (
-            {"extensions": ["ext_a", "ext_b"]},
-            [{"extension": "ext_a"}, {"extension": "ext_b"}],
-        ),
-        (
-            {"patterns": [r"pattern_a", r"pattern_b"]},
-            [{"pattern": r"pattern_a"}, {"pattern": r"pattern_b"}],
-        ),
-        (
-            {"name": "name", "collapse": {"names": ["name_a", "name_b"]}},
+            {
+                "names": ["name_a", "name_b"],
+                "collapse": {"names": ["name_c", "name_d"]},
+            },
             [
-                {"name": "name", "collapse": {"name": "name_a"}},
-                {"name": "name", "collapse": {"name": "name_b"}},
+                {"name": "name_a", "collapse": {"name": "name_c"}},
+                {"name": "name_a", "collapse": {"name": "name_d"}},
+                {"name": "name_b", "collapse": {"name": "name_c"}},
+                {"name": "name_b", "collapse": {"name": "name_d"}},
             ],
         ),
     ],
@@ -136,7 +148,7 @@ def test_specs_union(
     get_conf(two)
     get_conf(three)
 
-    with patch.multiple(globals.state, directory=three, git_root=None):
+    with patch.multiple(globals.state, directory=three, home_dir=None, git_root=None):
         configs = find_configs()
         node_specs = get_specs(configs)
 
@@ -150,7 +162,7 @@ def test_specs_cascade(
     get_conf(two)
     get_conf(three)
 
-    with patch.multiple(globals.state, directory=three, git_root=None):
+    with patch.multiple(globals.state, directory=three, home_dir=None, git_root=None):
         configs = find_configs()
         node_specs = get_specs(configs)
         nerd_icons, _ = get_icons(configs)

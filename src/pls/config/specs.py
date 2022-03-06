@@ -88,8 +88,12 @@ def massage_specs(entry: dict) -> list[dict]:
     id_fields = {sing: f"{sing}s" for sing in ["name", "pattern", "extension"]}
     check_conflicts(entry, [*id_fields.keys(), *id_fields.values()])
 
-    split_fields = {**id_fields, "collapse": "collapses"}
-    specs = break_plurals(entry, split_fields)
+    specs = break_plurals(entry, id_fields)
+    specs = [
+        spec
+        for entry in specs
+        for spec in break_plurals(entry, {"collapse": "collapses"})
+    ]
 
     return specs
 

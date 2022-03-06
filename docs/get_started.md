@@ -71,7 +71,7 @@ $ pipx upgrade pls
 ### Uninstalling
 
 ```
-$ pipx uninstall poetry
+$ pipx uninstall pls
 ```
 
 ## Verifying

@@ -75,7 +75,7 @@ Unimportant files (like `poetry.lock` here) are dimmed.
 </code></pre>
 </div>
 
-Python file are colored in blue.
+Python file are colored in blue <ColorPreview color="#3776ab"/>.
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -100,7 +100,7 @@ Python file are colored in blue.
 </code></pre>
 </div>
 
-JavaScript files are yellow.
+JavaScript files are yellow <ColorPreview color="#f7df1e"/>.
 
 <div 
     style="background-color: #002b36; color: #839496;"
@@ -127,8 +127,9 @@ JavaScript files are yellow.
 </code></pre>
 </div>
 
-TypeScript and Docker files are also blue (but these blues are different from
-each other, and also from Python's blue).
+TypeScript and Docker files are also blue (<ColorPreview color="#3178c6"/>
+and <ColorPreview color="#2496ed"/> respectively) but these blues are different
+from each other, and also from Python's blue <ColorPreview color="#3776ab"/>.
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -140,7 +141,7 @@ each other, and also from Python's blue).
 </code></pre>
 </div>
 
-Ruby files are red.
+Ruby files are red <ColorPreview color="#cc342d"/>.
 
 ## Customisation
 

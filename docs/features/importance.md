@@ -15,15 +15,15 @@ project is filled with scaffolding and configuration files for toolchains.
 Consider this root directory of `pls` itself.
 
 ```
-dist
+dist/
 justfile
 LICENSE
 poetry.lock
 pyproject.toml
 README.md
-readme_assets
-src
-tests
+readme_assets/
+src/
+tests/
 ```
 
 It's very difficult to identify your source code in this mess. Here's how `pls`

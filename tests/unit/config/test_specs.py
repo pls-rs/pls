@@ -104,25 +104,25 @@ def test_massaging_singular_value_in_plural_fields_raises_error(entry: dict):
 @pytest.mark.parametrize(
     "entry, specs",
     [
-        # (
-        #     {"names": ["name_a", "name_b"]},
-        #     [{"name": "name_a"}, {"name": "name_b"}],
-        # ),
-        # (
-        #     {"extensions": ["ext_a", "ext_b"]},
-        #     [{"extension": "ext_a"}, {"extension": "ext_b"}],
-        # ),
-        # (
-        #     {"patterns": [r"pattern_a", r"pattern_b"]},
-        #     [{"pattern": r"pattern_a"}, {"pattern": r"pattern_b"}],
-        # ),
-        # (
-        #     {"name": "name", "collapse": {"names": ["name_a", "name_b"]}},
-        #     [
-        #         {"name": "name", "collapse": {"name": "name_a"}},
-        #         {"name": "name", "collapse": {"name": "name_b"}},
-        #     ],
-        # ),
+        (
+            {"names": ["name_a", "name_b"]},
+            [{"name": "name_a"}, {"name": "name_b"}],
+        ),
+        (
+            {"extensions": ["ext_a", "ext_b"]},
+            [{"extension": "ext_a"}, {"extension": "ext_b"}],
+        ),
+        (
+            {"patterns": [r"pattern_a", r"pattern_b"]},
+            [{"pattern": r"pattern_a"}, {"pattern": r"pattern_b"}],
+        ),
+        (
+            {"name": "name", "collapse": {"names": ["name_a", "name_b"]}},
+            [
+                {"name": "name", "collapse": {"name": "name_a"}},
+                {"name": "name", "collapse": {"name": "name_b"}},
+            ],
+        ),
         (
             {
                 "names": ["name_a", "name_b"],

@@ -70,7 +70,7 @@ node_specs:
 
   - patterns: [docker-compose\b, Dockerfile\b]
     icon: docker
-    color: "#2496ED"
+    color: "#2496ed"
 
   - pattern: v?env$
     icon: package
@@ -104,32 +104,32 @@ node_specs:
 
   - extensions: [htm, html]
     icon: html
-    color: "#E34F26"
+    color: "#e34f26"
   - extension: css
     icon: css
-    color: "#1572B6"
+    color: "#1572b6"
     collapse:
       extensions: [scss, sass, less]
   - extensions: [sass, scss]
     icon: sass
-    color: "#CC6699"
+    color: "#cc6699"
 
   - extension: py
     icon: python
-    color: "#3776AB"
+    color: "#3776ab"
 
   - extension: rb
     icon: ruby
-    color: "#CC342D"
+    color: "#cc342d"
   - extension: gemspec
     icon: package
 
   - extensions: [js, jsx]
     icon: javascript
-    color: "#F7DF1E"
+    color: "#f7df1e"
   - extensions: [ts, tsx]
     icon: typescript
-    color: "#3178C6"
+    color: "#3178c6"
   - extension: js
     collapse:
       extension: ts
@@ -138,4 +138,4 @@ node_specs:
       extension: tsx
   - extension: vue
     icon: vuejs
-    color: "#4FC08D"
+    color: "#4fc08d"

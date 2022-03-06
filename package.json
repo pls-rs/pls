@@ -14,7 +14,7 @@
   "scripts": {
     "prepare": "husky install",
     "lint": "prettier --check .",
-    "format": "prettier --write . | sed 's/\\x1b\\[[0-9;]*m//g'\n",
+    "format": "prettier --write .",
     "dev": "vuepress dev docs",
     "build": "vuepress build docs"
   },

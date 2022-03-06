@@ -117,7 +117,11 @@ class TreeMixin(Generic[T], BaseNode):
         :param node_map: the mapping of names and ``Node`` instances
         """
 
-        if collapse := self.spec_attr("collapse"):
+        collapses = self.spec_attr("collapse", coalesce=True)
+        if not collapses:
+            return
+
+        for collapse in collapses:
             if "extension" in collapse:
                 extension = collapse["extension"]
                 name = self.name.replace(self.extension, extension)
@@ -127,3 +131,4 @@ class TreeMixin(Generic[T], BaseNode):
             if (node := node_map.get(name)) is not None and node.is_visible:
                 node_map[name].children.append(cast(T, self))
                 self.parent = node
+                break

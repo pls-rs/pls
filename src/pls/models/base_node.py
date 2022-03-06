@@ -55,15 +55,20 @@ class BaseNode:
 
         self.specs = [spec for spec in specs if spec.match(self)]
 
-    def spec_attr(self, attr: str) -> Any:
+    def spec_attr(self, attr: str, coalesce: bool = False) -> Any:
         """
         Get the requested attribute from the first matching spec to provide it.
 
         :param attr: the requested attribute
+        :param coalesce: whether to group attrs from all specs and return a list
         :return: the value of the attribute if found, ``None`` otherwise
         """
 
+        values = []
         for spec in self.specs:
             if attr_val := getattr(spec, attr, None):
-                return attr_val
-        return None
+                if coalesce:
+                    values.append(attr_val)
+                else:
+                    return attr_val
+        return values if coalesce else None

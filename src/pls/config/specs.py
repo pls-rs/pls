@@ -8,7 +8,7 @@ from pls.exceptions import ConfigException
 from pls.models.node_spec import NodeSpec
 
 
-def break_plurals(entry: dict, singular_plural_map: dict[str, str]) -> list[dict]:
+def break_plurals(entry: dict, keys: list[str]) -> list[dict]:
     """
     Split a dict with a key containing a list into separate dictionaries, with
     the singular form of the key containing one item of the list.
@@ -19,28 +19,16 @@ def break_plurals(entry: dict, singular_plural_map: dict[str, str]) -> list[dict
     - plural keys not containing a list
 
     :param entry: the dict to split from plural to singular
-    :param singular_plural_map: the map of singular and plural keys
+    :param keys: the list of keys in which to split plural values
     :return: a list of dictionaries from splitting the plurals
     :raise: ``ConfigException``, if the fields have the wrong type of value
     """
 
-    for singular, plural in singular_plural_map.items():
-        if singular_value := entry.get(singular):
-            # Singular keys cannot not contain a list.
-            if isinstance(singular_value, list):
-                raise ConfigException(
-                    f"`{singular}` cannot be a list; use `{plural}`: {entry}"
-                )
-
-        if plural_value := entry.get(plural):
-            # Plural keys should contain a list.
-            if not isinstance(plural_value, list):
-                raise ConfigException(
-                    f"`{plural}` must be a list; use `{singular}`: {entry}"
-                )
-
-            common = {k: v for k, v in entry.items() if k != plural}
-            return [{singular: item, **common} for item in plural_value]
+    for key in keys:
+        value = entry.get(key)
+        if isinstance(value, list):
+            common = {k: v for k, v in entry.items() if k != key}
+            return [{key: item, **common} for item in value]
 
     # If no match, wrap the entry and return as-is.
     return [entry]
@@ -76,24 +64,18 @@ def massage_specs(entry: dict) -> list[dict]:
 
     # Split collapse names/extensions into collapses name/extension.
     if collapse := entry.get("collapse"):
-        collapse_fields = {sing: f"{sing}s" for sing in ["name", "extension"]}
-        check_conflicts(collapse, [*collapse_fields.keys(), *collapse_fields.values()])
+        collapse_fields = ["name", "extension"]
+        check_conflicts(collapse, collapse_fields)
+        collapses = break_plurals(collapse, collapse_fields)
 
-        split_fields = collapse_fields
-        collapses = break_plurals(collapse, split_fields)
         if len(collapses) > 1:
-            del entry["collapse"]
-            entry["collapses"] = collapses
+            entry["collapse"] = collapses
 
-    id_fields = {sing: f"{sing}s" for sing in ["name", "pattern", "extension"]}
-    check_conflicts(entry, [*id_fields.keys(), *id_fields.values()])
-
+    id_fields = ["name", "pattern", "extension"]
+    check_conflicts(entry, id_fields)
     specs = break_plurals(entry, id_fields)
-    specs = [
-        spec
-        for entry in specs
-        for spec in break_plurals(entry, {"collapse": "collapses"})
-    ]
+
+    specs = [spec for entry in specs for spec in break_plurals(entry, ["collapse"])]
 
     return specs
 

@@ -16,12 +16,12 @@ node_specs:
   - name: .gitignore
     icon: git
 
-  - names: [justfile, Makefile, Rakefile]
+  - name: [justfile, Makefile, Rakefile]
     icon: runner
 
-  - names: [pyproject.toml, Pipfile, setup.py, setup.cfg]
+  - name: [pyproject.toml, Pipfile, setup.py, setup.cfg]
     icon: package
-  - names: [poetry.lock, Pipfile.lock]
+  - name: [poetry.lock, Pipfile.lock]
     icon: lock
     importance: -1
   - name: poetry.lock
@@ -30,7 +30,7 @@ node_specs:
   - name: Pipfile.lock
     collapse:
       name: Pipfile
-  - names: [.flake8, .pre-commit-config.yaml]
+  - name: [.flake8, .pre-commit-config.yaml]
     icon: broom
   - name: __pycache__
     importance: -2
@@ -42,7 +42,7 @@ node_specs:
     importance: -1
     collapse:
       name: Gemfile
-  - names: [vendor, .bundle]
+  - name: [vendor, .bundle]
     icon: package
     importance: -1
   - name: .rubocop.yml
@@ -50,7 +50,7 @@ node_specs:
 
   - name: package.json
     icon: package
-  - names: [package-lock.json, yarn.lock, pnpm-lock.yaml]
+  - name: [package-lock.json, yarn.lock, pnpm-lock.yaml]
     icon: lock
     importance: -1
     collapse:
@@ -68,7 +68,7 @@ node_specs:
   - pattern: LICENSE\b
     icon: license
 
-  - patterns: [docker-compose\b, Dockerfile\b]
+  - pattern: [docker-compose\b, Dockerfile\b]
     icon: docker
     color: "#2496ed"
 
@@ -87,30 +87,30 @@ node_specs:
     icon: text
   - extension: ini
     icon: config
-  - extensions: [json, toml, yml, yaml]
+  - extension: [json, toml, yml, yaml]
     icon: json
   - extension: md
     icon: markdown
 
-  - extensions: [jpg, jpeg, png, svg, webp, gif, ico]
+  - extension: [jpg, jpeg, png, svg, webp, gif, ico]
     icon: image
-  - extensions: [mov, mp4, mkv, webm, avi, flv]
+  - extension: [mov, mp4, mkv, webm, avi, flv]
     icon: video
-  - extensions: [mp3, flac, ogg, wav]
+  - extension: [mp3, flac, ogg, wav]
     icon: audio
 
   - extension: sh
     icon: shell
 
-  - extensions: [htm, html]
+  - extension: [htm, html]
     icon: html
     color: "#e34f26"
   - extension: css
     icon: css
     color: "#1572b6"
     collapse:
-      extensions: [scss, sass, less]
-  - extensions: [sass, scss]
+      extension: [scss, sass, less]
+  - extension: [sass, scss]
     icon: sass
     color: "#cc6699"
 
@@ -124,10 +124,10 @@ node_specs:
   - extension: gemspec
     icon: package
 
-  - extensions: [js, jsx]
+  - extension: [js, jsx]
     icon: javascript
     color: "#f7df1e"
-  - extensions: [ts, tsx]
+  - extension: [ts, tsx]
     icon: typescript
     color: "#3178c6"
   - extension: js

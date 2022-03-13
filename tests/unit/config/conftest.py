@@ -72,7 +72,7 @@ def get_conf():
         # endregion
         conf_path = path.joinpath(".pls.yml")
         conf_data = configs.get(path.name, {})
-        with conf_path.open("w") as conf_file:
+        with conf_path.open("w", encoding="utf-8") as conf_file:
             yaml.dump(conf_data, conf_file)
         return path.joinpath(".pls.yml")
 

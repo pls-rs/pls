@@ -58,6 +58,7 @@ repos:
         additional_dependencies:
           - types-PyYAML
           - types-freezegun
+          - types-requests
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.5.0

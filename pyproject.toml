@@ -26,6 +26,8 @@ ipython = "^8.0.1"
 pytest = "^7.0.0"
 pytest-lazy-fixture = "^0.6.3"
 freezegun = "^1.1.0"
+jsonschema = "^4.4.0"
+requests = "^2.27.1"
 
 [tool.pytest.ini_options]
 cache_dir = ".pytest_cache"

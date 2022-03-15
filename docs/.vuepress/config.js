@@ -21,6 +21,15 @@ const features = {
   ],
 };
 
+const reference = {
+  text: "Reference",
+  children: [
+    "/reference/configuration",
+    "/reference/node_specs",
+    "/reference/icons",
+  ],
+};
+
 module.exports = {
   lang: "en-GB",
   title: "pls",
@@ -45,6 +54,7 @@ module.exports = {
       { text: "Get started", link: "/get_started" },
       about,
       features,
+      reference,
       { text: "PyPI", link: "https://pypi.org/project/pls/" },
     ],
 
@@ -52,6 +62,7 @@ module.exports = {
       "/get_started": ["/get_started"],
       "/about": [about],
       "/features": [features],
+      "/reference": [reference],
     },
   },
   alias: Object.fromEntries(

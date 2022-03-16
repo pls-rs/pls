@@ -122,6 +122,9 @@ To configure file importance, you can do either of the following.
   config adds value for a lot of developers. The `pls` OOBE is intentionally
   minimal.
 
+Importance levels are set via node specs. Refer to the
+[docs for defining node specs](../reference/node_specs).
+
 ## Reference
 
 The importance of files is classified into 5 levels.

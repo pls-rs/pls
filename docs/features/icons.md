@@ -219,6 +219,8 @@ To add more icons, you can do either of the following.
   config adds value for a lot of developers. The `pls` OOBE is intentionally
   minimal.
 
+Refer to the [docs for configuring icons](../reference/icons).
+
 ## Requirements
 
 - For Nerd icons, a compatible [Nerd Font](https://www.nerdfonts.com/) will need

@@ -156,3 +156,6 @@ To add more color schemes, you can do either of the following.
   This only applies if the language is fairly popular and the inclusion of the
   config adds value for a lot of developers. The `pls` OOBE is intentionally
   minimal.
+
+Colors are set via node specs. Refer to the
+[docs for defining node specs](../reference/node_specs).

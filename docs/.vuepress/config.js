@@ -9,6 +9,7 @@ const about = {
 const features = {
   text: "Features",
   children: [
+    "/features/summary",
     "/features/colors",
     "/features/icons",
     "/features/suffixes",

@@ -8,14 +8,28 @@ description: >-
 
 # Upcoming
 
-We have bold plans for the future of `pls`. Soon, `pls` will be able to
+In addition to its [many existing features](./summary), we have bold plans for
+the future of `pls`. Soon, `pls` will be able to do all the following.
 
-- add more spec-matching criteria such as
+- `pls` will add more spec-matching criteria to make the specs much more
+  granular and fine-tuned.
+
   - MIME type
   - globs
   - path relative to Git
-- generate `tree`-like output for subdirectories
-- parse Git metadata for importance rules
 
-If you want to help implement any of these features, please submit a PR. `pls`
-is free and open-source software that could use [your help](../contributing).
+- `pls` will allow a more nuanced conditional approach for specs such as
+  combining identification methods with `and`/`or`.
+
+- Specs should also get a specificity/priority setting to be able to override
+  the specs above them.
+
+- `pls` will be able to generate `tree`-like output recursively for
+  subdirectories.
+
+- `pls` will be able to parse `.gitignore` for importance rules and two-letter
+  Git statuses for a simpler notation.
+
+If you have more ideas to improve the functionality of `pls` or want to help
+implement any of these features, please submit a PR. `pls` is free and
+open-source software that could use [your help](../contributing).

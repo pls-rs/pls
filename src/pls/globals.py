@@ -39,8 +39,8 @@ class State(argparse.Namespace, metaclass=Singleton):
         self.git_root: Optional[Path] = None
         self.git_status_map: dict[Path, str] = {}
 
-        self.username: Optional[str] = None
-        self.groups: set[str] = set()
+        self.uid: Optional[int] = None
+        self.gids: set[int] = set()
 
     def __repr__(self) -> str:
         """
@@ -98,21 +98,25 @@ class State(argparse.Namespace, metaclass=Singleton):
         Set up the username and groups of the current active user.
         """
 
-        self.username: Optional[str] = None
-        self.groups: set[str] = set()
         try:
-            from grp import getgrall, getgrgid
-            from pwd import getpwnam, getpwuid
-
-            self.username = getpwuid(os.getuid()).pw_name
-            self.groups = set(
-                group.gr_name for group in getgrall() if self.username in group.gr_mem
-            )
-            gid = getpwnam(self.username).pw_gid
-            self.groups.add(getgrgid(gid).gr_name)
+            from grp import getgrall
+            from pwd import getpwuid
         except ModuleNotFoundError:
             # This happens on non-POSIX systems like Windows.
-            pass
+            return
+
+        self.uid = os.getuid()
+
+        self.gids = set()
+        try:
+            user = getpwuid(self.uid)
+        except KeyError:
+            return
+        self.gids.add(user.pw_gid)
+        username = user.pw_name
+        self.gids.update(
+            group.gr_gid for group in getgrall() if username in group.gr_mem
+        )
 
 
 # argv = parser.parse_args([])

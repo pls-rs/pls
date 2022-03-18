@@ -10,6 +10,20 @@ from pls import globals
 from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
 
 
+def _get_format_pair(rules: list[str]) -> tuple[str, str]:
+    """
+    Get the format pair to mark up the console output for the given rules.
+
+    :param rules: the set of formatting directives to apply on the text
+    :return: the pair of format strings to place on either side of the text
+    """
+
+    if not rules:
+        return "", ""
+    left = " ".join(rules)
+    return f"[{left}]", "[/]"
+
+
 def get_formatted_links(stat: os.stat_result) -> str:
     """
     Get the number of hard links pointing to the file. This is usually higher
@@ -83,13 +97,19 @@ def get_formatted_user(stat: os.stat_result) -> Optional[str]:
     try:
         from pwd import getpwuid
 
+        uid = stat.st_uid
+        format_rules = []
         try:
             pw_name = getpwuid(stat.st_uid).pw_name
-            if pw_name != globals.state.username:
-                pw_name = f"[dim]{pw_name}[/]"
-            return pw_name
         except KeyError:  # user does not exist anymore
-            return f"[dim red]{stat.st_uid}[/]"
+            pw_name = str(uid)
+            format_rules.append("red")
+
+        if uid != globals.state.uid:
+            format_rules.append("dim")
+
+        left, right = _get_format_pair(format_rules)
+        return f"{left}{pw_name}{right}"
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 
@@ -107,13 +127,19 @@ def get_formatted_group(stat: os.stat_result) -> Optional[str]:
     try:
         from grp import getgrgid
 
+        gid = stat.st_gid
+        format_rules = []
         try:
             gr_name = getgrgid(stat.st_gid).gr_name
-            if gr_name not in globals.state.groups:
-                gr_name = f"[dim]{gr_name}[/]"
-            return gr_name
         except KeyError:  # group does not exist anymore
-            return f"[dim red]{stat.st_gid}[/]"
+            gr_name = str(gid)
+            format_rules.append("red")
+
+        if gid not in globals.state.gids:
+            format_rules.append("dim")
+
+        left, right = _get_format_pair(format_rules)
+        return f"{left}{gr_name}{right}"
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 

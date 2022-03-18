@@ -89,10 +89,8 @@ def test_gets_correct_permission_text_for_rw_with_special_bit(
 @pytest.mark.skipif(platform == "win32", reason="Feature unsupported on Windows")
 def test_user_is_dimmed_if_not_current():
     mock_getpwuid = MagicMock(return_value=MagicMock(pw_name="x"))
-    mock_stat = MagicMock(st_uid=None)
-    with patch("pwd.getpwuid", mock_getpwuid), patch.multiple(
-        globals.state, username="y"
-    ):
+    mock_stat = MagicMock(st_uid=219)
+    with patch("pwd.getpwuid", mock_getpwuid), patch.multiple(globals.state, uid=49):
         assert get_formatted_user(mock_stat) == "[dim]x[/]"
 
 
@@ -101,15 +99,15 @@ def test_gone_user_is_shown_as_int():
     mock_getpwuid = MagicMock(side_effect=KeyError("uid not found"))
     mock_stat = MagicMock(st_uid=123)
     with patch("pwd.getpwuid", mock_getpwuid):
-        assert get_formatted_user(mock_stat) == "[dim red]123[/]"
+        assert get_formatted_user(mock_stat) == "[red dim]123[/]"
 
 
 @pytest.mark.skipif(platform == "win32", reason="Feature unsupported on Windows")
 def test_group_is_dimmed_if_not_current():
     mock_getgrgid = MagicMock(return_value=MagicMock(gr_name="x"))
-    mock_stat = MagicMock(st_gid=None)
+    mock_stat = MagicMock(st_gid=0)
     with patch("grp.getgrgid", mock_getgrgid), patch.multiple(
-        globals.state, groups={"y", "z"}
+        globals.state, gids={1, 2}
     ):
         assert get_formatted_group(mock_stat) == "[dim]x[/]"
 
@@ -119,7 +117,7 @@ def test_gone_group_is_shown_as_int():
     mock_getgrgid = MagicMock(side_effect=KeyError("gid not found"))
     mock_stat = MagicMock(st_gid=123)
     with patch("grp.getgrgid", mock_getgrgid):
-        assert get_formatted_group(mock_stat) == "[dim red]123[/]"
+        assert get_formatted_group(mock_stat) == "[red dim]123[/]"
 
 
 @pytest.mark.parametrize(

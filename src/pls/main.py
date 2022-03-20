@@ -1,8 +1,38 @@
 #!/usr/bin/env python3
-from pls import globals
-from pls.config.specs import node_specs
-from pls.fs.list import read_input
-from pls.output.table import write_output
+from pls.data.utils import internal_yml_path
+
+
+def init(args=None):
+    """
+    Initialise module variables.
+    """
+
+    from pls.globals import state
+
+    state.state = state.State()
+    state.state.parse_args(args)
+
+    from pls.globals import console
+
+    console.console = console.get_console()
+
+    from pls.config import icons, specs
+    from pls.config.files import find_configs
+
+    conf_files = find_configs()
+    icons.nerd_icons, icons.emoji_icons = icons.get_icons(
+        [
+            internal_yml_path("nerd_icons.yml"),
+            internal_yml_path("emoji_icons.yml"),
+            *conf_files,
+        ]
+    )
+    specs.node_specs = specs.get_specs(
+        [
+            internal_yml_path("node_specs.yml"),
+            *conf_files,
+        ]
+    )
 
 
 def main() -> None:
@@ -13,8 +43,12 @@ def main() -> None:
     - returns no outputs: output is written to ``STDOUT`` using ``rich``
     """
 
-    # Replace default state with actual state
-    globals.state.parse_args(None)
+    init(None)  # ``None`` makes ``argparse`` read real CLI args from ``sys.argv``
+
+    from pls.config import specs
+    from pls.fs.list import read_input
+    from pls.globals import state
+    from pls.output.table import write_output
 
     node_map, node_list = read_input()
 
@@ -22,10 +56,10 @@ def main() -> None:
         return
 
     for node in node_list:
-        node.match_specs(node_specs)
-        if globals.state.collapse:
+        node.match_specs(specs.node_specs)
+        if state.state.collapse:
             node.find_main(node_map)
-    if globals.state.collapse:
+    if state.state.collapse:
         for node in node_list:
             if node.is_sub:
                 continue

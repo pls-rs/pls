@@ -5,7 +5,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 from freezegun import freeze_time
 
-from pls import globals
 from pls.enums.unit_system import UnitSystem
 from pls.fs.stats import (
     get_formatted_group,
@@ -15,6 +14,7 @@ from pls.fs.stats import (
     get_formatted_time,
     get_formatted_user,
 )
+from pls.globals import state
 from tests.unit.utils import strip_formatting
 
 
@@ -90,7 +90,7 @@ def test_gets_correct_permission_text_for_rw_with_special_bit(
 def test_user_is_dimmed_if_not_current():
     mock_getpwuid = MagicMock(return_value=MagicMock(pw_name="x"))
     mock_stat = MagicMock(st_uid=219)
-    with patch("pwd.getpwuid", mock_getpwuid), patch.multiple(globals.state, uid=49):
+    with patch("pwd.getpwuid", mock_getpwuid), patch.multiple(state.state, uid=49):
         assert get_formatted_user(mock_stat) == "[dim]x[/]"
 
 
@@ -106,9 +106,7 @@ def test_gone_user_is_shown_as_int():
 def test_group_is_dimmed_if_not_current():
     mock_getgrgid = MagicMock(return_value=MagicMock(gr_name="x"))
     mock_stat = MagicMock(st_gid=0)
-    with patch("grp.getgrgid", mock_getgrgid), patch.multiple(
-        globals.state, gids={1, 2}
-    ):
+    with patch("grp.getgrgid", mock_getgrgid), patch.multiple(state.state, gids={1, 2}):
         assert get_formatted_group(mock_stat) == "[dim]x[/]"
 
 
@@ -145,7 +143,7 @@ def test_gets_correct_binary_size(size: int, text: str):
 )
 def test_gets_correct_decimal_size(size: int, text: str):
     mock_stat = MagicMock(st_size=size, st_mode=0o100000)
-    with patch.multiple(globals.state, units=UnitSystem.DECIMAL):
+    with patch.multiple(state.state, units=UnitSystem.DECIMAL):
         assert strip_formatting(get_formatted_size(mock_stat)) == text
 
 
@@ -160,7 +158,7 @@ def test_gets_correct_decimal_size(size: int, text: str):
 )
 def test_gets_correct_raw_size(size: int, text: str):
     mock_stat = MagicMock(st_size=size, st_mode=0o100000)
-    with patch.multiple(globals.state, units=UnitSystem.NONE):
+    with patch.multiple(state.state, units=UnitSystem.NONE):
         assert strip_formatting(get_formatted_size(mock_stat)) == text
 
 
@@ -194,5 +192,5 @@ def test_formats_timestamp_in_local_tz(
 @freeze_time(tz_offset=+5.5)
 def test_formats_timestamp_as_asked(time_fmt, formatted_time):
     mock_stat = MagicMock(st_ctime=3_133_637_400)
-    with patch.multiple(globals.state, time_fmt=time_fmt):
+    with patch.multiple(state.state, time_fmt=time_fmt):
         assert get_formatted_time(mock_stat, "st_ctime") == formatted_time

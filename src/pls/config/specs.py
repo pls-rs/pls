@@ -1,9 +1,13 @@
+"""
+Do not import variables from this module, always import the module directly and use its
+variables with a dot ``.`` notation.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
 
-from pls.config.files import conf_files
-from pls.data.utils import internal_yml_path, load_yaml_file
+from pls.data.utils import load_yaml_file
 from pls.exceptions import ConfigException
 from pls.models.node_spec import NodeSpec
 
@@ -98,10 +102,5 @@ def get_specs(conf_paths: list[Path]) -> list[NodeSpec]:
     return [NodeSpec(**spec) for entry in entries for spec in massage_specs(entry)]
 
 
-node_specs = get_specs(
-    [
-        internal_yml_path("node_specs.yml"),
-        *conf_files,
-    ]
-)
+node_specs: list[NodeSpec]
 """the list of all node specs for all types of nodes"""

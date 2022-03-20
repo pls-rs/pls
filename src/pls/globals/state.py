@@ -119,12 +119,5 @@ class State(argparse.Namespace, metaclass=Singleton):
         )
 
 
-# argv = parser.parse_args([])
-# """the CLI arguments parsed by ``argparse``"""
-
-state = State()
+state: State
 """the global state of the application"""
-
-state.parse_args([])  # parse a blank list of arguments as the default
-
-__all__ = ["state"]

@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import cached_property
 from typing import TYPE_CHECKING
 
-from pls import globals
+from pls.globals import state
 from pls.models.base_node import BaseNode
 
 
@@ -33,7 +33,7 @@ class ImpMixin(BaseNode):
     def is_visible_imp(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
-        return self.importance + globals.state.all >= -1
+        return self.importance + state.state.all >= -1
 
     @cached_property
     def importance_format(self) -> Optional[str]:

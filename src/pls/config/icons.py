@@ -1,9 +1,13 @@
+"""
+Do not import variables from this module, always import the module directly and use its
+variables with a dot ``.`` notation.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
 
-from pls.config.files import conf_files
-from pls.data.utils import internal_yml_path, load_yaml_file
+from pls.data.utils import load_yaml_file
 
 
 def get_icons(conf_paths: list[Path]) -> tuple[dict[str, str], dict[str, str]]:
@@ -27,16 +31,8 @@ def get_icons(conf_paths: list[Path]) -> tuple[dict[str, str], dict[str, str]]:
     return nerd, emoji
 
 
-all_icons = get_icons(
-    [
-        internal_yml_path("nerd_icons.yml"),
-        internal_yml_path("emoji_icons.yml"),
-        *conf_files,
-    ]
-)
-
-nerd_icons = all_icons[0]
+nerd_icons: dict
 """the mapping of icon names to Unicode code-points"""
 
-emoji_icons = all_icons[1]
+emoji_icons: dict
 """the mapping of icon names to emoji characters"""

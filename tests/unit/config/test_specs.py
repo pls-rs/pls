@@ -6,11 +6,11 @@ from unittest.mock import patch
 
 import pytest
 
-from pls import globals
 from pls.config.files import find_configs
 from pls.config.icons import get_icons
 from pls.config.specs import break_plurals, get_specs, massage_specs
 from pls.exceptions import ConfigException
+from pls.globals import state
 from pls.models.node import Node
 from tests.unit.utils import strip_formatting
 
@@ -114,7 +114,7 @@ def test_specs_union(
     get_conf(two)
     get_conf(three)
 
-    with patch.multiple(globals.state, directory=three, home_dir=None, git_root=None):
+    with patch.multiple(state.state, directory=three, home_dir=None, git_root=None):
         configs = find_configs()
         node_specs = get_specs(configs)
 
@@ -128,11 +128,11 @@ def test_specs_cascade(
     get_conf(two)
     get_conf(three)
 
-    with patch.multiple(globals.state, directory=three, home_dir=None, git_root=None):
+    with patch.multiple(state.state, directory=three, home_dir=None, git_root=None):
         configs = find_configs()
         node_specs = get_specs(configs)
         nerd_icons, _ = get_icons(configs)
-    with patch("pls.models.node.nerd_icons", nerd_icons):
+    with patch("pls.config.icons.nerd_icons", nerd_icons):
         test_node = Node(name="cat.py", path=three.joinpath("cat.py"))
         test_node.match_specs(node_specs)
         icon = test_node.formatted_icon

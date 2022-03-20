@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pls import globals
+from pls.globals import state
 
 
 def find_configs() -> list[Path]:
@@ -18,12 +18,12 @@ def find_configs() -> list[Path]:
     def is_valid(path: Path) -> bool:
         return path.exists() and path.is_file()
 
-    curr_dir: Path = globals.state.directory
+    curr_dir: Path = state.state.directory
     if is_valid(test_path := curr_dir.joinpath(conf_name)):
         conf_paths.append(test_path)
 
     # Find a config in the current path's ancestors
-    for i in range(globals.state.depth):
+    for i in range(state.state.depth):
         try:
             test_path = curr_dir.parents[i].joinpath(conf_name)
             if is_valid(test_path):
@@ -33,19 +33,15 @@ def find_configs() -> list[Path]:
             break
 
     # Find a config in the Git root.
-    if globals.state.git_root is not None:
-        test_path = globals.state.git_root.joinpath(conf_name)
+    if state.state.git_root is not None:
+        test_path = state.state.git_root.joinpath(conf_name)
         if is_valid(test_path):
             conf_paths.append(test_path)
 
     # Find a config in the user's home directory.
-    if globals.state.home_dir is not None:
-        test_path = globals.state.home_dir.joinpath(conf_name)
+    if state.state.home_dir is not None:
+        test_path = state.state.home_dir.joinpath(conf_name)
         if is_valid(test_path):
             conf_paths.append(test_path)
 
     return conf_paths
-
-
-conf_files = find_configs()
-"""the list of config files applicable to the current directory"""

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar, cast
 
-from pls import globals
-from pls.constants import tree
+from pls.constants.tree import get_shapes
+from pls.globals import state
 from pls.models.base_node import BaseNode
 
 
@@ -39,14 +39,14 @@ class TreeMixin(Generic[T], BaseNode):
     def is_visible_tree(self):
         """whether the node deserves to be rendered to the screen"""
 
-        return not self.is_sub or globals.state.collapse <= 1
+        return not self.is_sub or state.state.collapse <= 1
 
     @property
     def tree_prefix(self) -> str:
         """the complete string to draw the tree lines before the node name"""
 
         tree_chars = "".join([*self.pre_shapes, self.last_shape])
-        if not globals.state.no_align:
+        if not state.state.no_align:
             tree_chars = f" {tree_chars}"
         return tree_chars
 
@@ -60,8 +60,9 @@ class TreeMixin(Generic[T], BaseNode):
         :return: ``end_shape`` if the node is last, ``not_end_shape`` otherwise
         """
 
+        shapes = get_shapes()
         if not self.is_sub:
-            return tree.NONE
+            return shapes["NONE"]
 
         assert self.parent is not None
         siblings = self.parent.children
@@ -83,7 +84,8 @@ class TreeMixin(Generic[T], BaseNode):
         :return: the set of box-drawing characters before the node's own
         """
 
-        return self.get_shape(tree.SPACE_SPACE, tree.PIPE_SPACE)
+        shapes = get_shapes()
+        return self.get_shape(shapes["SPACE_SPACE"], shapes["PIPE_SPACE"])
 
     def _get_last_shape(self) -> str:
         """
@@ -95,7 +97,8 @@ class TreeMixin(Generic[T], BaseNode):
         :return: the node's own box-drawing characters
         """
 
-        return self.get_shape(tree.BEND_DASH, tree.TEE_DASH)
+        shapes = get_shapes()
+        return self.get_shape(shapes["BEND_DASH"], shapes["TEE_DASH"])
 
     def set_sub_pre_shapes(self):
         """

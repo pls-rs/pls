@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Callable
 from unittest.mock import patch
 
-from pls import globals
 from pls.config.files import find_configs
+from pls.globals import state
 
 
 def test_finds_all_configs_in_ancestors(
@@ -15,7 +15,7 @@ def test_finds_all_configs_in_ancestors(
     for work_dir in work_dirs:
         get_conf(work_dir)
 
-    with patch.multiple(globals.state, directory=three, home_dir=None, git_root=None):
+    with patch.multiple(state.state, directory=three, home_dir=None, git_root=None):
         configs = find_configs()
     assert configs == [path.joinpath(".pls.yml") for path in [three, two, one]]
 
@@ -28,7 +28,7 @@ def test_finds_config_upto_ancestor_depth(
         get_conf(work_dir)
 
     with patch.multiple(
-        globals.state, directory=three, home_dir=None, git_root=None, depth=1
+        state.state, directory=three, home_dir=None, git_root=None, depth=1
     ):
         configs = find_configs()
     assert configs == [path.joinpath(".pls.yml") for path in [three, two]]
@@ -42,7 +42,7 @@ def test_finds_config_in_git_root(
         get_conf(work_dir)
 
     with patch.multiple(
-        globals.state, directory=three, home_dir=None, git_root=one, depth=0
+        state.state, directory=three, home_dir=None, git_root=one, depth=0
     ):
         configs = find_configs()
     assert configs == [path.joinpath(".pls.yml") for path in [three, one]]
@@ -56,7 +56,7 @@ def test_finds_config_in_home_dir(
         get_conf(work_dir)
 
     with patch.multiple(
-        globals.state, directory=three, home_dir=one, git_root=None, depth=0
+        state.state, directory=three, home_dir=one, git_root=None, depth=0
     ):
         configs = find_configs()
     assert configs == [path.joinpath(".pls.yml") for path in [three, one]]

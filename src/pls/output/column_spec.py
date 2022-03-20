@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sys import platform
 
-from pls import globals
+from pls.globals import state
 from pls.models.col_spec import ColumnSpec
 from pls.output.detail_columns import detail_columns
 
@@ -15,7 +15,7 @@ column_spec_map: dict[str, ColumnSpec] = {
         "name": "",
         "attrs": {"width": 2},
     },
-    "name": {"name": "Name" if globals.state.no_align else " Name"},
+    "name": {"name": "Name" if state.state.no_align else " Name"},
 }
 """a mapping of column keys to column spec"""
 
@@ -37,7 +37,7 @@ def get_column_groups() -> list[list[str]]:
     if platform != "win32":
         col_groups.insert(0, ["inode", "links"])
         col_groups.insert(2, ["user", "group"])
-    if globals.state.git_root is not None:
+    if state.state.git_root is not None:
         col_groups.append(["git"])
     return col_groups
 

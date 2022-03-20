@@ -54,7 +54,7 @@ parser.add_argument(
     "directory",
     type=directory,
     nargs="?",  # makes the `directory` arg optional
-    default=os.getcwd(),
+    default=Path.cwd(),
     help="the directory whose contents are to be listed",
 )
 

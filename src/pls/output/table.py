@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import textwrap
 
-from rich.console import Console
 from rich.table import Table
 
-from pls import globals
 from pls.enums.icon_type import IconType
+from pls.globals import console, state
 from pls.models.node import Node
 from pls.output.column_spec import column_groups, column_spec_map
 from pls.output.solarized import solarized_theme
@@ -20,7 +19,7 @@ def column_chosen(col_name: str) -> bool:
     :return: ``True`` if the column is to be shown, ``False`` otherwise
     """
 
-    return col_name in globals.state.details or "+" in globals.state.details
+    return col_name in state.state.details or "+" in state.state.details
 
 
 def get_columns() -> list[str]:
@@ -31,13 +30,13 @@ def get_columns() -> list[str]:
     """
 
     selected_col_groups = []
-    if globals.state.details:
+    if state.state.details:
         for col_group in column_groups:
             filtered_group = [col for col in col_group if column_chosen(col)]
             selected_col_groups.append(filtered_group)
 
     name_group = ["name"]
-    if globals.state.icon != IconType.NONE:
+    if state.state.icon != IconType.NONE:
         name_group.insert(0, "icon")
     selected_col_groups.append(name_group)
 
@@ -66,7 +65,7 @@ def get_table() -> Table:
     table = Table(
         padding=(0, 1, 0, 0),
         box=None,
-        show_header=globals.state.details is not None,
+        show_header=state.state.details is not None,
         header_style="underline",
     )
     for col_key in get_columns():
@@ -102,7 +101,6 @@ def write_output(all_nodes: list[Node]):
     :param all_nodes: the list of all directories and files
     """
 
-    console = Console(record=(globals.state.export is not None))
     table = get_table()
 
     for node in all_nodes:
@@ -111,9 +109,9 @@ def write_output(all_nodes: list[Node]):
             continue
         tabulate_node(table, node)
 
-    console.print(table)
+    console.console.print(table)
 
-    if globals.state.export:
+    if state.state.export:
         html_body = textwrap.dedent(
             """
             <div
@@ -123,8 +121,8 @@ def write_output(all_nodes: list[Node]):
             </div>
             """  # noqa: E501
         )
-        with globals.state.export.open("w", encoding="utf-8") as out_file:
-            content = console.export_html(
+        with state.state.export.open("w", encoding="utf-8") as out_file:
+            content = console.console.export_html(
                 theme=solarized_theme,
                 code_format=html_body,
                 inline_styles=True,

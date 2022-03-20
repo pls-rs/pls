@@ -8,6 +8,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from pls.data.utils import load_yaml_file
+from pls.exceptions import ConfigException
 
 
 def get_icons(conf_paths: list[Path]) -> tuple[dict[str, str], dict[str, str]]:
@@ -25,8 +26,14 @@ def get_icons(conf_paths: list[Path]) -> tuple[dict[str, str], dict[str, str]]:
 
     for conf_path in reversed(conf_paths):
         conf = load_yaml_file(conf_path)
-        nerd.update(conf.get("nerd_icons", {}))
-        emoji.update(conf.get("emoji_icons", {}))
+
+        if not isinstance((nerd_val := conf.get("nerd_icons", {})), dict):
+            raise ConfigException("[italic]`nerd_icons`[/] must be a dictionary.")
+        nerd.update(nerd_val)
+
+        if not isinstance((emoji_val := conf.get("emoji_icons", {})), dict):
+            raise ConfigException("[italic]`emoji_icons`[/] must be a dictionary.")
+        emoji.update(emoji_val)
 
     return nerd, emoji
 

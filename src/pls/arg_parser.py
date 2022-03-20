@@ -1,5 +1,4 @@
 import argparse
-import os
 import re
 from pathlib import Path
 from typing import Optional
@@ -7,7 +6,7 @@ from typing import Optional
 from pls import __version__
 from pls.enums.icon_type import IconType
 from pls.enums.unit_system import UnitSystem
-from pls.exceptions import ExecException
+from pls.exceptions import ArgException
 from pls.output.detail_columns import detail_columns
 
 
@@ -45,8 +44,14 @@ def directory(path_str: str) -> Path:
     """
 
     path = Path(path_str).resolve()
-    if not os.path.isdir(path):
-        raise ExecException(f"`directory` arg should be a valid directory: {path_str}")
+    if not path.exists():
+        raise ArgException(
+            f"Path [repr.path]{path_str}[/] does not exist.", arg_name="directory"
+        )
+    if not path.is_dir():
+        raise ArgException(
+            f"Path [repr.path]{path_str}[/] is not a directory.", arg_name="directory"
+        )
     return path
 
 

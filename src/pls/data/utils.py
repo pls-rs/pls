@@ -3,6 +3,8 @@ from typing import Any
 
 import yaml
 
+from pls.exceptions import ConfigException
+
 
 def load_yaml_file(file_path: Path) -> Any:
     """
@@ -12,9 +14,12 @@ def load_yaml_file(file_path: Path) -> Any:
     :return: the parsed contents of the YAML file
     """
 
-    with file_path.open("r", encoding="utf-8") as data_file:
-        data = yaml.safe_load(data_file)
-    return data
+    try:
+        with file_path.open("r", encoding="utf-8") as data_file:
+            data = yaml.safe_load(data_file)
+        return data
+    except yaml.YAMLError as exc:
+        raise ConfigException(f"{file_path} is not valid YAML.") from exc
 
 
 def internal_yml_path(file_name: str) -> Path:

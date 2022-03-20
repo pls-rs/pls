@@ -49,8 +49,8 @@ def check_conflicts(entry: dict, conflict_keys: list[str]):
     """
 
     if [field in entry for field in conflict_keys].count(True) != 1:
-        fields = ", ".join([f"`{field}`" for field in conflict_keys])
-        raise ConfigException(f"Exactly one of {fields} is allowed: {entry}.")
+        fields = ", ".join([f"[italic]`{field}`[/]" for field in conflict_keys])
+        raise ConfigException(f"Exactly one of {fields} is allowed.", fail_spec=entry)
 
 
 def massage_specs(entry: dict) -> list[dict]:

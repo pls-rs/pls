@@ -33,11 +33,23 @@ const reference = {
 
 module.exports = {
   lang: "en-GB",
-  title: "pls",
+  title: packageInfo.name,
   description: packageInfo.description,
   base: "/pls/",
 
-  head: [["link", { rel: "icon", href: "/pls/favicon.png" }]],
+  head: [
+    ["link", { rel: "icon", href: "/pls/favicon.png" }],
+    ["meta", { content: packageInfo.name, property: "og:title" }],
+    ["meta", { content: packageInfo.homepage, property: "og:url" }],
+    ["meta", { content: packageInfo.description, property: "og:description" }],
+    [
+      "meta",
+      {
+        content: `${packageInfo.homepage}/opengraph.png`,
+        property: "og:image",
+      },
+    ],
+  ],
 
   markdown: {
     code: {

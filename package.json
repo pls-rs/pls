@@ -1,6 +1,6 @@
 {
-  "name": "pls-docs",
-  "description": "`pls` is a prettier `ls` for the pros.",
+  "name": "pls",
+  "description": "`pls` is a prettier and powerful `ls` for the pros.",
   "version": "1.0.0",
   "private": true,
   "author": {

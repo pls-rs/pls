@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser(
     prog="pls",
     description=(
         """
-        `pls` is a prettier `ls` for the pros.
+        `pls` is a prettier and powerful `ls` for the pros.
         You can read the docs at https://dhruvkb.github.io/pls and
         obtain the source code at https://github.com/dhruvkb/pls.
         """

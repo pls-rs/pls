@@ -33,10 +33,11 @@
   <img src="https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/demo.png" alt="Demo of `pls`"/>
 </p>
 
-`pls` is a prettier `ls` for the pros.
+`pls` is a prettier and powerful `ls` for the pros.
 
 The "p" stands for
 - pretty (the output from `pls` surely looks better)
+- powerful (`pls` has lots of features and endless customisation)
 - programmer (`pls` is geared towards developers)
 - professional (`pls` can be extensively tweaked by the pros)
 - Python (`pls` is written in Python!)

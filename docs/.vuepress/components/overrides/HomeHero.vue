@@ -39,7 +39,8 @@ const actions = computed(() => {
     </div>
 
     <p class="description">
-      <code>pls</code> is a prettier <code>ls</code> for the pros.
+      <code style="color: var(--c-brand)">pls</code> is a prettier and powerful
+      <code>ls</code> for the pros.
     </p>
 
     <p v-if="actions.length" class="actions">

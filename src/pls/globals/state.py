@@ -61,16 +61,15 @@ class State(argparse.Namespace, metaclass=Singleton):
         """
 
         parser.parse_args(argv, namespace=self)
-        self.setup()
 
     def setup(self):
         """
-        Invoke all ``setup_*`` functions associated with the state. This
-        function is invoked by ``parse_args`` automatically.
+        Invoke all ``setup_*`` functions associated with the state.
         """
 
-        for setup_fn in ["home", "git", "user_groups"]:
-            getattr(self, f"setup_{setup_fn}")()
+        for attr in dir(self):
+            if attr.startswith("setup_"):
+                getattr(self, attr)()
 
     def setup_home(self):
         """

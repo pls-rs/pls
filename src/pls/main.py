@@ -11,6 +11,7 @@ def init(args=None):
 
     state.state = state.State()
     state.state.parse_args(args)
+    state.state.setup()
 
     from pls.globals import console
 

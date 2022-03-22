@@ -58,7 +58,7 @@ def directory(path_str: str) -> Path:
 parser.add_argument(
     "directory",
     type=directory,
-    nargs="?",  # makes the `directory` arg optional
+    nargs=argparse.OPTIONAL,
     default=Path.cwd(),
     help="the directory whose contents are to be listed",
 )
@@ -148,7 +148,7 @@ info = parser.add_argument_group(
 info.add_argument(
     *["-d", "--details"],
     action=DetailsAction,
-    nargs="?",
+    nargs=argparse.OPTIONAL,
     dest="details",
     help="the data points to show for each node in the output",
     default=None,  # when there is no --details flag

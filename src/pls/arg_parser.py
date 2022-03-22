@@ -257,9 +257,14 @@ configuration.add_argument(
     help="the max depth upto which to look for a `.pls.yml` file",
 )
 
-#############
-# Exporting #
-#############
+###############
+# Development #
+###############
+
+dev = parser.add_argument_group(
+    title="development",
+    description="arguments useful when developing pls",
+)
 
 
 def file(path_str: str) -> Optional[Path]:
@@ -279,11 +284,7 @@ def file(path_str: str) -> Optional[Path]:
         return None
 
 
-exporting = parser.add_argument_group(
-    title="exporting",
-    description="arguments for exporting the output to a file",
-)
-exporting.add_argument(
+dev.add_argument(
     *["-x", "--export"],
     type=file,
     help="the path to the file where to write the exported HTML",

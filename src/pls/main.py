@@ -3,7 +3,7 @@ import logging
 import os
 
 from pls.args.parser import parser
-from pls.config import icons, prefs, specs
+from pls.config import constants, icons, prefs, specs
 from pls.config.files import find_configs
 from pls.data.utils import internal_yml_path
 from pls.globals import args, state
@@ -59,6 +59,15 @@ def init(argv=None):
     )
     logger.debug(f"Nerd icons count: {len(icons.nerd_icons)}")
     logger.debug(f"Emoji icons count: {len(icons.emoji_icons)}")
+
+    logger.info("Reading constants")
+    constants.constants = constants.get_constants(
+        [
+            *conf_files,
+            internal_yml_path("constants.yml"),
+        ]
+    )
+    logger.debug(f"Constants count: {len(constants.constants)}")
 
     logger.info("Reading node specs")
     specs.node_specs = specs.get_specs(

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from enum import auto
 
+from pls.config import constants
 from pls.enums.base import AutoEnum
 
 
@@ -38,13 +39,20 @@ type_test_map: dict[NodeType, str] = {
 }
 """a mapping of node types with specific functions that evaluate it"""
 
-type_char_map: dict[NodeType, str] = {
-    NodeType.SYMLINK: "l",
-    NodeType.DIR: "d",
-    NodeType.FILE: "-",
-    NodeType.FIFO: "p",
-    NodeType.SOCKET: "s",
-    NodeType.CHAR_DEVICE: "c",
-    NodeType.BLOCK_DEVICE: "b",
-    NodeType.UNKNOWN: "?",
-}
+
+def get_type_char_map() -> dict[NodeType, str]:
+    """
+    Map each node type with its unique distinct type character.
+
+    :return: the mapping of ``NodeType`` values to type characters.
+    """
+
+    mapping: dict[NodeType, str] = {}
+    for node_type in list(NodeType):
+        mapping[node_type] = constants.constants.get("type_chars", {}).get(
+            node_type.value, " "
+        )
+    return mapping
+
+
+type_char_map: dict[NodeType, str] = get_type_char_map()

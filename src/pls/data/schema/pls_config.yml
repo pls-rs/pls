@@ -36,6 +36,9 @@ properties:
   prefs:
     $ref: "#/$defs/prefs"
 
+  constants:
+    $ref: "#/$defs/constants"
+
 $defs:
   ###################
   # Spec attributes #
@@ -277,3 +280,12 @@ $defs:
 
         type: [string, "null"]
         default: ~
+
+  #############
+  # Constants #
+  #############
+  constants:
+    title: Constant values
+    description: mapping of values that `pls` treats as hardcoded data
+
+    type: object

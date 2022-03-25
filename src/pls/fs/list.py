@@ -5,8 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 from pls.enums.node_type import NodeType
-from pls.globals import state
-from pls.globals.console import console
+from pls.globals import args, console
 from pls.models.node import Node
 
 
@@ -19,9 +18,9 @@ def sort_key(node: Node) -> tuple:
     :return: the value to use as the sort key for the node
     """
 
-    key = node.sort_keys[state.state.sort.rstrip("-")]
-    is_reversed = state.state.sort.endswith("-")
-    if not state.state.no_dirs_first:
+    key = node.sort_keys[args.args.sort.rstrip("-")]
+    is_reversed = args.args.sort.endswith("-")
+    if args.args.dirs_first:
         if is_reversed:
             type_key = 1 if node.node_type == NodeType.DIR else 0
         else:
@@ -38,9 +37,9 @@ def passes_filters(node: Node) -> bool:
     :return: ``True`` if the node passes the filters, ``False`` otherwise
     """
 
-    if state.state.exclude and state.state.exclude.match(node.name) is not None:
+    if args.args.exclude and args.args.exclude.match(node.name) is not None:
         return False
-    if state.state.only and state.state.only.match(node.name) is None:
+    if args.args.only and args.args.only.match(node.name) is None:
         return False
     return True
 
@@ -54,13 +53,13 @@ def parse_node(node_name: str) -> Optional[Node]:
     :return: a ``Node`` instance
     """
 
-    node_path: Path = state.state.directory.joinpath(node_name)
+    node_path: Path = args.args.directory.joinpath(node_name)
 
     if node_path.is_dir():
-        if state.state.no_dirs:
+        if not args.args.dirs:
             return None
     else:  # is some kind of file
-        if state.state.no_files:
+        if not args.args.files:
             return None
 
     return Node(name=node_name, path=node_path)
@@ -73,14 +72,14 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
     :return: the list of directories and files inside the given directory
     """
 
-    all_nodes = os.listdir(state.state.directory)
+    all_nodes = os.listdir(args.args.directory)
 
     node_map = {}
     node_list = []
 
     if not all_nodes:
-        console.print(
-            f"There are no files or folders in [bold]{state.state.directory}[/bold].",
+        console.console.print(
+            f"There are no files or folders in [repr.path]{args.args.directory}[/].",
             highlight=False,
         )
     else:
@@ -90,6 +89,6 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
             if (parsed_node := parse_node(node)) and passes_filters(parsed_node)
         }
         node_list = list(node_map.values())
-        node_list.sort(key=sort_key, reverse=state.state.sort.endswith("-"))
+        node_list.sort(key=sort_key, reverse=args.args.sort.endswith("-"))
 
     return node_map, node_list

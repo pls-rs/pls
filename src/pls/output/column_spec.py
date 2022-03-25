@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sys import platform
 
-from pls.globals import state
+from pls.globals import args, state
 from pls.models.col_spec import ColumnSpec
 from pls.output.detail_columns import detail_columns
 
@@ -15,7 +15,7 @@ column_spec_map: dict[str, ColumnSpec] = {
         "name": "",
         "attrs": {"width": 2},
     },
-    "name": {"name": "Name" if state.state.no_align else " Name"},
+    "name": {"name": " Name" if args.args.align else "Name"},
 }
 """a mapping of column keys to column spec"""
 

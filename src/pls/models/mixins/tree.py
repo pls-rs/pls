@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar, cast
 
 from pls.constants.tree import get_shapes
-from pls.globals import state
+from pls.globals import args
 from pls.models.base_node import BaseNode
 
 
@@ -39,14 +39,14 @@ class TreeMixin(Generic[T], BaseNode):
     def is_visible_tree(self):
         """whether the node deserves to be rendered to the screen"""
 
-        return not self.is_sub or state.state.collapse <= 1
+        return not self.is_sub or args.args.collapse <= 1
 
     @property
     def tree_prefix(self) -> str:
         """the complete string to draw the tree lines before the node name"""
 
         tree_chars = "".join([*self.pre_shapes, self.last_shape])
-        if not state.state.no_align:
+        if args.args.align:
             tree_chars = f" {tree_chars}"
         return tree_chars
 

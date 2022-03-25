@@ -7,7 +7,7 @@ from stat import S_ISDIR
 from typing import Literal, Optional
 
 from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
-from pls.globals import state
+from pls.globals import args, state
 
 
 def _get_format_pair(rules: list[str]) -> tuple[str, str]:
@@ -158,10 +158,10 @@ def get_formatted_size(stat: os.stat_result) -> str:
     if S_ISDIR(stat.st_mode):
         return "[dim]-[/dim]"
 
-    if state.state.units == UnitSystem.NONE:
+    if args.args.units == UnitSystem.NONE:
         return f"{st_size}[dim]B[/]"
 
-    base, pad, units = get_base_and_pad_and_units(state.state.units)
+    base, pad, units = get_base_and_pad_and_units(args.args.units)
     for index, unit in reversed(list(enumerate(units))):
         order_of_magnitude = base ** index
         if st_size >= order_of_magnitude:
@@ -188,5 +188,5 @@ def get_formatted_time(
     st_time = getattr(stat, attr_name)
 
     dt = datetime.datetime.fromtimestamp(st_time)
-    fmt = state.state.time_fmt
+    fmt = args.args.time_fmt
     return dt.strftime(fmt)

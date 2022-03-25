@@ -1,6 +1,6 @@
 from rich.console import Console
 
-from pls.globals import state
+from pls.globals import args
 
 
 def get_console():
@@ -11,7 +11,7 @@ def get_console():
     :return: a pre-configured ``rich.console.Console`` instance
     """
 
-    return Console(record=state.state.export is not None)
+    return Console(record=args.args.export is not None)
 
 
 console: Console

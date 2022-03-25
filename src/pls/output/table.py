@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+import logging
 import textwrap
 
 from rich.table import Table
 
 from pls.enums.icon_type import IconType
-from pls.globals import console, state
+from pls.globals import args, console
 from pls.models.node import Node
 from pls.output.column_spec import column_groups, column_spec_map
 from pls.output.solarized import solarized_theme
+
+
+logger = logging.getLogger(__name__)
 
 
 def column_chosen(col_name: str) -> bool:
@@ -19,7 +23,18 @@ def column_chosen(col_name: str) -> bool:
     :return: ``True`` if the column is to be shown, ``False`` otherwise
     """
 
-    return col_name in state.state.details or "+" in state.state.details
+    default_details = [
+        "type",
+        "perms",
+        "user",
+        "group",
+    ]
+
+    return (
+        col_name in args.args.details
+        or "+" in args.args.details
+        or (col_name in default_details and "def" in args.args.details)
+    )
 
 
 def get_columns() -> list[str]:
@@ -30,13 +45,13 @@ def get_columns() -> list[str]:
     """
 
     selected_col_groups = []
-    if state.state.details:
+    if args.args.details:
         for col_group in column_groups:
             filtered_group = [col for col in col_group if column_chosen(col)]
             selected_col_groups.append(filtered_group)
 
     name_group = ["name"]
-    if state.state.icon != IconType.NONE:
+    if args.args.icon != IconType.NONE:
         name_group.insert(0, "icon")
     selected_col_groups.append(name_group)
 
@@ -65,7 +80,7 @@ def get_table() -> Table:
     table = Table(
         padding=(0, 1, 0, 0),
         box=None,
-        show_header=state.state.details is not None,
+        show_header=args.args.details is not None,
         header_style="underline",
     )
     for col_key in get_columns():
@@ -111,7 +126,7 @@ def write_output(all_nodes: list[Node]):
 
     console.console.print(table)
 
-    if state.state.export:
+    if args.args.export:
         html_body = textwrap.dedent(
             """
             <div
@@ -121,11 +136,11 @@ def write_output(all_nodes: list[Node]):
             </div>
             """  # noqa: E501
         )
-        with state.state.export.open("w", encoding="utf-8") as out_file:
+        with args.args.export.open("w", encoding="utf-8") as out_file:
             content = console.console.export_html(
                 theme=solarized_theme,
                 code_format=html_body,
                 inline_styles=True,
             )
             out_file.write(content)
-            print("Output written to file.")
+            logger.info(f"Output written to file {args.args.export}.")

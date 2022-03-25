@@ -1,4 +1,4 @@
-from pls.globals import state
+from pls.globals import args
 
 
 PIPE = "│"
@@ -11,7 +11,7 @@ NONE = ""
 def get_shapes():
     PIPE_SPACE = f"{PIPE} "
     SPACE_SPACE = "  "
-    if not state.state.no_align:
+    if args.args.align:
         PIPE_SPACE = f"{PIPE_SPACE} "
         SPACE_SPACE = f"{SPACE_SPACE} "
 

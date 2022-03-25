@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import argparse
 import os
 from pathlib import Path
 from typing import Optional
 
-from pls.arg_parser import parser
 from pls.fs.git import get_git_root, get_git_statuses
 
 
@@ -26,21 +24,22 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class State(argparse.Namespace, metaclass=Singleton):
+class State(metaclass=Singleton):
     """
     Holds the global state of the application.
     """
 
     def __init__(self):
-        super().__init__()
-
+        # See ``setup_home``.
         self.home_dir: Optional[Path] = None
 
-        self.git_root: Optional[Path] = None
-        self.git_status_map: dict[Path, str] = {}
-
+        # See ``setup_user_groups``.
         self.uid: Optional[int] = None
         self.gids: set[int] = set()
+
+        # See ``setup_git``.
+        self.git_root: Optional[Path] = None
+        self.git_status_map: dict[Path, str] = {}
 
     def __repr__(self) -> str:
         """
@@ -52,25 +51,6 @@ class State(argparse.Namespace, metaclass=Singleton):
 
         return str(self.__dict__)
 
-    def parse_args(self, argv: Optional[list[str]] = None):
-        """
-        Parse the given set of arguments into the state instance. This also
-        invokes the setup functions that depend on the CLI args.
-
-        :param argv: the list of CLI arguments to parse
-        """
-
-        parser.parse_args(argv, namespace=self)
-
-    def setup(self):
-        """
-        Invoke all ``setup_*`` functions associated with the state.
-        """
-
-        for attr in dir(self):
-            if attr.startswith("setup_"):
-                getattr(self, attr)()
-
     def setup_home(self):
         """
         Set up the home directory of the current user.
@@ -81,16 +61,6 @@ class State(argparse.Namespace, metaclass=Singleton):
         except RuntimeError:
             # Home directory could not be determined.
             pass
-
-    def setup_git(self):
-        """
-        Set up the Git root of the directory whose contents are being listed.
-        """
-
-        self.git_root = get_git_root(self.directory)
-        if self.git_root is not None:
-            assert self.git_root is not None
-            self.git_status_map = get_git_statuses(self.git_root)
 
     def setup_user_groups(self):
         """
@@ -116,6 +86,18 @@ class State(argparse.Namespace, metaclass=Singleton):
         self.gids.update(
             group.gr_gid for group in getgrall() if username in group.gr_mem
         )
+
+    def setup_git(self, directory: Path):
+        """
+        Set up the Git root of the directory whose contents are being listed.
+
+        :param directory: the directory whose contents are being listed
+        """
+
+        self.git_root = get_git_root(directory)
+        if self.git_root is not None:
+            assert self.git_root is not None
+            self.git_status_map = get_git_statuses(self.git_root)
 
 
 state: State

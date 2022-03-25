@@ -7,7 +7,7 @@ from typing import Optional, Union
 from pls.config import icons
 from pls.enums.icon_type import IconType
 from pls.enums.node_type import NodeType
-from pls.globals import state
+from pls.globals import args
 from pls.models.base_node import BaseNode
 from pls.models.mixins.git import GitMixin
 from pls.models.mixins.imp import ImpMixin
@@ -124,7 +124,7 @@ class Node(
     def formatted_name(self) -> str:
         """the name, formatted using Rich console formatting markup"""
 
-        name = self.name if state.state.no_align else self.pure_name
+        name = self.pure_name if args.args.align else self.name
         if self.formatted_suffix:
             name = f"{name}{self.formatted_suffix}"
 
@@ -132,7 +132,7 @@ class Node(
         left, right = self.format_pair
         name = f"{left}{name}{right}"
 
-        if not state.state.no_align and not self.is_pseudo:
+        if args.args.align and not self.is_pseudo:
             if re.match(r"\.[^.]", self.name):
                 name = f"[dim].[/dim]{name}"
             else:
@@ -148,10 +148,10 @@ class Node(
     def formatted_icon(self) -> str:
         """the emoji or Nerd Font icon to show beside the node"""
 
-        if state.state.icon == IconType.NONE:
+        if args.args.icon == IconType.NONE:
             return ""
 
-        if state.state.icon == IconType.EMOJI:
+        if args.args.icon == IconType.EMOJI:
             icon_index = icons.emoji_icons
         else:  # args.icon == IconType.NERD
             icon_index = icons.nerd_icons
@@ -185,7 +185,7 @@ class Node(
             "type": self.type_char,
         }
 
-        if not state.state.details:
+        if not args.args.details:
             return cells  # return early as no more data needed
 
         cells.update(self.stat_cells)

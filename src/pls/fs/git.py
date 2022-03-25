@@ -129,7 +129,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
         elif len(components) == 3:
             _, __, path_str = components
         else:
-            raise ExecException("Could not parse Git status code")
+            raise ExecException("Could not parse Git status code.")
         path = Path(path_str)
 
         status_map[path] = status

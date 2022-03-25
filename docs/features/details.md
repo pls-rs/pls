@@ -300,7 +300,7 @@ $ pls -d ctime -d mtime -d atime
 
 #### Options
 
-This is fairly readable, but you can extend it using the `--time_fmt/-t` flag.
+This is fairly readable, but you can extend it using the `--time-fmt/-t` flag.
 This accepts a string, which can include Rich
 [console markup](https://rich.readthedocs.io/en/latest/markup.html).
 

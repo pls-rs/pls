@@ -14,7 +14,7 @@ from pls.fs.stats import (
     get_formatted_time,
     get_formatted_user,
 )
-from pls.globals import state
+from pls.globals import args, state
 from tests.unit.utils import strip_formatting
 
 
@@ -143,7 +143,7 @@ def test_gets_correct_binary_size(size: int, text: str):
 )
 def test_gets_correct_decimal_size(size: int, text: str):
     mock_stat = MagicMock(st_size=size, st_mode=0o100000)
-    with patch.multiple(state.state, units=UnitSystem.DECIMAL):
+    with patch.multiple(args.args, units=UnitSystem.DECIMAL):
         assert strip_formatting(get_formatted_size(mock_stat)) == text
 
 
@@ -158,7 +158,7 @@ def test_gets_correct_decimal_size(size: int, text: str):
 )
 def test_gets_correct_raw_size(size: int, text: str):
     mock_stat = MagicMock(st_size=size, st_mode=0o100000)
-    with patch.multiple(state.state, units=UnitSystem.NONE):
+    with patch.multiple(args.args, units=UnitSystem.NONE):
         assert strip_formatting(get_formatted_size(mock_stat)) == text
 
 
@@ -192,5 +192,5 @@ def test_formats_timestamp_in_local_tz(
 @freeze_time(tz_offset=+5.5)
 def test_formats_timestamp_as_asked(time_fmt, formatted_time):
     mock_stat = MagicMock(st_ctime=3_133_637_400)
-    with patch.multiple(state.state, time_fmt=time_fmt):
+    with patch.multiple(args.args, time_fmt=time_fmt):
         assert get_formatted_time(mock_stat, "st_ctime") == formatted_time

@@ -172,6 +172,13 @@ class Node(
         return icon
 
     @cached_property
+    def formatted_type_char(self) -> str:
+        """the type character associated with the type of the node"""
+
+        left, right = self.format_pair
+        return f"{left}{self.type_char}{right}"
+
+    @cached_property
     def table_row(self) -> Optional[dict[str, Optional[str]]]:
         """the mapping of column names and value when tabulating the node"""
 
@@ -182,7 +189,7 @@ class Node(
         cells: dict[str, Optional[str]] = {
             "name": self.formatted_name,
             "icon": self.formatted_icon,
-            "type": self.type_char,
+            "type": self.formatted_type_char,
         }
 
         if not args.args.details:

@@ -8,7 +8,7 @@ from jsonschema import validate
 
 @pytest.mark.parametrize(
     "config_name",
-    ["emoji_icons.yml", "nerd_icons.yml", "node_specs.yml"],
+    ["emoji_icons.yml", "nerd_icons.yml", "node_specs.yml", "prefs.yml"],
 )
 def test_config_is_valid(
     config_name: str, get_config: Callable[[str], Path], schema: dict

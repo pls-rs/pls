@@ -2,7 +2,9 @@ from pathlib import Path
 from typing import Literal
 
 import pytest
-import requests
+import yaml
+
+from pls.data.utils import internal_yml_path
 
 
 scope: Literal["package"] = "package"
@@ -10,10 +12,10 @@ scope: Literal["package"] = "package"
 
 @pytest.fixture(scope=scope)
 def schema():
-    schema_url = "https://dhruvkb.github.io/pls/schemas/pls_config.json"
-    response = requests.get(schema_url)
-    assert response.status_code == 200
-    return response.json()
+    schema_path = internal_yml_path("schema/pls_config.yml")
+    with schema_path.open("r", encoding="utf-8") as schema_file:
+        data = yaml.safe_load(schema_file)
+    return data
 
 
 @pytest.fixture(scope=scope)

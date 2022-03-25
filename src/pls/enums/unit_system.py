@@ -42,12 +42,12 @@ def get_base_and_pad_and_units(us: UnitSystem) -> tuple[int, int, list[str]]:
         "Y",  # yobi | yotta
     ]
 
-    if us == UnitSystem.BINARY:
-        base = pow(2, 10)
-        pad = 3  # units will be 3 chars e.g. KiB, GiB
-        units = ["", *map(lambda i: f"{i}i", units)]
-    else:  # us == UnitSystem.DECIMAL:
+    if us == UnitSystem.DECIMAL:
         base = pow(10, 3)
         pad = 2  # units will be 2 chars e.g. KB, GB
         units = ["", *units]
+    else:  # us == UnitSystem.BINARY (default)
+        base = pow(2, 10)
+        pad = 3  # units will be 3 chars e.g. KiB, GiB
+        units = ["", *map(lambda i: f"{i}i", units)]
     return base, pad, units

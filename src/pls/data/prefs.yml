@@ -1,0 +1,38 @@
+prefs:
+  ################
+  # Presentation #
+  ################
+
+  # icon: nerd
+  align: true
+  collapse: 0
+
+  ########
+  # Info #
+  ########
+
+  # details: ~
+
+  #####################
+  # Info modification #
+  #####################
+
+  # units: binary
+  time_fmt: "[dim]%Y-[/]%m-%d %H:%M[dim]:%S[/] "
+
+  ###########
+  # Sorting #
+  ###########
+
+  sort: name
+  dirs_first: true
+
+  #############
+  # Filtering #
+  #############
+
+  all: 0
+  dirs: true
+  files: true
+  # exclude: ~
+  # only: ~

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class AutoEnum(Enum):
+class AutoEnum(str, Enum):
     @staticmethod
     def _generate_next_value_(name: str, *args) -> str:
         return name.lower()

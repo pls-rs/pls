@@ -153,7 +153,7 @@ class Node(
 
         if args.args.icon == IconType.EMOJI:
             icon_index = icons.emoji_icons
-        else:  # args.icon == IconType.NERD
+        else:  # args.args.icon == IconType.NERD (default)
             icon_index = icons.nerd_icons
 
         if spec_icon := self.spec_attr("icon"):

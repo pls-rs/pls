@@ -16,8 +16,7 @@
     "lint": "prettier --check .",
     "format": "prettier --write .",
     "dev": "vuepress dev docs",
-    "schemas": "node schemas/gen.js",
-    "build": "npm run schemas && vuepress build docs"
+    "build": "vuepress build docs"
   },
   "devDependencies": {
     "@vuepress/plugin-docsearch": "^2.0.0-beta.35",

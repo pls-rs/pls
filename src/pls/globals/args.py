@@ -2,7 +2,7 @@ import argparse
 import logging
 
 
-logger = logging.getLogger(__package__)
+logger = logging.getLogger(__name__)
 
 
 class UpdatableNamespace(argparse.Namespace):

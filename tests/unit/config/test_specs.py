@@ -111,25 +111,25 @@ def test_specs_union(
     work_dirs: tuple[Path, Path, Path], get_conf: Callable[[Path], Path]
 ):
     _, two, three = work_dirs
-    get_conf(two)
-    get_conf(three)
+    for work_dir in [two, three]:
+        get_conf(work_dir)
 
-    with patch.multiple(state.state, directory=three, home_dir=None, git_root=None):
-        configs = find_configs()
+    with patch.multiple(state.state, home_dir=None, git_root=two):
+        configs = find_configs(three)
         node_specs = get_specs(configs)
 
     assert len(node_specs) == 2
 
 
-def test_specs_cascade(
+def test_inner_specs_override_outer(
     work_dirs: tuple[Path, Path, Path], get_conf: Callable[[Path], Path]
 ):
     _, two, three = work_dirs
-    get_conf(two)
-    get_conf(three)
+    for work_dir in [two, three]:
+        get_conf(work_dir)
 
-    with patch.multiple(state.state, directory=three, home_dir=None, git_root=None):
-        configs = find_configs()
+    with patch.multiple(state.state, home_dir=None, git_root=two):
+        configs = find_configs(three)
         node_specs = get_specs(configs)
         nerd_icons, _ = get_icons(configs)
     with patch("pls.config.icons.nerd_icons", nerd_icons):

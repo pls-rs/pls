@@ -84,11 +84,11 @@ Read more [in the `*_icons` docs](./icons).
 ## Schema validation
 
 Writing YAML manually can be error-prone. To make the process simpler, we
-provide a JSON schema of the file for validation, hosted at
-[this URL](/pls/schemas/pls_config.json).
+provide a YAML-format JSON-schema of the file for validation, hosted at
+[this URL](https://raw.githubusercontent.com/dhruvkb/pls/main/src/pls/data/schema/pls_config.yml).
 
 ```
-https://dhruvkb.github.io/pls/schemas/pls_config.json
+https://raw.githubusercontent.com/dhruvkb/pls/main/src/pls/data/schema/pls_config.yml
 ```
 
 Refer to your IDE/editor docs for instructions on how to associate YAML files
@@ -98,10 +98,4 @@ with a schema. This will help you write mostly valid config files.
 - [Visual Studio Code +\_YAML Language Support by Red Hat](https://github.com/redhat-developer/vscode-yaml#associating-schemas)
 
 You can also compare your configuration files against the schema using an online
-validator such as [Hyperjump](https://json-schema.hyperjump.io). To validate
-YAML using Hyperjump, you'll need the YAML form of this config, hosted at
-[this URL](https://dhruvkb.github.io/pls/schemas/pls_config.yml).
-
-```
-https://dhruvkb.github.io/pls/schemas/pls_config.yml
-```
+validator such as [Hyperjump](https://json-schema.hyperjump.io).

@@ -12,6 +12,9 @@ Colors are integral to developers. When your primary mode of interaction with
 computers is via text, colors make a lot of difference. Modern terminals can
 display as many as 256-colors and `pls` can make use of every one of them!
 
+In most cases, `pls` uses the standard color of the language for source code
+files.
+
 ## Configurations
 
 `pls` comes with

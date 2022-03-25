@@ -12,6 +12,9 @@ description: >-
 easier to read the output. In effect, `pls` enables you to annotate your files
 and directories with the full set of 3693 Nerd Font icons and 3633 emojis!
 
+The icons are meticulously chosen and intelligently mapped to nodes using specs
+which consider many aspects of the node rather than just the extension.
+
 <div
     style="background-color: #002b36; color: #839496;"
     class="language-">

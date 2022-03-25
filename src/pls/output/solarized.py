@@ -4,7 +4,7 @@ from typing import Tuple, cast
 
 from rich.terminal_theme import TerminalTheme
 
-from pls.data.utils import internal_yml_path, load_yaml_file
+from pls.data.utils import internal_yml_path, load_yml_file
 
 
 def get_color(name) -> tuple[int, int, int]:
@@ -15,7 +15,7 @@ def get_color(name) -> tuple[int, int, int]:
     :return: a tuple with the red, green and blue channel values
     """
 
-    solarized = load_yaml_file(internal_yml_path("../data/solarized.yml"))
+    solarized = load_yml_file(internal_yml_path("../data/solarized.yml"))
     color = solarized[name]
     return cast(Tuple[int, int, int], tuple(color))
 

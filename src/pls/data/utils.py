@@ -6,7 +6,7 @@ import yaml
 from pls.exceptions import ConfigException
 
 
-def load_yaml_file(file_path: Path) -> Any:
+def load_yml_file(file_path: Path) -> Any:
     """
     Load the YAML file referenced by the given name.
 

@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pls.data.utils import load_yaml_file
+from pls.data.utils import load_yml_file
 from pls.exceptions import ConfigException
 from pls.models.node_spec import NodeSpec
 
@@ -96,7 +96,7 @@ def get_specs(conf_paths: list[Path]) -> list[NodeSpec]:
     entries = []
 
     for conf_path in conf_paths:
-        conf = load_yaml_file(conf_path)
+        conf = load_yml_file(conf_path)
         entries.extend(conf.get("node_specs", []))
 
     return [NodeSpec(**spec) for entry in entries for spec in massage_specs(entry)]

@@ -5,11 +5,15 @@ variables with a dot ``.`` notation.
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from pls.data.utils import load_yml_file
 from pls.exceptions import ConfigException
 from pls.models.node_spec import NodeSpec
+
+
+logger = logging.getLogger(__name__)
 
 
 def break_plurals(entry: dict, keys: list[str]) -> list[dict]:
@@ -67,6 +71,7 @@ def massage_specs(entry: dict) -> list[dict]:
     """
 
     # Split collapse names/extensions into collapses name/extension.
+    logger.debug(f"Massaging {entry}")
     if collapse := entry.get("collapse"):
         collapse_fields = ["name", "extension"]
         check_conflicts(collapse, collapse_fields)

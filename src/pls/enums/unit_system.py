@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import logging
 from enum import auto
 
 from pls.enums.base import AutoEnum
+
+
+logger = logging.getLogger(__name__)
 
 
 class UnitSystem(AutoEnum):
@@ -31,6 +35,7 @@ def get_base_and_pad_and_units(us: UnitSystem) -> tuple[int, int, list[str]]:
     :return: the base factor and the list of units
     """
 
+    logger.debug(f"Unit system: {us}")
     units = [
         "K",  # kibi | kilo
         "M",  # mebi | mega

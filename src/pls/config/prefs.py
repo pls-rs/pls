@@ -66,3 +66,7 @@ def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:
 
     _parse_enums(preferences)
     return argparse.Namespace(**preferences)
+
+
+prefs: argparse.Namespace
+"""the preferences read from the ``pls`` config files"""

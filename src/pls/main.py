@@ -38,15 +38,15 @@ def init(argv=None):
     logger.debug(f"Config files read: {conf_files}")
 
     logger.info("Reading config files")
-    conf_prefs = prefs.get_prefs(
+    prefs.prefs = prefs.get_prefs(
         [
             *conf_files,
             internal_yml_path("prefs.yml"),
         ]
     )
-    logger.debug(f"Config preferences: {conf_prefs}")
+    logger.debug(f"Config preferences: {prefs.prefs}")
 
-    args.args.update(conf_prefs)
+    args.args.update(prefs.prefs)
     args.args.update(cli_prefs)
 
     logger.info("Reading icons")

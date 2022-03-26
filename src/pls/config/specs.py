@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 
 from pls.data.utils import load_yml_file
-from pls.exceptions import ConfigException
+from pls.exceptions import SpecException
 from pls.models.node_spec import NodeSpec
 
 
@@ -54,7 +54,7 @@ def check_conflicts(entry: dict, conflict_keys: list[str]):
 
     if [field in entry for field in conflict_keys].count(True) != 1:
         fields = ", ".join([f"[italic]`{field}`[/]" for field in conflict_keys])
-        raise ConfigException(f"Exactly one of {fields} is allowed.", fail_spec=entry)
+        raise SpecException(f"Exactly one of {fields} is allowed.", fail_spec=entry)
 
 
 def massage_specs(entry: dict) -> list[dict]:

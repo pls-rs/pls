@@ -31,6 +31,12 @@ class ConfigException(PlsException):
     The output of these exceptions must be detailed and developer-oriented.
     """
 
+
+class SpecException(ConfigException):
+    """
+    These exceptions are raised when a node spec has invalid or conflicting keys.
+    """
+
     def __init__(self, *args, fail_spec: Optional[dict] = None):
         super().__init__(*args)
         self.fail_obj = fail_spec

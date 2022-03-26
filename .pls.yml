@@ -1,3 +1,5 @@
+prefs:
+  collapse: 1
 node_specs:
   - name: src
     importance: 1

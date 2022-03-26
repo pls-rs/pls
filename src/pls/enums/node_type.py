@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import auto
 
 from pls.config import constants
+from pls.data.utils import lookup
 from pls.enums.base import AutoEnum
 
 
@@ -30,29 +31,34 @@ class NodeType(AutoEnum):
     CHAR_DEVICE = auto()  # character special device file
     BLOCK_DEVICE = auto()  # block special device file
     UNKNOWN = auto()  # graceful handling of unrecognised type
+    BROKEN = auto()  # handling of non-existent nodes
 
 
 type_test_map: dict[NodeType, str] = {
     node_type: f"is_{node_type.value}"
     for node_type in list(NodeType)
-    if node_type != NodeType.UNKNOWN
+    if node_type not in {NodeType.UNKNOWN, NodeType.BROKEN}
 }
 """a mapping of node types with specific functions that evaluate it"""
 
 
-def get_type_char_map() -> dict[NodeType, str]:
+def get_type_char(node_type: NodeType) -> str:
     """
-    Map each node type with its unique distinct type character.
+    Get the unique, distinct type character associated with the given node type. Returns
+    a blank string if no type character is associated.
 
-    :return: the mapping of ``NodeType`` values to type characters.
+    :return: the type character mapped to the given ``NodeType`` value
     """
 
-    mapping: dict[NodeType, str] = {}
-    for node_type in list(NodeType):
-        mapping[node_type] = constants.constants.get("type_chars", {}).get(
-            node_type.value, " "
-        )
-    return mapping
+    return lookup(constants.constants, ["type_chars", node_type.value], "")
 
 
-type_char_map: dict[NodeType, str] = get_type_char_map()
+def get_type_suffix(node_type: NodeType) -> str:
+    """
+    Get the unique, distinct type suffix associated with the given node type. Returns
+    a blank string if no type character is associated.
+
+    :return: the type suffix mapped to the given ``NodeType`` value
+    """
+
+    return lookup(constants.constants, ["type_suffixes", node_type.value], "")

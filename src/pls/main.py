@@ -80,7 +80,7 @@ def init(argv=None):
 
     from pls.globals import console
 
-    console.console = console.get_console()
+    console.console = console.get_console()  # depends on args
 
 
 def main() -> None:

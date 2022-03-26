@@ -7,8 +7,9 @@ from unittest.mock import patch
 
 import pytest
 
-from pls.config.constants import LookupDict, get_constants
+from pls.config.constants import get_constants
 from pls.config.files import find_configs
+from pls.data.utils import lookup
 from pls.exceptions import ConstException
 from pls.globals import state
 
@@ -23,8 +24,8 @@ from pls.globals import state
     ],
 )
 def test_lookup_dict_follows_path(path: list[str], expectation: Any):
-    lookup_dict = LookupDict({"en": {"a": ["apple", "animal"], "b": "ball"}})
-    assert lookup_dict.lookup(path) == expectation
+    lookup_dict = {"en": {"a": ["apple", "animal"], "b": "ball"}}
+    assert lookup(lookup_dict, path) == expectation
 
 
 @pytest.mark.parametrize(
@@ -38,13 +39,12 @@ def test_lookup_dict_follows_path(path: list[str], expectation: Any):
     ],
 )
 def test_lookup_dict_returns_default_or_raises_if_not_found(path: list[str]):
-    lookup_dict = LookupDict({"en": {"a": ["apple", "animal"], "b": "ball"}})
-
-    assert lookup_dict.lookup(path, "default") == "default"
+    lookup_dict = {"en": {"a": ["apple", "animal"], "b": "ball"}}
+    assert lookup(lookup_dict, path, "default") == "default"
 
     path_str = ".".join([str(fragment) for fragment in path])
     with pytest.raises(ConstException, match=re.escape(path_str)):
-        lookup_dict.lookup(path)
+        lookup(lookup_dict, path)
 
 
 def test_union_of_constants(
@@ -58,7 +58,7 @@ def test_union_of_constants(
         configs = find_configs(three)
         constants = get_constants(configs)
 
-        type_chars = constants.lookup(["type_chars"])
+        type_chars = lookup(constants, ["type_chars"])
         assert set(type_chars.keys()) == {"symlink", "fifo", "dir"}
 
 
@@ -73,4 +73,4 @@ def test_inner_constants_override_outer(
         configs = find_configs(three)
         constants = get_constants(configs)
 
-        assert constants.lookup(["type_chars", "symlink"]) == ""
+        assert lookup(constants, ["type_chars", "symlink"]) == ""

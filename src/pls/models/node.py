@@ -6,7 +6,7 @@ from typing import Optional, Union
 
 from pls.config import icons
 from pls.enums.icon_type import IconType
-from pls.enums.node_type import NodeType
+from pls.enums.node_type import NodeType, get_type_suffix
 from pls.globals import args
 from pls.models.base_node import BaseNode
 from pls.models.mixins.git import GitMixin
@@ -97,25 +97,20 @@ class Node(
     def formatted_suffix(self) -> str:
         """the symbol after the filename representing its type"""
 
-        if not self.exists:
-            return "⚠"
-
+        node_type = self.node_type if self.exists else NodeType.BROKEN
+        suffix = get_type_suffix(node_type)
         if self.node_type == NodeType.SYMLINK:
+            if suffix:
+                suffix = f"{suffix} "
             assert self.dest_node is not None
 
             if self.is_loop:
                 assert isinstance(self.dest_node, str)
-                return f"[dim]@ ↺[/] [red]{self.dest_node}[/red]"
+                return f"[dim]{suffix}↺[/] [red]{self.dest_node}[/red]"
 
             assert isinstance(self.dest_node, Node)
-            return f"[dim]@ →[/] {self.dest_node.formatted_name}"
+            return f"[dim]{suffix}→[/] {self.dest_node.formatted_name}"
 
-        mapping = {
-            NodeType.DIR: "/",
-            NodeType.SOCKET: "=",
-            NodeType.FIFO: "|",
-        }
-        suffix = mapping.get(self.node_type, "")
         if suffix:
             suffix = f"[dim]{suffix}[/]"
         return suffix

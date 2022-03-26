@@ -56,7 +56,7 @@ def test_node_has_correct_type_char(
     name: str, type_char: str, get_node: Callable[[str], Node]
 ):
     node = get_node(name)
-    assert node.type_char == type_char
+    assert strip_formatting(node.formatted_type_char) == type_char
 
 
 @pytest.mark.parametrize(

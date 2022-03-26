@@ -5,7 +5,8 @@ from functools import cached_property
 from pathlib import Path
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 
-from pls.enums.node_type import NodeType, type_char_map, type_test_map
+from pls.enums import node_type as nt
+from pls.enums.node_type import NodeType, get_type_char
 from pls.models.base_node import BaseNode
 
 
@@ -34,7 +35,7 @@ class TypeMixin(Generic[T], BaseNode):
     def node_type(self) -> NodeType:
         """whether the node is a file, folder, symlink, FIFO etc."""
 
-        for node_type, node_type_test in type_test_map.items():
+        for node_type, node_type_test in nt.type_test_map.items():
             if getattr(self.path, node_type_test)():
                 # Symlinks need to set their destination node.
                 if node_type == NodeType.SYMLINK and self.dest_node is None:
@@ -47,7 +48,7 @@ class TypeMixin(Generic[T], BaseNode):
     def type_char(self) -> str:
         """the single character representing the file type"""
 
-        return type_char_map[self.node_type]
+        return get_type_char(self.node_type)
 
     def populate_dest(self):
         """

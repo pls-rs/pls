@@ -53,6 +53,14 @@ class SpecException(ConfigException):
             )
 
 
+class ConstException(ConfigException):
+    """
+    These exceptions are raised when a missing constant is looked up without a default.
+    """
+
+    pass
+
+
 class ExecException(PlsException):
     """
     These exceptions occur as a result of bad input and cause the application to

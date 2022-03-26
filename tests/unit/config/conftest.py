@@ -54,6 +54,16 @@ def get_conf():
                     "cat": "🐈",
                     "dog": "🐶",
                 },
+                "prefs": {
+                    "sort": "name",
+                    "dirs_first": True,
+                },
+                "constants": {
+                    "type_chars": {
+                        "symlink": "\uf838",  # 
+                        "fifo": "p",
+                    },
+                },
             },
             "two": {
                 "node_specs": [
@@ -66,6 +76,16 @@ def get_conf():
                 "emoji_icons": {
                     "mouse": "🐭",
                     "cat": "🐱",
+                },
+                "prefs": {
+                    "dirs_first": False,
+                    "time_fmt": "[dim]%Y-[/]%m-%d %H:%M[dim]:%S[/] ",
+                },
+                "constants": {
+                    "type_chars": {
+                        "symlink": "l",
+                        "dir": "d",
+                    },
                 },
             },
         }

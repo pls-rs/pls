@@ -21,3 +21,4 @@ __pycache__/
 # Tool caches
 .pytest_cache
 .mypy_cache
+.coverage

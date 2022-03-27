@@ -51,6 +51,8 @@ bump level="minor":
     git add pyproject.toml
     git commit -m "Bump version to $(just ver)"
     git tag -a "$(just ver)" -m "$(just ver)"
+    git push origin main
+    git push origin $(just ver)
 
 # Build the project and publish to PyPI
 deploy:

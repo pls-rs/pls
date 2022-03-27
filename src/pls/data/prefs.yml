@@ -5,6 +5,7 @@ prefs:
 
   # icon: nerd
   align: true
+  multi_cols: false
   collapse: 0
 
   ########

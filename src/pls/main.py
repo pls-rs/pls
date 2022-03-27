@@ -3,6 +3,7 @@ import logging
 import os
 
 from pls.args.parser import parser
+from pls.args.validation import validate_args
 from pls.config import constants, icons, prefs, specs
 from pls.config.files import find_configs
 from pls.data.utils import internal_yml_path
@@ -48,6 +49,7 @@ def init(argv=None):
 
     args.args.update(prefs.prefs)
     args.args.update(cli_prefs)
+    validate_args(args.args)
 
     logger.info("Reading icons")
     icons.nerd_icons, icons.emoji_icons = icons.get_icons(
@@ -94,7 +96,8 @@ def main() -> None:
     init(None)  # ``None`` makes ``argparse`` read real CLI args from ``sys.argv``
 
     from pls.fs.list import read_input
-    from pls.output.table import write_output
+    from pls.output.columns import ColumnsPrinter
+    from pls.output.table import TablePrinter
 
     node_map, node_list = read_input()
 
@@ -111,10 +114,16 @@ def main() -> None:
                 continue
             node.set_sub_pre_shapes()
 
-    write_output(node_list)
+    PrinterClass = ColumnsPrinter if args.args.multi_cols else TablePrinter
+    printer = PrinterClass(node_list)
+    printer.print()
 
 
 def dev() -> None:
     os.environ.setdefault("PLS_LOG_LEVEL", "DEBUG")  # Show detailed logs
 
+    main()
+
+
+if __name__ == "__main__":
     main()

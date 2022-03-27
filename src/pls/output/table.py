@@ -1,146 +1,121 @@
 from __future__ import annotations
 
-import logging
-import textwrap
-
 from rich.table import Table
 
 from pls.enums.icon_type import IconType
-from pls.globals import args, console
+from pls.globals import args
 from pls.models.node import Node
 from pls.output.column_spec import column_groups, column_spec_map
-from pls.output.solarized import solarized_theme
+from pls.output.printers import BasePrinter
 
 
-logger = logging.getLogger(__name__)
-
-
-def column_chosen(col_name: str) -> bool:
+class TablePrinter(BasePrinter):
     """
-    Determine whether the given column name has been asked for in the details.
-
-    :param col_name: the name of the column to check
-    :return: ``True`` if the column is to be shown, ``False`` otherwise
+    Render nodes in a table.
     """
 
-    default_details = [
-        "type",
-        "perms",
-        "user",
-        "group",
-    ]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    return (
-        col_name in args.args.details
-        or "+" in args.args.details
-        or (col_name in default_details and "def" in args.args.details)
-    )
+        self.cols = self._get_cols()
+        self.table = self._get_table()
 
+    @staticmethod
+    def _column_chosen(col_name: str) -> bool:
+        """
+        Determine whether the given column name has been asked for in the details.
 
-def get_columns() -> list[str]:
-    """
-    Get the list of columns to show.
+        :param col_name: the name of the column to check
+        :return: ``True`` if the column is to be shown, ``False`` otherwise
+        """
 
-    :return: the list of column keys
-    """
+        default_details = [
+            "type",
+            "perms",
+            "user",
+            "group",
+        ]
 
-    selected_col_groups = []
-    if args.args.details:
-        for col_group in column_groups:
-            filtered_group = [col for col in col_group if column_chosen(col)]
-            selected_col_groups.append(filtered_group)
-
-    name_group = ["name"]
-    if args.args.icon != IconType.NONE:
-        name_group.insert(0, "icon")
-    selected_col_groups.append(name_group)
-
-    flattened_cols = []
-    for index, col_group in enumerate(selected_col_groups):
-        # Skip groups with zero chosen columns.
-        if len(col_group) == 0:
-            continue
-
-        # Don't add spacer after last group.
-        if index != len(selected_col_groups) - 1:
-            col_group.append("spacer")
-        flattened_cols.extend(col_group)
-
-    return flattened_cols
-
-
-def get_table() -> Table:
-    """
-    Get a Rich table with pre-configured columns. The attributes of the columns
-    are retrieved from ``column_spec`` based on keys from ``get_columns``.
-
-    :return: a Rich table
-    """
-
-    table = Table(
-        padding=(0, 1, 0, 0),
-        box=None,
-        show_header=args.args.details is not None,
-        header_style="underline",
-    )
-    for col_key in get_columns():
-        col = column_spec_map.get(col_key)
-        if col is not None:
-            table.add_column(col.get("name", ""), **col.get("attrs", {}))
-    return table
-
-
-def tabulate_node(table: Table, node: Node):
-    """
-    Add all cells for the given node to the given table. If a node has sub-nodes
-    this will recursively tabulate them as well.
-
-    :param table: the table in which to print the node
-    :param node: the node to insert into the table
-    """
-
-    data = node.table_row
-    if data is not None:
-        cells = [data.get(col, "") for col in get_columns()]
-        table.add_row(*cells)
-        for sub_node in node.children:
-            tabulate_node(table, sub_node)
-
-
-def write_output(all_nodes: list[Node]):
-    """
-    Write the list of directories and files to the screen as a table. If the
-    ``--export`` flag is set, the output is also written as HTML markup to the
-    given file.
-
-    :param all_nodes: the list of all directories and files
-    """
-
-    table = get_table()
-
-    for node in all_nodes:
-        # Sub-nodes are not tabulated with the rest of the top-level nodes.
-        if node.is_sub:
-            continue
-        tabulate_node(table, node)
-
-    console.console.print(table)
-
-    if args.args.export:
-        html_body = textwrap.dedent(
-            """
-            <div
-                style="background-color: {background}; color: {foreground};"
-                class="language-">
-              <pre style="color: inherit;"><code style="color: inherit;">{code}</code></pre>
-            </div>
-            """  # noqa: E501
+        return (
+            col_name in args.args.details
+            or "+" in args.args.details
+            or (col_name in default_details and "def" in args.args.details)
         )
-        with args.args.export.open("w", encoding="utf-8") as out_file:
-            content = console.console.export_html(
-                theme=solarized_theme,
-                code_format=html_body,
-                inline_styles=True,
-            )
-            out_file.write(content)
-            logger.info(f"Output written to file {args.args.export}.")
+
+    @staticmethod
+    def _get_cols() -> list[str]:
+        """
+        Get the list of columns to show.
+
+        :return: the list of column keys
+        """
+
+        selected_col_groups = []
+        if args.args.details:
+            for col_group in column_groups:
+                filtered_group = [
+                    col for col in col_group if TablePrinter._column_chosen(col)
+                ]
+                selected_col_groups.append(filtered_group)
+
+        name_group = ["name"]
+        if args.args.icon != IconType.NONE:
+            name_group.insert(0, "icon")
+        selected_col_groups.append(name_group)
+
+        flattened_cols = []
+        for index, col_group in enumerate(selected_col_groups):
+            # Skip groups with zero chosen columns.
+            if len(col_group) == 0:
+                continue
+
+            # Don't add spacer after last group.
+            if index != len(selected_col_groups) - 1:
+                col_group.append("spacer")
+            flattened_cols.extend(col_group)
+
+        return flattened_cols
+
+    def _get_table(self) -> Table:
+        """
+        Get a Rich table with pre-configured columns. The attributes of the columns
+        are retrieved from ``column_spec`` based on keys from ``get_columns``.
+
+        :return: a Rich table
+        """
+
+        table = Table(
+            padding=(0, 1, 0, 0),
+            box=None,
+            show_header=args.args.details is not None,
+            header_style="underline",
+        )
+        for col_key in self.cols:
+            col = column_spec_map.get(col_key)
+            if col is not None:
+                table.add_column(col.get("name", ""), **col.get("attrs", {}))
+        return table
+
+    def tabulate_node(self, node: Node):
+        """
+        Add all cells for the given node to the table. If a node has sub-nodes this will
+        recursively tabulate them as well.
+
+        :param node: the node to insert into the table
+        """
+
+        data = node.table_row
+        if data is not None:
+            cells = [data.get(col, "") for col in self.cols]
+            self.table.add_row(*cells)
+            for sub_node in node.children:
+                self.tabulate_node(sub_node)
+
+    def print_output(self):
+        for node in self.all_nodes:
+            # Sub-nodes are not tabulated with the rest of the top-level nodes.
+            if node.is_sub:
+                continue
+            self.tabulate_node(node)
+
+        self.console.print(self.table)

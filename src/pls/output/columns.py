@@ -60,7 +60,7 @@ class ColumnsPrinter(BasePrinter):
         if data is None:
             return None
 
-        name = " ".join([(data.get(col) or "") for col in self.cols])
+        name = " ".join([(data.get(col) or " ") for col in self.cols])
         self.columns.add_renderable(name)
 
         width = len(strip_formatting(name))

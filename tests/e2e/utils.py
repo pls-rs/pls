@@ -26,5 +26,6 @@ def run_pls(args: list[str] = None) -> subprocess.CompletedProcess:
         cwd=proj_dir,
         capture_output=True,
         text=True,
+        encoding="utf-8",
     )
     return proc

@@ -24,8 +24,8 @@ def test_help(arg: str):
         "usage: pls [-h] [-v]",
         "`pls` is a prettier and powerful `ls` for the pros.",
         "directory",
-        "-h, --help",
-        "-v, --version",
+        "--help/-h",
+        "--version/-v",
     ]
     for line in expected_lines:
         assert line in proc.stdout

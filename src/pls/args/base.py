@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import argparse
-import sys
 from enum import Enum
+from sys import platform, stderr
 from typing import IO, Optional
 
 from rich import print as rich_print
@@ -97,7 +97,7 @@ class PlsFormatter(argparse.HelpFormatter):
                 help_lines = self._split_lines(bit, help_width)
 
                 first_indent = indent_first if index == 0 else help_position
-                sep = "[dim]│[/] "
+                sep = "[dim]│[/] " if platform != "win32" else ""
 
                 parts.append(f"{' '*first_indent}{sep}{help_lines[0]}\n")
                 parts.extend(
@@ -124,5 +124,5 @@ class PlsParser(argparse.ArgumentParser):
     def _print_message(self, message: str, file: Optional[IO[str]] = None):
         if message:
             if file is None:
-                file = sys.stderr
+                file = stderr
             rich_print(message, file=file)

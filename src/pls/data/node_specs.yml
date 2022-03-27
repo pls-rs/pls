@@ -62,6 +62,8 @@ node_specs:
   ############
   # Patterns #
   ############
+  - pattern: [README\b, readme\b]
+    importance: 2
 
   - pattern: \.env\b
     icon: env

@@ -15,3 +15,8 @@ constants:
     fifo: "|"
     unknown: "[dim red]?[/]"
     broken: "⚠"
+  tree:
+    pipe_space: "│ "
+    space_space: "  "
+    tee_dash: "├─"
+    bend_dash: "└─"

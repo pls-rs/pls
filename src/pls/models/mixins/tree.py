@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar, cast
 
-from pls.constants.tree import get_shapes
+from pls.config import constants
+from pls.data.utils import lookup
 from pls.globals import args
 from pls.models.base_node import BaseNode
 
@@ -60,9 +61,8 @@ class TreeMixin(Generic[T], BaseNode):
         :return: ``end_shape`` if the node is last, ``not_end_shape`` otherwise
         """
 
-        shapes = get_shapes()
         if not self.is_sub:
-            return shapes["NONE"]
+            return ""
 
         assert self.parent is not None
         siblings = self.parent.children
@@ -84,8 +84,10 @@ class TreeMixin(Generic[T], BaseNode):
         :return: the set of box-drawing characters before the node's own
         """
 
-        shapes = get_shapes()
-        return self.get_shape(shapes["SPACE_SPACE"], shapes["PIPE_SPACE"])
+        return self.get_shape(
+            lookup(constants.constants, ["tree", "space_space"], ""),
+            lookup(constants.constants, ["tree", "pipe_space"], ""),
+        )
 
     def _get_last_shape(self) -> str:
         """
@@ -97,8 +99,10 @@ class TreeMixin(Generic[T], BaseNode):
         :return: the node's own box-drawing characters
         """
 
-        shapes = get_shapes()
-        return self.get_shape(shapes["BEND_DASH"], shapes["TEE_DASH"])
+        return self.get_shape(
+            lookup(constants.constants, ["tree", "bend_dash"], ""),
+            lookup(constants.constants, ["tree", "tee_dash"], ""),
+        )
 
     def set_sub_pre_shapes(self):
         """

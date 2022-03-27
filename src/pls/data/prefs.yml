@@ -12,11 +12,6 @@ prefs:
   ########
 
   # details: ~
-
-  #####################
-  # Info modification #
-  #####################
-
   # units: binary
   time_fmt: "[dim]%Y-[/]%m-%d %H:%M[dim]:%S[/] "
 

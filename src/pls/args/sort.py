@@ -26,6 +26,7 @@ def add_args(parser: argparse.ArgumentParser):
     )
     sorting.add_argument(
         *["-s", "--sort"],
+        metavar="KEY",
         help="the field based on which to sort the files and directories",
         choices=sort_choices,
     )

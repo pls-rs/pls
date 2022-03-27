@@ -16,6 +16,7 @@ def add_args(parser: argparse.ArgumentParser):
     )
     presentation.add_argument(
         *["-i", "--icon"],
+        metavar="TYPE",
         type=IconType,
         choices=list(IconType),
         help="the type of icons to show with the files",

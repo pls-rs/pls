@@ -205,8 +205,6 @@ $defs:
             - git
             - def
             - +
-
-      # info modification
       units:
         description: the units to use when listing the size of files
 

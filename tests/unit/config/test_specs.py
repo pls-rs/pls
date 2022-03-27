@@ -12,7 +12,7 @@ from pls.config.specs import break_plurals, get_specs, massage_specs
 from pls.exceptions import ConfigException
 from pls.globals import state
 from pls.models.node import Node
-from tests.unit.utils import strip_formatting
+from pls.utils.strip_fmt import strip_formatting
 
 
 @pytest.mark.parametrize(

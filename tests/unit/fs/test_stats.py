@@ -15,7 +15,7 @@ from pls.fs.stats import (
     get_formatted_user,
 )
 from pls.globals import args, state
-from tests.unit.utils import strip_formatting
+from pls.utils.strip_fmt import strip_formatting
 
 
 @pytest.mark.parametrize(

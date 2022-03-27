@@ -6,7 +6,7 @@ import pytest
 
 from pls.enums.node_type import NodeType
 from pls.models.node import Node
-from tests.unit.utils import strip_formatting
+from pls.utils.strip_fmt import strip_formatting
 
 
 @pytest.mark.parametrize(

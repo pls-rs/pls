@@ -14,9 +14,9 @@ def validate_args(args: argparse.Namespace):
     """
 
     if args.details and args.multi_cols:
-        logger.warning("Cannot have multiple columns in detailed view.")
+        logger.info("Cannot have multiple columns in detailed view.")
         args.multi_cols = False
 
     if args.multi_cols and args.collapse != 0:
-        logger.warning("Cannot collapse in multiple columns.")
+        logger.info("Cannot collapse in multiple columns.")
         args.collapse = 0

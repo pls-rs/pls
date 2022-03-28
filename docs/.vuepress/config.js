@@ -12,6 +12,7 @@ const features = {
     "/features/summary",
     "/features/colors",
     "/features/icons",
+    "/features/multi_cols",
     "/features/suffixes",
     "/features/details",
     "/features/filtering",

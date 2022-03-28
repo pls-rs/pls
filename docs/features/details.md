@@ -29,7 +29,13 @@ attributes.
 Since all these queries happen in parallel using `multiprocessing`, the
 performance is not impacted.
 
-To show details pass the `--details`/`-d` flag.
+To show details, pass the `--details`/`-d` flag.
+
+:::warning
+Details take precedence over multi-cols, meaning that the multi-column layout
+is replaced with a table when showing details. The `--multi-cols`/`-m` flag has
+no effect.
+:::
 
 ## Options
 

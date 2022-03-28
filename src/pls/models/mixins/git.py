@@ -45,9 +45,13 @@ class GitMixin(BaseNode):
         return cells
 
     @cached_property
-    def git_format(self) -> Optional[str]:
+    def git_format_rules(self) -> tuple[list[str], list[str]]:
         """the formatting associated with a node's Git status"""
 
+        fmt_rules: list[str] = []
+        txt_fmt_rules: list[str] = []
+
         if self.git_status == "!!":  # Git-ignored node
-            return "dim"
-        return None
+            fmt_rules.append("dim")
+
+        return fmt_rules, txt_fmt_rules

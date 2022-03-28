@@ -1,14 +1,9 @@
 from __future__ import annotations
 
 from functools import cached_property
-from typing import TYPE_CHECKING
 
 from pls.globals import args
 from pls.models.base_node import BaseNode
-
-
-if TYPE_CHECKING:
-    from typing import Optional
 
 
 class ImpMixin(BaseNode):
@@ -36,15 +31,19 @@ class ImpMixin(BaseNode):
         return self.importance + args.args.all >= -1
 
     @cached_property
-    def importance_format(self) -> Optional[str]:
+    def importance_format_rules(self) -> tuple[list[str], list[str]]:
         """the formatting associated with a node's importance level"""
 
+        fmt_rules: list[str] = []
+        txt_fmt_rules: list[str] = []
+
         if self.importance <= -1:
-            return "dim"
+            fmt_rules.append("dim")
         if self.importance == 1:
-            return "bold"
+            txt_fmt_rules.append("bold")
         if self.importance == 2:
-            return "underline"
+            txt_fmt_rules.append("underline")
         if self.importance >= 3:
-            return "bold underline"
-        return None
+            txt_fmt_rules.extend(["bold", "underline"])
+
+        return fmt_rules, txt_fmt_rules

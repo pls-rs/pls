@@ -65,26 +65,47 @@ class Node(
         return self.is_visible_imp and self.is_visible_tree
 
     @cached_property
-    def format_pair(self) -> tuple[str, str]:
-        """the opening and closing tags of Rich console formatting markup"""
+    def format_rules(self) -> tuple[list[str], list[str]]:
+        """the list of formatting rules to apply to the icons and text respectively"""
 
-        format_rules = []
+        fmt_rules = []
+        txt_fmt_rules = []
 
         # font color
         if not self.exists:
-            format_rules.append("red")  # only happens for broken symlinks
+            fmt_rules.append("red")  # only happens for broken symlinks
         elif spec_color := self.spec_attr("color"):
-            format_rules.append(str(spec_color))
+            fmt_rules.append(str(spec_color))
         elif self.node_type == NodeType.DIR:
-            format_rules.append("cyan")
+            fmt_rules.append("cyan")
 
-        if self.importance_format:
-            format_rules.append(self.importance_format)
-        if self.git_format:
-            format_rules.append(self.git_format)
+        imp_fmt_rules, imp_txt_fmt_rules = self.importance_format_rules
+        if imp_fmt_rules:
+            fmt_rules.extend(imp_fmt_rules)
+        if imp_txt_fmt_rules:
+            txt_fmt_rules.extend(imp_txt_fmt_rules)
+
+        git_fmt_rules, git_txt_fmt_rules = self.git_format_rules
+        if git_fmt_rules:
+            fmt_rules.extend(git_fmt_rules)
+        if git_txt_fmt_rules:
+            txt_fmt_rules.extend(git_txt_fmt_rules)
 
         if self.name == ".pls.yml":
-            format_rules.append("italic")
+            txt_fmt_rules.append("italic")
+
+        txt_fmt_rules.extend(fmt_rules)
+        return fmt_rules, txt_fmt_rules
+
+    @staticmethod
+    def _get_format_pair(format_rules: list[str]) -> tuple[str, str]:
+        """
+        Get a two element tuple containing the opening and closing tags of Rich console
+        formatting markup.
+
+        :param format_rules: the rules to convert to console markup
+        :return: the pair of opening and closing formatting tags
+        """
 
         if format_rules:
             left = f"[{' '.join(format_rules)}]"
@@ -92,6 +113,20 @@ class Node(
         else:
             left = right = ""
         return left, right
+
+    @cached_property
+    def text_format_pair(self) -> tuple[str, str]:
+        """the opening and closing tags of Rich console formatting markup for text"""
+
+        _, txt_fmt_rules = self.format_rules
+        return self._get_format_pair(txt_fmt_rules)
+
+    @cached_property
+    def icon_format_pair(self) -> tuple[str, str]:
+        """the opening and closing tags of Rich console formatting markup for icons"""
+
+        fmt_rules, _ = self.format_rules
+        return self._get_format_pair(fmt_rules)
 
     @cached_property
     def formatted_suffix(self) -> str:
@@ -124,7 +159,7 @@ class Node(
             name = f"{name}{self.formatted_suffix}"
 
         # Apply format pair.
-        left, right = self.format_pair
+        left, right = self.text_format_pair
         name = f"{left}{name}{right}"
 
         if args.args.align and not self.is_pseudo:
@@ -160,7 +195,7 @@ class Node(
 
         if icon:
             # Apply format pair.
-            left, right = self.format_pair
+            left, right = self.icon_format_pair
             icon = f"{left}{icon}{right}"
         else:
             icon = ""
@@ -170,7 +205,7 @@ class Node(
     def formatted_type_char(self) -> str:
         """the type character associated with the type of the node"""
 
-        left, right = self.format_pair
+        left, right = self.text_format_pair
         return f"{left}{self.type_char}{right}"
 
     @cached_property

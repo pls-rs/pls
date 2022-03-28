@@ -41,11 +41,13 @@ no effect.
 
 The `--details`/`-d` flag is very multifaceted.
 
-- Pass just the `-details`/`-d` flag once without any values to get the default
-  details. This is quite little, you might want more fields.
+- Pass just the `-details`/`-d` flag once without any values or with the value
+  `def` to get the default details. This includes few fields, you might want
+  understandably want more.
 
 ```
 $ pls -d
+$ pls -d def
 ```
 
 <div

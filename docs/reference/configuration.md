@@ -61,11 +61,13 @@ You can take a look at the project configuration of `pls` itself
 
 ## `.pls.yml`
 
-The `.pls.yml` configuration file consists of three parts.
+The `.pls.yml` configuration file consists of five parts.
 
 - `emoji_icons`
 - `nerd_icons`
 - `node_specs`
+- `prefs`
+- `constants`
 
 ### Node specs
 

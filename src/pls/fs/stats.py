@@ -170,7 +170,7 @@ def get_formatted_size(stat: os.stat_result) -> str:
     logger.debug(f"Pad: {pad}")
     logger.debug(f"Units: {units}")
     for index, unit in reversed(list(enumerate(units))):
-        order_of_magnitude = base ** index
+        order_of_magnitude = base**index
         if st_size >= order_of_magnitude:
             magnitude = round(st_size / order_of_magnitude)  # Pop! Pop!
             unit = f"{unit}B".rjust(pad, " ")

@@ -10,5 +10,5 @@ def strip_formatting(fmt_text: str) -> str:
     :return: the text stripped of all formatting
     """
 
-    fmt_pattern = re.compile(r"\[/?[a-z0-9_\s]*]")
+    fmt_pattern = re.compile(r"(?<!\\)\[([a-z0-9_\s]+|/[a-z0-9_\s]*)]")
     return re.sub(fmt_pattern, "", fmt_text)

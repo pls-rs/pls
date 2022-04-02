@@ -31,6 +31,7 @@
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/demo.png" alt="Demo of `pls`"/>
+  <img src="https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/help.png" alt="Help of `pls`"/>
 </p>
 
 `pls` is a prettier and powerful `ls` for the pros.

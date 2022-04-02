@@ -1,6 +1,11 @@
 const { path } = require("@vuepress/utils");
 const packageInfo = require("../../package.json");
 
+const get_started = {
+  text: "Get started",
+  children: ["/get_started/installation", "/get_started/usage"],
+};
+
 const about = {
   text: "About",
   children: ["/about/faq", "/about/comparison"],
@@ -65,7 +70,7 @@ module.exports = {
     docsDir: "docs",
 
     navbar: [
-      { text: "Get started", link: "/get_started" },
+      get_started,
       about,
       features,
       reference,
@@ -73,7 +78,7 @@ module.exports = {
     ],
 
     sidebar: {
-      "/get_started": ["/get_started"],
+      "/get_started": [get_started],
       "/about": [about],
       "/features": [features],
       "/reference": [reference],

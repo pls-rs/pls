@@ -13,7 +13,6 @@ There are lots of alternatives to `ls`. Here are some of the most popular ones.
 - [`exa`](https://github.com/ogham/exa)
 - [`lsd`](https://github.com/Peltoche/lsd)
 - [`colorls`](https://github.com/athityakumar/colorls)
-- [`ls-go`](https://github.com/acarl005/ls-go)
 
 `pls` stands out from all of these, thanks to some very specific choices. Here
 are some examples of how `pls` is a whole class apart from these tools.

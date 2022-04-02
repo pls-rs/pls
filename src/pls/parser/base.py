@@ -16,6 +16,10 @@ class PlsFormatter(argparse.HelpFormatter):
     This formatter extends ``argparse.HelpFormatter`` to use Rich markup in the output.
     """
 
+    def __init__(self, *args, **kwargs):
+        # Update ``max_help_position`` as needed to fit the arguments in one line.
+        super().__init__(*args, **kwargs, max_help_position=28)
+
     class _Section(argparse.HelpFormatter._Section):  # type: ignore
         def __init__(self, formatter, parent, heading=None):
             super().__init__(formatter, parent, heading)

@@ -40,7 +40,10 @@ class PlsFormatter(argparse.HelpFormatter):
         parts = []
 
         opts = sorted(action.option_strings, key=lambda item: len(item), reverse=True)
-        complete_arg_name = "/".join(f"[cyan]{opt}[/]" for opt in opts)
+        if len(opts) == 2 and opts[0].startswith("--no"):
+            complete_arg_name = f"[cyan]--[magenta italic](no-)[/]{opts[1][2:]}[/]"
+        else:
+            complete_arg_name = "/".join(f"[cyan]{opt}[/]" for opt in opts)
         parts.append(complete_arg_name)
 
         if action.nargs != 0:

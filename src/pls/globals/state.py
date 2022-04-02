@@ -87,13 +87,14 @@ class State(metaclass=Singleton):
             group.gr_gid for group in getgrall() if username in group.gr_mem
         )
 
-    def setup_git(self, directory: Path):
+    def setup_git(self, node: Path):
         """
         Set up the Git root of the directory whose contents are being listed.
 
-        :param directory: the directory whose contents are being listed
+        :param node: the file or directory being listed
         """
 
+        directory = node if node.is_dir() else node.parent
         self.git_root = get_git_root(directory)
         if self.git_root is not None:
             assert self.git_root is not None

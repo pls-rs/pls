@@ -44,16 +44,17 @@ def passes_filters(node: Node) -> bool:
     return True
 
 
-def parse_node(node_name: str) -> Optional[Node]:
+def parse_node(parent_path: Path, node_name: str) -> Optional[Node]:
     """
     Parse the node name into a ``Node`` instance. Most of the heavy lifting is
     handled in the ``Node`` class definition itself.
 
+    :param parent_path: the path to the parent of the node
     :param node_name: the name of a node inside the working directory
     :return: a ``Node`` instance
     """
 
-    node_path: Path = args.args.directory.joinpath(node_name)
+    node_path: Path = parent_path.joinpath(node_name)
 
     if node_path.is_dir():
         if not args.args.dirs:
@@ -72,7 +73,13 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
     :return: the list of directories and files inside the given directory
     """
 
-    all_nodes = os.listdir(args.args.directory)
+    arg_path: Path = args.args.node
+    if arg_path.is_dir():
+        parent_path = arg_path
+        all_nodes = os.listdir(arg_path)
+    else:
+        parent_path = arg_path.parent
+        all_nodes = [arg_path.name]
 
     node_map = {}
     node_list = []
@@ -86,7 +93,8 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
         node_map = {
             parsed_node.name: parsed_node
             for node in all_nodes
-            if (parsed_node := parse_node(node)) and passes_filters(parsed_node)
+            if (parsed_node := parse_node(parent_path, node))
+            and passes_filters(parsed_node)
         }
         node_list = list(node_map.values())
         node_list.sort(key=sort_key, reverse=args.args.sort.endswith("-"))

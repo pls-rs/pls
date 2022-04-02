@@ -87,16 +87,17 @@ def get_home_conf() -> Optional[Path]:
     return test_path if _is_valid(test_path) else None
 
 
-def find_configs(curr_dir: Path) -> list[Path]:
+def find_configs(node: Path) -> list[Path]:
     """
     Get the paths for all the relevant ``.pls.yml`` files.
 
-    :param curr_dir: the directory whose contents are being listed
+    :param node: the file or directory being listed
     :return: a list of paths for all ``pls`` config files
     """
 
-    conf_paths = []
+    curr_dir = node if node.is_dir() else node.parent
 
+    conf_paths = []
     if cwd_conf := get_cwd_conf(curr_dir):
         conf_paths.append(cwd_conf)
     if ancestor_confs := get_ancestor_confs(curr_dir):

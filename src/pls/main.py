@@ -27,15 +27,15 @@ def init(argv=None):
     cli_prefs = parser.parse_args(argv)
     logger.debug(f"CLI arguments: {cli_prefs}")
 
-    args.args.directory = cli_prefs.directory
+    args.args.node = cli_prefs.node
 
     state.state = state_obj = state.State()
 
     state_obj.setup_home()
     state_obj.setup_user_groups()
-    state_obj.setup_git(cli_prefs.directory)
+    state_obj.setup_git(cli_prefs.node)
 
-    conf_files = find_configs(cli_prefs.directory)
+    conf_files = find_configs(cli_prefs.node)
     logger.debug(f"Config files read: {conf_files}")
 
     logger.info("Reading config files")

@@ -1,6 +1,7 @@
 import argparse
 
 from pls.output.detail_columns import detail_columns
+from pls.parser.actions import BooleanOptionalAction
 
 
 sort_choices = ["name", "ext"]
@@ -31,9 +32,7 @@ def add_args(parser: argparse.ArgumentParser):
         choices=sort_choices,
     )
     sorting.add_argument(
-        "--no-dirs-first",
-        dest="dirs_first",
-        action="store_false",
-        default=None,  # ``store_false`` sets default value to ``True``
-        help="mix directories and files, sorting them together",
+        "--dirs-first",
+        action=BooleanOptionalAction,
+        help="[underline]separate[/]/[magenta]mix[/] dirs and files when sorting",
     )

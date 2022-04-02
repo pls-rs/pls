@@ -1,6 +1,8 @@
 import argparse
 import re
 
+from pls.parser.actions import BooleanOptionalAction, StoreOrCountAction
+
 
 def add_args(parser: argparse.ArgumentParser):
     """
@@ -15,22 +17,18 @@ def add_args(parser: argparse.ArgumentParser):
     )
     filtering.add_argument(
         *["-a", "--all"],
-        action="count",
+        action=StoreOrCountAction,
         help="increasingly show low-importance files that would otherwise be hidden",
     )
     filtering.add_argument(
-        "--no-dirs",
-        dest="dirs",
-        action="store_false",
-        default=None,  # ``store_false`` sets default value to ``True``
-        help="hide directories in the output",
+        "--dirs",
+        action=BooleanOptionalAction,
+        help="[underline]show[/]/[magenta]hide[/] directories in the output",
     )
     filtering.add_argument(
-        "--no-files",
-        dest="files",
-        action="store_false",
-        default=None,  # ``store_false`` sets default value to ``True``
-        help="hide files in the output",
+        "--files",
+        action=BooleanOptionalAction,
+        help="[underline]show[/]/[magenta]hide[/] files in the output",
     )
     filtering.add_argument(
         *["-e", "--exclude"],

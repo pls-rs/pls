@@ -1,5 +1,5 @@
-from pls.args import dev, filter, info, meta, pos, pres, sort
-from pls.args.base import PlsFormatter, PlsParser
+from pls.parser.args import dev, filter, info, meta, pos, pres, sort
+from pls.parser.base import PlsFormatter, PlsParser
 
 
 def _get_core_parser() -> PlsParser:

@@ -2,13 +2,13 @@
 import logging
 import os
 
-from pls.args.parser import parser
-from pls.args.validation import validate_args
 from pls.config import constants, icons, prefs, specs
 from pls.config.files import find_configs
 from pls.data.utils import internal_yml_path
 from pls.globals import args, state
 from pls.log.config import configure_log_level
+from pls.parser.parser import parser
+from pls.parser.validation import validate_args
 
 
 logger = logging.getLogger(__name__)

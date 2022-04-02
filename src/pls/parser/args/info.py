@@ -5,8 +5,9 @@ from pls.output.detail_columns import detail_columns
 
 
 detail_choices = list(detail_columns.keys()) + [
-    "def",  # refers to the default set
-    "+",  # means all details
+    "def",  # means the default set of details
+    "all",  # means all details
+    "none",  # means no details
 ]
 
 

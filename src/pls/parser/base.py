@@ -48,15 +48,19 @@ class PlsFormatter(argparse.HelpFormatter):
         return " ".join(parts)
 
     def _action_choices(self, action):
+        """
+        Present the choices of an action as a string.
+
+        :param action: the action for which to present the string of choices
+        :return: the string representation of an action's choices
+        """
+
         choices = action.choices
         if choices is None:
             return None
-        choice_str = []
-        for choice in choices:
-            if isinstance(choice, Enum):
-                choice_str.append(choice.value)
-            else:
-                choice_str.append(choice)
+        choice_str = [
+            choice.value if isinstance(choice, Enum) else choice for choice in choices
+        ]
         return f"[bold]Choices[/]: {choice_str}"
 
     def _format_action(self, action):

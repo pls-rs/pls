@@ -23,6 +23,10 @@ def init(argv=None):
 
     configure_log_level()
 
+    logger.info("Parsing internal prefs")
+    prefs.internal_prefs = prefs.get_prefs([internal_yml_path("prefs.yml")])
+    logger.debug(f"Internal preferences: {prefs.internal_prefs}")
+
     logger.info("Parsing CLI arguments")
     cli_prefs = parser.parse_args(argv)
     logger.debug(f"CLI arguments: {cli_prefs}")
@@ -39,14 +43,10 @@ def init(argv=None):
     logger.debug(f"Config files read: {conf_files}")
 
     logger.info("Reading config files")
-    prefs.prefs = prefs.get_prefs(
-        [
-            *conf_files,
-            internal_yml_path("prefs.yml"),
-        ]
-    )
+    prefs.prefs = prefs.get_prefs(conf_files)
     logger.debug(f"Config preferences: {prefs.prefs}")
 
+    args.args.update(prefs.internal_prefs)
     args.args.update(prefs.prefs)
     args.args.update(cli_prefs)
     validate_args(args.args)

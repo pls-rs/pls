@@ -87,7 +87,7 @@ class TablePrinter(BasePrinter):
         table = Table(
             padding=(0, 1, 0, 0),
             box=None,
-            show_header=args.args.details is not None,
+            show_header=bool(args.args.details),
             header_style="underline",
         )
         for col_key in self.cols:

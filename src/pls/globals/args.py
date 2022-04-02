@@ -1,6 +1,8 @@
 import argparse
 import logging
 
+from pls.config import prefs
+
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +27,8 @@ class UpdatableNamespace(argparse.Namespace):
 
         for key, val in vars(more).items():
             if key not in self or val is not None:
+                if val == "default":
+                    val = getattr(prefs.internal_prefs, key, None)
                 setattr(self, key, val)
 
         logger.debug(f"Result: {self}")

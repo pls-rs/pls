@@ -68,5 +68,8 @@ def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:
     return argparse.Namespace(**preferences)
 
 
+internal_prefs: argparse.Namespace
+"""the preferences read from the internal ``prefs.yml`` file"""
+
 prefs: argparse.Namespace
 """the preferences read from the ``pls`` config files"""

@@ -70,11 +70,11 @@ d <span style="color: #b58900; text-decoration-color: #b58900">r</span><span sty
 </code></pre>
 </div>
 
-- Pass the `--details`/`-d` flag with the value `+` to get all the details. This
-  is probably too much information, and you'll need a wider monitor.
+- Pass the `--details`/`-d` flag with the value `all` to get all the details.
+  This is probably too much information, and you'll need a wider monitor.
 
 ```
-$ pls -d +
+$ pls -d all
 ```
 
 <div
@@ -94,6 +94,35 @@ $ pls -d +
 48331709     1   - <span style="color: #b58900; text-decoration-color: #b58900">r</span><span style="color: #dc322f; text-decoration-color: #dc322f">w</span>- <span style="color: #b58900; text-decoration-color: #b58900">r</span>-- <span style="color: #b58900; text-decoration-color: #b58900">r</span>--   dhruvkb staff     2<span style="color: #415f66; text-decoration-color: #415f66">KiB</span>   <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-13 22:10<span style="color: #415f66; text-decoration-color: #415f66">:56 </span> <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-12 16:47<span style="color: #415f66; text-decoration-color: #415f66">:32 </span> <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-12 16:47<span style="color: #415f66; text-decoration-color: #415f66">:40 </span>           <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
 48704366     1   - <span style="color: #b58900; text-decoration-color: #b58900">r</span><span style="color: #dc322f; text-decoration-color: #dc322f">w</span>- <span style="color: #b58900; text-decoration-color: #b58900">r</span>-- <span style="color: #b58900; text-decoration-color: #b58900">r</span>--   dhruvkb staff   713<span style="color: #415f66; text-decoration-color: #415f66">  B</span>   <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-14 16:05<span style="color: #415f66; text-decoration-color: #415f66">:40 </span> <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-14 16:05<span style="color: #415f66; text-decoration-color: #415f66">:40 </span> <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-14 16:05<span style="color: #415f66; text-decoration-color: #415f66">:42 </span>            pyproject.toml         
 48704365     1   - <span style="color: #b58900; text-decoration-color: #b58900">r</span><span style="color: #dc322f; text-decoration-color: #dc322f">w</span>- <span style="color: #b58900; text-decoration-color: #b58900">r</span>-- <span style="color: #b58900; text-decoration-color: #b58900">r</span>--   dhruvkb staff     7<span style="color: #415f66; text-decoration-color: #415f66">KiB</span>   <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-14 23:54<span style="color: #415f66; text-decoration-color: #415f66">:19 </span> <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-14 16:05<span style="color: #415f66; text-decoration-color: #415f66">:40 </span> <span style="color: #415f66; text-decoration-color: #415f66">2022</span>-02-14 23:46<span style="color: #415f66; text-decoration-color: #415f66">:17 </span>            README.md              
+</code></pre>
+</div>
+
+- Pass the `--details`/`-d` flag with the value `none` to not show the details.
+  This is the default behaviour and helpful to override values set via
+  preferences.
+
+```
+$ pls -d none
+```
+
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+ﰌ   justfile               
+   LICENSE                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
+<span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
+   pyproject.toml         
+   <span style="text-decoration: underline">README.md</span>              
 </code></pre>
 </div>
 

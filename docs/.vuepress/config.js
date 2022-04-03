@@ -1,5 +1,25 @@
+const Prism = require("prismjs");
+const loadLanguages = require("prismjs/components/");
+
 const { path } = require("@vuepress/utils");
 const packageInfo = require("../../package.json");
+
+/* Configure Prism */
+
+loadLanguages(["bash"]);
+bash_functions = [
+  "cat",
+  "gh",
+  "git",
+  "just",
+  "pip",
+  "pipx",
+  "pls",
+  "poetry",
+].join("|");
+Prism.languages.bash.function.pattern = new RegExp(
+  `(^|[\\s;|&]|[<>]\\()(?:${bash_functions})(?=$|[)\\s;|&])`
+);
 
 const get_started = {
   text: "Get started",
@@ -20,8 +40,8 @@ const features = {
     "/features/multi_cols",
     "/features/suffixes",
     "/features/details",
-    "/features/filtering",
     "/features/sorting",
+    "/features/filtering",
     "/features/importance",
     "/features/collapse",
     "/features/upcoming",
@@ -34,7 +54,13 @@ const reference = {
     "/reference/configuration",
     "/reference/node_specs",
     "/reference/icons",
+    "/reference/prefs",
   ],
+};
+
+const contributing = {
+  text: "Contributing",
+  children: ["/contributing/set_up"],
 };
 
 module.exports = {
@@ -74,6 +100,7 @@ module.exports = {
       about,
       features,
       reference,
+      contributing,
       { text: "PyPI", link: "https://pypi.org/project/pls/" },
     ],
 
@@ -82,6 +109,7 @@ module.exports = {
       "/about": [about],
       "/features": [features],
       "/reference": [reference],
+      "/contributing": [contributing],
     },
   },
   alias: Object.fromEntries(

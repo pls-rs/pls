@@ -12,19 +12,78 @@ When looking for files, filtering is one of the powerful tools in your arsenal.
 `pls` can filter files using a number of techniques, including the most powerful
 of them all, regular expressions.
 
-## Options
+## By type
 
-There are a number of flags that control the filter criteria.
+`pls` allows you to selectively filter out directories or files from the output.
 
-- Pass the `--all`/`-a` flag to change the importance thresholds. See the
-  [docs on importance](./importance) for more information on this option.
+### Files
 
-- Pass the `--no-dirs` flag to hide all directories from the output, and show
-  files.
+**CLI flags:** `--files`/`--no-files`  
+**Config YAML:** `files`
 
-```
-$ pls --no-dirs
-```
+This is a [boolean field](../reference/prefs.md#booleans).
+
+- `--files`/`true`: show files in the output (default)
+
+  ```shellsession
+  $ pls # default
+  $ pls --files
+  ```
+
+  ```yml
+  prefs:
+    files: true
+  ```
+
+- `--no-files`
+
+  ```shellsession
+  $ pls --no-files
+  ```
+
+  ```yml
+  prefs:
+    files: false
+  ```
+
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span> 
+<span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>           
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+</code></pre>
+</div>
+
+### Directories
+
+**CLI flags:** `--dirs`/`--no-dirs`  
+**Config YAML:** `dirs`
+
+This is a [boolean field](../reference/prefs.md#booleans).
+
+- `--dirs`/`true`: show directories in the output (default)
+
+  ```shellsession
+  $ pls # default
+  $ pls --dirs
+  ```
+
+  ```yml
+  prefs:
+    files: true
+  ```
+
+- `--no-dirs`
+
+  ```shellsession
+  $ pls --no-dirs
+  ```
+
+  ```yml
+  prefs:
+    dirs: false
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -43,27 +102,27 @@ $ pls --no-dirs
 </code></pre>
 </div>
 
-- Pass the `--no-files` flag to hide all files from the output, and only show
-  directories.
+## By name
 
-```
-$ pls --no-files
-```
+There are a number of flags that control the filter criteria.
 
-<div
-    style="background-color: #002b36; color: #839496;"
-    class="language-">
-  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span> 
-<span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>           
-<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
-</code></pre>
-</div>
+### Exclude
 
-- Pass the `--exclude`/`-e` option with a regular expression to hide all files
-  matching the pattern.
+**CLI flags:** `--exclude`/`-e`  
+**Config YAML:** `exclude`
 
-```
+This is a [string field](../reference/prefs.md#strings).
+
+Pass the `--exclude`/`-e` option with a regular expression to hide all files
+matching the pattern.
+
+```shellsession
 $ pls -e '.*\.ya?ml'
+```
+
+```yml
+prefs:
+  exclude: .*\.ya?ml
 ```
 
 <div
@@ -84,11 +143,23 @@ $ pls -e '.*\.ya?ml'
 </code></pre>
 </div>
 
-- Pass the `--only`/`-o` option with a regular expression to only show files
-  matching the pattern.
+### Include
 
-```
+**CLI flags:** `--only`/`-o`  
+**Config YAML:** `only`
+
+This is a [string field](../reference/prefs.md#strings).
+
+Pass the `--only`/`-o` option with a regular expression to only show files
+matching the pattern.
+
+```shellsession
 $ pls -o '.*\.ya?ml'
+```
+
+```yml
+prefs:
+  only: .*\.ya?ml
 ```
 
 <div
@@ -99,29 +170,33 @@ $ pls -o '.*\.ya?ml'
 </code></pre>
 </div>
 
-## Reference
+### Reference
 
-### Importance (`--all`)
-
-See the [docs for importance](./importance) for more information on this option.
-
-### Regex (`--exclude`/`-e` and `--only`/`-o`)
-
-Both the 'exclude' and 'only' flags take regular expressions that are matched
-against the node name. These expressions match the node name from the start so
+Both the `exclude` and `only` options take regular expressions that are matched
+against the node name. The match is performed from the start of the node name so
 for matches targeting substrings not in the beginning should be prefixed with
 a wildcard match at the start `.*`.
 
-::: tip
-Wrap the regular expression in single quotes to prevent the shell from tampering
-with it.
+::: warning
+Filters are combined by AND operations. Thus, setting both `only` and `exclude`
+(either via CLI or YAML config) will lead to a combined effect where only files
+and directories satisfying both conditions will be shown.
 :::
 
-Passing both `--only`/`-o` and `--exclude`/`-e` will lead to a combined effect
-where only files matching both conditions will be shown.
+::: tip
+In the CLI, wrap the regular expression in single quotes to prevent the shell
+from tampering with it. In YAML, skip the quotes altogether or use single quotes
+to prevent the escape codes from being parsed.
+:::
 
+```shellsession
+$ pls -e 'README' -o '.*\.md'
 ```
-$ poetry run pls -e 'README' -o '.*\.md'
+
+```yml
+prefs:
+  exclude: README
+  only: .*\.md
 ```
 
 <div
@@ -131,3 +206,8 @@ $ poetry run pls -e 'README' -o '.*\.md'
    CONTRIBUTING.md    
 </code></pre>
 </div>
+
+## By importance
+
+See the [docs for the Importance feature](./importance) for more information on
+this filtering option.

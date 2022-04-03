@@ -15,6 +15,17 @@ display as many as 256-colors and `pls` can make use of every one of them!
 In most cases, `pls` uses the standard color of the language for source code
 files.
 
+## Preferences
+
+`pls` does not offer any toggles for colors. Colors are on by default, as
+developers like it. To remove colors from your life, pipe the output through
+`cat` like so. When `pls` detects that it's not writing to a TTY, it turns off
+all formatting like colors and font styles in the output.
+
+```shellsession
+$ pls | cat
+```
+
 ## Configurations
 
 `pls` comes with

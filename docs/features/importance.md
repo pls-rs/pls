@@ -12,70 +12,61 @@ Not all files and folders in a directory are equally important. This is
 especially true for modern software development, where the root folder of a
 project is filled with scaffolding and configuration files for toolchains.
 
-Consider this root directory of `pls` itself.
+`pls` uses an importance scale that it makes it easy to find your proverbial
+needle in the haystack. The importance of files decides whether files are
+shown and controls their visual prominence.
 
-```
-dist/
-justfile
-LICENSE
-poetry.lock
-pyproject.toml
-README.md
-readme_assets/
-src/
-tests/
-```
+## Preferences
 
-It's very difficult to identify your source code in this mess. Here's how `pls`
-formats it.
+**CLI flags:** `--all`/`-a`  
+**Config YAML:** `all`
 
-```
-$ pls
-```
+This is a [counter field](../reference/prefs.md#counters). It can take any
+integer value.
 
-<div
-    style="background-color: #002b36; color: #839496;"
-    class="language-">
-  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>  <span style="color: #156667; text-decoration-color: #156667"> dist/</span>                  
-<span style="color: #2aa198; text-decoration-color: #2aa198"></span>  <span style="color: #2aa198; text-decoration-color: #2aa198"> readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
-<span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold"></span>  <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold"> src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
-<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>  <span style="color: #2aa198; text-decoration-color: #2aa198"> tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
-ﰌ   justfile               
-   LICENSE                
-<span style="font-style: italic"></span>  <span style="color: #415f66; text-decoration-color: #415f66; font-style: italic">.</span><span style="font-style: italic">pls.yml</span>                
-<span style="color: #415f66; text-decoration-color: #415f66"></span>  <span style="color: #415f66; text-decoration-color: #415f66"> poetry.lock</span>            
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
-   pyproject.toml         
-   README.md              
-</code></pre>
-</div>
+In the CLI, this flag can be passed several times, reducing the threshold by one
+each time it is passed. Alternatively, it can be passed with an argument to
+directly set the threshold.
 
-Notice how `dist/` and `poetry.lock` fade into the background. Also notice how
-`src/` appears bold. This is the importance scale, and it makes it easy to find
-your proverbial needle in the haystack.
+In the YAML config, you can set the value directly to an integer.
 
-## Options
+- Default: sets the importance threshold to zero, so files with importance -1
+  are dimmed and those with importance -2 or lower are invisible.
 
-Files with importance -2 and lower are hidden. They can be made visible using
-the `--all`/`-a` flag. Each usage of the flag lowers the visibility threshold by
-one, so
+  ```shellsession
+  $ pls
+  ```
 
-- use the flag once to see importance -2 and above
+  ```yml
+  prefs:
+    all: 0
+  ```
 
-```
-$ pls -all
-$ pls -a
-```
+- Custom: to see files with importance -2 as dimmed and importance -1 as regular
+  files, lower the threshold by 1.
 
-- use the flag twice to see importance -3 and above
+  ```shellsession
+  $ pls -a
+  $ pls -a 1
+  ```
 
-```
-$ pls --all --all
-$ pls -a -a
-$ pls -aa
-```
+  ```yml
+  prefs:
+    all: 1
+  ```
+
+  Similarly, to see files with importance -3 as dimmed and importance -1 and -2 as
+  regular files, lower the threshold by 2.
+
+  ```shellsession
+  $ pls -a -a
+  $ pls -a 2
+  ```
+
+  ```yml
+  prefs:
+    all: 2
+  ```
 
 ## Configuration
 

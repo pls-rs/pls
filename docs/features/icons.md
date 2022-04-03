@@ -15,6 +15,28 @@ and directories with the full set of 3693 Nerd Font icons and 3633 emojis!
 The icons are meticulously chosen and intelligently mapped to nodes using specs
 which consider many aspects of the node rather than just the extension.
 
+Notice how directories and files have these very pretty icons to their left?
+These are Nerd Font icons.
+
+## Preferences
+
+**CLI flags:** `--icon`/`-i`  
+**Config YAML:** `icon`
+
+This is an [enum field](../reference/prefs.md#enums) with the following choices:
+
+- `nerd`: show Nerd Font icons (default)
+
+  ```shellsession
+  $ pls # default
+  $ pls -i nerd
+  ```
+
+  ```yml
+  prefs:
+    icon: nerd
+  ```
+
 <div
     style="background-color: #002b36; color: #839496;"
     class="language-">
@@ -34,17 +56,16 @@ which consider many aspects of the node rather than just the extension.
 </code></pre>
 </div>
 
-Notice how directories and files have these very pretty icons to their left?
-These are Nerd Font icons.
-
-## Options
-
-`pls` shows Nerd Font icons by default. But this can be changed to emoji or even
-turned off by using the `--icons`/`-i` flag.
-
-- `nerd`: show Nerd Font icons (default)
-
 - `emoji`: show emojis
+
+  ```shellsession
+  $ pls -i emoji
+  ```
+
+  ```yml
+  prefs:
+    icon: emoji
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -66,6 +87,15 @@ turned off by using the `--icons`/`-i` flag.
 </div>
 
 - `none`: turn off icons
+
+  ```shellsession
+  $ pls -i none
+  ```
+
+  ```yml
+  prefs:
+    icon: none
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"

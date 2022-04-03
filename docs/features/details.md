@@ -26,29 +26,44 @@ attributes.
 |                    | atime | Accessed at    |                                |
 |                    | git   | Git status     | [Conditional](#git-status-git) |
 
-Since all these queries happen in parallel using `multiprocessing`, the
-performance is not impacted.
+On a decently capable computer (which I'm sure most pros will have), Python is
+pretty fast. Even with all details turned on, `pls` runs fast enough that there
+isn't a noticeable delay.
 
-To show details, pass the `--details`/`-d` flag.
+## Preferences
 
-:::warning
-Details take precedence over multi-cols, meaning that the multi-column layout
-is replaced with a table when showing details. The `--multi-cols`/`-m` flag has
-no effect.
-:::
+**CLI flags:** `--details`/`-d`  
+**Config YAML:** `details`
 
-## Options
+This is a [list of enum field](../reference/prefs.md#lists). This means you can
+pass the CLI flag multiple times, with a different value after the flag, and
+they will all be collected, in sequence. These are the valid values.
 
-The `--details`/`-d` flag is very multifaceted.
+- `none`: show no details (default)
 
-- Pass just the `-details`/`-d` flag once without any values or with the value
-  `def` to get the default details. This includes few fields, you might want
-  understandably want more.
+  ```shellsession
+  $ pls
+  $ pls -d none
+  ```
 
-```
-$ pls -d
-$ pls -d def
-```
+  ```yml
+  prefs:
+    details: []
+  ```
+
+- `def`: show the standard subset of detail fields; For a list of standard keys,
+  see the fields with ✅ in the 'Default' column of the table above.
+
+  ```shellsession
+  $ pls -d
+  $ pls -d def
+  ```
+
+  ```yml
+  prefs:
+    details:
+      - def
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -70,12 +85,18 @@ d <span style="color: #b58900; text-decoration-color: #b58900">r</span><span sty
 </code></pre>
 </div>
 
-- Pass the `--details`/`-d` flag with the value `all` to get all the details.
-  This is probably too much information, and you'll need a wider monitor.
+- `all`: show all details fields; This is probably too much information, and
+  you'll likely need a wider monitor.
 
-```
-$ pls -d all
-```
+  ```shellsession
+  $ pls -d all
+  ```
+
+  ```yml
+  prefs:
+    details:
+      - all
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -97,42 +118,21 @@ $ pls -d all
 </code></pre>
 </div>
 
-- Pass the `--details`/`-d` flag with the value `none` to not show the details.
-  This is the default behaviour and helpful to override values set via
-  preferences.
+- individual keys: selectively enable detail fields; This makes the most sense.
+  You can also combine them with `def` include the standard set of columns. For
+  a list of keys, refer to the 'Key' column in the table above.
 
-```
-$ pls -d none
-```
+  ```shellsession
+  $ pls -d -d mtime
+  $ pls -d def -d mtime
+  ```
 
-<div
-    style="background-color: #002b36; color: #839496;"
-    class="language-">
-  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
-<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
-<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
-<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
-   CODE_OF_CONDUCT.md     
-   CONTRIBUTING.md        
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
-ﰌ   justfile               
-   LICENSE                
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
-<span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
-   pyproject.toml         
-   <span style="text-decoration: underline">README.md</span>              
-</code></pre>
-</div>
-
-- Pass individual keys with the `--default`/`-d` flag to selectively enable
-  them. This makes the most sense. You can also toss in a blank `-d` to include
-  the default columns.
-
-```
-$ pls -d -d mtime
-```
+  ```yml
+  prefs:
+    details:
+      - def
+      - mtime
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -153,6 +153,12 @@ d <span style="color: #b58900; text-decoration-color: #b58900">r</span><span sty
 - <span style="color: #b58900; text-decoration-color: #b58900">r</span><span style="color: #dc322f; text-decoration-color: #dc322f">w</span>- <span style="color: #b58900; text-decoration-color: #b58900">r</span>-- <span style="color: #b58900; text-decoration-color: #b58900">r</span>--   dhruvkb staff   <span style="color: #415f66; text-decoration-color: #415f66">2022-</span>02-16 19:55<span style="color: #415f66; text-decoration-color: #415f66">:58 </span>      README.md              
 </code></pre>
 </div>
+
+:::warning
+Details take precedence over multi-cols, meaning that the multi-column layout
+is replaced with a table when showing details. The `--multi-cols`/`-m` flag has
+no effect.
+:::
 
 ## Reference
 
@@ -222,17 +228,24 @@ These columns are not available on Windows. Including them will have no effect.
 
 `pls` displays the file size in human-readable units.
 
-#### Options
+#### Preferences
 
-By default, it uses binary units such as kibibytes (KiB) or mibibytes (MiB).
-This can be turned off or changed to decimal units such as kilobytes (KB) or
-megabytes (MB) by using the `--units/-u` flag.
+**CLI flags:** `--units`/`-u`  
+**Config YAML:** `units`
 
-- `binary`: use binary units like KiB, MiB, GiB etc. (default)
+This is an [enum field](../reference/prefs.md#enums) with the following choices:
 
-```
-$ pls -d size
-```
+- `binary`: use binary units like kibibytes (KiB) and mibibytes (MiB) (default)
+
+  ```shellsession
+  $ pls -d size
+  $ pls -d size -u binary
+  ```
+
+  ```yml
+  prefs:
+    units: binary
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -254,11 +267,16 @@ $ pls -d size
 </code></pre>
 </div>
 
-- `decimal`: use decimal units like KB, MB, GB etc.
+- `decimal`: use decimal units like kilobytes (KB) and megabytes (MB)
 
-```
-$ pls -d size -u decimal
-```
+  ```shellsession
+  $ pls -d size -u decimal
+  ```
+
+  ```yml
+  prefs:
+    units: decimal
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -280,11 +298,16 @@ $ pls -d size -u decimal
 </code></pre>
 </div>
 
-- `none`: show the exact number of bytes
+- `none`: show the exact number of bytes and no higher level units
 
-```
-$ pls -d size -u none
-```
+  ```shellsession
+  $ pls -d size -u none
+  ```
+
+  ```yml
+  prefs:
+    units: none
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -308,12 +331,28 @@ $ pls -d size -u none
 
 ### Timestamps (`ctime`, `mtime` and `atime`)
 
-`pls` displays the timestamps in the format `%Y-%m-%d %H:%M:%S `. The year and
-seconds are dimmed.
+`pls` displays the timestamps in a human-readable format.
 
-```
-$ pls -d ctime -d mtime -d atime
-```
+#### Preferences
+
+**CLI flags:** `--time-fmt`/`-t`
+**Config YAML:** `time_fmt`
+
+This is a [string field](../reference/prefs.md#strings). It can take any textual
+value.
+
+- Default: shows the year and seconds as dimmed (as they are too broad and too
+  narrow respectively to be useful).
+
+  ```shellsession
+  $ pls -d ctime -d mtime -d atime
+  $ pls -d ctime -d mtime -d atime -t '[dim]%Y-[/]%m-%d %H:%M[dim]:%S[/] '
+  ```
+
+  ```yml
+  prefs:
+    time_fmt: "[dim]%Y-[/]%m-%d %H:%M[dim]:%S[/] "
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -335,19 +374,20 @@ $ pls -d ctime -d mtime -d atime
 </code></pre>
 </div>
 
-#### Options
+- Custom: You can use
+  [Python `strftime` codes](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
+  along with
+  [Rich formatting markup](https://rich.readthedocs.io/en/latest/markup.html)
+  and arbitrary text that is rendered as is.
 
-This is fairly readable, but you can extend it using the `--time-fmt/-t` flag.
-This accepts a string, which can include Rich
-[console markup](https://rich.readthedocs.io/en/latest/markup.html).
+  ```shellsession
+  $ pls -d ctime -d mtime -t '[red]%Y[/]-[green]%m[/]-[blue]%d[/] %H:%M '
+  ```
 
-::: tip
-Since the date columns can get too close, leave a trailing space in the format.
-:::
-
-```
-$ pls -d ctime -d mtime -t '[red]%Y[/]-[green]%m[/]-[blue]%d[/] %H:%M '
-```
+  ```yml
+  prefs:
+    time_fmt: "[red]%Y[/]-[green]%m[/]-[blue]%d[/] %H:%M "
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
@@ -368,6 +408,10 @@ $ pls -d ctime -d mtime -t '[red]%Y[/]-[green]%m[/]-[blue]%d[/] %H:%M '
 <span style="color: #dc322f; text-decoration-color: #dc322f">2022</span>-<span style="color: #859900; text-decoration-color: #859900">02</span>-<span style="color: #268bd2; text-decoration-color: #268bd2">14</span> 23:54  <span style="color: #dc322f; text-decoration-color: #dc322f">2022</span>-<span style="color: #859900; text-decoration-color: #859900">02</span>-<span style="color: #268bd2; text-decoration-color: #268bd2">14</span> 16:05       README.md              
 </code></pre>
 </div>
+
+::: tip
+Since the date columns can get too close, leave a trailing space in the format.
+:::
 
 ### Git status (`git`)
 

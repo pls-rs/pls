@@ -105,7 +105,7 @@ module.exports = {
       "@vuepress/plugin-register-components",
       {
         components: Object.fromEntries(
-          ["GitHubStars", "ColorPreview"].map((component) => [
+          ["ColorPreview"].map((component) => [
             component,
             path.resolve(__dirname, `./components/custom/${component}.vue`),
           ])

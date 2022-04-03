@@ -13,6 +13,18 @@ or newer. There are two approaches to installing `pls`, using either `pipx`
 (which is a great tool for managing Python binaries) or `pip` (which comes
 pre-installed with Python).
 
+## Requirements
+
+To install `pls`, you need to have the following software installed.
+
+- Python 3.8
+- `pip` or `pipx` (your preferred mode of installation)
+
+Some features need additional dependencies.
+
+- [Icons need Nerd Fonts](../features/icons.md#requirements)
+- [Git status column needs Git](../features/details.md#git-status-git)
+
 ## With `pipx`
 
 [`pipx`](https://pypa.github.io/pipx/) is a fine way to install executable

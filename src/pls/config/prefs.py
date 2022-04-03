@@ -27,18 +27,40 @@ def _parse_enums(preferences: dict):
     :param preferences: the dictionary of preferences in which to parse enums
     """
 
-    enum_map: dict[str, Type[Enum]] = {
+    enum_fields_map: dict[str, Type[Enum]] = {
         "icon": IconType,
         "units": UnitSystem,
     }
     for pref, val in preferences.items():
-        if pref in enum_map:
+        if pref in enum_fields_map:
             try:
-                preferences[pref] = enum_map[pref](val)
+                preferences[pref] = enum_fields_map[pref](val)
             except ValueError as exc:
                 raise ConfigException(
                     f"Invalid value '{val}' for preference [italic]`{pref}`[/]."
                 ) from exc
+
+
+def _parse_lists(preferences: dict):
+    """
+    This function reads the preferences dictionary and for all values that are supposed
+    to be list fields, processes them using logic similar to the ``StoreOrCountAction``
+    defined for ``argparse``.
+
+    :param preferences: the dictionary of preferences in which to parse lists
+    """
+
+    list_field_list = ["details"]
+    for pref, val in preferences.items():
+        if pref in list_field_list:
+            values = preferences[pref]
+            parsed_values: list[str] = []
+            for value in values:
+                if value == "none":
+                    parsed_values = []
+                else:
+                    parsed_values.append(value)
+            preferences[pref] = parsed_values
 
 
 def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:
@@ -65,11 +87,13 @@ def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:
         preferences.update(pref_val)
 
     _parse_enums(preferences)
+    _parse_lists(preferences)
+
     return argparse.Namespace(**preferences)
 
 
 internal_prefs: argparse.Namespace
 """the preferences read from the internal ``prefs.yml`` file"""
 
-prefs: argparse.Namespace
+config_prefs: argparse.Namespace
 """the preferences read from the ``pls`` config files"""

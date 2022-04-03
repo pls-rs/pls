@@ -43,11 +43,11 @@ def init(argv=None):
     logger.debug(f"Config files read: {conf_files}")
 
     logger.info("Reading config files")
-    prefs.prefs = prefs.get_prefs(conf_files)
-    logger.debug(f"Config preferences: {prefs.prefs}")
+    prefs.config_prefs = prefs.get_prefs(conf_files)
+    logger.debug(f"Config preferences: {prefs.config_prefs}")
 
     args.args.update(prefs.internal_prefs)
-    args.args.update(prefs.prefs)
+    args.args.update(prefs.config_prefs)
     args.args.update(cli_prefs)
     validate_args(args.args)
 

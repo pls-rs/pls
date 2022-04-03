@@ -12,7 +12,7 @@ prefs:
   # Info #
   ########
 
-  # details: ~
+  details: []
   # units: binary
   time_fmt: "[dim]%Y-[/]%m-%d %H:%M[dim]:%S[/] "
 

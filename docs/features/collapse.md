@@ -11,29 +11,119 @@ description: >-
 Not all files are created equally. Some are written by people with great care
 and effort while others are generated automatically.
 
-`pls` can nest generated files under the handwritten ones when using the
-`--collase`/`-c` flag.
+`pls` can nest generated files under the handwritten ones when collapsing is
+enabled.
 
-## Options
+## Preferences
 
-`pls` does not collapse files by default. You can choose to collapse files by
-passing the `--collapse`/`-c` flag.
+**CLI flags:** `--collapse`/`-c`  
+**Config YAML:** `collapse`
 
-```
-$ pls --collapse
-$ pls -c
-```
+This is a [counter field](../reference/prefs.md#counters). It can take any
+integer value.
 
-You can hide collapsed files altogether by passing the `--collapse`/`-c` flag
-twice.
+- Default: sets the collapse level to zero, turning off the collapsing
+  functionality.
 
-```
-$ pls --collapse --collapse
+  ```shellsession
+  $ pls # default
+  $ pls -c 0
+  ```
+
+  ```yml
+  prefs:
+    collapse: 0
+  ```
+
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+ﰌ   justfile               
+   LICENSE                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
+<span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
+   pyproject.toml         
+   <span style="text-decoration: underline">README.md</span>              
+</code></pre>
+</div>
+
+- Custom: setting the collapse level to 1, nests the collapsed file beneath
+  their parent.
+
+  ```shellsession
+  $ pls -c
+  $ pls -c 1
+  ```
+
+  ```yml
+  prefs:
+    collapse: 1
+  ```
+
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+ﰌ   justfile               
+   LICENSE                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
+   pyproject.toml         
+<span style="color: #415f66; text-decoration-color: #415f66"></span>  <span style="color: #415f66; text-decoration-color: #415f66"> └─</span> <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>         
+   <span style="text-decoration: underline">README.md</span>              
+</code></pre>
+</div>
+
+Similarly, setting the collapse level to 2 (or above) hides collapsed files
+from the output altogether.
+
+```shellsession
 $ pls -c -c
-$ pls -cc
+$ pls -c 2
 ```
 
-### Configuration
+```yml
+prefs:
+  collapse: 1
+```
+
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+ﰌ   justfile               
+   LICENSE                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
+   pyproject.toml         
+   <span style="text-decoration: underline">README.md</span>              
+</code></pre>
+</div>
+
+## Configuration
 
 Out of the box, `pls` can collapse the following files:
 
@@ -90,7 +180,7 @@ Notice how collapsing puts the `poetry.lock` file below `pyproject.toml`.
 
 Notice how awesome collapse looks when there's a lot of content to work with.
 
-### Customisation
+## Customisation
 
 To define more collapse rules, you can do either of the following.
 

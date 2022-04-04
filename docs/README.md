@@ -4,7 +4,7 @@ tagline: ~
 
 actions:
   - text: Get Started →
-    link: "get_started"
+    link: /get_started/installation
 ---
 
 `pls` lists the contents of your directories but formats the output to be

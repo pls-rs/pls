@@ -12,7 +12,7 @@ Sometimes just a list of file names is not enough. When you need more
 information, `pls` can deliver. `pls` can query the system for all the following
 attributes.
 
-| Default            | Key   | Meaning        | Note                           |
+| Standard           | Key   | Meaning        | Note                           |
 | ------------------ | ----- | -------------- | ------------------------------ |
 |                    | inode | inode          | Not on Windows                 |
 |                    | links | Link#          | Not on Windows                 |
@@ -51,18 +51,18 @@ they will all be collected, in sequence. These are the valid values.
     details: []
   ```
 
-- `def`: show the standard subset of detail fields; For a list of standard keys,
-  see the fields with ✅ in the 'Default' column of the table above.
+- `std`: show the standard subset of detail fields; For a list of standard keys,
+  see the fields with ✅ in the 'Standard' column of the table above.
 
   ```shellsession
   $ pls -d
-  $ pls -d def
+  $ pls -d std
   ```
 
   ```yml
   prefs:
     details:
-      - def
+      - std
   ```
 
 <div
@@ -119,18 +119,18 @@ d <span style="color: #b58900; text-decoration-color: #b58900">r</span><span sty
 </div>
 
 - individual keys: selectively enable detail fields; This makes the most sense.
-  You can also combine them with `def` include the standard set of columns. For
+  You can also combine them with `std` include the standard set of columns. For
   a list of keys, refer to the 'Key' column in the table above.
 
   ```shellsession
   $ pls -d -d mtime
-  $ pls -d def -d mtime
+  $ pls -d std -d mtime
   ```
 
   ```yml
   prefs:
     details:
-      - def
+      - std
       - mtime
   ```
 

@@ -22,25 +22,41 @@ shown and controls their visual prominence.
 **Config YAML:** `all`
 
 This is a [counter field](../reference/prefs.md#counters). It can take any
-integer value.
-
-In the CLI, this flag can be passed several times, reducing the threshold by one
-each time it is passed. Alternatively, it can be passed with an argument to
-directly set the threshold.
-
-In the YAML config, you can set the value directly to an integer.
+integer value. See the field documentation for usage.
 
 - Default: sets the importance threshold to zero, so files with importance -1
   are dimmed and those with importance -2 or lower are invisible.
 
   ```shellsession
-  $ pls
+  $ pls # default
+  $ pls -a 0
   ```
 
   ```yml
   prefs:
     all: 0
   ```
+
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+ﰌ   justfile               
+   LICENSE                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
+<span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
+   pyproject.toml         
+   <span style="text-decoration: underline">README.md</span>              
+</code></pre>
+</div>
 
 - Custom: to see files with importance -2 as dimmed and importance -1 as regular
   files, lower the threshold by 1.
@@ -55,18 +71,47 @@ In the YAML config, you can set the value directly to an integer.
     all: 1
   ```
 
-  Similarly, to see files with importance -3 as dimmed and importance -1 and -2 as
-  regular files, lower the threshold by 2.
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
+<span style="color: #156667; text-decoration-color: #156667"></span>  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="color: #156667; text-decoration-color: #156667">git/</span>                   
+<span style="color: #156667; text-decoration-color: #156667"></span>  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="color: #156667; text-decoration-color: #156667">github/</span>                
+<span style="color: #156667; text-decoration-color: #156667"></span>  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="color: #156667; text-decoration-color: #156667">idea/</span>                  
+<span style="color: #156667; text-decoration-color: #156667"></span>  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="color: #156667; text-decoration-color: #156667">mypy_cache/</span>            
+<span style="color: #156667; text-decoration-color: #156667"></span>  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="color: #156667; text-decoration-color: #156667">pytest_cache/</span>          
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
+<span style="color: #156667; text-decoration-color: #156667"></span>  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="color: #156667; text-decoration-color: #156667">vscode/</span>                
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+   <span style="color: #415f66; text-decoration-color: #415f66">.coverage</span>               
+<span style="color: #415f66; text-decoration-color: #415f66"></span>  <span style="color: #415f66; text-decoration-color: #415f66">.DS_Store</span>               
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+ﰌ   justfile               
+   LICENSE                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
+<span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
+   pyproject.toml         
+   <span style="text-decoration: underline">README.md</span>              
+</code></pre>
+</div>
 
-  ```shellsession
-  $ pls -a -a
-  $ pls -a 2
-  ```
+Similarly, to see files with importance -3 as dimmed and importance -1 and -2 as
+regular files, lower the threshold by 2.
 
-  ```yml
-  prefs:
-    all: 2
-  ```
+```shellsession
+$ pls -a -a
+$ pls -a 2
+```
+
+```yml
+prefs:
+  all: 2
+```
 
 ## Configuration
 

@@ -39,7 +39,7 @@ class TablePrinter(BasePrinter):
         return (
             col_name in args.args.details
             or "all" in args.args.details
-            or (col_name in default_details and "def" in args.args.details)
+            or (col_name in default_details and "std" in args.args.details)
         )
 
     @staticmethod

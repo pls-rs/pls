@@ -222,9 +222,9 @@ $defs:
                 - mtime
                 - atime
                 - git
-                - def
-                - all
                 - none
+                - std
+                - all
           - type: string
             enum:
               - default # fallback to internal defaults

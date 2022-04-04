@@ -6,9 +6,9 @@ from pls.parser.actions import CollectOrClearAction
 
 
 detail_choices = list(detail_columns.keys()) + [
-    "def",  # means the default set of details
-    "all",  # means all details
     "none",  # means no details
+    "std",  # means the default set of details
+    "all",  # means all details
 ]
 
 
@@ -28,7 +28,7 @@ def add_args(parser: argparse.ArgumentParser):
         metavar="FIELD",
         action=CollectOrClearAction,
         nargs=argparse.OPTIONAL,
-        const="def",  # when there is a --details flag without value, see ``nargs``
+        const="std",  # when there is a --details flag without value, see ``nargs``
         help="the data points to show for each node in the output",
         choices=detail_choices,
     )

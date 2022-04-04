@@ -31,14 +31,16 @@ def _parse_enums(preferences: dict):
         "icon": IconType,
         "units": UnitSystem,
     }
-    for pref, val in preferences.items():
-        if pref in enum_fields_map:
-            try:
-                preferences[pref] = enum_fields_map[pref](val)
-            except ValueError as exc:
-                raise ConfigException(
-                    f"Invalid value '{val}' for preference [italic]`{pref}`[/]."
-                ) from exc
+    for field, enum_class in enum_fields_map.items():
+        if field not in preferences:
+            continue
+        val = preferences[field]
+        try:
+            preferences[field] = enum_class(val)
+        except ValueError as exc:
+            raise ConfigException(
+                f"Invalid value '{val}' for preference [italic]`{field}`[/]."
+            ) from exc
 
 
 def _parse_lists(preferences: dict):
@@ -51,16 +53,17 @@ def _parse_lists(preferences: dict):
     """
 
     list_field_list = ["details"]
-    for pref, val in preferences.items():
-        if pref in list_field_list:
-            values = preferences[pref]
-            parsed_values: list[str] = []
-            for value in values:
-                if value == "none":
-                    parsed_values = []
-                else:
-                    parsed_values.append(value)
-            preferences[pref] = parsed_values
+    for field in list_field_list:
+        if field not in preferences:
+            continue
+        values = preferences[field]
+        parsed_values: list[str] = []
+        for value in values:
+            if value == "none":
+                parsed_values = []
+            else:
+                parsed_values.append(value)
+        preferences[field] = parsed_values
 
 
 def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:

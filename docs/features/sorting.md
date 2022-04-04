@@ -13,6 +13,7 @@ faster. `pls` can sort files based on the following attributes.
 
 | Key   | Meaning        |
 | ----- | -------------- |
+| cat   | Directory/file |
 | name  | Name           |
 | ext   | File extension |
 | inode | inode          |
@@ -26,86 +27,116 @@ faster. `pls` can sort files based on the following attributes.
 By default, nodes are sorted by their name (ignoring case and excluding leading
 dots `.`). A different criterion can be specified using the `--sort`/`-s` flag.
 
-## Options
+## Preferences
 
-The `--sort`/`-s` flag works in two ways.
+**CLI flags:** `--sort`/`-s`  
+**Config YAML:** `sort`
 
-- Pass any single key with the `--sort`/`-s` flag to sort the output based on
-  the value of the field. This will use the order A &rarr; Z for strings and
-  0 &rarr; 9 for numbers.
+This is a [list of enum field](../reference/prefs.md#lists). This means you can
+pass the CLI flag multiple times, with a different value after the flag, and
+they will all be collected, in sequence. These are the valid values.
 
-```
-$ pls -s ext
-```
+- `cat`, `name`: sort by the canonical name of the node, with directories first
+  (default)
+
+  ```shellsession
+  $ pls # default
+  $ pls -s cat -s name
+  ```
+
+  ```yml
+  prefs:
+    sort:
+      - cat
+      - name
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
     class="language-">
   <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
 <span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
-<span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
 <span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
-ﰌ   justfile               
-   LICENSE                
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
   <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
   <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+ﰌ   justfile               
+   LICENSE                
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
 <span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
-   README.md              
-   pyproject.toml         
   <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
-<span style="font-style: italic"></span>  <span style="color: #415f66; text-decoration-color: #415f66; font-style: italic">.</span><span style="font-style: italic">pls.yml</span>                
+   pyproject.toml         
+   <span style="text-decoration: underline">README.md</span>              
 </code></pre>
 </div>
 
-- To reverse the sort order append a hyphen `-` after the key name. This will
-  reverse the sorting order to be Z &rarr; A for strings and 9 &rarr; 0 for
-  numbers.
+- individual keys: add series of tie-breakers; Using multiple sorting fields
+  allows you to sort using successive fields if the previous keys are all equal.
 
-```
-$ pls -s ext-
-```
+  ```shellsession
+  $ pls -s ext -s name
+  ```
 
-<div
-    style="background-color: #002b36; color: #839496;"
-    class="language-">
-  <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
-<span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
-<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
-<span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
-<span style="font-style: italic"></span>  <span style="color: #415f66; text-decoration-color: #415f66; font-style: italic">.</span><span style="font-style: italic">pls.yml</span>                
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
-   pyproject.toml         
-   README.md              
-<span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
-   LICENSE                
-ﰌ   justfile               
-</code></pre>
-</div>
-
-By default, `pls` also puts directories above files and sorts them separately.
-To mix files and directories, pass the `--no-dirs-first` option.
-
-```
-$ pls --no-dirs-first
-```
+  ```yml
+  prefs:
+    sort:
+      - ext
+      - name
+  ```
 
 <div
     style="background-color: #002b36; color: #839496;"
     class="language-">
   <pre style="color: inherit;"><code style="color: inherit;"><span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
-  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
 ﰌ   justfile               
    LICENSE                
-<span style="font-style: italic"></span>  <span style="color: #415f66; text-decoration-color: #415f66; font-style: italic">.</span><span style="font-style: italic">pls.yml</span>                
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
 <span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+   <span style="text-decoration: underline">README.md</span>              
+   pyproject.toml         
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
+</code></pre>
+</div>
+
+- individual keys with `-` suffix: reverse the sort for that particular key.
+
+  ```shellsession
+  $ pls -s ext- -s name
+  ```
+
+  ```yml
+  prefs:
+    sort:
+      - ext-
+      - name
+  ```
+
+<div
+    style="background-color: #002b36; color: #839496;"
+    class="language-">
+  <pre style="color: inherit;"><code style="color: inherit;">  <span style="color: #415f66; text-decoration-color: #415f66">.</span><span style="font-style: italic">pls.yml</span>                
   <span style="color: #415f66; text-decoration-color: #415f66">.</span>pre-commit-config.yaml 
    pyproject.toml         
-   README.md              
+   CODE_OF_CONDUCT.md     
+   CONTRIBUTING.md        
+   <span style="text-decoration: underline">README.md</span>              
+<span style="color: #415f66; text-decoration-color: #415f66"></span>   <span style="color: #415f66; text-decoration-color: #415f66">poetry.lock</span>            
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>gitignore              
+  <span style="color: #415f66; text-decoration-color: #415f66">.</span>flake8                 
+<span style="color: #156667; text-decoration-color: #156667"></span>   <span style="color: #156667; text-decoration-color: #156667">dist/</span>                  
+ﰌ   justfile               
+   LICENSE                
 <span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198">readme_assets</span><span style="color: #156667; text-decoration-color: #156667">/</span>         
-<span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
+<span style="color: #2aa198; text-decoration-color: #2aa198"></span>   <span style="color: #2aa198; text-decoration-color: #2aa198; font-weight: bold">src</span><span style="color: #156667; text-decoration-color: #156667; font-weight: bold">/</span>                   
 <span style="color: #2aa198; text-decoration-color: #2aa198">ﭧ</span>   <span style="color: #2aa198; text-decoration-color: #2aa198">tests</span><span style="color: #156667; text-decoration-color: #156667">/</span>                 
 </code></pre>
 </div>
@@ -115,16 +146,10 @@ $ pls --no-dirs-first
 Describing what these details mean is beyond the scope of this guide. How `pls`
 is concerned with them is described below.
 
-## Name (`name`)
+### Name (`name`)
 
 The name of the file is used for sorting after normalisation. This involves the
 following steps:
 
 - removing all leading dots from the file name
 - converting the name to lowercase
-
-Based on this normalisation, `.pls.yml` is placed after `LICENSE`.
-
-::: tip
-Regardless of sorting choices, the name field acts as the tie-breaker.
-:::

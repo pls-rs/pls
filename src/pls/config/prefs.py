@@ -9,6 +9,7 @@ CLI args and config-based preferences.
 from __future__ import annotations
 
 import argparse
+import re
 from enum import Enum
 from pathlib import Path
 from typing import Type, Union
@@ -66,6 +67,22 @@ def _parse_lists(preferences: dict):
         preferences[field] = parsed_values
 
 
+def _parse_regexes(preferences: dict):
+    """
+    This function reads the preferences dictionary and for all values that are supposed
+    to be compiled regular expressions, processes them using ``re.compile``.
+
+    :param preferences: the dictionary of preferences in which to parse regexes
+    """
+
+    regex_field_list = ["exclude", "only"]
+    for field in regex_field_list:
+        if field not in preferences:
+            continue
+        value = preferences[field]
+        preferences[field] = re.compile(value)
+
+
 def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:
     """
     Prefs are namespaces parsed from dictionaries that match the CLI args and provide a
@@ -91,6 +108,7 @@ def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:
 
     _parse_enums(preferences)
     _parse_lists(preferences)
+    _parse_regexes(preferences)
 
     return argparse.Namespace(**preferences)
 

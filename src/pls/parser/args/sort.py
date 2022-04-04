@@ -1,10 +1,9 @@
 import argparse
 
 from pls.output.detail_columns import detail_columns
-from pls.parser.actions import BooleanOptionalAction
 
 
-sort_choices = ["name", "ext"]
+sort_choices = ["cat", "name", "ext"]
 
 # Allow sorting by certain details
 invalid_keys = {"perms", "user", "group", "git"}
@@ -28,11 +27,7 @@ def add_args(parser: argparse.ArgumentParser):
     sorting.add_argument(
         *["-s", "--sort"],
         metavar="KEY",
+        action="append",
         help="the field based on which to sort the files and directories",
         choices=sort_choices,
-    )
-    sorting.add_argument(
-        "--dirs-first",
-        action=BooleanOptionalAction,
-        help="[underline]separate[/]/[magenta]mix[/] dirs and files when sorting",
     )

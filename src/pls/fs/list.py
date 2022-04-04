@@ -4,29 +4,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from pls.enums.node_type import NodeType
 from pls.globals import args, console
 from pls.models.node import Node
-
-
-def sort_key(node: Node) -> tuple:
-    """
-    Map a ``Node`` instance to a string that represents it. This string is used
-    to sort a list of ``Node`` instances.
-
-    :param node: the node item for which to get the sorting key
-    :return: the value to use as the sort key for the node
-    """
-
-    key = node.sort_keys[args.args.sort.rstrip("-")]
-    is_reversed = args.args.sort.endswith("-")
-    if args.args.dirs_first:
-        if is_reversed:
-            type_key = 1 if node.node_type == NodeType.DIR else 0
-        else:
-            type_key = 0 if node.node_type == NodeType.DIR else 1
-        return type_key, key, node.sort_keys["name"]
-    return key, node.name
 
 
 def passes_filters(node: Node) -> bool:
@@ -97,6 +76,12 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
             and passes_filters(parsed_node)
         }
         node_list = list(node_map.values())
-        node_list.sort(key=sort_key, reverse=args.args.sort.endswith("-"))
+
+        sort_fields = args.args.sort
+        for field in reversed(sort_fields):
+            item = field.rstrip("-")
+            node_list.sort(
+                key=lambda node: node.sort_keys[item], reverse=field.endswith("-")
+            )
 
     return node_map, node_list

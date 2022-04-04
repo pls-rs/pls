@@ -20,7 +20,9 @@ prefs:
   # Sorting #
   ###########
 
-  sort: name
+  sort:
+    - cat
+    - name
   dirs_first: true
 
   #############

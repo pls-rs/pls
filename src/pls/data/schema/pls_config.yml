@@ -248,28 +248,37 @@ $defs:
       sort:
         description: the field based on which to sort the files and directories
 
-        type: string
-        default: name
-        enum:
+        default:
+          - cat
           - name
-          - ext
-          - inode
-          - links
-          - type
-          - size
-          - ctime
-          - mtime
-          - atime
-          - name-
-          - ext-
-          - inode-
-          - links-
-          - type-
-          - size-
-          - ctime-
-          - mtime-
-          - atime-
-          - default # fallback to internal defaults
+        oneOf:
+          - type: array
+            items:
+              type: string
+              enum:
+                - cat
+                - name
+                - ext
+                - inode
+                - links
+                - type
+                - size
+                - ctime
+                - mtime
+                - atime
+                - cat-
+                - name-
+                - ext-
+                - inode-
+                - links-
+                - type-
+                - size-
+                - ctime-
+                - mtime-
+                - atime-
+          - type: string
+            enum:
+              - default # fallback to internal defaults
       dirs_first:
         description: separately sort directories and files, showing directories first
 

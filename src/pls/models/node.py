@@ -235,6 +235,7 @@ class Node(
         """the mapping of sort fields to their normalised values"""
 
         keys: dict[str, Union[str, int, float]] = {
+            "cat": "dir" if self.node_type == NodeType.DIR else "file",
             "name": self.canonical_name,
             "ext": self.extension,
             "type": self.type_char,

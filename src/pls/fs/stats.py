@@ -180,7 +180,8 @@ def get_formatted_size(stat: os.stat_result) -> str:
 
 
 def get_formatted_time(
-    stat: os.stat_result, attr_name: Literal["st_ctime", "st_mtime", "st_atime"]
+    stat: os.stat_result,
+    attr_name: Literal["st_birthtime", "st_ctime", "st_mtime", "st_atime"],
 ) -> str:
     """
     Get the given UNIX timestamp as a formatted human/machine-readable date time
@@ -192,7 +193,9 @@ def get_formatted_time(
     :return: the readable date time value for the timestamp
     """
 
-    st_time = getattr(stat, attr_name)
+    st_time = getattr(stat, attr_name, None)
+    if st_time is None:
+        return ""
 
     dt = datetime.datetime.fromtimestamp(st_time)
     fmt = args.args.time_fmt

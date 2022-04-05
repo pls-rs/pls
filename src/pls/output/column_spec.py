@@ -34,6 +34,8 @@ def get_column_groups() -> list[list[str]]:
         ["size"],
         ["ctime", "mtime", "atime"],
     ]
+    if platform == "darwin":
+        col_groups[2].insert(0, "btime")
     if platform != "win32":
         col_groups.insert(0, ["inode", "links"])
         col_groups.insert(2, ["user", "group"])

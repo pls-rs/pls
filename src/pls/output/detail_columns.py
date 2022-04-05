@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from sys import platform
+
 from pls.models.col_spec import ColumnSpec
 
 
@@ -14,7 +16,8 @@ detail_columns: dict[str, ColumnSpec] = {
     "user": {"name": "User"},
     "group": {"name": "Group"},
     "size": {"name": "Size", "attrs": {"justify": "right"}},
-    "ctime": {"name": "Created at"},
+    "btime": {"name": "Created at"},
+    "ctime": {"name": "Created at" if platform == "win32" else "Changed at"},
     "mtime": {"name": "Modified at"},
     "atime": {"name": "Accessed at"},
     "git": {"name": "Git"},

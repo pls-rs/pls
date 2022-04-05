@@ -12,19 +12,20 @@ Sometimes just a list of file names is not enough. When you need more
 information, `pls` can deliver. `pls` can query the system for all the following
 attributes.
 
-| Standard           | Key   | Meaning        | Note                           |
-| ------------------ | ----- | -------------- | ------------------------------ |
-|                    | inode | inode          | Not on Windows                 |
-|                    | links | Link#          | Not on Windows                 |
-| :white_check_mark: | type  | Type character |                                |
-| :white_check_mark: | perms | Permissions    |                                |
-| :white_check_mark: | user  | Owner user     | Not on Windows                 |
-| :white_check_mark: | group | Owner group    | Not on Windows                 |
-|                    | size  | Size           |                                |
-|                    | ctime | Created at     |                                |
-|                    | mtime | Modified at    |                                |
-|                    | atime | Accessed at    |                                |
-|                    | git   | Git status     | [Conditional](#git-status-git) |
+| Standard           | Key   | Meaning            | Note                           |
+| ------------------ | ----- | ------------------ | ------------------------------ |
+|                    | inode | inode              | Not on Windows                 |
+|                    | links | Link#              | Not on Windows                 |
+| :white_check_mark: | type  | Type character     |                                |
+| :white_check_mark: | perms | Permissions        |                                |
+| :white_check_mark: | user  | Owner user         | Not on Windows                 |
+| :white_check_mark: | group | Owner group        | Not on Windows                 |
+|                    | size  | Size               |                                |
+|                    | btime | Created at         | Only on macOS                  |
+|                    | ctime | Created/Changed at |                                |
+|                    | mtime | Modified at        |                                |
+|                    | atime | Accessed at        |                                |
+|                    | git   | Git status         | [Conditional](#git-status-git) |
 
 On a decently capable computer (which I'm sure most pros will have), Python is
 pretty fast. Even with all details turned on, `pls` runs fast enough that there
@@ -329,7 +330,7 @@ This is an [enum field](../reference/prefs.md#enums) with the following choices:
 </code></pre>
 </div>
 
-### Timestamps (`ctime`, `mtime` and `atime`)
+### Timestamps (`btime`, `ctime`, `mtime` and `atime`)
 
 `pls` displays the timestamps in a human-readable format.
 
@@ -411,6 +412,14 @@ value.
 
 ::: tip
 Since the date columns can get too close, leave a trailing space in the format.
+:::
+
+::: warning
+The field `btime` referring to a file's creation/birth timestamp is only
+available on macOS. Windows uses `ctime` as the creation timestamp and Linux
+doesn't store it at all.
+
+On other operating systems, including it will have no effect.
 :::
 
 ### Git status (`git`)

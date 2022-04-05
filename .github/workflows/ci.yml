@@ -41,6 +41,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+          - macos-latest
         python:
           - "3.10"
           - "3.9"

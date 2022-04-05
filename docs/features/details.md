@@ -422,6 +422,12 @@ doesn't store it at all.
 On other operating systems, including it will have no effect.
 :::
 
+::: warning
+This field is also not very reliable. I've seen reports that Vim can update this
+field when `backupcopy` is set to `no`. Other software that do similar things
+might have similar issues.
+:::
+
 ### Git status (`git`)
 
 For all files (and some folders) `pls` shows the Git status as a two-letter

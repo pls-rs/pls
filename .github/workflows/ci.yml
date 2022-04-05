@@ -60,6 +60,8 @@ jobs:
           virtualenvs-in-project: true
       - name: Setup `just`
         uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Load cached virtualenv
         id: load-cached-venv

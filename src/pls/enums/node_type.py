@@ -3,7 +3,6 @@ from __future__ import annotations
 from enum import auto
 
 from pls.config import constants
-from pls.data.utils import lookup
 from pls.enums.base import AutoEnum
 
 
@@ -50,7 +49,7 @@ def get_type_char(node_type: NodeType) -> str:
     :return: the type character mapped to the given ``NodeType`` value
     """
 
-    return lookup(constants.constants, ["type_chars", node_type.value], "")
+    return constants.constants.lookup(["type_chars", node_type.value], "")
 
 
 def get_type_suffix(node_type: NodeType) -> str:
@@ -61,4 +60,4 @@ def get_type_suffix(node_type: NodeType) -> str:
     :return: the type suffix mapped to the given ``NodeType`` value
     """
 
-    return lookup(constants.constants, ["type_suffixes", node_type.value], "")
+    return constants.constants.lookup(["type_suffixes", node_type.value], "")

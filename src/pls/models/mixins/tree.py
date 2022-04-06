@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar, cast
 
 from pls.config import constants
-from pls.data.utils import lookup
 from pls.globals import args
 from pls.models.base_node import BaseNode
 
@@ -85,8 +84,8 @@ class TreeMixin(Generic[T], BaseNode):
         """
 
         return self.get_shape(
-            lookup(constants.constants, ["tree", "space_space"], ""),
-            lookup(constants.constants, ["tree", "pipe_space"], ""),
+            constants.constants.lookup(["tree", "space_space"], ""),
+            constants.constants.lookup(["tree", "pipe_space"], ""),
         )
 
     def _get_last_shape(self) -> str:
@@ -100,8 +99,8 @@ class TreeMixin(Generic[T], BaseNode):
         """
 
         return self.get_shape(
-            lookup(constants.constants, ["tree", "bend_dash"], ""),
-            lookup(constants.constants, ["tree", "tee_dash"], ""),
+            constants.constants.lookup(["tree", "bend_dash"], ""),
+            constants.constants.lookup(["tree", "tee_dash"], ""),
         )
 
     def set_sub_pre_shapes(self):

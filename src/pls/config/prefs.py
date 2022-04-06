@@ -9,6 +9,7 @@ CLI args and config-based preferences.
 from __future__ import annotations
 
 import argparse
+import logging
 import re
 from enum import Enum
 from pathlib import Path
@@ -18,6 +19,36 @@ from pls.data.utils import load_yml_file
 from pls.enums.icon_type import IconType
 from pls.enums.unit_system import UnitSystem
 from pls.exceptions import ConfigException
+
+
+logger = logging.getLogger(__name__)
+
+
+class UpdatableNamespace(argparse.Namespace):
+    """
+    Extends ``argparse.Namespace`` to add support for overwriting attributes from
+    another ``argparse.Namespace`` instance.
+    """
+
+    def update(self, more: argparse.Namespace):
+        """
+        Overwrite own attributes with attributes from another namespace.
+
+        :param more: the namespace from which to read the attributes
+        """
+
+        logger.info("Updating namespace")
+
+        logger.debug(f"Current: {self}")
+        logger.debug(f"Incoming: {more}")
+
+        for key, val in vars(more).items():
+            if key not in self or val is not None:
+                if val == "default":
+                    val = getattr(internal_prefs, key, None)
+                setattr(self, key, val)
+
+        logger.debug(f"Result: {self}")
 
 
 def _parse_enums(preferences: dict):

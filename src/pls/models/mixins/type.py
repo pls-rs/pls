@@ -36,14 +36,17 @@ class TypeMixin(Generic[T], BaseNode):
     def node_type(self) -> NodeType:
         """whether the node is a file, folder, symlink, FIFO etc."""
 
-        for node_type, node_type_test in nt.type_test_map.items():
-            if getattr(self.path, node_type_test)():
-                # Symlinks need to set their destination node.
-                if node_type == NodeType.SYMLINK and self.dest_node is None:
-                    self.populate_dest()
-                return node_type
-        else:
-            return NodeType.UNKNOWN
+        try:
+            for node_type, node_type_test in nt.type_test_map.items():
+                if getattr(self.path, node_type_test)():
+                    # Symlinks need to set their destination node.
+                    if node_type == NodeType.SYMLINK and self.dest_node is None:
+                        self.populate_dest()
+                    return node_type
+        except OSError:
+            # Path ``is_*()`` functions can propagate errors like ``OSError``
+            pass
+        return NodeType.UNKNOWN
 
     @cached_property
     def type_char(self) -> str:

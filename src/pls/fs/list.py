@@ -34,14 +34,6 @@ def parse_node(parent_path: Path, node_name: str) -> Optional[Node]:
     """
 
     node_path: Path = parent_path.joinpath(node_name)
-
-    if node_path.is_dir():
-        if not args.args.dirs:
-            return None
-    else:  # is some kind of file
-        if not args.args.files:
-            return None
-
     return Node(name=node_name, path=node_path)
 
 

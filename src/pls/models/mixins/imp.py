@@ -24,11 +24,12 @@ class ImpMixin(BaseNode):
             imp = 0
         return imp
 
-    @cached_property
-    def is_visible_imp(self) -> bool:
+    @property
+    def is_visible(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
-        return self.importance + args.args.all >= -1
+        is_imp_visible = self.importance + args.args.all >= -1
+        return is_imp_visible and super().is_visible
 
     @cached_property
     def importance_format_rules(self) -> tuple[list[str], list[str]]:

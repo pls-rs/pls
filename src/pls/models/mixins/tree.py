@@ -36,10 +36,11 @@ class TreeMixin(Generic[T], BaseNode):
         return self.parent is not None
 
     @property
-    def is_visible_tree(self):
+    def is_visible(self) -> bool:
         """whether the node deserves to be rendered to the screen"""
 
-        return not self.is_sub or args.args.collapse <= 1
+        is_tree_visible = not self.is_sub or args.args.collapse <= 1
+        return is_tree_visible and super().is_visible
 
     @property
     def tree_prefix(self) -> str:

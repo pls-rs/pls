@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 
 from pls.enums import node_type as nt
 from pls.enums.node_type import NodeType, get_type_char
+from pls.globals import args
 from pls.models.base_node import BaseNode
 
 
@@ -49,6 +50,18 @@ class TypeMixin(Generic[T], BaseNode):
         """the single character representing the file type"""
 
         return get_type_char(self.node_type)
+
+    @property
+    def is_visible(self) -> bool:
+        """whether the node deserves to be rendered to the screen"""
+
+        if self.node_type == NodeType.UNKNOWN:
+            is_type_visible = True
+        elif self.node_type == NodeType.DIR:
+            is_type_visible = args.args.dirs
+        else:
+            is_type_visible = args.args.files
+        return is_type_visible and super().is_visible
 
     def populate_dest(self):
         """

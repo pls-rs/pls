@@ -45,6 +45,12 @@ class BaseNode:
 
         return self.name.split(".")[-1] if "." in self.name else ""
 
+    @property
+    def is_visible(self) -> bool:
+        """whether the node deserves to be rendered to the screen"""
+
+        return True
+
     def match_specs(self, specs: list[NodeSpec]):
         """
         Find all spec matching this node from a list of all possible specs and

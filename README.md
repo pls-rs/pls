@@ -47,7 +47,7 @@ Just pick whichever helps you remember the command name.
 
 It works in a manner similar to `ls`, in  that it lists directories and files in
 a given directory, but it adds many more
-[developer-friendly features](https://dhruvkb.github.io/pls/features).
+[developer-friendly features](https://dhruvkb.github.io/pls/features/summary.html).
 
 > ⚠️ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and
 trusted command with lots of features. `pls`, on the other hand, is a simple

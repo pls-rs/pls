@@ -7,16 +7,9 @@ const packageInfo = require("../../package.json");
 /* Configure Prism */
 
 loadLanguages(["bash"]);
-bash_functions = [
-  "cat",
-  "gh",
-  "git",
-  "just",
-  "pip",
-  "pipx",
-  "pls",
-  "poetry",
-].join("|");
+bash_functions = ["gh", "git", "just", "pip", "pipx", "pls", "poetry"].join(
+  "|"
+);
 Prism.languages.bash.function.pattern = new RegExp(
   `(^|[\\s;|&]|[<>]\\()(?:${bash_functions})(?=$|[)\\s;|&])`
 );

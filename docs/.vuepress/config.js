@@ -44,7 +44,7 @@ const features = {
 const reference = {
   text: "Reference",
   children: [
-    "/reference/configuration",
+    "/reference",
     "/reference/node_specs",
     "/reference/icons",
     "/reference/prefs",

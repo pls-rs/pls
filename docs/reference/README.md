@@ -74,14 +74,14 @@ The `.pls.yml` configuration file consists of five parts.
 `node_specs` is a list of node specifications that describe the methods for
 identifying nodes and their rendering configuration.
 
-Read more [in the `node_specs` docs](./node_specs).
+Read more in the [`node_specs` docs](./node_specs).
 
 ### Icons (emoji and Nerd Font)
 
 Both `emoji_icons` and `nerd_icons` are dictionaries mapping icon names to icon
 glyphs.
 
-Read more [in the `*_icons` docs](./icons).
+Read more in the [`*_icons` docs](./icons).
 
 ## Schema validation
 

@@ -35,7 +35,7 @@ replacements over the years.
   for directories and `|` for FIFO pipes.
 
 - `pls` allows you to customise and modify every single feature listed above
-  using straightforward [config files](../reference/configuration).
+  using straightforward [config files](../reference).
 
 We're also working on a number of [enhancements and new features](./upcoming).
 So stay tuned!

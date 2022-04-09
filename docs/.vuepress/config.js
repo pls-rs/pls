@@ -53,7 +53,7 @@ const reference = {
 
 const contributing = {
   text: "Contributing",
-  children: ["/contributing/set_up"],
+  children: ["/contributing"],
 };
 
 module.exports = {

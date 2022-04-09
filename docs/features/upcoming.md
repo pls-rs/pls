@@ -8,7 +8,7 @@ description: >-
 
 # Upcoming
 
-In addition to its [many existing features](./summary), we have bold plans for
+In addition to its [many existing features](./), we have bold plans for
 the future of `pls`. Soon, `pls` will be able to do all the following.
 
 - `pls` will add more spec-matching criteria to make the specs much more

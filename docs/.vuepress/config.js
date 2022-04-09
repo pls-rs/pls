@@ -34,7 +34,7 @@ const about = {
 const features = {
   text: "Features",
   children: [
-    "/features/summary",
+    "/features",
     "/features/colors",
     "/features/icons",
     "/features/multi_cols",

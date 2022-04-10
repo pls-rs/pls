@@ -50,7 +50,7 @@ class NestedDict(dict):
                     a[key] = b[key]
                 else:
                     # Cannot merge incompatible data types.
-                    raise ValueError(f"Conflict at {'.'.join([*path, str(key)])}")
+                    raise ConstException(f"Conflict at {'.'.join([*path, str(key)])}")
             else:
                 a[key] = b[key]
 

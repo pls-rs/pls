@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import copy
 import shutil
 from pathlib import Path
 from typing import Literal
 
 import pytest
 import yaml
+
+from pls.config.constants import NestedDict
 
 
 scope: Literal["package"] = "package"
@@ -97,3 +100,15 @@ def get_conf():
         return path.joinpath(".pls.yml")
 
     return _get_conf
+
+
+@pytest.fixture
+def nested_dict() -> NestedDict:
+    regular_dict = copy.deepcopy(
+        {
+            "dict": {"a": 1},
+            "list": ["a"],
+            "scalar": "val",
+        }
+    )
+    return NestedDict(regular_dict)

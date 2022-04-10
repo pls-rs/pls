@@ -9,6 +9,7 @@ import pytest
 import yaml
 
 from pls.config.constants import NestedDict
+from pls.config.prefs import UpdatableNamespace
 
 
 scope: Literal["package"] = "package"
@@ -104,7 +105,7 @@ def get_conf():
 
 @pytest.fixture
 def nested_dict() -> NestedDict:
-    regular_dict = copy.deepcopy(
+    regular_dict: dict = copy.deepcopy(
         {
             "dict": {"a": 1},
             "list": ["a"],
@@ -112,3 +113,14 @@ def nested_dict() -> NestedDict:
         }
     )
     return NestedDict(regular_dict)
+
+
+@pytest.fixture
+def updatable_namespace() -> UpdatableNamespace:
+    regular_dict: dict = copy.deepcopy(
+        {
+            "a": None,
+            "b": "b_val",
+        }
+    )
+    return UpdatableNamespace(**regular_dict)

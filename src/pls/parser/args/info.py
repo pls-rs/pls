@@ -1,11 +1,11 @@
 import argparse
 
 from pls.enums.unit_system import UnitSystem
-from pls.output.detail_columns import detail_columns
+from pls.output.columns.detail_columns import detail_column_specs
 from pls.parser.actions import CollectOrClearAction
 
 
-detail_choices = list(detail_columns.keys()) + [
+detail_choices = list(detail_column_specs.keys()) + [
     "none",  # means no details
     "std",  # means the default set of details
     "all",  # means all details

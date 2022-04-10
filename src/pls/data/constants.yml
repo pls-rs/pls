@@ -20,3 +20,6 @@ constants:
     space_space: "  "
     tee_dash: "├─"
     bend_dash: "└─"
+  spacer:
+    name: " "
+    value: " "

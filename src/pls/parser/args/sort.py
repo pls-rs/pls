@@ -1,13 +1,13 @@
 import argparse
 
-from pls.output.detail_columns import detail_columns
+from pls.output.columns.detail_columns import detail_column_specs
 
 
 sort_choices = ["cat", "name", "ext"]
 
 # Allow sorting by certain details
-invalid_keys = {"perms", "user", "group", "git"}
-sort_choices += [item for item in detail_columns.keys() if item not in invalid_keys]
+invalid_keys = {"perms", "git"}
+sort_choices += [key for key in detail_column_specs.keys() if key not in invalid_keys]
 
 # Add a hyphen-suffixed version for reversed sorting
 sort_choices += [f"{key}-" for key in sort_choices]

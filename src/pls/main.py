@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 import logging
 import os
+from typing import Type
 
 from pls.config import constants, icons, prefs, specs
 from pls.config.files import find_configs
 from pls.data.utils import internal_yml_path
+from pls.fs.list import read_input
 from pls.globals import args, state
 from pls.log.config import configure_log_level
+from pls.output.printers import BasePrinter
 from pls.parser.parser import parser
 from pls.parser.validation import validate_args
 
@@ -95,10 +98,6 @@ def main() -> None:
 
     init(None)  # ``None`` makes ``argparse`` read real CLI args from ``sys.argv``
 
-    from pls.fs.list import read_input
-    from pls.output.columns import ColumnsPrinter
-    from pls.output.table import TablePrinter
-
     node_map, node_list = read_input()
 
     if not node_list:
@@ -114,7 +113,16 @@ def main() -> None:
                 continue
             node.set_sub_pre_shapes()
 
-    PrinterClass = ColumnsPrinter if args.args.multi_cols else TablePrinter
+    PrinterClass: Type[BasePrinter]
+    if args.args.multi_cols:
+        from pls.output.columns_printer import ColumnsPrinter
+
+        PrinterClass = ColumnsPrinter
+    else:
+        from pls.output.table_printer import TablePrinter
+
+        PrinterClass = TablePrinter
+
     printer = PrinterClass(node_list)
     printer.print()
 

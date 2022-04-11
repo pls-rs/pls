@@ -58,7 +58,7 @@ def test_nested_dict_merge_raises_if_conflict(
 def test_nested_dict_supports_lookup(
     path: list[str], expectation: Any, nested_dict: NestedDict
 ):
-    assert nested_dict.lookup(path) == expectation
+    assert nested_dict.lookup(*path) == expectation
 
 
 @pytest.mark.parametrize(
@@ -73,8 +73,8 @@ def test_nested_dict_supports_lookup(
 def test_nested_dict_lookup_returns_default_or_raises_if_not_found(
     path: list[str], nested_dict: NestedDict
 ):
-    assert nested_dict.lookup(path, "default") == "default"
+    assert nested_dict.lookup(*path, default="default") == "default"
 
     path_str = ".".join([str(fragment) for fragment in path])
     with pytest.raises(ConstException, match=re.escape(path_str)):
-        nested_dict.lookup(path)
+        nested_dict.lookup(*path)

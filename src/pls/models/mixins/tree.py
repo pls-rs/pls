@@ -85,8 +85,8 @@ class TreeMixin(Generic[T], BaseNode):
         """
 
         return self.get_shape(
-            constants.constants.lookup(["tree", "space_space"], ""),
-            constants.constants.lookup(["tree", "pipe_space"], ""),
+            constants.constants.lookup("tree", "space_space", default=""),
+            constants.constants.lookup("tree", "pipe_space", default=""),
         )
 
     def _get_last_shape(self) -> str:
@@ -100,8 +100,8 @@ class TreeMixin(Generic[T], BaseNode):
         """
 
         return self.get_shape(
-            constants.constants.lookup(["tree", "bend_dash"], ""),
-            constants.constants.lookup(["tree", "tee_dash"], ""),
+            constants.constants.lookup("tree", "bend_dash", default=""),
+            constants.constants.lookup("tree", "tee_dash", default=""),
         )
 
     def set_sub_pre_shapes(self):

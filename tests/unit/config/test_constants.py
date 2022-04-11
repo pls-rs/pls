@@ -20,7 +20,7 @@ def test_union_of_constants(
         configs = find_configs(three)
         constants = get_constants(configs)
 
-        type_chars = constants.lookup(["type_chars"])
+        type_chars = constants.lookup("type_chars")
         assert set(type_chars.keys()) == {"symlink", "fifo", "dir"}
 
 
@@ -35,4 +35,4 @@ def test_inner_constants_override_outer(
         configs = find_configs(three)
         constants = get_constants(configs)
 
-        assert constants.lookup(["type_chars", "symlink"]) == ""
+        assert constants.lookup("type_chars", "symlink") == ""

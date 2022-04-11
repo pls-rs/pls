@@ -49,7 +49,7 @@ def get_type_char(node_type: NodeType) -> str:
     :return: the type character mapped to the given ``NodeType`` value
     """
 
-    return constants.constants.lookup(["type_chars", node_type.value], "")
+    return constants.constants.lookup("type_chars", node_type.value, default="")
 
 
 def get_type_suffix(node_type: NodeType) -> str:
@@ -60,4 +60,4 @@ def get_type_suffix(node_type: NodeType) -> str:
     :return: the type suffix mapped to the given ``NodeType`` value
     """
 
-    return constants.constants.lookup(["type_suffixes", node_type.value], "")
+    return constants.constants.lookup("type_suffixes", node_type.value, default="")

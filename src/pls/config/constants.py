@@ -64,7 +64,7 @@ class NestedDict(dict):
 
         self._deep_merge(self, other, overwrite)
 
-    def lookup(self, path: list[str], default: Any = None) -> Any:
+    def lookup(self, *path: str, default: Any = None) -> Any:
         """
         Lookup the given path in the dictionary by traversing the fragments. This
         assumes that the dictionary contains only contains plain data types. Use

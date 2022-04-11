@@ -10,8 +10,8 @@ from pls.output.columns.detail_columns import detail_column_groups, detail_colum
 column_specs: dict[str, ColumnSpec] = {
     "spacer": ColumnSpec(
         key="spacer",
-        name=constants.constants.lookup(["spacer", "name"]),
-        value=constants.constants.lookup(["spacer", "value"]),
+        name=constants.constants.lookup("spacer", "name", default=" "),
+        value=constants.constants.lookup("spacer", "value", default=" "),
     ),  # dummy column to act like spacer
     **detail_column_specs,
     "icon": ColumnSpec(

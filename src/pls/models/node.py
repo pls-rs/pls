@@ -63,7 +63,7 @@ class Node(
         """the list of formatting rules to apply to the icons and text respectively"""
 
         fmt_rules = []
-        txt_fmt_rules = []
+        name_fmt_rules = []
 
         # font color
         if not self.exists:
@@ -77,19 +77,19 @@ class Node(
         if imp_fmt_rules:
             fmt_rules.extend(imp_fmt_rules)
         if imp_txt_fmt_rules:
-            txt_fmt_rules.extend(imp_txt_fmt_rules)
+            name_fmt_rules.extend(imp_txt_fmt_rules)
 
         git_fmt_rules, git_txt_fmt_rules = self.git_format_rules
         if git_fmt_rules:
             fmt_rules.extend(git_fmt_rules)
         if git_txt_fmt_rules:
-            txt_fmt_rules.extend(git_txt_fmt_rules)
+            name_fmt_rules.extend(git_txt_fmt_rules)
 
         if self.name == ".pls.yml":
-            txt_fmt_rules.append("italic")
+            name_fmt_rules.append("italic")
 
-        txt_fmt_rules.extend(fmt_rules)
-        return fmt_rules, txt_fmt_rules
+        name_fmt_rules.extend(fmt_rules)
+        return fmt_rules, name_fmt_rules
 
     @staticmethod
     def _get_format_pair(format_rules: list[str]) -> tuple[str, str]:
@@ -109,14 +109,14 @@ class Node(
         return left, right
 
     @cached_property
-    def text_format_pair(self) -> tuple[str, str]:
+    def name_format_pair(self) -> tuple[str, str]:
         """the opening and closing tags of Rich console formatting markup for text"""
 
-        _, txt_fmt_rules = self.format_rules
-        return self._get_format_pair(txt_fmt_rules)
+        _, name_fmt_rules = self.format_rules
+        return self._get_format_pair(name_fmt_rules)
 
     @cached_property
-    def icon_format_pair(self) -> tuple[str, str]:
+    def format_pair(self) -> tuple[str, str]:
         """the opening and closing tags of Rich console formatting markup for icons"""
 
         fmt_rules, _ = self.format_rules
@@ -153,7 +153,7 @@ class Node(
             name = f"{name}{self.formatted_suffix}"
 
         # Apply format pair.
-        left, right = self.text_format_pair
+        left, right = self.name_format_pair
         name = f"{left}{name}{right}"
 
         if args.args.align and not self.is_pseudo:
@@ -189,7 +189,7 @@ class Node(
 
         if icon:
             # Apply format pair.
-            left, right = self.icon_format_pair
+            left, right = self.format_pair
             icon = f"{left}{icon}{right}"
         else:
             icon = ""
@@ -199,7 +199,7 @@ class Node(
     def formatted_type_char(self) -> str:
         """the type character associated with the type of the node"""
 
-        left, right = self.text_format_pair
+        left, right = self.format_pair
         return f"{left}{self.type_char}{right}"
 
     @cached_property

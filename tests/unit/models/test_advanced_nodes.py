@@ -76,7 +76,7 @@ def test_node_has_correct_format_pair(
     name: str, format_left: str, format_right: str, get_node: Callable[[str], Node]
 ):
     node = get_node(name)
-    assert node.text_format_pair == (format_left, format_right)
+    assert node.name_format_pair == (format_left, format_right)
 
 
 @pytest.mark.parametrize(

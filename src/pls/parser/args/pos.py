@@ -14,8 +14,10 @@ def _node(path_str: str) -> Path:
     :raise: ``ArgException``, if the path is invalid
     """
 
-    path = Path(path_str).resolve()
-    if not path.exists():
+    path = Path(path_str)
+    try:
+        path.lstat()  # raises error if file does not exist`
+    except FileNotFoundError:
         raise ArgException(
             f"Path [repr.path]{path_str}[/] does not exist.", arg_name="node"
         )

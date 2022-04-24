@@ -8,17 +8,17 @@ from pls.globals import args, console
 from pls.models.node import Node
 
 
-def passes_filters(node: Node) -> bool:
+def passes_name_filters(name: str) -> bool:
     """
     Determine whether the given node fulfils the filtering criteria.
 
-    :param node: the node to test against the filters
+    :param name: the name of the node to test against the filters
     :return: ``True`` if the node passes the filters, ``False`` otherwise
     """
 
-    if args.args.exclude and args.args.exclude.match(node.name) is not None:
+    if args.args.exclude and args.args.exclude.match(name) is not None:
         return False
-    if args.args.only and args.args.only.match(node.name) is None:
+    if args.args.only and args.args.only.match(name) is None:
         return False
     return True
 
@@ -62,10 +62,9 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
         )
     else:
         node_map = {
-            parsed_node.name: parsed_node
+            node: Node(name=node, path=parent_path.joinpath(node))
             for node in all_nodes
-            if (parsed_node := parse_node(parent_path, node))
-            and passes_filters(parsed_node)
+            if passes_name_filters(node)
         }
         node_list = list(node_map.values())
 
@@ -73,7 +72,8 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
         for field in reversed(sort_fields):
             item = field.rstrip("-")
             node_list.sort(
-                key=lambda node: node.sort_keys[item], reverse=field.endswith("-")
+                key=lambda node: node.sort_keys[item],
+                reverse=field.endswith("-"),
             )
 
     return node_map, node_list

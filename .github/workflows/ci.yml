@@ -9,6 +9,12 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONLEGACYWINDOWSSTDIO
+  PYTHONLEGACYWINDOWSSTDIO: utf-8
+  # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONIOENCODING
+  PYTHONIOENCODING: utf-8
+
 jobs:
   lint:
     name: Lint

@@ -18,6 +18,9 @@ __pycache__/
 # Output files
 /dist
 
+# Test fixtures
+workbench/
+
 # Tool caches
 .pytest_cache
 .mypy_cache

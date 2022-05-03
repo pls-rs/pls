@@ -8,6 +8,37 @@ from tests.e2e.utils import run_pls
 
 
 @pytest.mark.parametrize(
+    "args, visible, invisible",
+    [
+        ([], (-1, 1), (-3, -2)),
+        (["-a"], (-2, 1), (-3, -3)),
+        (["--all"], (-2, 1), (-3, -3)),
+        (["-a", "-a"], (-3, 1), ()),
+        (["--all", "--all"], (-3, 1), ()),
+        (["-a", "-1"], (0, 1), (-3, -1)),
+        (["--all", "-1"], (0, 1), (-3, -1)),
+    ],
+)
+def test_all(
+    args: list[str],
+    visible: tuple[int, int],
+    invisible: tuple[int, int],
+    imp_workbench: Path,
+):
+    def file_name(idx: int) -> str:
+        return str(idx) if idx >= 0 else f"_{abs(idx)}"
+
+    args.insert(0, str(imp_workbench))
+    proc = run_pls(args)
+    for (node_set, presence_cond) in [(visible, True), (invisible, False)]:
+        if not node_set:
+            continue
+        ll, ul = node_set
+        for index in range(ll, ul + 1):
+            assert (file_name(index) in proc.stdout) == presence_cond
+
+
+@pytest.mark.parametrize(
     "args",
     [
         [],

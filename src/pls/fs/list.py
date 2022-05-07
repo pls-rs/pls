@@ -57,7 +57,7 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
 
     if not all_nodes:
         console.console.print(
-            f"There are no files or folders in [repr.path]{args.args.directory}[/].",
+            f"There are no files or folders in [repr.path]{args.args.node}[/].",
             highlight=False,
         )
     else:

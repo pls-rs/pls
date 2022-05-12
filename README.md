@@ -63,7 +63,7 @@ repository, and contributions to the docs are most welcome.
 The docs contain information on almost everything, including but not limited to
 the following:
 
-- [installation, updates and usage](https://dhruvkb.github.io/pls/get_started)
+- [installation and updates](https://dhruvkb.github.io/pls/get_started/installation)
 - [features and CLI options](https://dhruvkb.github.io/pls/features)
 - [reference](https://dhruvkb.github.io/pls/reference)
 - [contribution](https://dhruvkb.github.io/pls/contribution)

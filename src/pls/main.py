@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
+import argparse
 import logging
 import os
+from pathlib import Path
 from typing import Type
 
 from pls.config import constants, icons, prefs, specs
 from pls.config.files import find_configs
 from pls.data.utils import internal_yml_path
 from pls.fs.list import read_input
-from pls.globals import args, state
+from pls.globals import args, console, state
 from pls.log.config import configure_log_level
 from pls.output.printers import BasePrinter
 from pls.parser.parser import parser
@@ -17,9 +19,9 @@ from pls.parser.validation import validate_args
 logger = logging.getLogger(__name__)
 
 
-def init(argv=None):
+def general_init(argv=None) -> argparse.Namespace:
     """
-    Initialise module variables.
+    Initialise the global state that does not depend on the working node.
 
     :param argv: the argument vector to parse, use ``None`` to read ``sys.argv``
     """
@@ -34,15 +36,32 @@ def init(argv=None):
     cli_prefs = parser.parse_args(argv)
     logger.debug(f"CLI arguments: {cli_prefs}")
 
-    args.args.node = cli_prefs.node
+    for attr in ["nodes", "export"]:
+        setattr(args.args, attr, getattr(cli_prefs, attr))
 
+    # Console
+    console.console = console.get_console()
+
+    # State
     state.state = state_obj = state.State()
 
     state_obj.setup_home()
     state_obj.setup_user_groups()
-    state_obj.setup_git(cli_prefs.node)
 
-    conf_files = find_configs(cli_prefs.node)
+    return cli_prefs
+
+
+def node_specific_init(node: Path, cli_prefs: argparse.Namespace):
+    """
+    Initialise the global state that depends on the working node.
+
+    :param node: the node being described in the current iteration
+    :param cli_prefs: the arguments parsed from the CLI
+    """
+
+    state.state.setup_git(node)
+
+    conf_files = find_configs(node)
     logger.debug(f"Config files read: {conf_files}")
 
     logger.info("Reading config files")
@@ -83,35 +102,30 @@ def init(argv=None):
     )
     logger.debug(f"Node specs count: {len(specs.node_specs)}")
 
-    from pls.globals import console
 
-    console.console = console.get_console()  # depends on args
-
-
-def main() -> None:
+def main_unit(node: Path, show_header: bool = False):
     """
-    Represents the starting point of the application. This function:
+    This function is the job of main, extracted outside the loop.
 
-    - accepts no inputs: options are read from CLI arguments using ``argparse``
-    - returns no outputs: output is written to ``STDOUT`` using ``rich``
+    :param node: the node being described in this iteration
+    :param show_header: whether to show the name of the working node before the output
     """
 
-    init(None)  # ``None`` makes ``argparse`` read real CLI args from ``sys.argv``
+    child_map, child_list = read_input(node)
 
-    node_map, node_list = read_input()
-
-    if not node_list:
+    # If there are no children in node, move on.
+    if not child_list:
         return
 
-    for node in node_list:
-        node.match_specs(specs.node_specs)
+    for child in child_list:
+        child.match_specs(specs.node_specs)
         if args.args.collapse:
-            node.find_main(node_map)
+            child.find_main(child_map)
     if args.args.collapse:
-        for node in node_list:
-            if node.is_sub:
+        for child in child_list:
+            if child.is_sub:
                 continue
-            node.set_sub_pre_shapes()
+            child.set_sub_pre_shapes()
 
     PrinterClass: Type[BasePrinter]
     if args.args.multi_cols:
@@ -123,11 +137,33 @@ def main() -> None:
 
         PrinterClass = TablePrinter
 
-    printer = PrinterClass(node_list)
-    printer.print()
+    printer = PrinterClass(node, child_list)
+    printer.print(show_header)
 
 
-def dev() -> None:
+def main():
+    """
+    Represents the starting point of the application. This function:
+
+    - accepts no inputs: options are read from CLI arguments using ``argparse``
+    - returns no outputs: output is written to ``STDOUT`` using ``rich``
+    """
+
+    cli_prefs = general_init(None)  # Read real CLI args from ``sys.argv``
+
+    node_counts = len(args.args.nodes)
+    show_header = node_counts > 1
+
+    for index, node in enumerate(args.args.nodes):
+        node_specific_init(node, cli_prefs)
+
+        main_unit(node, show_header)
+
+        if index != node_counts - 1:
+            console.console.print()  # Separate outputs using blank lines.
+
+
+def dev():
     os.environ.setdefault("PLS_LOG_LEVEL", "DEBUG")  # Show detailed logs
 
     main()

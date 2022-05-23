@@ -37,14 +37,13 @@ def parse_node(parent_path: Path, node_name: str) -> Optional[Node]:
     return Node(name=node_name, path=node_path)
 
 
-def read_input() -> tuple[dict[str, Node], list[Node]]:
+def read_input(arg_path: Path) -> tuple[dict[str, Node], list[Node]]:
     """
     Get a list of all directories and files in the given directory.
 
     :return: the list of directories and files inside the given directory
     """
 
-    arg_path: Path = args.args.node
     if arg_path.is_dir():
         parent_path = arg_path
         all_nodes = os.listdir(arg_path)
@@ -57,7 +56,7 @@ def read_input() -> tuple[dict[str, Node], list[Node]]:
 
     if not all_nodes:
         console.console.print(
-            f"There are no files or folders in [repr.path]{args.args.node}[/].",
+            f"There are no files or folders in [repr.path]{arg_path}[/].",
             highlight=False,
         )
     else:

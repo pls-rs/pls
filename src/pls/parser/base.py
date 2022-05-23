@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from enum import Enum
 from sys import platform, stderr
 from typing import IO, Optional
@@ -28,7 +29,16 @@ class PlsFormatter(argparse.HelpFormatter):
                 self.heading = f"[bold]{heading.upper()}[/]"
 
     def _format_usage(self, *args, **kwargs) -> str:
+        """
+        Use Rich's ``escape`` function to ensure that all the square brackets in the
+        usage text are printed to the screen.
+        """
+
         usage = super()._format_usage(*args, **kwargs)
+
+        # Handle rested brackets
+        usage = re.sub(r"\[(?P<out>.*)\[(?P<in>.*)]]", r"[\g<out>\\[\g<in>]]", usage)
+
         return escape(usage)
 
     def _format_action_invocation(self, action: argparse.Action) -> str:

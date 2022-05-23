@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import textwrap
+from pathlib import Path
 
 from pls.globals import args, console
 from pls.models.node import Node
@@ -16,21 +17,27 @@ class BasePrinter:
     Defines the blueprint of a printer that renders output to the screen.
     """
 
-    def __init__(self, all_nodes: list[Node]):
-        """
-        Store a reference to the global console
-        """
-
+    def __init__(self, cwd: Path, all_nodes: list[Node]):
         self.console = console.console
+        self.cwd = cwd
         self.all_nodes = all_nodes
 
-    def print(self):
+    def print(self, show_header: bool = False):
         """
         Perform the print and post-print actions.
         """
 
+        if show_header:
+            self.print_header()
         self.print_output()
         self.post_print()
+
+    def print_header(self):
+        """
+        Print the name of the node to the output.
+        """
+
+        self.console.print(f"{self.cwd.name}:")
 
     def print_output(self):
         """

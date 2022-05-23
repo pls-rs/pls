@@ -32,9 +32,10 @@ def add_args(parser: argparse.ArgumentParser):
     """
 
     parser.add_argument(
-        "node",
+        "nodes",
         type=_node,
-        nargs=argparse.OPTIONAL,
-        default=Path.cwd(),
-        help="the node to list self or contents",
+        nargs=argparse.ZERO_OR_MORE,
+        default=[Path.cwd()],
+        metavar="node",  # singular form of the ``dest``
+        help="the files or folders to describe",
     )

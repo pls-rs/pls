@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import re
 from enum import Enum
 from sys import platform, stderr
 from typing import IO, Optional
@@ -28,6 +27,18 @@ class PlsFormatter(argparse.HelpFormatter):
             if isinstance((heading := getattr(self, "heading", None)), str):
                 self.heading = f"[bold]{heading.upper()}[/]"
 
+    def _format_args(self, action, default_metavar) -> str:
+        """
+        Overrides ``_format_args`` to bridge the version difference between Python
+        versions and return consistent output for the 'nodes' positional argument.
+        """
+
+        if action.nargs == argparse.ZERO_OR_MORE:
+            get_metavar = self._metavar_formatter(action, default_metavar)
+            metavar = get_metavar(1)
+            return "[%s ...]" % metavar
+        return super()._format_args(action, default_metavar)
+
     def _format_usage(self, *args, **kwargs) -> str:
         """
         Use Rich's ``escape`` function to ensure that all the square brackets in the
@@ -35,10 +46,6 @@ class PlsFormatter(argparse.HelpFormatter):
         """
 
         usage = super()._format_usage(*args, **kwargs)
-
-        # Handle rested brackets
-        usage = re.sub(r"\[(?P<out>.*)\[(?P<in>.*)]]", r"[\g<out>\\[\g<in>]]", usage)
-
         return escape(usage)
 
     def _format_action_invocation(self, action: argparse.Action) -> str:

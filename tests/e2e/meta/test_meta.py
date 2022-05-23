@@ -23,7 +23,7 @@ def test_help(arg: str):
     expected_lines = [
         "usage: pls [-h] [-v]",
         "`pls` is a prettier and powerful `ls` for the pros.",
-        "[node [node ...]]",
+        "[node ...]",
         "--help/-h",
         "--version/-v",
     ]

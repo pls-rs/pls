@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pls"
 description = "`pls` is a prettier and powerful `ls` for the pros."
-version = "4.0.3"
+version = "5.0.0"
 
 authors = ["Dhruv Bhanushali"]
 

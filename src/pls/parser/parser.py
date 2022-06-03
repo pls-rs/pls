@@ -1,3 +1,4 @@
+from pls import __pkg__
 from pls.parser.args import dev, filter, info, meta, pos, pres, sort
 from pls.parser.base import PlsFormatter, PlsParser
 
@@ -11,7 +12,7 @@ def _get_core_parser() -> PlsParser:
     """
 
     return PlsParser(
-        prog="pls",
+        prog=__pkg__,
         description=(
             """
             [red bold]`pls`[/] is a prettier and powerful `ls` for the pros.

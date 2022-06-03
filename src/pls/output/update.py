@@ -4,6 +4,7 @@ import logging
 from typing import Literal, Optional, Tuple, cast, get_args
 
 import requests
+from requests import RequestException
 
 from pls import __pkg__, __version__
 from pls.globals import console
@@ -51,7 +52,7 @@ def get_latest_version() -> str:
     :return: the version triplet of the latest version on PyPI
     """
 
-    res = requests.get(f"https://pypi.org/pypi/{__pkg__}/json")
+    res = requests.get(f"https://pypi.org/pypi/{__pkg__}/json", timeout=0.01)
     package_info = res.json()
     return package_info["info"]["version"]
 
@@ -62,7 +63,10 @@ def check_update():
     version has been published.
     """
 
-    latest_version = get_latest_version()
+    try:
+        latest_version = get_latest_version()
+    except RequestException:
+        return
 
     latest_ver = parse_semver(latest_version)
     curr_ver = parse_semver(__version__)

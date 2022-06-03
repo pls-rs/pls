@@ -52,7 +52,7 @@ def get_latest_version() -> str:
     :return: the version triplet of the latest version on PyPI
     """
 
-    res = requests.get(f"https://pypi.org/pypi/{__pkg__}/json", timeout=0.01)
+    res = requests.get(f"https://pypi.org/pypi/{__pkg__}/json", timeout=0.5)
     package_info = res.json()
     return package_info["info"]["version"]
 

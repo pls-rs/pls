@@ -12,6 +12,7 @@ from pls.fs.list import read_input
 from pls.globals import args, console, state
 from pls.log.config import configure_log_level
 from pls.output.printers import BasePrinter
+from pls.output.update import check_update
 from pls.parser.parser import parser
 from pls.parser.validation import validate_args
 
@@ -161,6 +162,9 @@ def main():
 
         if index != node_counts - 1:
             console.console.print()  # Separate outputs using blank lines.
+
+    if not os.getenv("PLS_NO_UPDATE_CHECK"):
+        check_update()
 
 
 def dev():

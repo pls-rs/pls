@@ -1,6 +1,12 @@
 const Prism = require("prismjs");
 const loadLanguages = require("prismjs/components/");
 
+const { defaultTheme } = require("vuepress");
+const { docsearchPlugin } = require("@vuepress/plugin-docsearch");
+const {
+  registerComponentsPlugin,
+} = require("@vuepress/plugin-register-components");
+
 const { path } = require("@vuepress/utils");
 const packageInfo = require("../../package.json");
 
@@ -82,8 +88,14 @@ module.exports = {
     },
   },
 
-  theme: "@vuepress/theme-default",
-  themeConfig: {
+  alias: Object.fromEntries(
+    ["HomeHero", "HomeFooter"].map((component) => [
+      `@theme/${component}.vue`,
+      path.resolve(__dirname, `./components/overrides/${component}.vue`),
+    ])
+  ),
+
+  theme: defaultTheme({
     repo: packageInfo.repository.replace("github:", ""),
     docsBranch: "docs",
     docsDir: "docs",
@@ -104,34 +116,21 @@ module.exports = {
       "/reference": [reference],
       "/contributing": [contributing],
     },
-  },
-  alias: Object.fromEntries(
-    ["HomeHero", "HomeFooter"].map((component) => [
-      `@theme/${component}.vue`,
-      path.resolve(__dirname, `./components/overrides/${component}.vue`),
-    ])
-  ),
-
+  }),
   plugins: [
-    [
-      "@vuepress/plugin-docsearch",
-      {
-        apiKey: "aab9e7596d3aa3ef1a9834543eadbf60",
-        indexName: "pls",
-        appId: "V3X44L2GDB",
-        placeholder: "Search...",
-      },
-    ],
-    [
-      "@vuepress/plugin-register-components",
-      {
-        components: Object.fromEntries(
-          ["ColorPreview"].map((component) => [
-            component,
-            path.resolve(__dirname, `./components/custom/${component}.vue`),
-          ])
-        ),
-      },
-    ],
+    docsearchPlugin({
+      apiKey: "aab9e7596d3aa3ef1a9834543eadbf60",
+      indexName: "pls",
+      appId: "V3X44L2GDB",
+      placeholder: "Search...",
+    }),
+    registerComponentsPlugin({
+      components: Object.fromEntries(
+        ["ColorPreview"].map((component) => [
+          component,
+          path.resolve(__dirname, `./components/custom/${component}.vue`),
+        ])
+      ),
+    }),
   ],
 };

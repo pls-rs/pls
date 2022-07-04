@@ -46,6 +46,7 @@ def general_init(argv=None) -> argparse.Namespace:
     # State
     state.state = state_obj = state.State()
 
+    state_obj.setup_user_conf()
     state_obj.setup_home()
     state_obj.setup_user_groups()
 

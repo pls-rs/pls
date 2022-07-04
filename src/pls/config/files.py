@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import itertools
+import logging
 import os
 from pathlib import Path
 from typing import Optional
 
 from pls.globals import state
 
+
+logger = logging.getLogger(__name__)
 
 conf_name = ".pls.yml"
 """the name of the ``pls`` config file"""
@@ -23,7 +26,9 @@ def _is_valid(path: Path) -> bool:
     :return: ``True`` if the path is an existing file, ``False`` otherwise
     """
 
-    return path.exists() and path.is_file()
+    is_valid = path.exists() and path.is_file()
+    logger.debug(f'{path}: {"valid" if is_valid else "invalid"}')
+    return is_valid
 
 
 def get_cwd_conf(curr_dir: Path) -> Optional[Path]:
@@ -73,17 +78,18 @@ def get_ancestor_confs(curr_dir: Path) -> list[Path]:
     return conf_paths
 
 
-def get_home_conf() -> Optional[Path]:
+def get_dir_conf(dir_path: Optional[Path]) -> Optional[Path]:
     """
-    Get the path to the ``pls`` config in the user's home directory.
+    Get the path to the ``pls`` config in the given directory. If the given directory
+    is ``None``, ``None`` will be returned.
 
     :return: the path to the ``pls`` config if it exists, ``None`` otherwise
     """
 
-    if state.state.home_dir is None:
+    if dir_path is None:
         return None
 
-    test_path = state.state.home_dir.joinpath(conf_name)
+    test_path = dir_path.joinpath(conf_name)
     return test_path if _is_valid(test_path) else None
 
 
@@ -102,7 +108,12 @@ def find_configs(node: Path) -> list[Path]:
         conf_paths.append(cwd_conf)
     if ancestor_confs := get_ancestor_confs(curr_dir):
         conf_paths.extend(ancestor_confs)
-    if (home_conf := get_home_conf()) and home_conf not in conf_paths:
-        conf_paths.append(home_conf)
+    user_level_dirs = [state.state.user_conf_dir, state.state.home_dir]
+    for user_level_dir in user_level_dirs:
+        conf_file = get_dir_conf(user_level_dir)
+        if conf_file is not None and conf_file not in conf_paths:
+            conf_paths.append(conf_file)
+
+    logger.info(f"Config files found: {conf_paths}")
 
     return conf_paths

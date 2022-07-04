@@ -34,6 +34,9 @@ class State(metaclass=Singleton):
     """
 
     def __init__(self):
+        # See ``setup_user_conf``.
+        self.user_conf_dir: Optional[Path] = None
+
         # See ``setup_home``.
         self.home_dir: Optional[Path] = None
 
@@ -54,6 +57,21 @@ class State(metaclass=Singleton):
         """
 
         return str(self.__dict__)
+
+    def setup_user_conf(self):
+        """
+        Set up the user-level config directory.
+        """
+
+        try:
+            if user_conf_dir := os.getenv("PLS_USER_CONF_DIR"):
+                path = Path(user_conf_dir)
+                if "~" in user_conf_dir:
+                    path = path.expanduser()
+                self.user_conf_dir = path.resolve()
+                logger.info(f"User config dir: {self.user_conf_dir}")
+        except RuntimeError:
+            logger.info("User config directory could not be determined.")
 
     def setup_home(self):
         """

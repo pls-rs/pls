@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import logging
 import os
 from pathlib import Path
 from typing import Optional
 
 from pls.fs.git import get_git_root, get_git_statuses
+
+
+logger = logging.getLogger(__name__)
 
 
 class Singleton(type):
@@ -58,9 +62,9 @@ class State(metaclass=Singleton):
 
         try:
             self.home_dir = Path.home()
+            logger.info(f"Home directory: {self.home_dir}")
         except RuntimeError:
-            # Home directory could not be determined.
-            pass
+            logger.info("Home directory could not be determined.")
 
     def setup_user_groups(self):
         """

@@ -28,6 +28,7 @@ class NodeSpec:
         color: str = None,
         importance: int = 0,
         collapse: dict = None,
+        **kwargs,  # Ignore all unwanted arguments
     ):
         self.name = name
         self.pattern = re.compile(pattern) if pattern else None

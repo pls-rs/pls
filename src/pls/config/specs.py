@@ -72,13 +72,15 @@ def massage_specs(entry: dict) -> list[dict]:
 
     # Split collapse names/extensions into collapses name/extension.
     logger.debug(f"Massaging {entry}")
-    if collapse := entry.get("collapse"):
+    if (collapse := entry.get("collapse")) and not entry.get("collapse_fixed"):
         collapse_fields = ["name", "extension"]
         check_conflicts(collapse, collapse_fields)
         collapses = break_plurals(collapse, collapse_fields)
 
         if len(collapses) > 1:
             entry["collapse"] = collapses
+
+        entry["collapse_fixed"] = True  # Prevent massaging the same spec again.
 
     id_fields = ["name", "pattern", "extension"]
     check_conflicts(entry, id_fields)

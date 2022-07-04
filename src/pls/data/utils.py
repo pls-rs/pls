@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -8,6 +10,10 @@ import yaml
 from pls.exceptions import ConfigException
 
 
+logger = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=None)
 def load_yml_file(file_path: Path) -> Any:
     """
     Load the YAML file referenced by the given name.
@@ -16,6 +22,7 @@ def load_yml_file(file_path: Path) -> Any:
     :return: the parsed contents of the YAML file
     """
 
+    logger.debug(f"Loading YAML file: {file_path}")
     try:
         with file_path.open("r", encoding="utf-8") as data_file:
             data = yaml.safe_load(data_file)

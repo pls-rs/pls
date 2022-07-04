@@ -85,8 +85,16 @@ def test_massaging_singular_value_has_no_effect(entry: dict):
         (
             {"name": "name", "collapse": {"name": ["name_a", "name_b"]}},
             [
-                {"name": "name", "collapse": {"name": "name_a"}},
-                {"name": "name", "collapse": {"name": "name_b"}},
+                {
+                    "name": "name",
+                    "collapse": {"name": "name_a"},
+                    "collapse_fixed": True,
+                },
+                {
+                    "name": "name",
+                    "collapse": {"name": "name_b"},
+                    "collapse_fixed": True,
+                },
             ],
         ),
         (
@@ -95,10 +103,26 @@ def test_massaging_singular_value_has_no_effect(entry: dict):
                 "collapse": {"name": ["name_c", "name_d"]},
             },
             [
-                {"name": "name_a", "collapse": {"name": "name_c"}},
-                {"name": "name_a", "collapse": {"name": "name_d"}},
-                {"name": "name_b", "collapse": {"name": "name_c"}},
-                {"name": "name_b", "collapse": {"name": "name_d"}},
+                {
+                    "name": "name_a",
+                    "collapse": {"name": "name_c"},
+                    "collapse_fixed": True,
+                },
+                {
+                    "name": "name_a",
+                    "collapse": {"name": "name_d"},
+                    "collapse_fixed": True,
+                },
+                {
+                    "name": "name_b",
+                    "collapse": {"name": "name_c"},
+                    "collapse_fixed": True,
+                },
+                {
+                    "name": "name_b",
+                    "collapse": {"name": "name_d"},
+                    "collapse_fixed": True,
+                },
             ],
         ),
     ],

@@ -19,16 +19,16 @@ pls-dev = "pls.main:dev"
 [tool.poetry.dependencies]
 python = "^3.8"
 PyYAML = "^6.0"
-rich = "^12.4.3"
+rich = "^12.5.1"
 requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^2.19.0"
-ipython = "^8.3.0"
+pre-commit = "^2.20.0"
+ipython = "^8.4.0"
 pytest = "^7.1.2"
 pytest-lazy-fixture = "^0.6.3"
 freezegun = "^1.2.1"
-jsonschema = "^4.5.1"
+jsonschema = "^4.7.2"
 requests = "^2.27.1"
 pytest-cov = "^3.0.0"
 

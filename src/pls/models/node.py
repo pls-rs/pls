@@ -6,7 +6,7 @@ from typing import Optional, Union
 
 from pls.config import icons
 from pls.enums.icon_type import IconType
-from pls.enums.node_type import NodeType, get_type_suffix
+from pls.enums.node_type import NodeType, get_type_color, get_type_icon, get_type_suffix
 from pls.globals import args
 from pls.models.base_node import BaseNode
 from pls.models.mixins.git import GitMixin
@@ -66,12 +66,13 @@ class Node(
         name_fmt_rules = []
 
         # font color
-        if not self.exists:
-            fmt_rules.append("red")  # only happens for broken symlinks
-        elif spec_color := self.spec_attr("color"):
+        if spec_color := self.spec_attr("color"):
             fmt_rules.append(str(spec_color))
-        elif self.node_type == NodeType.DIR:
-            fmt_rules.append("cyan")
+        else:
+            node_type = self.node_type if self.exists else NodeType.BROKEN
+            color = get_type_color(node_type)
+            if color is not None:
+                fmt_rules.append(color)
 
         imp_fmt_rules, imp_txt_fmt_rules = self.importance_format_rules
         if imp_fmt_rules:
@@ -181,9 +182,9 @@ class Node(
             icon_index = icons.nerd_icons
 
         if spec_icon := self.spec_attr("icon"):
-            icon = icon_index.get(str(spec_icon))
-        elif self.node_type == NodeType.DIR:
-            icon = icon_index.get("folder")
+            icon = icon_index.get(spec_icon)
+        elif icon_name := get_type_icon(self.node_type):
+            icon = icon_index.get(icon_name)
         else:
             icon = None
 

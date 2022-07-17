@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import auto
+from typing import Optional
 
 from pls.config import constants
 from pls.enums.base import AutoEnum
@@ -39,6 +40,30 @@ type_test_map: dict[NodeType, str] = {
     if node_type not in {NodeType.UNKNOWN, NodeType.BROKEN}
 }
 """a mapping of node types with specific functions that evaluate it"""
+
+
+def get_type_icon(node_type: NodeType) -> Optional[str]:
+    """
+    Get the icon associated the given node type, which is used when no other specs match
+    the node. Generally only the folder type has a default icon.
+
+    :param node_type: the given ``NodeType`` enum item
+    :return: the icon associated the given ``NodeType`` value
+    """
+
+    return constants.constants.lookup("node_types", node_type.value, "icon")
+
+
+def get_type_color(node_type: NodeType) -> Optional[str]:
+    """
+    Get the color associated with the given node type, which is used when no other specs
+    match the node. Generally only, the folder type has a default color.
+
+    :param node_type: the given ``NodeType`` enum item
+    :return: the color associated with the given ``NodeType`` value
+    """
+
+    return constants.constants.lookup("node_types", node_type.value, "color")
 
 
 def get_type_char(node_type: NodeType) -> str:

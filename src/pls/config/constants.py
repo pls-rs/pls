@@ -68,7 +68,8 @@ class NestedDict(dict):
         """
         Lookup the given path in the dictionary by traversing the fragments. This
         assumes that the dictionary contains only contains plain data types. Use
-        integers for looking up values in lists.
+        integers for looking up values in lists. Note that a lookup resulting in
+        ``None`` is considered a passing lookup and will not return the default value.
 
         :param path: the path to the data point inside the dictionary
         :param default: the value to return if the path is invalid or does not exist

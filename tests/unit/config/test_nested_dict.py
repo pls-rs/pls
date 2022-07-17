@@ -15,12 +15,23 @@ from pls.exceptions import ConstException
         (
             {"dict": {"b": 2}, "list": ["b"], "k": "v"},
             False,
-            {"dict": {"a": 1, "b": 2}, "list": ["a", "b"], "scalar": "val", "k": "v"},
+            {
+                "dict": {"a": 1, "b": 2},
+                "list": ["a", "b"],
+                "scalar": "val",
+                "k": "v",
+                "null": None,
+            },
         ),
         (
             {"dict": {"b": 2}, "list": ["b"], "scalar": "value"},
             True,
-            {"dict": {"a": 1, "b": 2}, "list": ["a", "b"], "scalar": "value"},
+            {
+                "dict": {"a": 1, "b": 2},
+                "list": ["a", "b"],
+                "scalar": "value",
+                "null": None,
+            },
         ),
     ],
 )
@@ -53,6 +64,7 @@ def test_nested_dict_merge_raises_if_conflict(
         (["list"], ["a"]),
         (["list", 0], "a"),
         (["scalar"], "val"),
+        (["null"], None),
     ],
 )
 def test_nested_dict_supports_lookup(
@@ -78,3 +90,7 @@ def test_nested_dict_lookup_returns_default_or_raises_if_not_found(
     path_str = ".".join([str(fragment) for fragment in path])
     with pytest.raises(ConstException, match=re.escape(path_str)):
         nested_dict.lookup(*path)
+
+
+def test_nested_dict_lookup_returns_null_if_null(nested_dict: NestedDict):
+    assert nested_dict.lookup("null", default="default") is None

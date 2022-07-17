@@ -46,10 +46,12 @@ def get_type_char(node_type: NodeType) -> str:
     Get the unique, distinct type character associated with the given node type. Returns
     a blank string if no type character is associated.
 
+    :param node_type: the given ``NodeType`` enum item
     :return: the type character mapped to the given ``NodeType`` value
     """
 
-    return constants.constants.lookup("type_chars", node_type.value, default="")
+    val = constants.constants.lookup("node_types", node_type.value, "type_char")
+    return val if val is not None else ""
 
 
 def get_type_suffix(node_type: NodeType) -> str:
@@ -57,7 +59,9 @@ def get_type_suffix(node_type: NodeType) -> str:
     Get the unique, distinct type suffix associated with the given node type. Returns
     a blank string if no type character is associated.
 
+    :param node_type: the given ``NodeType`` enum item
     :return: the type suffix mapped to the given ``NodeType`` value
     """
 
-    return constants.constants.lookup("type_suffixes", node_type.value, default="")
+    val = constants.constants.lookup("node_types", node_type.value, "type_suffix")
+    return val if val is not None else ""

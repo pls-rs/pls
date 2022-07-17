@@ -106,11 +106,7 @@ def get_conf():
 @pytest.fixture
 def nested_dict() -> NestedDict:
     regular_dict: dict = copy.deepcopy(
-        {
-            "dict": {"a": 1},
-            "list": ["a"],
-            "scalar": "val",
-        }
+        {"dict": {"a": 1}, "list": ["a"], "scalar": "val", "null": None}
     )
     return NestedDict(regular_dict)
 

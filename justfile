@@ -27,7 +27,7 @@ black *args="--all-files":
 
 # Run unit tests using pytest
 test *args:
-    poetry run pytest --cov=src/ {{ args }}
+    env CI="true" poetry run pytest --cov=src/ {{ args }}
 
 # Open an IPython shell
 shell:

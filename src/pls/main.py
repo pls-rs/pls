@@ -164,7 +164,7 @@ def main():
         if index != node_counts - 1:
             console.console.print()  # Separate outputs using blank lines.
 
-    if not os.getenv("PLS_NO_UPDATE_CHECK"):
+    if not (os.getenv("PLS_NO_UPDATE_CHECK") or os.getenv("CI")):
         check_update()
 
 

@@ -13,5 +13,12 @@ node_specs:
     icon: share
 nerd_icons:
   share: "\uf14d"
+  link: "\uf838"
 emoji_icons:
   share: "🎁"
+  link: "🔗"
+constants:
+  node_types:
+    symlink:
+      icon: link
+      color: bright_magenta

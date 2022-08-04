@@ -12,6 +12,8 @@ prettier and easier to interpret and understand. It includes a number of
 [developer-friendly features](./features) that other tools targeting a wider
 audience do not have.
 
+![Demo of `pls`](https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/demo.png)
+
 <div class="features">
   <div class="feature">
     <h2>Savvy</h2>

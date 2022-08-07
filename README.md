@@ -14,6 +14,9 @@
     <a href="https://github.com/dhruvkb/pls/actions/workflows/ci.yml">
       <img src="https://github.com/dhruvkb/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
     </a>
+    <a href="https://github.com/dhruvkb/pls">
+      <img src="https://tokei.rs/b1/github/dhruvkb/pls" alt="LoC"/>
+    </a>
   </p>
 </h1>
 

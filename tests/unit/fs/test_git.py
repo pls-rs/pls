@@ -16,17 +16,18 @@ from pls.fs.git import get_git_statuses
         ("X  file", {"file": "X "}),
         ("!! file", {"file": "!!"}),
         ("?? file", {"file": "??"}),
-        (" R old_file -> new_file", {"new_file": " R"}),
-        ('XY "file with space"', {"file with space": "XY"}),
+        ('XY "user quoted file"', {'"user quoted file"': "XY"}),
+        (" R new_file\0old_file", {"new_file": " R"}),
+        ('XY file with space', {"file with space": "XY"}),
         (
-            ' R "old file with space" -> "new file with space"',
+            ' R new file with space\0old file with space',
             {"new file with space": " R"},
         ),
     ],
 )
 def test_statuses_handles_all_cases(entry: str, statuses: dict[Path, str]):
     entries = [entry]
-    exec_git = MagicMock(return_value=MagicMock(stdout="\n".join(entries)))
+    exec_git = MagicMock(return_value=MagicMock(stdout="\0".join(entries)))
     with patch("pls.fs.git.exec_git", exec_git):
         git_statuses = get_git_statuses(Path("."))
     assert git_statuses == {Path(key): value for key, value in statuses.items()}
@@ -37,11 +38,11 @@ def test_statuses_combines_two_git_cmds():
         " A not_updated",
         "MM updated_index_updated_worktree",
         "D  deleted_index",
-        " R renamed_worktree -> new_worktree",
+        " R new_worktree\0renamed_worktree",
     ]
     # git status --porcelain --untracked-files --ignored
     u_i = MagicMock(
-        stdout="\n".join(
+        stdout="\0".join(
             [
                 *common_entries,
                 "!! ignored_dir/ignored_file",
@@ -51,7 +52,7 @@ def test_statuses_combines_two_git_cmds():
     )
     # git status --porcelain --untracked-files=normal --ignored=matching
     u_normal_i_matching = MagicMock(
-        stdout="\n".join(
+        stdout="\0".join(
             [
                 *common_entries,
                 "!! ignored_dir/",

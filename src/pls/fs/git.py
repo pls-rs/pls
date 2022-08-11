@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-import shlex
 import subprocess
 from pathlib import Path
 from typing import Optional
-
-from pls.exceptions import ExecException
 
 
 def formatted_status(status: str) -> str:
@@ -83,13 +80,36 @@ def get_git_root(working_dir: Path) -> Optional[Path]:
         return None
 
 
+def _split_git_output(stdout: str) -> list[str]:
+    """
+    Split the output of Git status with the ``--porcelain`` and ``-z`` flags. The
+    NUL character ``\0`` is used as the separator. Renamed files need to be handled
+    differently due to the presence of two file names in one line.
+
+    :param stdout: the output of the Git subprocess, separated with NUL characters
+    :return: the status list
+    """
+
+    skip: bool = False
+    lines: list[str] = []
+    for status in stdout.rstrip().split("\0"):
+        if skip:
+            skip = False
+            continue
+        if "R" in status:
+            skip = True
+        if status:
+            lines.append(status)
+    return lines
+
+
 def get_git_statuses(git_root: Path) -> dict[Path, str]:
     """
     Identify the Git statuses for all files in the working directory. To get the
     Git statues, this uses following two commands::
 
-        git status --porcelain --untracked-files --ignored
-        git status --porcelain --untracked-files=normal --ignored=matching
+        git status --porcelain=1 -z --untracked-files --ignored
+        git status --porcelain=1 -z --untracked-files=normal --ignored=matching
 
     Refer to the `git-status command documentation
     <https://git-scm.com/docs/git-status>`_ for more info.
@@ -102,35 +122,27 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
 
     status_lines: set[str] = set()
     try:
-        status_args = ["status", "--porcelain"]
+        status_args = ["status", "--porcelain=1", "-z"]
 
         proc = exec_git(
             [*status_args, "--untracked-files"],
             cwd=git_root,
         )
         if proc.stdout:
-            status_lines.update(proc.stdout.rstrip().split("\n"))
+            status_lines.update(_split_git_output(proc.stdout.rstrip()))
 
         proc = exec_git(
             [*status_args, "--untracked-files=normal"],
             cwd=git_root,
         )
         if proc.stdout:
-            status_lines.update(proc.stdout.rstrip().split("\n"))
+            status_lines.update(_split_git_output(proc.stdout.rstrip()))
     except (subprocess.CalledProcessError, FileNotFoundError):
         return status_map
 
     for line in status_lines:
         status = line[0:2]
-
-        components: list[str] = shlex.split(line[3:])
-        if len(components) == 1:
-            path_str = components[0]
-        elif len(components) == 3:
-            _, __, path_str = components
-        else:
-            raise ExecException("Could not parse Git status code.")
-        path = Path(path_str)
+        path = Path(line[3:].strip())
 
         status_map[path] = status
 

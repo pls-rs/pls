@@ -18,9 +18,9 @@ from pls.fs.git import get_git_statuses
         ("?? file", {"file": "??"}),
         ('XY "user quoted file"', {'"user quoted file"': "XY"}),
         (" R new_file\0old_file", {"new_file": " R"}),
-        ('XY file with space', {"file with space": "XY"}),
+        ("XY file with space", {"file with space": "XY"}),
         (
-            ' R new file with space\0old file with space',
+            " R new file with space\0old file with space",
             {"new file with space": " R"},
         ),
     ],

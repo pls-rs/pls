@@ -4,8 +4,6 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from pls.exceptions import ExecException
-
 
 def formatted_status(status: str) -> str:
     """
@@ -84,18 +82,21 @@ def get_git_root(working_dir: Path) -> Optional[Path]:
 
 def _split_git_output(stdout: str) -> list[str]:
     """
-    Split the ``-z`` output from git on the ``\0``
+    Split the output of Git status with the ``--porcelain`` and ``-z`` flags. The
+    NUL character ``\0`` is used as the separator. Renamed files need to be handled
+    differently due to the presence of two file names in one line.
 
-    :param stdout: string from subprocess stdout separate with NUL
+    :param stdout: the output of the Git subprocess, separated with NUL characters
     :return: the status list
     """
+
     skip: bool = False
     lines: list[str] = []
     for status in stdout.rstrip().split("\0"):
         if skip:
             skip = False
             continue
-        if 'R' in status:
+        if "R" in status:
             skip = True
         if status:
             lines.append(status)
@@ -141,8 +142,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
 
     for line in status_lines:
         status = line[0:2]
-        path_str: str = line.strip().partition(' ')[-1]
-        path = Path(path_str.strip())
+        path = Path(line[3:].strip())
 
         status_map[path] = status
 

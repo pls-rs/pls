@@ -24,6 +24,13 @@ repos:
           - --autofix
       - id: requirements-txt-fixer
 
+  - repo: https://github.com/ambv/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        args:
+          - --safe
+
   - repo: https://github.com/PyCQA/isort
     rev: 5.9.1
     hooks:
@@ -43,13 +50,6 @@ repos:
     rev: 3.9.2
     hooks:
       - id: flake8
-
-  - repo: https://github.com/ambv/black
-    rev: 22.3.0
-    hooks:
-      - id: black
-        args:
-          - --safe
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.931

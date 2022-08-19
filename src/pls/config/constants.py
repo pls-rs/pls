@@ -5,6 +5,7 @@ variables with a dot ``.`` notation.
 
 from __future__ import annotations
 
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Optional
 
@@ -16,6 +17,11 @@ class NestedDict(dict):
     """
     Extends ``dict`` to add support for deep-merge and lookup functionality.
     """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.lookup = lru_cache(maxsize=None)(self._lookup)
 
     @staticmethod
     def _deep_merge(
@@ -64,7 +70,7 @@ class NestedDict(dict):
 
         self._deep_merge(self, other, overwrite)
 
-    def lookup(self, *path: str, default: Any = None) -> Any:
+    def _lookup(self, *path: str, default: Any = None) -> Any:
         """
         Lookup the given path in the dictionary by traversing the fragments. This
         assumes that the dictionary contains only contains plain data types. Use

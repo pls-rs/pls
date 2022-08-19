@@ -73,6 +73,15 @@ def test_nested_dict_supports_lookup(
     assert nested_dict.lookup(*path) == expectation
 
 
+def test_lookup_is_cached(nested_dict: NestedDict):
+    nested_dict.lookup("dict", "a")
+    nested_dict.lookup("dict", "a")
+    nested_dict.lookup("dict", "a")
+
+    assert nested_dict.lookup.cache_info().misses == 1
+    assert nested_dict.lookup.cache_info().hits == 2
+
+
 @pytest.mark.parametrize(
     "path",
     [

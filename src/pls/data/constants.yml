@@ -10,11 +10,6 @@ constants:
       type_suffix: "/"
       color: cyan
       icon: folder
-    file:
-      type_char: "[dim]-[/]"
-      type_suffix: null
-      color: null
-      icon: null
     fifo:
       type_char: p
       type_suffix: "|"
@@ -32,6 +27,11 @@ constants:
       icon: null
     block_device:
       type_char: b
+      type_suffix: null
+      color: null
+      icon: null
+    file:
+      type_char: "[dim]-[/]"
       type_suffix: null
       color: null
       icon: null

@@ -11,25 +11,25 @@ class NodeType(AutoEnum):
     """
     A node can be either of these:
 
+    - a symlink to any of the below
     - a directory
-    - a regular file
     - a name FIFO pipe
     - a file-based socket
     - a char device
     - a block device
-    - a symlink to any of the above
+    - a regular file that's not any of the above
 
     This enum lists these possibilities. Refer to `the Wikipedia article on Unix
     file types <https://en.wikipedia.org/wiki/Unix_file_types>`_ for more info.
     """
 
-    SYMLINK = auto()  # symbolic link
+    SYMLINK = auto()  # symbolic link, should always be first
     DIR = auto()  # directory
-    FILE = auto()  # regular file
     FIFO = auto()  # named pipe
     SOCKET = auto()  # socket
     CHAR_DEVICE = auto()  # character special device file
     BLOCK_DEVICE = auto()  # block special device file
+    FILE = auto()  # regular file, should always be last
     UNKNOWN = auto()  # graceful handling of unrecognised type
     BROKEN = auto()  # handling of non-existent nodes
 

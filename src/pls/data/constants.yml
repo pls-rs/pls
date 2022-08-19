@@ -48,6 +48,14 @@ constants:
     space_space: "  "
     tee_dash: "├─"
     bend_dash: "└─"
+  permission_styles:
+    r: yellow
+    w: red
+    x: green
+    t: magenta
+    T: magenta
+    s: magenta
+    S: magenta
   spacer:
     name: " "
     value: " "

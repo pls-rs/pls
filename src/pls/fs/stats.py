@@ -3,10 +3,10 @@ from __future__ import annotations
 import datetime
 import logging
 import os
-from itertools import cycle
-from stat import S_ISDIR
+from stat import S_ISDIR, filemode
 from typing import Literal, Optional
 
+from pls.config import constants
 from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
 from pls.globals import args, state
 
@@ -57,35 +57,15 @@ def get_formatted_perms(stat: os.stat_result) -> str:
 
     st_mode = stat.st_mode
 
-    perms = ["r", "w", "x"]
-    specials = ["s", "s", "t"]
-    color_map = {
-        "r": "yellow",
-        "w": "red",
-        "x": "green",
-        "t": "magenta",
-        "s": "magenta",
-    }
-    perm_sets: list[list[str]] = [["-" for _ in range(3)] for _ in range(3)]
+    perm = filemode(st_mode)[1:]  # drop the first letter, i.e. type char
+    perm = f"{perm[:3]} {perm[3:6]} {perm[6:]}"
 
-    text_rep = format(st_mode, "012b")[-12:]
+    formatted_perm = ""
+    for char in perm:
+        color = constants.constants.lookup("permission_styles", char, default="dim")
+        formatted_perm += f"[{color}]{char}[/]"
 
-    for index, (bit, perm) in enumerate(zip(text_rep[3:], cycle(perms))):
-        if int(bit):
-            perm_sets[int(index / 3)][index % 3] = perm
-    for index, (bit, spl) in enumerate(zip(text_rep[:3], specials)):
-        if int(bit):
-            perm_sets[index][2] = spl if perm_sets[index][2] == "x" else spl.upper()
-
-    return " ".join(
-        "".join(
-            f"[{color}]{perm}[/]"
-            if (color := color_map.get(perm.lower(), ""))
-            else perm
-            for perm in perm_set
-        )
-        for perm_set in perm_sets
-    )
+    return formatted_perm
 
 
 def get_formatted_user(stat: os.stat_result) -> Optional[str]:

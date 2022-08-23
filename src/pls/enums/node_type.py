@@ -9,24 +9,14 @@ from pls.enums.base import AutoEnum
 
 class NodeType(AutoEnum):
     """
-    A node can be either of these:
-
-    - a symlink to any of the below
-    - a directory
-    - a name FIFO pipe
-    - a file-based socket
-    - a char device
-    - a block device
-    - a regular file that's not any of the above
-
-    This enum lists these possibilities. Refer to `the Wikipedia article on Unix
-    file types <https://en.wikipedia.org/wiki/Unix_file_types>`_ for more info.
+    This enum lists the different types of nodes. Refer to `the Wikipedia article on
+    Unix file types <https://en.wikipedia.org/wiki/Unix_file_types>`_ for more info.
     """
 
     SYMLINK = auto()  # symbolic link, should always be first
     DIR = auto()  # directory
-    FIFO = auto()  # named pipe
-    SOCKET = auto()  # socket
+    FIFO = auto()  # named FIFO pipe
+    SOCKET = auto()  # file-based socket
     CHAR_DEVICE = auto()  # character special device file
     BLOCK_DEVICE = auto()  # block special device file
     FILE = auto()  # regular file, should always be last

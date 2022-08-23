@@ -70,7 +70,7 @@ class NestedDict(dict):
 
         self._deep_merge(self, other, overwrite)
 
-    def _lookup(self, *path: str, default: Any = None) -> Any:
+    def _lookup(self, *path: str, default: Any = "~UNSET~") -> Any:
         """
         Lookup the given path in the dictionary by traversing the fragments. This
         assumes that the dictionary contains only contains plain data types. Use
@@ -97,7 +97,7 @@ class NestedDict(dict):
                 # ``IndexError`` when ``fragment`` not in ``obj`` list
                 # ``TypeError`` when ``fragment`` not ``int`` in ``obj`` list
                 # ``ConstException`` when traversal not possible
-                if default is not None:
+                if default != "~UNSET~":
                     return default
 
                 path_str = ".".join([str(fragment) for fragment in path])

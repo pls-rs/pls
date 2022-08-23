@@ -74,6 +74,8 @@ def test_nested_dict_supports_lookup(
 
 
 def test_lookup_is_cached(nested_dict: NestedDict):
+    nested_dict.lookup.cache_clear()
+
     nested_dict.lookup("dict", "a")
     nested_dict.lookup("dict", "a")
     nested_dict.lookup("dict", "a")
@@ -82,6 +84,7 @@ def test_lookup_is_cached(nested_dict: NestedDict):
     assert nested_dict.lookup.cache_info().hits == 2
 
 
+@pytest.mark.parametrize("default", ["default", None])
 @pytest.mark.parametrize(
     "path",
     [
@@ -92,9 +95,9 @@ def test_lookup_is_cached(nested_dict: NestedDict):
     ],
 )
 def test_nested_dict_lookup_returns_default_or_raises_if_not_found(
-    path: list[str], nested_dict: NestedDict
+    default: Any, path: list[str], nested_dict: NestedDict
 ):
-    assert nested_dict.lookup(*path, default="default") == "default"
+    assert nested_dict.lookup(*path, default=default) == default
 
     path_str = ".".join([str(fragment) for fragment in path])
     with pytest.raises(ConstException, match=re.escape(path_str)):

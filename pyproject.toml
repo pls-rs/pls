@@ -23,7 +23,7 @@ rich = "^12.5.1"
 requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^2.20.0"
+pre-commit = { git = "https://github.com/dhruvkb/pre-commit.git", branch = "main" }
 ipython = "^8.4.0"
 pytest = "^7.1.2"
 pytest-lazy-fixture = "^0.6.3"

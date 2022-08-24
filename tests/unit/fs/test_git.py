@@ -5,7 +5,21 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from pls.fs.git import get_git_statuses
+from pls.fs.git import formatted_status, get_git_statuses
+
+
+@pytest.mark.parametrize(
+    "status, formatted",
+    [
+        ("  ", "  "),
+        ("DM", "[red]D[/][yellow]M[/]"),
+        (" R", "[dim]-[/][yellow]R[/]"),
+        ("A ", "[green]A[/][dim]-[/]"),
+        ("!!", "[dim]![/][dim]![/]"),
+    ],
+)
+def test_formats_status(status: str, formatted: str):
+    assert formatted_status(status) == formatted
 
 
 @pytest.mark.parametrize(

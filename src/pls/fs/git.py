@@ -108,8 +108,8 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
     Identify the Git statuses for all files in the working directory. To get the
     Git statues, this uses following two commands::
 
-        git status --porcelain=1 -z --untracked-files --ignored
-        git status --porcelain=1 -z --untracked-files=normal --ignored=matching
+        git status --porcelain -z --untracked-files
+        git status --porcelain -z --untracked-files=normal --ignored=matching
 
     Refer to the `git-status command documentation
     <https://git-scm.com/docs/git-status>`_ for more info.
@@ -122,7 +122,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
 
     status_lines: set[str] = set()
     try:
-        status_args = ["status", "--porcelain=1", "-z"]
+        status_args = ["status", "--porcelain", "-z"]
 
         proc = exec_git(
             [*status_args, "--untracked-files"],
@@ -132,7 +132,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
             status_lines.update(_split_git_output(proc.stdout.rstrip()))
 
         proc = exec_git(
-            [*status_args, "--untracked-files=normal"],
+            [*status_args, "--untracked-files=normal", "--ignored=matching"],
             cwd=git_root,
         )
         if proc.stdout:

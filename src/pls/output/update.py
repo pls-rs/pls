@@ -57,6 +57,14 @@ def get_latest_version() -> str:
     return package_info["info"]["version"]
 
 
+def print_version():
+    """
+    Print the current version to the console.
+    """
+
+    console.console.print(f"[red bold]pls[/] [blue]{__version__}[/]")
+
+
 def check_update():
     """
     Compare the current version to the latest and show an upgrade message if a newer
@@ -79,7 +87,6 @@ def check_update():
         }
         message_color = upgrade_color_map[diff]
 
-        console.console.print()  # blank line
         console.console.print(
             f"A new [bold {message_color}]{diff}[/] version is available: "
             f"[blue]{latest_version}[/]. "

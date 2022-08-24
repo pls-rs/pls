@@ -1,7 +1,5 @@
 import argparse
 
-from pls import __version__
-
 
 def add_args(parser: argparse.ArgumentParser):
     """
@@ -21,7 +19,6 @@ def add_args(parser: argparse.ArgumentParser):
     )
     meta.add_argument(
         *["-v", "--version"],
-        action="version",
-        version=f"%(prog)s {__version__}",
+        action="version_update",
         help="show the version of the codebase",
     )

@@ -1,4 +1,5 @@
 from pls import __pkg__
+from pls.parser.actions import register_actions
 from pls.parser.args import dev, filter, info, meta, pos, pres, sort
 from pls.parser.base import PlsFormatter, PlsParser
 
@@ -34,6 +35,8 @@ def get_parser() -> PlsParser:
     """
 
     core_parser = _get_core_parser()
+
+    register_actions(core_parser)
 
     arg_modules = [pos, meta, pres, info, sort, filter, dev]
     for arg_module in arg_modules:

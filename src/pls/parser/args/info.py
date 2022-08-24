@@ -2,7 +2,6 @@ import argparse
 
 from pls.enums.unit_system import UnitSystem
 from pls.output.columns.detail_columns import detail_column_specs
-from pls.parser.actions import CollectOrClearAction
 
 
 detail_choices = list(detail_column_specs.keys()) + [
@@ -26,7 +25,7 @@ def add_args(parser: argparse.ArgumentParser):
     info.add_argument(
         *["-d", "--details"],
         metavar="FIELD",
-        action=CollectOrClearAction,
+        action="collect_or_clear",
         nargs=argparse.OPTIONAL,
         const="std",  # when there is a --details flag without value, see ``nargs``
         help="the data points to show for each node in the output",

@@ -1,5 +1,9 @@
 import argparse
 import logging
+import os
+
+from pls.globals import console
+from pls.output.update import check_update, print_version
 
 
 logger = logging.getLogger(__name__)
@@ -81,3 +85,31 @@ class StoreOrCountAction(argparse.Action):
             if count is None:
                 count = 0
             setattr(namespace, self.dest, count + 1)
+
+
+class VersionUpdateAction(argparse.Action):
+    """
+    Combines the behaviour of the built inCheck if there are any new versions of
+    ``pls`` available on PyPI.
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("nargs", None)
+
+        super().__init__(*args, **kwargs, nargs=0)
+
+    def __call__(self, parser, *args, **kwargs):
+        console.console = console.get_console()
+
+        print_version()
+        if not (os.getenv("PLS_NO_UPDATE_CHECK") or os.getenv("CI")):
+            check_update()
+
+        parser.exit()
+
+
+def register_actions(parser: argparse.ArgumentParser):
+    parser.register("action", "boolean_optional", BooleanOptionalAction)
+    parser.register("action", "collect_or_clear", CollectOrClearAction)
+    parser.register("action", "store_or_count", StoreOrCountAction)
+    parser.register("action", "version_update", VersionUpdateAction)

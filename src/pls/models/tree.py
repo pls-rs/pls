@@ -1,30 +1,39 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic, Optional, TypeVar, cast
+from typing import TYPE_CHECKING
 
 from pls.config import constants
 from pls.globals import args
-from pls.models.base_node import BaseNode
 
 
 if TYPE_CHECKING:
-    from pls.models.node import Node
-
-    T = TypeVar("T", bound=Node)
-else:
-    T = TypeVar("T")
+    from typing import Optional
 
 
-class TreeMixin(Generic[T], BaseNode):
+class Tree:
     """
-    This mixin provides functionality associated with rendering trees.
+    This class provides functionality associated with rendering trees. It should be
+    inherited by any class that behaves as a tree.
     """
+
+    @staticmethod
+    def link(parent: Tree, *children: Tree):
+        """
+        Link a parent node with any number of children nodes.
+
+        :param parent: the parent node to which the children are being linked
+        :param children: the children to each of which the parent is being linked
+        """
+
+        for child in children:
+            child.parent = parent
+            parent.children.append(child)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.children: list[T] = []
-        self.parent: Optional[T] = None
+        self.children: list[Tree] = []
+        self.parent: Optional[Tree] = None
 
         self.pre_shapes: list[str] = []
         self.last_shape: str = ""
@@ -34,13 +43,6 @@ class TreeMixin(Generic[T], BaseNode):
         """whether the node is a sub node of another"""
 
         return self.parent is not None
-
-    @property
-    def is_visible(self) -> bool:
-        """whether the node deserves to be rendered to the screen"""
-
-        is_tree_visible = not self.is_sub or args.args.collapse <= 1
-        return is_tree_visible and super().is_visible
 
     @property
     def tree_prefix(self) -> str:
@@ -63,11 +65,11 @@ class TreeMixin(Generic[T], BaseNode):
 
         if not self.is_sub:
             return ""
-
         assert self.parent is not None
+
         siblings = self.parent.children
 
-        is_last = siblings.index(cast(T, self)) == len(siblings) - 1
+        is_last = siblings.index(self) == len(siblings) - 1
         if is_last:
             return end_shape
 
@@ -114,28 +116,3 @@ class TreeMixin(Generic[T], BaseNode):
             sub_node.pre_shapes.extend(pre_shapes)
             sub_node.set_sub_pre_shapes()
             sub_node.last_shape = sub_node._get_last_shape()
-
-    def find_main(self, node_map: dict[str, T]):
-        """
-        Find the main node of this node from the mapping of node names and
-        corresponding ``Node`` instances. If the spec specifies ``collapse`` and
-        the main node exists, register this node as a sub-node of the main one.
-
-        :param node_map: the mapping of names and ``Node`` instances
-        """
-
-        collapses = self.spec_attr("collapse", coalesce=True)
-        if not collapses:
-            return
-
-        for collapse in collapses:
-            if "extension" in collapse:
-                extension = collapse["extension"]
-                name = self.name.replace(self.extension, extension)
-            else:  # "name" in collapse:
-                name = collapse["name"]
-
-            if (node := node_map.get(name)) is not None and node.is_visible:
-                node_map[name].children.append(cast(T, self))
-                self.parent = node
-                break

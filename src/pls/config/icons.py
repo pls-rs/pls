@@ -5,6 +5,7 @@ variables with a dot ``.`` notation.
 
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 
 from pls.data.utils import load_yml_file
@@ -25,7 +26,8 @@ def get_icons(conf_paths: list[Path]) -> tuple[dict[str, str], dict[str, str]]:
     emoji: dict[str, str] = {}
 
     for conf_path in reversed(conf_paths):
-        conf = load_yml_file(conf_path)
+        # Use a copy to prevent ``load_yml_file`` cache from being polluted.
+        conf = copy.deepcopy(load_yml_file(conf_path))
 
         nerd_val = conf.get("nerd_icons", {})
         if nerd_val:

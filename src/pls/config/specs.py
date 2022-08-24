@@ -5,6 +5,7 @@ variables with a dot ``.`` notation.
 
 from __future__ import annotations
 
+import copy
 import logging
 from pathlib import Path
 
@@ -103,7 +104,8 @@ def get_specs(conf_paths: list[Path]) -> list[NodeSpec]:
     entries = []
 
     for conf_path in conf_paths:
-        conf = load_yml_file(conf_path)
+        # Use a copy to prevent ``load_yml_file`` cache from being polluted.
+        conf = copy.deepcopy(load_yml_file(conf_path))
         entries.extend(conf.get("node_specs", []))
 
     return [NodeSpec(**spec) for entry in entries for spec in massage_specs(entry)]

@@ -5,6 +5,7 @@ variables with a dot ``.`` notation.
 
 from __future__ import annotations
 
+import copy
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Optional
@@ -118,7 +119,8 @@ def get_constants(conf_paths: list[Path]) -> NestedDict:
     consts: NestedDict = NestedDict()
 
     for conf_path in reversed(conf_paths):
-        conf = load_yml_file(conf_path)
+        # Use a copy to prevent ``load_yml_file`` cache from being polluted.
+        conf = copy.deepcopy(load_yml_file(conf_path))
 
         consts_val = conf.get("constants", {})
         if not consts_val:

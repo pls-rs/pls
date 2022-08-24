@@ -9,6 +9,7 @@ CLI args and config-based preferences.
 from __future__ import annotations
 
 import argparse
+import copy
 import logging
 import re
 from enum import Enum
@@ -128,7 +129,8 @@ def get_prefs(conf_paths: Union[Path, list[Path]]) -> argparse.Namespace:
         conf_paths = [conf_paths]
 
     for conf_path in reversed(conf_paths):
-        conf = load_yml_file(conf_path)
+        # Use a copy to prevent ``load_yml_file`` cache from being polluted.
+        conf = copy.deepcopy(load_yml_file(conf_path))
 
         pref_val = conf.get("prefs", {})
         if not pref_val:

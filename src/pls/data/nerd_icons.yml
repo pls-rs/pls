@@ -12,6 +12,7 @@ nerd_icons:
   docker:     "\uf308"  # nf-linux-docker
   folder:     "\uf07b"  # nf-fa-folder
   git:        "\uf7a1"  # nf-mdi-git
+  github:     "\uf408"  # nf-oct-mark_github
   html:       "\ue736"  # nf-dev-html5
   image:      "\uf7e8"  # nf-mdi-image
   javascript: "\ue60c"  # nf-seti-javascript

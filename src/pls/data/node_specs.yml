@@ -15,6 +15,8 @@ node_specs:
 
   - name: .gitignore
     icon: git
+  - name: .github
+    icon: github
 
   - name: [justfile, Makefile, Rakefile]
     icon: runner

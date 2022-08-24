@@ -12,6 +12,7 @@ emoji_icons:
   docker:     "🐳"
   folder:     "📁"
   git:        "⏪"
+  github:     "🐙"
   html:       "🔗"
   image:      "🖼"
   javascript: "🟨"

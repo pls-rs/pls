@@ -119,7 +119,6 @@ class State(metaclass=Singleton):
         directory = node if node.is_dir() else node.parent
         self.git_root = get_git_root(directory)
         if self.git_root is not None:
-            assert self.git_root is not None
             self.git_status_map = get_git_statuses(self.git_root)
 
 

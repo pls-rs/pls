@@ -11,7 +11,8 @@ def get_console():
     :return: a pre-configured ``rich.console.Console`` instance
     """
 
-    return Console(record=args.args.export is not None)
+    # Using ``getattr`` here to enable ``--update`` to use this console.
+    return Console(record=getattr(args.args, "export", None) is not None)
 
 
 console: Console

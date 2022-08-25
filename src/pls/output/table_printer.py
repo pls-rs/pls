@@ -23,28 +23,6 @@ class TablePrinter(BasePrinter):
         self.table = self._get_table()
 
     @staticmethod
-    def _column_chosen(spec: ColumnSpec) -> bool:
-        """
-        Determine whether the given column name has been asked for in the details.
-
-        :param spec: the specification of the column to check
-        :return: ``True`` if the column is to be shown, ``False`` otherwise
-        """
-
-        default_details = [
-            "type",
-            "perms",
-            "user",
-            "group",
-        ]
-
-        return (
-            spec.key in args.args.details
-            or "all" in args.args.details
-            or (spec.key in default_details and "std" in args.args.details)
-        )
-
-    @staticmethod
     def _filter_groups(
         all_col_groups: list[list[str]],
         extra_cond: Callable[[ColumnSpec], bool] = lambda _: True,
@@ -78,7 +56,7 @@ class TablePrinter(BasePrinter):
         if args.args.details:
             selected_col_groups.extend(
                 TablePrinter._filter_groups(
-                    detail_col_groups, TablePrinter._column_chosen
+                    detail_col_groups, lambda spec: spec.key in args.args.details
                 )
             )
         selected_col_groups.extend(TablePrinter._filter_groups(required_col_groups))

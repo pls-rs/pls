@@ -1,10 +1,25 @@
 from __future__ import annotations
 
+import stat
 from enum import auto
-from typing import Optional
+from typing import Callable
 
 from pls.config import constants
 from pls.enums.base import AutoEnum
+
+
+class SymlinkState(AutoEnum):
+    """
+    A symlink can be in any of these states:
+
+    - OK, symlink resolves to an existing node
+    - broken, symlink resolves to a non-existent node
+    - loop, symlink resolves to a chain that eventually leads back to it
+    """
+
+    OK = auto()
+    BROKEN = auto()
+    LOOP = auto()
 
 
 class NodeType(AutoEnum):
@@ -21,62 +36,25 @@ class NodeType(AutoEnum):
     BLOCK_DEVICE = auto()  # block special device file
     FILE = auto()  # regular file, should always be last
     UNKNOWN = auto()  # graceful handling of unrecognised type
-    BROKEN = auto()  # handling of non-existent nodes
+
+    def get_constant(self, attribute: str, **kwargs) -> str:
+        """
+        Get the value of a constant attribute associated the given node type.
+
+        :param attribute: the key under the node type to retrieve from the constants
+        :return: the icon associated the given ``NodeType`` value
+        """
+
+        return constants.constants.lookup("node_types", self.value, attribute, **kwargs)
 
 
-type_test_map: dict[NodeType, str] = {
-    node_type: f"is_{node_type.value}"
-    for node_type in list(NodeType)
-    if node_type not in {NodeType.UNKNOWN, NodeType.BROKEN}
+type_test_map: dict[NodeType, Callable[[int], bool]] = {
+    NodeType.SYMLINK: stat.S_ISLNK,
+    NodeType.DIR: stat.S_ISDIR,
+    NodeType.FIFO: stat.S_ISFIFO,
+    NodeType.SOCKET: stat.S_ISSOCK,
+    NodeType.CHAR_DEVICE: stat.S_ISCHR,
+    NodeType.BLOCK_DEVICE: stat.S_ISBLK,
+    NodeType.FILE: stat.S_ISREG,
 }
-"""a mapping of node types with specific functions that evaluate it"""
-
-
-def get_type_icon(node_type: NodeType) -> Optional[str]:
-    """
-    Get the icon associated the given node type, which is used when no other specs match
-    the node. Generally only the folder type has a default icon.
-
-    :param node_type: the given ``NodeType`` enum item
-    :return: the icon associated the given ``NodeType`` value
-    """
-
-    return constants.constants.lookup("node_types", node_type.value, "icon")
-
-
-def get_type_color(node_type: NodeType) -> Optional[str]:
-    """
-    Get the color associated with the given node type, which is used when no other specs
-    match the node. Generally only, the folder type has a default color.
-
-    :param node_type: the given ``NodeType`` enum item
-    :return: the color associated with the given ``NodeType`` value
-    """
-
-    return constants.constants.lookup("node_types", node_type.value, "color")
-
-
-def get_type_char(node_type: NodeType) -> str:
-    """
-    Get the unique, distinct type character associated with the given node type. Returns
-    a blank string if no type character is associated.
-
-    :param node_type: the given ``NodeType`` enum item
-    :return: the type character mapped to the given ``NodeType`` value
-    """
-
-    val = constants.constants.lookup("node_types", node_type.value, "type_char")
-    return val if val is not None else ""
-
-
-def get_type_suffix(node_type: NodeType) -> str:
-    """
-    Get the unique, distinct type suffix associated with the given node type. Returns
-    a blank string if no type character is associated.
-
-    :param node_type: the given ``NodeType`` enum item
-    :return: the type suffix mapped to the given ``NodeType`` value
-    """
-
-    val = constants.constants.lookup("node_types", node_type.value, "type_suffix")
-    return val if val is not None else ""
+"""a mapping of node types with specific ``stat`` functions that check for them"""

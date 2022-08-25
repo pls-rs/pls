@@ -43,6 +43,12 @@ const actions = computed(() => {
       <code>ls</code> for the pros.
     </p>
 
+    <code style="font-size: 1.4rem">
+      <span style="opacity: 0.5">$</span>
+      pipx install
+      <span style="color: var(--c-brand)">pls</span>
+    </code>
+
     <p v-if="actions.length" class="actions">
       <AutoLink
         v-for="action in actions"

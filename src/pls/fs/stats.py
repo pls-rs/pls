@@ -2,60 +2,47 @@ from __future__ import annotations
 
 import datetime
 import logging
-import os
-from stat import S_ISDIR, filemode
-from typing import Literal, Optional
+from functools import lru_cache
+from stat import filemode
+from typing import Optional
 
 from pls.config import constants
-from pls.enums.unit_system import UnitSystem, get_base_and_pad_and_units
+from pls.enums.node_type import NodeType
+from pls.enums.unit_system import UnitSystem
 from pls.globals import args, state
+from pls.models.format_rules import FormatRules
 
 
 logger = logging.getLogger(__name__)
 
 
-def _get_format_pair(rules: list[str]) -> tuple[str, str]:
-    """
-    Get the format pair to mark up the console output for the given rules.
-
-    :param rules: the set of formatting directives to apply on the text
-    :return: the pair of format strings to place on either side of the text
-    """
-
-    if not rules:
-        return "", ""
-    left = " ".join(rules)
-    return f"[{left}]", "[/]"
-
-
-def get_formatted_links(stat: os.stat_result) -> str:
+@lru_cache(maxsize=None)
+def get_formatted_links(node_type: NodeType, st_nlink: int) -> str:
     """
     Get the number of hard links pointing to the file. This is usually higher
     than 1 for directories (as all files and folders within in it counted) but
     usually exactly 1 for files.
 
-    :param stat: the stat results of the node
+    :param node_type: the type of the node
+    :param st_nlink: the number of links retrieved from the ``stat`` call
     :return: the number of links of a file
     """
 
-    st_nlink = stat.st_nlink
-
     nlink = str(st_nlink)
-    if not S_ISDIR(stat.st_mode) and st_nlink > 1:
+    if node_type != NodeType.DIR and st_nlink > 1:
         nlink = f"[yellow]{nlink}[/]"
     return nlink
 
 
-def get_formatted_perms(stat: os.stat_result) -> str:
+@lru_cache(maxsize=None)
+def get_formatted_perms(st_mode: int) -> str:
     """
     Get the permission text for the node in the form of a triplet of 'rwx'
     strings. Uses ``st_mode`` from the stat results.
 
-    :param stat: the stat results of the node
+    :param st_mode: the file mode retrieved from the ``stat`` call
     :return: the text to render as the permissions of the node
     """
-
-    st_mode = stat.st_mode
 
     perm = filemode(st_mode)[1:]  # drop the first letter, i.e. type char
     perm = f"{perm[:3]} {perm[3:6]} {perm[6:]}"
@@ -68,84 +55,82 @@ def get_formatted_perms(stat: os.stat_result) -> str:
     return formatted_perm
 
 
-def get_formatted_user(stat: os.stat_result) -> Optional[str]:
+@lru_cache(maxsize=None)
+def get_formatted_user(st_uid: int) -> Optional[str]:
     """
     Get the name of the user that owns the node. This requires a ``passwd``
     lookup for the user ID found in the node stats. Uses ``st_uid`` from the
     stat results.
 
-    :param stat: the stat results of the node
+    :param st_uid: the user ID retrieved from the ``stat`` call
     :return: the name of the user who owns the node, ``None`` on Windows
     """
 
     try:
         from pwd import getpwuid
 
-        uid = stat.st_uid
-        format_rules = []
+        format_rules = FormatRules()
         try:
-            pw_name = getpwuid(stat.st_uid).pw_name
+            pw_name = getpwuid(st_uid).pw_name
         except KeyError:  # user does not exist anymore
-            pw_name = str(uid)
+            pw_name = str(st_uid)
             format_rules.append("red")
 
-        if uid != state.state.uid:
+        if st_uid != state.state.uid:
             format_rules.append("dim")
 
-        left, right = _get_format_pair(format_rules)
-        return f"{left}{pw_name}{right}"
+        return format_rules.format_text(pw_name)
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 
 
-def get_formatted_group(stat: os.stat_result) -> Optional[str]:
+@lru_cache(maxsize=None)
+def get_formatted_group(st_gid: int) -> Optional[str]:
     """
     Get the name of the group that owns the node. This requires a group database
     lookup for the group ID found in the node stats. Uses ``st_gid`` from the
     stat results.
 
-    :param stat: the stat results of the node
+    :param st_gid: the group ID retrieved from the ``stat`` call
     :return: the name of the group that owns the node, ``None`` on Windows
     """
 
     try:
         from grp import getgrgid
 
-        gid = stat.st_gid
-        format_rules = []
+        format_rules = FormatRules()
         try:
-            gr_name = getgrgid(stat.st_gid).gr_name
+            gr_name = getgrgid(st_gid).gr_name
         except KeyError:  # group does not exist anymore
-            gr_name = str(gid)
+            gr_name = str(st_gid)
             format_rules.append("red")
 
-        if gid not in state.state.gids:
+        if st_gid not in state.state.gids:
             format_rules.append("dim")
 
-        left, right = _get_format_pair(format_rules)
-        return f"{left}{gr_name}{right}"
+        return format_rules.format_text(gr_name)
     except ModuleNotFoundError:  # on non-POSIX systems like Windows
         return None
 
 
-def get_formatted_size(stat: os.stat_result) -> str:
+def get_formatted_size(node_type: NodeType, st_size: int) -> str:
     """
     Get the human-readable size of the node in the form of a number followed by
     a compound unit of a byte. Uses ``st_size`` from the stat results.
 
-    :param stat: the stat results of the node
+    :param node_type: the type of the node
+    :param st_size: the size of the file retrieved from the ``stat`` call
     :return: the size of the node as a human-readable value
     """
 
-    st_size = stat.st_size
-
-    if S_ISDIR(stat.st_mode):
+    if node_type == NodeType.DIR:
         return "[dim]-[/dim]"
 
     if args.args.units == UnitSystem.NONE:
         return f"{st_size}[dim]B[/]"
 
-    base, pad, units = get_base_and_pad_and_units(args.args.units)
+    unit_system = args.args.units or UnitSystem.BINARY
+    base, pad, units = unit_system.base_pad_units
     logger.debug(f"Base: {base}")
     logger.debug(f"Pad: {pad}")
     logger.debug(f"Units: {units}")
@@ -159,21 +144,16 @@ def get_formatted_size(stat: os.stat_result) -> str:
     return f"{st_size}  [dim]B[/]"
 
 
-def get_formatted_time(
-    stat: os.stat_result,
-    attr_name: Literal["st_birthtime", "st_ctime", "st_mtime", "st_atime"],
-) -> str:
+def get_formatted_time(st_time: Optional[int]) -> str:
     """
     Get the given UNIX timestamp as a formatted human/machine-readable date time
     value. The formatting can be controlled via CLI arguments. The name of the
     stat result attribute to use is passed via argument.
 
-    :param stat: the stat results of the node
-    :param attr_name: the name of the UNIX timestamp attribute to use
+    :param st_time: the timestamp retrieved from the ``stat`` call
     :return: the readable date time value for the timestamp
     """
 
-    st_time = getattr(stat, attr_name, None)
     if st_time is None:
         return ""
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from pls.models.base_node import BaseNode
+    from pls.models.node import Node
 
 
 class NodeSpec:
@@ -58,7 +58,7 @@ class NodeSpec:
             return f"<{self.glob}>"
         return "[No ID]"
 
-    def match(self, node: BaseNode) -> bool:
+    def match(self, node: Node) -> bool:
         """
         Check whether the given node matches this spec. The criterion for
         evaluating a match is based on whether the spec defines the name,
@@ -75,6 +75,6 @@ class NodeSpec:
         elif self.glob:
             return node.path.match(self.glob)
         elif self.extension:
-            return self.extension == node.extension
+            return self.extension == node.name_comp.ext
         else:
             return False

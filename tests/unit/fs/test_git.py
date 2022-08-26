@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Optional
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -11,14 +12,14 @@ from pls.fs.git import formatted_status, get_git_statuses
 @pytest.mark.parametrize(
     "status, formatted",
     [
-        ("  ", "  "),
+        (None, "  "),
         ("DM", "[red]D[/][yellow]M[/]"),
         (" R", "[dim]-[/][yellow]R[/]"),
         ("A ", "[green]A[/][dim]-[/]"),
         ("!!", "[dim]![/][dim]![/]"),
     ],
 )
-def test_formats_status(status: str, formatted: str):
+def test_formats_status(status: Optional[str], formatted: str):
     assert formatted_status(status) == formatted
 
 

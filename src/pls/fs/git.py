@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 
-def formatted_status(status: str) -> str:
+def formatted_status(status: Optional[str]) -> str:
     """
     Get the given Git status formatted using Rich console markup. Expects the
     two-letter Git status as returned by git-status with the ``--porcelain``
@@ -15,8 +15,8 @@ def formatted_status(status: str) -> str:
     :return: the formatted Git status
     """
 
-    if status == "  ":
-        return status
+    if status is None:
+        return "  "
 
     format_map: dict[str, str] = {
         "D": "red",  # deleted

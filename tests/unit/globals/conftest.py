@@ -1,9 +1,9 @@
 import shutil
-import subprocess
 from pathlib import Path
 from typing import Literal
 from unittest.mock import MagicMock, patch
 
+import git
 import pytest
 
 
@@ -45,7 +45,8 @@ def workbench():
 
     yield workbench
 
-    shutil.rmtree(workbench)
+    # See reason for ``ignore_errors`` below.
+    shutil.rmtree(workbench, ignore_errors=True)
 
 
 @pytest.fixture(scope=scope)
@@ -53,34 +54,39 @@ def git_area(workbench: Path):
     area = workbench.joinpath("git")
     area.mkdir(mode=0o755)
 
+    def echo(text: str, target_name: str):
+        target_path = area.joinpath(target_name)
+        with target_path.open(mode="a") as file:
+            file.write(text)
+
     for i in range(10):
         file_name = f"file_{i+1:02}"
-        file_path = area.joinpath(file_name)
-        with file_path.open(mode="w") as file:
-            file.write(file_name)
+        echo(file_name, file_name)
 
-    git_cmds = f"""
-        git init
-        echo "file_02" >> .gitignore
-        git add {' '.join(f'file_{i:02}' for i in range(3,8))}
-        git commit -m "add files"
-        echo " " >> file_04
-        echo " " >> file_05; git add file_05; echo " " >> file_05
-        git mv file_06 file_76
-        rm file_07
-        git add file_08
-        git add file_09; echo " " >> file_09
-        git add file_10; rm file_10
-    """
-    subprocess.run(
-        git_cmds,
-        shell=True,
-        check=True,
-        cwd=area,
-        text=True,
-        encoding="utf-8",
-    )
+    repo = git.Repo.init(area)
+    echo("file_02", ".gitignore")
+    repo.index.add([f"file_{i:02}" for i in range(3, 8)])
+    repo.index.commit("Add files")
+    echo(" ", "file_04")
+    echo(" ", "file_05")
+    repo.index.add(["file_05"])
+    echo(" ", "file_05")
+    repo.index.move(["file_06", "file_76"])
+    area.joinpath("file_07").unlink()
+    repo.index.add(["file_08"])
+    repo.index.add(["file_09"])
+    echo(" ", "file_09")
+    repo.index.add(["file_10"])
+    area.joinpath("file_10").unlink()
 
     yield area
 
-    shutil.rmtree(area)
+    # This raises errors on Windows in CI due to the directory being in use.
+    #
+    # Python error:
+    # PermissionError: [WinError 32] The process cannot access the file because it is
+    #   being used by another process:
+    #
+    # Bash error:
+    # rm: cannot remove 'git': Device or resource busy
+    shutil.rmtree(area, ignore_errors=True)

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from pls.models.base_node import BaseNode
+from pls.models.node import Node
 from pls.models.node_spec import NodeSpec
 
 
@@ -20,7 +20,7 @@ extension_spec = NodeSpec(extension="py")
     ],
 )
 def test_name_spec_matches_exact_names(name: str, is_match: bool):
-    test_node = BaseNode(name, Path("."))
+    test_node = Node(name, Path("."))
     assert name_spec.match(test_node) == is_match
 
 
@@ -33,7 +33,7 @@ def test_name_spec_matches_exact_names(name: str, is_match: bool):
     ],
 )
 def test_pattern_spec_matches_pattern_from_start(name: str, is_match: bool):
-    test_node = BaseNode(name, Path("."))
+    test_node = Node(name, Path("."))
     assert pattern_spec.match(test_node) == is_match
 
 
@@ -46,5 +46,5 @@ def test_pattern_spec_matches_pattern_from_start(name: str, is_match: bool):
     ],
 )
 def test_extension_spec_matches_exact_extension(name: str, is_match: bool):
-    test_node = BaseNode(name, Path("."))
+    test_node = Node(name, Path("."))
     assert extension_spec.match(test_node) == is_match

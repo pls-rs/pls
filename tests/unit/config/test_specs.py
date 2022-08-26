@@ -158,8 +158,8 @@ def test_inner_specs_override_outer(
         nerd_icons, _ = get_icons(configs)
     with patch("pls.config.icons.nerd_icons", nerd_icons):
         test_node = Node(name="cat.py", path=three.joinpath("cat.py"))
-        test_node.match_specs(node_specs)
+        test_node.spec_comp.match(node_specs)
         icon = test_node.formatted_icon
 
     assert strip_formatting(icon) == "ﯙ"
-    assert test_node.importance == 1
+    assert test_node.imp_comp.importance == 1

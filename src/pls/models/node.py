@@ -1,43 +1,55 @@
 from __future__ import annotations
 
-import re
 from functools import cached_property
-from typing import Optional, Union
+from typing import TYPE_CHECKING
+
+from rich.markup import escape
 
 from pls.config import icons
 from pls.enums.icon_type import IconType
-from pls.enums.node_type import NodeType, get_type_color, get_type_icon, get_type_suffix
 from pls.globals import args
-from pls.models.base_node import BaseNode
-from pls.models.mixins.git import GitMixin
-from pls.models.mixins.imp import ImpMixin
-from pls.models.mixins.stat import StatMixin
-from pls.models.mixins.tree import TreeMixin
-from pls.models.mixins.type import TypeMixin
+from pls.models.composables.collapse import CollapseComp
+from pls.models.composables.git import GitComp
+from pls.models.composables.imp import ImpComp
+from pls.models.composables.name import NameComp
+from pls.models.composables.spec import SpecComp
+from pls.models.composables.stat import StatComp
+from pls.models.composables.type import TypeComp
+from pls.models.format_rules import FormatRules
+from pls.models.tree import Tree
 
 
-class Node(
-    GitMixin,
-    ImpMixin,
-    StatMixin,
-    TreeMixin["Node"],
-    TypeMixin["Node"],
-    BaseNode,
-):
+if TYPE_CHECKING:
+    from pathlib import Path
+    from typing import Optional, Union
+
+
+class Node(Tree):
     """
     A node is any file, folder or symlink on the file-system. This model stores
     attributes pertaining to a single FS node. Nodes are read from the file
     system directly.
     """
 
-    def __init__(self, is_pseudo: bool = False, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, name: str, path: Path, is_pseudo: bool = False):
+        super().__init__()
 
+        self._name = name
+        self.name = escape(name)
+        self.path = path
         self.is_pseudo = is_pseudo  # true for symlink destinations
+
+        self.name_comp = NameComp(self)
+        self.git_comp = GitComp(self)
+        self.imp_comp = ImpComp(self)
+        self.stat_comp = StatComp(self)
+        self.spec_comp = SpecComp(self)
+        self.type_comp = TypeComp(self)
+        self.collapse_comp = CollapseComp(self)
 
     def __eq__(self, other: object) -> bool:
         """
-        Compare the object ``self`` to the any other object.
+        Compare the object ``self`` to any other object.
 
         :param other: the node to compare this node with for equality
         :return: ``True`` if the node instances are equal, ``False`` otherwise
@@ -59,110 +71,32 @@ class Node(
         return f"{self.name} @ {self.path}"
 
     @cached_property
-    def format_rules(self) -> tuple[list[str], list[str]]:
+    def format_rules(self) -> FormatRules:
         """the list of formatting rules to apply to the icons and text respectively"""
 
-        fmt_rules = []
-        name_fmt_rules = []
+        fmt_rules = FormatRules()
+
+        for rules in [
+            self.type_comp.format_rules,
+            self.git_comp.format_rules,
+            self.imp_comp.format_rules,
+        ]:
+            fmt_rules.extend(rules)
 
         # font color
-        if spec_color := self.spec_attr("color"):
+        if spec_color := self.spec_comp.attr("color"):
             fmt_rules.append(str(spec_color))
-        else:
-            node_type = self.node_type if self.exists else NodeType.BROKEN
-            color = get_type_color(node_type)
-            if color is not None:
-                fmt_rules.append(color)
 
-        imp_fmt_rules, imp_txt_fmt_rules = self.importance_format_rules
-        if imp_fmt_rules:
-            fmt_rules.extend(imp_fmt_rules)
-        if imp_txt_fmt_rules:
-            name_fmt_rules.extend(imp_txt_fmt_rules)
-
-        git_fmt_rules, git_txt_fmt_rules = self.git_format_rules
-        if git_fmt_rules:
-            fmt_rules.extend(git_fmt_rules)
-        if git_txt_fmt_rules:
-            name_fmt_rules.extend(git_txt_fmt_rules)
-
-        if self.name == ".pls.yml":
-            name_fmt_rules.append("italic")
-
-        name_fmt_rules.extend(fmt_rules)
-        return fmt_rules, name_fmt_rules
-
-    @staticmethod
-    def _get_format_pair(format_rules: list[str]) -> tuple[str, str]:
-        """
-        Get a two element tuple containing the opening and closing tags of Rich console
-        formatting markup.
-
-        :param format_rules: the rules to convert to console markup
-        :return: the pair of opening and closing formatting tags
-        """
-
-        if format_rules:
-            left = f"[{' '.join(format_rules)}]"
-            right = "[/]"
-        else:
-            left = right = ""
-        return left, right
-
-    @cached_property
-    def name_format_pair(self) -> tuple[str, str]:
-        """the opening and closing tags of Rich console formatting markup for text"""
-
-        _, name_fmt_rules = self.format_rules
-        return self._get_format_pair(name_fmt_rules)
-
-    @cached_property
-    def format_pair(self) -> tuple[str, str]:
-        """the opening and closing tags of Rich console formatting markup for icons"""
-
-        fmt_rules, _ = self.format_rules
-        return self._get_format_pair(fmt_rules)
-
-    @cached_property
-    def formatted_suffix(self) -> str:
-        """the symbol after the filename representing its type"""
-
-        node_type = self.node_type if self.exists else NodeType.BROKEN
-        suffix = get_type_suffix(node_type)
-        if self.node_type == NodeType.SYMLINK:
-            if suffix:
-                suffix = f"{suffix} "
-            assert self.dest_node is not None
-
-            if self.is_loop:
-                assert isinstance(self.dest_node, str)
-                return f"[dim]{suffix}↺[/] [red]{self.dest_node}[/red]"
-
-            assert isinstance(self.dest_node, Node)
-            return f"[dim]{suffix}→[/] {self.dest_node.formatted_name}"
-
-        if suffix:
-            suffix = f"[dim]{suffix}[/]"
-        return suffix
+        return fmt_rules
 
     @cached_property
     def formatted_name(self) -> str:
         """the name, formatted using Rich console formatting markup"""
 
-        name = self.pure_name if args.args.align else self.name
-        if self.formatted_suffix:
-            name = f"{name}{self.formatted_suffix}"
+        name = self.name_comp.display_name
 
-        # Apply format pair.
-        left, right = self.name_format_pair
-        name = f"{left}{name}{right}"
-
-        if args.args.align and not self.is_pseudo:
-            if re.match(r"\.[^.]", self.name):
-                name = f"[dim].[/dim]{name}"
-            else:
-                # Left pad name with a space to account for leading dots.
-                name = f" {name}"
+        if suffix := self.type_comp.display_suffix:
+            name = f"{name}{suffix}"
 
         if self.is_sub:
             name = f"[dim]{self.tree_prefix}[/]{name}"
@@ -181,47 +115,56 @@ class Node(
         else:  # args.args.icon == IconType.NERD (default)
             icon_index = icons.nerd_icons
 
-        if spec_icon := self.spec_attr("icon"):
-            icon = icon_index.get(spec_icon)
-        elif icon_name := get_type_icon(self.node_type):
-            icon = icon_index.get(icon_name)
-        else:
-            icon = None
+        icon = None
+        if type_icon := self.type_comp.icon:
+            icon = type_icon
+        if spec_icon := self.spec_comp.attr("icon"):
+            icon = spec_icon
 
-        if icon:
-            # Apply format pair.
-            left, right = self.format_pair
-            icon = f"{left}{icon}{right}"
+        if icon is not None and (icon := icon_index.get(icon)):
+            return self.format_rules.format_icon(icon)
         else:
-            icon = ""
-        return icon
+            return ""
+
+    # Composition aggregations
+    # ========================
 
     @cached_property
-    def formatted_type_char(self) -> str:
-        """the type character associated with the type of the node"""
+    def is_visible(self) -> bool:
+        """whether the node is supposed to be displayed"""
 
-        left, right = self.format_pair
-        return f"{left}{self.type_char}{right}"
+        return all(
+            [
+                self.imp_comp.is_visible,
+                self.type_comp.is_visible,
+                self.collapse_comp.is_visible,
+            ]
+        )
 
     @cached_property
     def table_row(self) -> Optional[dict[str, Optional[str]]]:
         """the mapping of column names and value when tabulating the node"""
 
-        if not (self.exists and self.is_visible):
+        if self.stat_comp.stat is None:  # No table row for non-existent nodes.
             return None
-        assert self.stat is not None
+
+        if not self.is_visible:  # No table row for invisible nodes.
+            return None
 
         cells: dict[str, Optional[str]] = {
             "name": self.formatted_name,
             "icon": self.formatted_icon,
-            "type": self.formatted_type_char,
         }
 
         if not args.args.details:
-            return cells  # return early as no more data needed
+            return cells  # Return early because no more data is needed.
 
-        cells.update(self.stat_cells)
-        cells.update(self.git_cells)
+        for cells_item in [
+            self.type_comp.cells,
+            self.stat_comp.cells,
+            self.git_comp.cells,
+        ]:
+            cells.update(cells_item)
 
         return cells
 
@@ -229,12 +172,13 @@ class Node(
     def sort_keys(self) -> dict[str, Union[str, int, float]]:
         """the mapping of sort fields to their normalised values"""
 
-        keys: dict[str, Union[str, int, float]] = {
-            "cat": "dir" if self.node_type == NodeType.DIR else "file",
-            "name": self.canonical_name,
-            "ext": self.extension,
-            "type": self.type_char,
-        }
-        keys.update(self.stat_keys)
+        keys: dict[str, Union[str, int, float]] = {}
+
+        for keys_item in [
+            self.name_comp.keys,
+            self.type_comp.keys,
+            self.stat_comp.keys,
+        ]:
+            keys.update(keys_item)
 
         return keys

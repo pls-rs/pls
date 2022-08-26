@@ -86,7 +86,7 @@ class TablePrinter(BasePrinter):
             padding=(0, 1, 0, 0),
             box=None,
             show_header=bool(args.args.details),
-            header_style="underline",
+            header_style="underline bold",
         )
         for col in self.cols:
             table.add_column(col.name, **col.attrs)

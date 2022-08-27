@@ -15,13 +15,13 @@ from pls.utils.strip_fmt import strip_formatting
 
 
 skip_if_win32 = pytest.mark.skipif(
-    platform == "win32", reason="Does not exist on Windows"
+    platform == "win32", reason="Not supported on Windows"
 )
-skip_if_linux = pytest.mark.skipif(
-    platform == "linux", reason="Does not exist on Linux"
+skip_unless_linux = pytest.mark.skipif(
+    platform != "linux", reason="Only supported on Linux"
 )
-skip_if_darwin = pytest.mark.skipif(
-    platform == "darwin", reason="Does not exist on macOS"
+skip_unless_darwin = pytest.mark.skipif(
+    platform != "darwin", reason="Only supported on macOS"
 )
 
 
@@ -31,6 +31,11 @@ skip_if_darwin = pytest.mark.skipif(
         ("symlink_file", NodeType.SYMLINK),
         ("dir", NodeType.DIR),
         ("file", NodeType.FILE),
+        pytest.param("fifo", NodeType.FIFO, marks=skip_if_win32),
+        pytest.param("socket", NodeType.SOCKET, marks=skip_if_win32),
+        pytest.param("tty", NodeType.CHAR_DEVICE, marks=skip_if_win32),
+        pytest.param("disk0", NodeType.BLOCK_DEVICE, marks=skip_unless_darwin),
+        pytest.param("sda1", NodeType.BLOCK_DEVICE, marks=skip_unless_linux),
     ],
 )
 def test_nodes_have_correct_node_type(
@@ -40,47 +45,19 @@ def test_nodes_have_correct_node_type(
     assert node.type_comp.node_type == node_type
 
 
-@skip_if_win32
-@pytest.mark.parametrize(
-    "name, node_type",
-    [
-        ("fifo", NodeType.FIFO),
-        ("socket", NodeType.SOCKET),
-        ("tty", NodeType.CHAR_DEVICE),
-        pytest.param("disk0", NodeType.BLOCK_DEVICE, marks=[skip_if_linux]),
-        pytest.param("sda1", NodeType.BLOCK_DEVICE, marks=[skip_if_darwin]),
-    ],
-)
-def test_advanced_nodes_have_correct_node_type(
-    name: str, node_type: NodeType, get_node: Callable[[str], Node]
-):
-    node = get_node(name)
-    assert node.type_comp.node_type == node_type
-
-
 @pytest.mark.parametrize(
     "name",
-    ["dir", "file"],
+    [
+        "dir",
+        "file",
+        pytest.param("fifo", marks=skip_if_win32),
+        pytest.param("socket", marks=skip_if_win32),
+        pytest.param("tty", marks=skip_if_win32),
+        pytest.param("disk0", marks=skip_unless_darwin),
+        pytest.param("sda1", marks=skip_unless_linux),
+    ],
 )
 def test_non_symlinks_have_no_dest_node(name: str, get_node: Callable[[str], Node]):
-    node = get_node(name)
-    assert node.type_comp.dest_node is None
-
-
-@skip_if_win32
-@pytest.mark.parametrize(
-    "name",
-    [
-        "fifo",
-        "socket",
-        "tty",
-        pytest.param("disk0", marks=[skip_if_linux]),
-        pytest.param("sda1", marks=[skip_if_darwin]),
-    ],
-)
-def test_advanced_non_symlinks_have_no_dest_node(
-    name: str, get_node: Callable[[str], Node]
-):
     node = get_node(name)
     assert node.type_comp.dest_node is None
 
@@ -90,29 +67,14 @@ def test_advanced_non_symlinks_have_no_dest_node(
     [
         ("symlink_dir", NodeType.DIR),
         ("symlink_file", NodeType.FILE),
+        pytest.param("symlink_fifo", NodeType.FIFO, marks=skip_if_win32),
+        pytest.param("symlink_socket", NodeType.SOCKET, marks=skip_if_win32),
+        pytest.param("symlink_tty", NodeType.CHAR_DEVICE, marks=skip_if_win32),
+        pytest.param("symlink_disk0", NodeType.BLOCK_DEVICE, marks=skip_unless_darwin),
+        pytest.param("symlink_sda1", NodeType.BLOCK_DEVICE, marks=skip_unless_linux),
     ],
 )
 def test_symlinks_have_dest_node(
-    name: str, dest_node_type: NodeType, get_node: Callable[[str], Node]
-):
-    node = get_node(name)
-    dest_node = node.type_comp.dest_node
-    assert isinstance(dest_node, Node)
-    assert dest_node.type_comp.node_type == dest_node_type
-
-
-@skip_if_win32
-@pytest.mark.parametrize(
-    "name, dest_node_type",
-    [
-        ("symlink_fifo", NodeType.FIFO),
-        ("symlink_socket", NodeType.SOCKET),
-        ("symlink_tty", NodeType.CHAR_DEVICE),
-        pytest.param("symlink_disk0", NodeType.BLOCK_DEVICE, marks=skip_if_linux),
-        pytest.param("symlink_sda1", NodeType.BLOCK_DEVICE, marks=skip_if_darwin),
-    ],
-)
-def test_advanced_symlinks_have_dest_node(
     name: str, dest_node_type: NodeType, get_node: Callable[[str], Node]
 ):
     node = get_node(name)
@@ -199,43 +161,14 @@ def test_broken_symlinks_have_str_dest(
         ("symlink_file", "l", "@", None),
         ("dir", "d", "/", "folder"),
         ("file", "-", None, None),
+        pytest.param("fifo", "p", "|", None, marks=skip_if_win32),
+        pytest.param("socket", "s", "=", None, marks=skip_if_win32),
+        pytest.param("tty", "c", None, None, marks=skip_if_win32),
+        pytest.param("disk0", "b", None, None, marks=skip_unless_darwin),
+        pytest.param("sda1", "b", None, None, marks=skip_unless_linux),
     ],
 )
 def test_nodes_have_correct_type_constants(
-    name: str,
-    type_char: str,
-    suffix_char: str,
-    icon: str,
-    get_node: Callable[[str], Node],
-):
-    with patch.object(
-        constants, "constants", get_constants([internal_yml_path("constants.yml")])
-    ):
-        node = get_node(name)
-
-    if node_type_char := node.type_comp.type_char:
-        node_type_char = strip_formatting(node_type_char)
-    assert node_type_char == type_char
-
-    if node_suffix_char := node.type_comp.suffix_char:
-        node_suffix_char = strip_formatting(node_suffix_char)
-    assert node_suffix_char == suffix_char
-
-    assert node.type_comp.icon == icon
-
-
-@skip_if_win32
-@pytest.mark.parametrize(
-    "name, type_char, suffix_char, icon",
-    [
-        ("fifo", "p", "|", None),
-        ("socket", "s", "=", None),
-        ("tty", "c", None, None),
-        pytest.param("disk0", "b", None, None, marks=skip_if_linux),
-        pytest.param("sda1", "b", None, None, marks=skip_if_darwin),
-    ],
-)
-def test_advanced_nodes_have_correct_type_constants(
     name: str,
     type_char: str,
     suffix_char: str,
@@ -264,27 +197,14 @@ def test_advanced_nodes_have_correct_type_constants(
         ("symlink_dir", "@ → dir/"),
         ("symlink_file", "@ → file"),
         ("symlink_symlink_dir", "@ → symlink_dir@ → dir/"),
+        pytest.param("symlink_fifo", "@ → fifo|", marks=skip_if_win32),
+        pytest.param("symlink_socket", "@ → socket=", marks=skip_if_win32),
+        pytest.param("symlink_tty", "@ → /dev/tty", marks=skip_if_win32),
+        pytest.param("symlink_disk0", "@ → /dev/disk0", marks=skip_unless_darwin),
+        pytest.param("symlink_sda1", "@ → /dev/sda1", marks=skip_unless_linux),
     ],
 )
 def test_symlink_suffix_shows_target(
-    name: str, suffix: str, get_node: Callable[[str], Node]
-):
-    node = get_node(name)
-    assert strip_formatting(node.type_comp.display_suffix) == suffix
-
-
-@skip_if_win32
-@pytest.mark.parametrize(
-    "name, suffix",
-    [
-        ("symlink_fifo", "@ → fifo|"),
-        ("symlink_socket", "@ → socket="),
-        ("symlink_tty", "@ → /dev/tty"),
-        pytest.param("symlink_disk0", "@ → /dev/disk0", marks=skip_if_linux),
-        pytest.param("symlink_sda1", "@ → /dev/sda1", marks=skip_if_darwin),
-    ],
-)
-def test_advanced_symlink_suffix_shows_target(
     name: str, suffix: str, get_node: Callable[[str], Node]
 ):
     node = get_node(name)

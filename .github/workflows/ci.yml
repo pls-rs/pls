@@ -68,6 +68,10 @@ jobs:
         uses: extractions/setup-just@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup `git`
+        run: |
+          git config --global user.email "user@example.com"
+          git config --global user.name "User"
 
       - name: Load cached virtualenv
         id: load-cached-venv

@@ -23,6 +23,14 @@ def validate_args(args: argparse.Namespace):
         logger.info("Cannot collapse in multiple columns.")
         args.collapse = 0
 
+    if args.tree and args.multi_cols:
+        logger.info("Cannot render tree in multiple-columns.")
+        args.multi_cols = False
+
+    if args.tree and args.collapse != 0:
+        logger.info("Cannot render tree while collapsing files.")
+        args.collapse = 0
+
     if "std" in args.details:
         args.details.remove("std")
         std_fields = ["type", "perms", "user", "group"]

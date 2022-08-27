@@ -8,6 +8,7 @@ from rich.markup import escape
 from pls.config import icons
 from pls.enums.icon_type import IconType
 from pls.globals import args
+from pls.models.composables.children import ChildrenComp
 from pls.models.composables.collapse import CollapseComp
 from pls.models.composables.git import GitComp
 from pls.models.composables.imp import ImpComp
@@ -46,6 +47,7 @@ class Node(Tree):
         self.spec_comp = SpecComp(self)
         self.type_comp = TypeComp(self)
         self.collapse_comp = CollapseComp(self)
+        self.children_comp = ChildrenComp(self)
 
     def __eq__(self, other: object) -> bool:
         """

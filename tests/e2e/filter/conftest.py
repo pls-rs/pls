@@ -19,7 +19,7 @@ def imp_workbench(workbench: Path):
         return str(idx) if idx >= 0 else f"_{abs(idx)}"
 
     workbench = get_workbench(
-        "imp", workbench, [file_name(index) for index in range(-3, 2)]
+        ("imp", [file_name(index) for index in range(-3, 2)]), workbench
     )
     with workbench.joinpath(".pls.yml").open("w", encoding="utf-8") as conf_file:
         conf_file.write(
@@ -39,14 +39,8 @@ def imp_workbench(workbench: Path):
 @pytest.fixture(scope=scope)
 def type_workbench(workbench: Path):
     workbench = get_workbench(
-        "type",
+        ("type", ["file_a", "file_b", ("dir_a", []), ("dir_b", [])]),
         workbench,
-        [
-            "file_a",
-            "file_b",
-            lambda par: par.joinpath("dir_a").mkdir(mode=0o755),
-            lambda par: par.joinpath("dir_b").mkdir(mode=0o755),
-        ],
     )
     yield workbench
     shutil.rmtree(workbench)
@@ -54,6 +48,6 @@ def type_workbench(workbench: Path):
 
 @pytest.fixture(scope=scope)
 def pattern_workbench(workbench: Path):
-    workbench = get_workbench("pattern", workbench, ["ab", "bc", "ca"])
+    workbench = get_workbench(("pattern", ["ab", "bc", "ca"]), workbench)
     yield workbench
     shutil.rmtree(workbench)

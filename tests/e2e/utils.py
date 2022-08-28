@@ -3,43 +3,49 @@ from __future__ import annotations
 import os
 import subprocess
 from pathlib import Path
-from typing import Callable, Union
+from typing import List, Optional, Tuple, Union
 
 
 # pls/tests/e2e/utils.py
 # ^ parents[2]
 proj_dir = Path(__file__).parents[2]
 
+BenchGen = Union[str, Tuple[str, List["BenchGen"]]]  # type:ignore
+
 
 def get_workbench(
-    name: str,
-    parent: Path = proj_dir,
-    children: list[Union[str, Callable[[Path], None]]] = None,
+    bench_gen: BenchGen = "workbench", parent_path: Path = proj_dir
 ) -> Path:
     """
-    Create a workbench with the given name inside the given directory. If a list of
-    children is provided
+    Create a workbench with the entire directory structure as specified by the
+    ``bench_gen`` argument. The ``bench_gen`` argument can be one of two types:
 
-    - string values will be created as a file using ``touch``
-    - callable values will be invoked with the workbench as the sole argument
+    - ``str``: to create a file
+    - ``tuple[str, list[BenchGen]]``: to create a directory and recursively populate it
 
-    :param name: the name of the workbench directory
-    :param parent: the path to the parent directory inside which to create the workbench
-    :param children: the name or callable to create children inside the workbench
-    :return: the newly created workbench directory
+    :param bench_gen: the directory structure as ``tuple`` and ``list`` instances
+    :param parent_path: the directory in which to create the workbench
+    :return: the path to the created workbench
     """
 
-    workbench = parent.joinpath(name)
-    workbench.mkdir(mode=0o755)
+    curr_name: str
+    children_gen: Optional[list[BenchGen]] = None
+    if isinstance(bench_gen, tuple):
+        curr_name, children_gen = bench_gen
+    else:  # type(bench_gen) == str
+        curr_name = bench_gen
 
-    if children:
-        for child in children:
-            if callable(child):
-                child(workbench)
-            else:
-                workbench.joinpath(child).touch(mode=0o644)
+    curr_path = parent_path.joinpath(curr_name)
+    if children_gen is None:
+        curr_path.touch(mode=0o644)
+    else:
+        curr_path.mkdir(mode=0o755)
 
-    return workbench
+    if children_gen:
+        for child_gen in children_gen:
+            get_workbench(child_gen, curr_path)
+
+    return curr_path
 
 
 def run_pls(pls_args: list[str] = None, **kwargs) -> subprocess.CompletedProcess:

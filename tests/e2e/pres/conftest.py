@@ -15,13 +15,15 @@ scope: Literal["package"] = "package"
 @pytest.fixture(scope=scope)
 def icon_workbench(workbench: Path):
     workbench = get_workbench(
-        "icon",
+        (
+            "icon",
+            [
+                ".gitignore",  # matched by name
+                "docker-compose.yml",  # matched by pattern
+                "README.md",  # matched by extension
+            ],
+        ),
         workbench,
-        [
-            ".gitignore",  # matched by name
-            "docker-compose.yml",  # matched by pattern
-            "README.md",  # matched by extension
-        ],
     )
     yield workbench
     shutil.rmtree(workbench)
@@ -30,12 +32,14 @@ def icon_workbench(workbench: Path):
 @pytest.fixture(scope=scope)
 def align_workbench(workbench: Path):
     workbench = get_workbench(
-        "align",
+        (
+            "align",
+            [
+                ".gitignore",  # has a leading dot
+                "README.md",  # does not have a leading dot
+            ],
+        ),
         workbench,
-        [
-            ".gitignore",  # has a leading dot
-            "README.md",  # does not have a leading dot
-        ],
     )
     yield workbench
     shutil.rmtree(workbench)
@@ -43,13 +47,13 @@ def align_workbench(workbench: Path):
 
 @pytest.fixture(scope=scope)
 def multi_cols_workbench(workbench: Path):
-    workbench = get_workbench("multi_cols", workbench, ["a", "b", "c"])
+    workbench = get_workbench(("multi_cols", ["a", "b", "c"]), workbench)
     yield workbench
     shutil.rmtree(workbench)
 
 
 @pytest.fixture(scope=scope)
 def collapse_workbench(workbench: Path):
-    workbench = get_workbench("collapse", workbench, ["style.scss", "style.css"])
+    workbench = get_workbench(("collapse", ["style.scss", "style.css"]), workbench)
     yield workbench
     shutil.rmtree(workbench)

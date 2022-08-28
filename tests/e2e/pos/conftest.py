@@ -14,8 +14,12 @@ scope: Literal["package"] = "package"
 
 @pytest.fixture(scope=scope)
 def pos_workbenches(workbench: Path):
-    workbench_a = get_workbench("a", workbench, [f"a_{index}" for index in range(1, 3)])
-    workbench_b = get_workbench("b", workbench, [f"b_{index}" for index in range(1, 3)])
+    workbench_a = get_workbench(
+        ("a", [f"a_{index}" for index in range(1, 3)]), workbench
+    )
+    workbench_b = get_workbench(
+        ("b", [f"b_{index}" for index in range(1, 3)]), workbench
+    )
     yield workbench_a, workbench_b
     shutil.rmtree(workbench_a)
     shutil.rmtree(workbench_b)

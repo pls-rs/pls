@@ -14,7 +14,7 @@ scope: Literal["package"] = "package"
 @pytest.fixture(scope=scope)
 def workbench():
     conftest_path = Path(__file__)
-    workbench = get_workbench("workbench", conftest_path.parent)
+    workbench = get_workbench(("workbench", []), conftest_path.parent)
 
     # Prevents use of config files outside workbench
     subprocess.run(["git", "init"], cwd=workbench)

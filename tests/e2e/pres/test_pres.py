@@ -143,3 +143,36 @@ def test_collapse_gt_one(args: list[str], collapse_workbench: Path):
     args.insert(0, str(collapse_workbench))
     proc = run_pls(args)
     assert "style.css" not in proc.stdout
+
+
+@pytest.mark.parametrize(
+    "args, out_lines",
+    [
+        (
+            ["--tree"],
+            [
+                "   a/",
+                "   ├─ c/",
+                "    │ └─ d",
+                "    └─ b",
+                "    e",
+            ],
+        ),
+        (
+            ["--tree", "--icon=none"],
+            [
+                " a/",
+                " ├─ c/",
+                " │ └─ d",
+                " └─ b",
+                " e",
+            ],
+        ),
+    ],
+)
+def test_tree(args: list[str], out_lines: list[str], tree_workbench: Path):
+    args.insert(0, str(tree_workbench))
+    proc = run_pls(args)
+    lines = [line.rstrip() for line in proc.stdout.split("\n")]
+    for line in out_lines:
+        assert line in lines

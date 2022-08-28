@@ -57,3 +57,10 @@ def collapse_workbench(workbench: Path):
     workbench = get_workbench(("collapse", ["style.scss", "style.css"]), workbench)
     yield workbench
     shutil.rmtree(workbench)
+
+
+@pytest.fixture(scope=scope)
+def tree_workbench(workbench: Path):
+    workbench = get_workbench(("tree", [("a", ["b", ("c", ["d"])]), "e"]), workbench)
+    yield workbench
+    shutil.rmtree(workbench)

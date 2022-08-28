@@ -168,6 +168,16 @@ def test_collapse_gt_one(args: list[str], collapse_workbench: Path):
                 " e",
             ],
         ),
+        (
+            ["--tree", "--sort=name"],
+            [
+                "   a/",
+                "    ├─ b",
+                "   └─ c/",
+                "      └─ d",
+                "    e",
+            ],
+        ),
     ],
 )
 def test_tree(args: list[str], out_lines: list[str], tree_workbench: Path):

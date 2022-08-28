@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pls.enums.node_type import NodeType
+from pls.globals import args
 from pls.models.tree import Tree
 
 
@@ -28,7 +29,18 @@ class ChildrenComp:
         if self.node.type_comp.node_type != NodeType.DIR:
             return
 
-        for child_path in self.node.path.glob("*"):
+        child_nodes = []
+        for child_path in self.node.path.iterdir():
             child_node = type(self.node)(name=child_path.name, path=child_path)
-            Tree.link(self.node, child_node)
             child_node.children_comp.find_children()
+            child_nodes.append(child_node)
+
+        sort_fields = args.args.sort
+        for field in reversed(sort_fields):
+            item = field.rstrip("-")
+            child_nodes.sort(
+                key=lambda node: node.sort_keys[item],
+                reverse=field.endswith("-"),
+            )
+
+        Tree.link(self.node, *child_nodes)

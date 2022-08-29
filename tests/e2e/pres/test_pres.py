@@ -181,6 +181,17 @@ def test_collapse_gt_one(args: list[str], collapse_workbench: Path):
                 "    e",
             ],
         ),
+        (
+            ["--tree", "--no-align"],
+            [
+                "  a/",
+                "  ├─c/",
+                "   │ ├─d",
+                "  │ └─.gitignore",
+                "   └─b",
+                "   e",
+            ],
+        ),
     ],
 )
 def test_tree(args: list[str], out_lines: list[str], tree_workbench: Path):

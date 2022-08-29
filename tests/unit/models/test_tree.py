@@ -17,6 +17,7 @@ class Entry(Tree):
 @pytest.fixture
 def tree() -> dict[str, Entry]:
     """
+    You must call ``tree["a"].set_sub_pre_shapes()`` yourself.
     a
     ├─ b
     │  └─ c
@@ -24,6 +25,7 @@ def tree() -> dict[str, Entry]:
        ├─ e
        └─ f
     """
+
     entries: dict[str, Entry] = {}
     for node_name in list("abcdef"):
         entries[node_name] = Entry(node_name)
@@ -32,7 +34,6 @@ def tree() -> dict[str, Entry]:
     Tree.link(entries["b"], entries["c"])
     Tree.link(entries["d"], entries["e"], entries["f"])
 
-    entries["a"].set_sub_pre_shapes()
     return entries
 
 
@@ -44,10 +45,10 @@ def tree() -> dict[str, Entry]:
             {
                 "a": " ",
                 "b": " ├─",
-                "c": " │ └─",
+                "c": " │  └─",
                 "d": " └─",
-                "e": "   ├─",
-                "f": "   └─",
+                "e": "    ├─",
+                "f": "    └─",
             },
         ),
         (
@@ -67,6 +68,7 @@ def test_tree_nodes_have_correct_shapes(
     align: bool, prefix_map: dict[str, str], tree: dict[str, Entry]
 ):
     with patch.multiple(args.args, align=align):
+        tree["a"].set_sub_pre_shapes()
         for name, entry in tree.items():
             print([name, entry.tree_prefix])
             assert entry.tree_prefix == prefix_map[name]

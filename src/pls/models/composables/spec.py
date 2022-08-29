@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from pls.globals import args
 from pls.models.node_spec import NodeSpec
 
 
@@ -30,6 +31,10 @@ class SpecComp:
         """
 
         self.specs = [spec for spec in specs if spec.match(self.node)]
+        if args.args.tree:
+            for child in self.node.children:
+                if isinstance(child, type(self.node)):
+                    child.spec_comp.match(specs)
 
     def attr(self, attr: str, coalesce: bool = False) -> Any:
         """

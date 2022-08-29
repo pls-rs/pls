@@ -119,11 +119,13 @@ def main_unit(node: Path, show_header: bool = False):
         return
 
     for child in child_list:
-        child.spec_comp.match(specs.node_specs)
-        if args.args.collapse:
-            child.collapse_comp.find_main(child_map)
         if args.args.tree:
             child.children_comp.find_children()
+
+        child.spec_comp.match(specs.node_specs)
+
+        if args.args.collapse:
+            child.collapse_comp.find_main(child_map)
     if args.args.collapse or args.args.tree:
         for child in child_list:
             if child.is_sub:

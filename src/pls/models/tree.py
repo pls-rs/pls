@@ -86,10 +86,13 @@ class Tree:
         :return: the set of box-drawing characters before the node's own
         """
 
-        return self.get_shape(
+        shape = self.get_shape(
             constants.constants.lookup("tree", "space_space", default=""),
             constants.constants.lookup("tree", "pipe_space", default=""),
         )
+        if shape and args.args.align:
+            shape = f"{shape} "
+        return shape
 
     def _get_last_shape(self) -> str:
         """

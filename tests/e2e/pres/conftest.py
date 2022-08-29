@@ -61,6 +61,8 @@ def collapse_workbench(workbench: Path):
 
 @pytest.fixture(scope=scope)
 def tree_workbench(workbench: Path):
-    workbench = get_workbench(("tree", [("a", ["b", ("c", ["d"])]), "e"]), workbench)
+    workbench = get_workbench(
+        ("tree", [("a", ["b", ("c", ["d", ".gitignore"])]), "e"]), workbench
+    )
     yield workbench
     shutil.rmtree(workbench)

@@ -24,7 +24,7 @@ requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = { git = "https://github.com/dhruvkb/pre-commit.git", branch = "main" }
-ipython = "^8.4.0"
+ipython = "^8.5.0"
 pytest = "^7.1.2"
 pytest-lazy-fixture = "^0.6.3"
 freezegun = "^1.2.1"

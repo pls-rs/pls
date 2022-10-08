@@ -61,7 +61,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Setup Poetry
-        uses: snok/install-poetry@v1
+        uses: snok/install-poetry@v1.3.2
         with:
           virtualenvs-in-project: true
       - name: Setup `just`
@@ -90,7 +90,7 @@ jobs:
 
       - name: Debug failures
         if: ${{ failure() }}
+        timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-          timeout-minutes: 15

@@ -11,7 +11,7 @@ default:
 # Install dependencies and set up pre-commit Git hook
 install:
     poetry install
-    poetry run pre-commit install
+    poetry run pre-commit install --hook-type pre-push --hook-type pre-commit
 
 # Run pre-commit to lint and reformat all files
 lint:

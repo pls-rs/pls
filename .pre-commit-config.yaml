@@ -66,3 +66,14 @@ repos:
       - id: prettier
         types: [yaml]
         exclude: nerd_icons.yml|emoji_icons.yml
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: bash -c 'just test tests/unit'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages:
+          - push

@@ -8,6 +8,7 @@
     <a href="https://github.com/dhruvkb/pls/blob/main/LICENSE">
       <img src="https://img.shields.io/github/license/dhruvkb/pls" alt="GPL-3.0"/>
     </a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fdhruvkb%2Fpls?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdhruvkb%2Fpls.svg?type=shield"/></a>
     <a href="https://pypi.org/project/pls/">
       <img src="https://img.shields.io/static/v1?label=supported%20OS&message=posix,%20win&color=informational" alt="Platforms"/>
     </a>
@@ -55,6 +56,9 @@ a given directory, but it adds many more
 > ⚠️ Note that `pls` is not a replacement for `ls`. `ls` is a tried, tested and
 trusted command with lots of features. `pls`, on the other hand, is a simple
 tool for people who just want to see the contents of their directories.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdhruvkb%2Fpls.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdhruvkb%2Fpls?ref=badge_large)
 
 ## Documentation
 

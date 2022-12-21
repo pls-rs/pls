@@ -11,7 +11,6 @@ import pytest
 
 from pls.models.node import Node
 
-
 scope: Literal["package"] = "package"
 
 

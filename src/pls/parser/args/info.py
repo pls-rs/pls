@@ -3,7 +3,6 @@ import argparse
 from pls.enums.unit_system import UnitSystem
 from pls.output.columns.detail_columns import detail_column_specs
 
-
 detail_choices = list(detail_column_specs.keys()) + [
     "none",  # means no details
     "std",  # means the default set of details

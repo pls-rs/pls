@@ -12,7 +12,6 @@ from pls.enums.unit_system import UnitSystem
 from pls.globals import args, state
 from pls.models.format_rules import FormatRules
 
-
 logger = logging.getLogger(__name__)
 
 

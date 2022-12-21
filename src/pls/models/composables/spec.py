@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from pls.globals import args
 from pls.models.node_spec import NodeSpec
 
-
 if TYPE_CHECKING:
     from typing import Any
 

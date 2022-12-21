@@ -15,7 +15,6 @@ from pls.output.printers import BasePrinter
 from pls.parser.parser import parser
 from pls.parser.validation import validate_args
 
-
 logger = logging.getLogger(__name__)
 
 

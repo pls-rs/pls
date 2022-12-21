@@ -13,7 +13,6 @@ from pls.data.utils import load_yml_file
 from pls.exceptions import SpecException
 from pls.models.node_spec import NodeSpec
 
-
 logger = logging.getLogger(__name__)
 
 

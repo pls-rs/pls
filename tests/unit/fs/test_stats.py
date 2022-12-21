@@ -6,14 +6,9 @@ from freezegun import freeze_time
 
 from pls.enums.node_type import NodeType
 from pls.enums.unit_system import UnitSystem
-from pls.fs.stats import (
-    get_formatted_group,
-    get_formatted_links,
-    get_formatted_perms,
-    get_formatted_size,
-    get_formatted_time,
-    get_formatted_user,
-)
+from pls.fs.stats import (get_formatted_group, get_formatted_links,
+                          get_formatted_perms, get_formatted_size,
+                          get_formatted_time, get_formatted_user)
 from pls.globals import args, state
 from pls.utils.strip_fmt import strip_formatting
 

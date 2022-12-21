@@ -2,7 +2,6 @@ from typing import Literal
 
 import pytest
 
-
 scope: Literal["session"] = "session"
 
 

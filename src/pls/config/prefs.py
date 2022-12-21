@@ -21,7 +21,6 @@ from pls.enums.icon_type import IconType
 from pls.enums.unit_system import UnitSystem
 from pls.exceptions import ConfigException
 
-
 logger = logging.getLogger(__name__)
 
 

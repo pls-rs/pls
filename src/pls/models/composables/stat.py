@@ -4,16 +4,10 @@ import os
 from functools import cached_property
 from typing import TYPE_CHECKING
 
-from pls.fs.stats import (
-    get_formatted_group,
-    get_formatted_links,
-    get_formatted_perms,
-    get_formatted_size,
-    get_formatted_time,
-    get_formatted_user,
-)
+from pls.fs.stats import (get_formatted_group, get_formatted_links,
+                          get_formatted_perms, get_formatted_size,
+                          get_formatted_time, get_formatted_user)
 from pls.globals import args
-
 
 if TYPE_CHECKING:
     from typing import Callable, Optional, Union

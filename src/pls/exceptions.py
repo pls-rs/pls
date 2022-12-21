@@ -4,7 +4,6 @@ from typing import Optional
 from rich.console import Console
 from rich.pretty import Pretty
 
-
 console = Console()  # This module does not use ``pls.globals.console.console``.
 
 

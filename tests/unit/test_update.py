@@ -4,12 +4,8 @@ from typing import Optional
 
 import pytest
 
-from pls.output.update import (
-    UpgradeType,
-    VersionTriplet,
-    compare_versions,
-    parse_semver,
-)
+from pls.output.update import (UpgradeType, VersionTriplet, compare_versions,
+                               parse_semver)
 
 
 @pytest.mark.parametrize(

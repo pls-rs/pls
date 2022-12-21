@@ -9,7 +9,6 @@ import yaml
 
 from tests.e2e.utils import get_workbench
 
-
 scope: Literal["package"] = "package"
 
 

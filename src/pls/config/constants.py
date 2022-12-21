@@ -91,8 +91,7 @@ class NestedDict(dict):
                 if (isinstance(obj, list)) or isinstance(obj, dict):
                     obj = obj[fragment]
                     continue
-                else:
-                    raise ConstException
+                raise ConstException
             except (KeyError, IndexError, TypeError, ConstException) as exc:
                 # ``KeyError`` when ``fragment`` not in ``obj`` dict
                 # ``IndexError`` when ``fragment`` not in ``obj`` list

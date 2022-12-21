@@ -11,7 +11,6 @@ import yaml
 from pls.config.constants import NestedDict
 from pls.config.prefs import UpdatableNamespace
 
-
 scope: Literal["package"] = "package"
 
 

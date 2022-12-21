@@ -5,7 +5,6 @@ import os
 from pls.globals import console
 from pls.output.update import check_update, print_version
 
-
 logger = logging.getLogger(__name__)
 
 

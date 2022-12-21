@@ -6,7 +6,6 @@ from unittest.mock import MagicMock, patch
 import git
 import pytest
 
-
 scope: Literal["package"] = "package"
 
 

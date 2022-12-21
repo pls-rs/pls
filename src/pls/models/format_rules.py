@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from functools import cached_property
 
-
 TEXT_ONLY_RULES = {"bold", "italic", "underline", "strike"}
 
 

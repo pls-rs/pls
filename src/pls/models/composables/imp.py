@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 from pls.globals import args
 from pls.models.format_rules import FormatRules
 
-
 if TYPE_CHECKING:
     from pls.models.node import Node
 

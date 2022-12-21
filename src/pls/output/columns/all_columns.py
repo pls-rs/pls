@@ -4,8 +4,8 @@ from pls.config import constants
 from pls.enums.icon_type import IconType
 from pls.globals import args
 from pls.models.column_spec import ColumnSpec
-from pls.output.columns.detail_columns import detail_column_groups, detail_column_specs
-
+from pls.output.columns.detail_columns import (detail_column_groups,
+                                               detail_column_specs)
 
 column_specs: dict[str, ColumnSpec] = {
     "spacer": ColumnSpec(

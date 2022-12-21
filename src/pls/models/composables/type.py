@@ -13,7 +13,6 @@ from pls.enums.node_type import NodeType, SymlinkState
 from pls.globals import args
 from pls.models.format_rules import FormatRules
 
-
 if TYPE_CHECKING:
     from typing import Union
 

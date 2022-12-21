@@ -7,7 +7,6 @@ from pls.fs.git import formatted_status
 from pls.globals import state
 from pls.models.format_rules import FormatRules
 
-
 if TYPE_CHECKING:
     from pathlib import Path
     from typing import Optional

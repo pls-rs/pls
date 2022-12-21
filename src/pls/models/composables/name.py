@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 
 from pls.globals import args
 
-
 if TYPE_CHECKING:
     from typing import Optional, Union
 

@@ -6,7 +6,6 @@ from pls.enums.node_type import NodeType
 from pls.globals import args
 from pls.models.tree import Tree
 
-
 if TYPE_CHECKING:
     from pls.models.node import Node
 

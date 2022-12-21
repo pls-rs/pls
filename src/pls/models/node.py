@@ -19,7 +19,6 @@ from pls.models.composables.type import TypeComp
 from pls.models.format_rules import FormatRules
 from pls.models.tree import Tree
 
-
 if TYPE_CHECKING:
     from pathlib import Path
     from typing import Optional, Union
@@ -125,8 +124,7 @@ class Node(Tree):
 
         if icon is not None and (icon := icon_index.get(icon)):
             return self.format_rules.format_icon(icon)
-        else:
-            return ""
+        return ""
 
     # Composition aggregations
     # ========================

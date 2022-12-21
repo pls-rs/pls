@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 from pls.globals import args
 from pls.models.tree import Tree
 
-
 if TYPE_CHECKING:
     from pls.models.node import Node
 

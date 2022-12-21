@@ -5,7 +5,6 @@ from pathlib import Path
 from random import choice
 from typing import Optional
 
-
 logger = logging.getLogger(__name__)
 
 

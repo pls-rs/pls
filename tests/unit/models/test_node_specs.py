@@ -5,7 +5,6 @@ import pytest
 from pls.models.node import Node
 from pls.models.node_spec import NodeSpec
 
-
 name_spec = NodeSpec(name="poetry.lock")
 pattern_spec = NodeSpec(pattern=r"docker-compose\b")
 extension_spec = NodeSpec(extension="py")

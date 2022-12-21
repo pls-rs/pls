@@ -3,7 +3,6 @@ import logging
 
 from pls.output.columns.detail_columns import detail_column_specs
 
-
 logger = logging.getLogger(__name__)
 
 

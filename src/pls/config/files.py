@@ -8,7 +8,6 @@ from typing import Optional
 
 from pls.globals import state
 
-
 logger = logging.getLogger(__name__)
 
 conf_name = ".pls.yml"

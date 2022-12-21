@@ -6,7 +6,6 @@ from functools import cached_property
 
 from pls.enums.base import AutoEnum
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -9,7 +9,6 @@ import yaml
 
 from pls.exceptions import ConfigException
 
-
 logger = logging.getLogger(__name__)
 
 

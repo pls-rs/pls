@@ -9,7 +9,6 @@ from requests import RequestException
 from pls import __pkg__, __version__
 from pls.globals import console
 
-
 logger = logging.getLogger(__name__)
 
 VersionTriplet = Tuple[int, int, int]

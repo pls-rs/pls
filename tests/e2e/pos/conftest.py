@@ -8,7 +8,6 @@ import pytest
 
 from tests.e2e.utils import get_workbench
 
-
 scope: Literal["package"] = "package"
 
 

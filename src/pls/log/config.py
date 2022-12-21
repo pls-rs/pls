@@ -4,7 +4,6 @@ from typing import Union
 
 from rich.logging import RichHandler
 
-
 rich_handler = RichHandler(
     level=logging.WARNING,  # By default, only warnings and higher levels are handled
     show_time=False,

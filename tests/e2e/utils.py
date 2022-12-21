@@ -5,7 +5,6 @@ import subprocess
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
-
 # pls/tests/e2e/utils.py
 # ^ parents[2]
 proj_dir = Path(__file__).parents[2]

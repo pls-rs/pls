@@ -8,7 +8,6 @@ from pls.globals import args, console
 from pls.models.node import Node
 from pls.output.solarized import solarized_theme
 
-
 logger = logging.getLogger(__name__)
 
 

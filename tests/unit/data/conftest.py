@@ -6,7 +6,6 @@ import yaml
 
 from pls.data.utils import internal_yml_path
 
-
 scope: Literal["package"] = "package"
 
 

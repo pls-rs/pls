@@ -7,7 +7,6 @@ from typing import Optional
 
 from pls.fs.git import get_git_root, get_git_statuses
 
-
 logger = logging.getLogger(__name__)
 
 

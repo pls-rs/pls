@@ -5,7 +5,6 @@ from sys import platform
 from pls.globals import state
 from pls.models.column_spec import ColumnSpec
 
-
 detail_column_specs: dict[str, ColumnSpec] = {
     "inode": ColumnSpec(
         key="inode",

@@ -2,7 +2,6 @@ import argparse
 
 from pls.output.columns.detail_columns import detail_column_specs
 
-
 sort_choices = ["cat", "name", "ext"]
 
 # Allow sorting by certain details

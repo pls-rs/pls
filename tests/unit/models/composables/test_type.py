@@ -13,7 +13,6 @@ from pls.enums.node_type import NodeType, SymlinkState
 from pls.models.node import Node
 from pls.utils.strip_fmt import strip_formatting
 
-
 skip_if_win32 = pytest.mark.skipif(
     platform == "win32", reason="Not supported on Windows"
 )

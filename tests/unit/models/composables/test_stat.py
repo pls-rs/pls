@@ -9,7 +9,6 @@ import pytest
 from pls.globals import args
 from pls.models.node import Node
 
-
 skip_if_win32 = pytest.mark.skipif(
     platform == "win32", reason="Not supported on Windows"
 )

@@ -32,7 +32,8 @@ class ChildrenComp:
         child_nodes = []
         for child_path in self.node.path.iterdir():
             child_node = type(self.node)(name=child_path.name, path=child_path)
-            child_node.children_comp.find_children()
+            if not args.args.tree:  # non-breaking code, deprecated with Live render of Tree View
+                child_node.children_comp.find_children()
             child_nodes.append(child_node)
 
         sort_fields = args.args.sort

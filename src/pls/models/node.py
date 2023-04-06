@@ -17,6 +17,7 @@ from pls.models.composables.spec import SpecComp
 from pls.models.composables.stat import StatComp
 from pls.models.composables.type import TypeComp
 from pls.models.format_rules import FormatRules
+from pls.models.node_spec import NodeSpec
 from pls.models.tree import Tree
 
 
@@ -127,6 +128,24 @@ class Node(Tree):
             return self.format_rules.format_icon(icon)
         else:
             return ""
+
+    def populate_tree(self, specs: list[NodeSpec], populate_callback: callable = lambda _: None):
+        """
+        Populate nodes with their children for a treeview preview, recursively.
+
+        :param specs: list of NodeSpec objects
+        :param populate_callback: callback to populate the Tree
+        """
+
+        self.spec_comp.match(specs)
+        self.children_comp.find_children()
+
+        self.set_sub_pre_shapes()
+
+        populate_callback(self)
+
+        for child in self.children:
+            child.populate_tree(specs=specs, populate_callback=populate_callback)
 
     # Composition aggregations
     # ========================

@@ -104,7 +104,7 @@ def node_specific_init(node: Path, cli_prefs: argparse.Namespace):
     logger.debug(f"Node specs count: {len(specs.node_specs)}")
 
 
-def treerender(node, child_list):
+def treerender(node, child_list, show_header: bool):
     """
     Required subprocess to populate and render a Live Tree output
     """
@@ -114,9 +114,16 @@ def treerender(node, child_list):
 
     printer = TablePrinter(node, child_list)
 
-    with Live(printer.table, refresh_per_second=10, vertical_overflow="visible"):
+    with Live(
+        printer.table,
+        vertical_overflow="visible",
+        refresh_per_second=20,
+    ) as live:
+        def populate_callback(_):
+            printer.tabulate_node(_)
+
         for child in child_list:
-            child.populate_tree(specs.node_specs, populate_callback=printer.tabulate_node)
+            child.populate_tree(specs.node_specs, populate_callback=populate_callback)
 
 
 def main_unit(node: Path, show_header: bool = False):
@@ -134,17 +141,14 @@ def main_unit(node: Path, show_header: bool = False):
         return
 
     if args.args.tree:
-        return treerender(node, child_list)
+        return treerender(node=node, child_list=child_list, show_header=show_header)
 
     for child in child_list:
-        if args.args.tree:  # Deprecated
-            child.children_comp.find_children()
-
         child.spec_comp.match(specs.node_specs)
 
         if args.args.collapse:
             child.collapse_comp.find_main(child_map)
-    if args.args.collapse or args.args.tree:  # Deprecated
+    if args.args.collapse:
         for child in child_list:
             if child.is_sub:
                 continue

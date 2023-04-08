@@ -32,12 +32,6 @@ class SpecComp:
 
         self.specs = [spec for spec in specs if spec.match(self.node)]
 
-        # Deprecated:
-        # if args.args.tree:
-        #     for child in self.node.children:
-        #         if isinstance(child, type(self.node)):
-        #             child.spec_comp.match(specs)
-
     def attr(self, attr: str, coalesce: bool = False) -> Any:
         """
         Get the requested attribute from the first matching spec to provide it.

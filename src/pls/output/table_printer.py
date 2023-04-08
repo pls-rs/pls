@@ -104,9 +104,10 @@ class TablePrinter(BasePrinter):
         if data is not None:
             cells = [data.get(col.key, col.value or "") for col in self.cols]
             self.table.add_row(*cells)
-            for sub_node in node.children:
-                if isinstance(sub_node, Node):
-                    self.tabulate_node(sub_node)
+            if not args.args.tree:
+                for sub_node in node.children:
+                    if isinstance(sub_node, Node):
+                        self.tabulate_node(sub_node)
 
     def print_output(self):
         for node in self.all_nodes:

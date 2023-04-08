@@ -104,6 +104,28 @@ def node_specific_init(node: Path, cli_prefs: argparse.Namespace):
     logger.debug(f"Node specs count: {len(specs.node_specs)}")
 
 
+def treerender(node, child_list, show_header: bool):
+    """
+    Required subprocess to populate and render a Live Tree output
+    """
+
+    from rich.live import Live
+    from pls.output.table_printer import TablePrinter
+
+    printer = TablePrinter(node, child_list)
+
+    with Live(
+        printer.table,
+        vertical_overflow="visible",
+        refresh_per_second=20,
+    ) as live:
+        def populate_callback(_):
+            printer.tabulate_node(_)
+
+        for child in child_list:
+            child.populate_tree(specs.node_specs, populate_callback=populate_callback)
+
+
 def main_unit(node: Path, show_header: bool = False):
     """
     This function is the job of main, extracted outside the loop.
@@ -118,15 +140,15 @@ def main_unit(node: Path, show_header: bool = False):
     if not child_list:
         return
 
-    for child in child_list:
-        if args.args.tree:
-            child.children_comp.find_children()
+    if args.args.tree:
+        return treerender(node=node, child_list=child_list, show_header=show_header)
 
+    for child in child_list:
         child.spec_comp.match(specs.node_specs)
 
         if args.args.collapse:
             child.collapse_comp.find_main(child_map)
-    if args.args.collapse or args.args.tree:
+    if args.args.collapse:
         for child in child_list:
             if child.is_sub:
                 continue

@@ -116,7 +116,7 @@ def test_cyclic_symlinks_have_str_dest(
 ):
     nodes = get_cyclic_symlinks(count)
     for node in nodes:
-        assert type(node.type_comp.dest_node) == str
+        assert isinstance(node.type_comp.dest_node, str)
 
 
 @pytest.mark.parametrize(
@@ -152,7 +152,7 @@ def test_broken_symlinks_have_str_dest(
         dest_node = node.type_comp.dest_node
         if isinstance(dest_node, Node):
             node = dest_node
-    assert type(node.type_comp.dest_node) == str
+    assert isinstance(node.type_comp.dest_node, str)
 
 
 @pytest.mark.parametrize(

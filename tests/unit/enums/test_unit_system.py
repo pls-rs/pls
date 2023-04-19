@@ -19,12 +19,12 @@ def test_unit_system_has_correct_base_pad(unit_system: UnitSystem, base: int, pa
 
 def test_binary_system_units_have_correct_prefix():
     _, _, units = UnitSystem.BINARY.base_pad_units
-    assert all([unit.endswith("i") for unit in units[1:]])
+    assert all(unit.endswith("i") for unit in units[1:])
 
 
 def test_decimal_system_units_have_correct_prefix():
     _, _, units = UnitSystem.DECIMAL.base_pad_units
-    assert not any([unit.endswith("i") for unit in units[1:]])
+    assert not any(unit.endswith("i") for unit in units[1:])
 
 
 def test_none_system_units_are_empty():

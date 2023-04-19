@@ -105,13 +105,13 @@ class TypeComp:
         suffix = self.suffix_char if self.suffix_char is not None else ""
         if self.node_type == NodeType.SYMLINK:
             if self.symlink_state == SymlinkState.LOOP:
-                assert type(self.dest_node) == str
+                assert isinstance(self.dest_node, str)
                 icon = constants.constants.lookup(
                     "pointers", "symlink_loop", default="↺"
                 )
                 suffix = f"[dim]{suffix} {icon}[/] [red]{self.dest_node}[/]"
             elif self.symlink_state == SymlinkState.BROKEN:
-                assert type(self.dest_node) == str
+                assert isinstance(self.dest_node, str)
                 icon = constants.constants.lookup(
                     "pointers", "symlink_broken", default="↝"
                 )
@@ -146,7 +146,7 @@ class TypeComp:
             # ``dest_node`` is type ``Node``.
             link.lstat()
             self.dest_node = type(self.node)(name=link_path, path=link, is_pseudo=True)
-        except (FileNotFoundError, OSError, RuntimeError) as exc:
+        except (OSError, RuntimeError) as exc:
             if isinstance(exc, RuntimeError) and "Symlink loop" in str(exc):
                 self.symlink_state = SymlinkState.LOOP
                 # ``dest_node`` is type ``str``.

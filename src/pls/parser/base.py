@@ -36,7 +36,7 @@ class PlsFormatter(argparse.HelpFormatter):
         if action.nargs == argparse.ZERO_OR_MORE:
             get_metavar = self._metavar_formatter(action, default_metavar)
             metavar = get_metavar(1)
-            return "[%s ...]" % metavar
+            return f"[{metavar} ...]"
         return super()._format_args(action, default_metavar)
 
     def _format_usage(self, *args, **kwargs) -> str:

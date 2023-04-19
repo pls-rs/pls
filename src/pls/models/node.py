@@ -127,8 +127,7 @@ class Node(Tree):
 
         if icon is not None and (icon := icon_index.get(icon)):
             return self.format_rules.format_icon(icon)
-        else:
-            return ""
+        return ""
 
     def populate_tree(self, specs: list[NodeSpec], populate_callback: callable = lambda _: None):
         """

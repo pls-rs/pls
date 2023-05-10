@@ -27,7 +27,7 @@ nerd_icons:
   runner:     "\ueb7b"  # nf-cod-vm_running
   sass:       "\ue603"  # nf-seti-sass
   shell:      "\uf489"  # nf-oct-terminal
-  source:     "\uf1c9"  # nf-fa-file_code_o
+  source:     "\ue60b"  # nf-seti-json
   test:       "\uea79"  # nf-cod-beaker
   text:       "\ue612"  # nf-seti-text
   typescript: "\ue628"  # nf-seti-typescript

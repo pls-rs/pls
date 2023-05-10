@@ -14,7 +14,7 @@ nerd_icons:
   git:        "\uf47f"  # nf-oct-git_compare
   github:     "\uf408"  # nf-oct-mark_github
   html:       "\ue736"  # nf-dev-html5
-  image:      "\uf1c5"  # nf-fa-file_image_o
+  image:      "\uf03e"  # nf-fa-image
   javascript: "\ue60c"  # nf-seti-javascript
   json:       "\ue60b"  # nf-seti-json
   license:    "\uf495"  # nf-oct-law

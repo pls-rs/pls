@@ -22,7 +22,7 @@ nerd_icons:
   markdown:   "\uf48a"  # nf-oct-markdown
   package:    "\uf487"  # nf-oct-package
   env:        "\ue22f"  # nf-fae-plant
-  python:     "\ue73c"  # nf-dev-python
+  python:     "\ue606"  # nf-seti-python
   ruby:       "\ue791"  # nf-dev-ruby_rough
   runner:     "\ueb7b"  # nf-cod-vm_running
   sass:       "\ue603"  # nf-seti-sass

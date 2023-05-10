@@ -31,5 +31,5 @@ nerd_icons:
   test:       "\uea79"  # nf-cod-beaker
   text:       "\ue612"  # nf-seti-text
   typescript: "\ue628"  # nf-seti-typescript
-  video:      "\uf1c8"  # nf-fa-file_movie_o
+  video:      "\uf03d"  # nf-fa-video_camera
   vuejs:      "\ue6a0"  # nf-seti-vue

@@ -5,16 +5,16 @@ nerd_icons:
   pls:        "\uf444"  # nf-oct-primitive_dot
 
   apple:      "\ue711"  # nf-dev-apple
-  audio:      "\ufc1d"  # nf-mdi-speaker_wireless
-  broom:      "\uf5e1"  # nf-mdi-broom
+  audio:      "\ue638"  # nf-seti-audio
+  broom:      "\ue370"  # nf-weather-stars
   config:     "\ue615"  # nf-seti-config
   css:        "\ue749"  # nf-dev-css3
   docker:     "\uf308"  # nf-linux-docker
   folder:     "\uf07b"  # nf-fa-folder
-  git:        "\uf7a1"  # nf-mdi-git
+  git:        "\uf47f"  # nf-oct-git_compare
   github:     "\uf408"  # nf-oct-mark_github
   html:       "\ue736"  # nf-dev-html5
-  image:      "\uf7e8"  # nf-mdi-image
+  image:      "\uf03e"  # nf-fa-image
   javascript: "\ue60c"  # nf-seti-javascript
   json:       "\ue60b"  # nf-seti-json
   license:    "\uf495"  # nf-oct-law
@@ -22,14 +22,14 @@ nerd_icons:
   markdown:   "\uf48a"  # nf-oct-markdown
   package:    "\uf487"  # nf-oct-package
   env:        "\ue22f"  # nf-fae-plant
-  python:     "\uf81f"  # nf-mdi-language_python
+  python:     "\ue606"  # nf-seti-python
   ruby:       "\ue791"  # nf-dev-ruby_rough
-  runner:     "\ufc0c"  # nf-mdi-run
+  runner:     "\ueb7b"  # nf-cod-vm_running
   sass:       "\ue603"  # nf-seti-sass
-  shell:      "\ufcb5"  # nf-mdi-console_line
-  source:     "\uf668"  # nf-mdi-code_braces
-  test:       "\ufb67"  # nf-mdi-test_tube
+  shell:      "\uf489"  # nf-oct-terminal
+  source:     "\ue60b"  # nf-seti-json
+  test:       "\uea79"  # nf-cod-beaker
   text:       "\ue612"  # nf-seti-text
   typescript: "\ue628"  # nf-seti-typescript
-  video:      "\ufa66"  # nf-mdi-video
-  vuejs:      "\ufd42"  # nf-mdi-vuejs
+  video:      "\uf03d"  # nf-fa-video_camera
+  vuejs:      "\ue6a0"  # nf-seti-vue

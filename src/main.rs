@@ -1,3 +1,7 @@
+mod fmt;
+
+use fmt::render;
+
 fn main() {
-	println!("Hello, World!");
+	println!("{}", render("Hello, <blue bold>World!</>"));
 }

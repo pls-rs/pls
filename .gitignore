@@ -1,0 +1,11 @@
+# IDE junk
+.vscode
+.idea
+
+# Build artifacts
+target
+
+# Profiling artifacts
+flamegraph.svg
+report.json
+report.html

@@ -1,0 +1,32 @@
+[package]
+name = "pls"
+description = "`pls` is a prettier and powerful `ls` for the pros."
+version = "0.0.0"
+
+authors = ["Dhruv Bhanushali <hi@dhruvkb.dev>"]
+
+license = "GPL-3.0-or-later"
+
+homepage = "https://dhruvkb.github.io/pls"
+repository = "https://github.com/dhruvkb/pls"
+documentation = "https://dhruvkb.github.io/pls"
+readme = "README.md"
+exclude = [".github/", "/readme_assets", "/justfile", "/.gitignore"]
+
+keywords = ["cli", "terminal", "posix", "ls"]
+categories = ["command-line-utilities"]
+
+edition = "2021"
+rust-version = "1.70.0"
+
+[[bin]]
+name = "pls"
+
+[dependencies]
+
+[profile.release]
+# Reference: https://github.com/johnthagen/min-sized-rust
+codegen-units = 1
+panic = "abort"
+lto = true
+strip = true

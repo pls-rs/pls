@@ -29,6 +29,7 @@ number_prefix = "0.4.0"
 regex = { version = "1.8.4", default-features = false, features = ["std", "perf"] }
 serde = { version = "1.0.164", features = ["derive"] }
 unicode-segmentation = "1.10.1"
+users = { version = "0.11.0", default-features = false, features = ["cache"] }
 
 [profile.release]
 # Reference: https://github.com/johnthagen/min-sized-rust

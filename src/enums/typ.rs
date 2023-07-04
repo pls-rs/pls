@@ -1,3 +1,4 @@
+use crate::config::Conf;
 use serde::{Deserialize, Serialize};
 use std::fs::FileType;
 #[cfg(unix)]
@@ -42,4 +43,56 @@ impl From<FileType> for Typ {
 			_ => Typ::Unknown,
 		}
 	}
+}
+
+impl Typ {
+	/* Renderables */
+	/* =========== */
+
+	/// Get the node type's character that's used in the 'T' column.
+	///
+	/// This function returns a marked-up string.
+	pub fn ch(&self, conf: &Conf) -> String {
+		let ch = &conf.constants.typ[self].ch;
+		let directives = &conf.constants.typ[self].style;
+		format!("<{directives}>{ch}</>")
+	}
+
+	/// Get the node's suffix that placed after the node name.
+	///
+	/// This function returns a marked-up string.
+	pub fn suffix(&self, conf: &Conf) -> String {
+		let suffix = &conf.constants.typ[self].suffix;
+		let directives = &conf.constants.typ[self].style;
+		format!("<{directives}>{suffix}</>")
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use super::Typ;
+	use crate::config::Conf;
+
+	macro_rules! make_renderables_test {
+        ( $($name:ident: $typ:expr => $expected_ch:expr, $expected_suffix:expr,)* ) => {
+            $(
+                #[test]
+                fn $name() {
+                    let conf = Conf::default();
+                    assert_eq!($typ.ch(&conf), $expected_ch);
+                    assert_eq!($typ.suffix(&conf), $expected_suffix);
+                }
+            )*
+        };
+    }
+
+	make_renderables_test!(
+		test_dir: Typ::Dir => "<blue>d</>", "<blue><dimmed>/</></>",
+		test_symlink: Typ::Symlink => "<>l</>", "<><dimmed>@</></>",
+		test_fifo: Typ::Fifo => "<>p</>", "<><dimmed>|</></>",
+		test_socket: Typ::Socket => "<>s</>", "<><dimmed>=</></>",
+		test_block_device: Typ::BlockDevice => "<>b</>", "<></>",
+		test_char_device: Typ::CharDevice => "<>c</>", "<></>",
+		test_file: Typ::File => "<><dimmed>f</></>", "<></>",
+	);
 }

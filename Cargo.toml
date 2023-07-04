@@ -25,6 +25,7 @@ name = "pls"
 [dependencies]
 colored = "2.0.0"
 lazy_static = "1.4.0"
+number_prefix = "0.4.0"
 regex = { version = "1.8.4", default-features = false, features = ["std", "perf"] }
 serde = { version = "1.0.164", features = ["derive"] }
 unicode-segmentation = "1.10.1"

@@ -1,4 +1,4 @@
-use crate::enums::{Oct, Sym};
+use crate::enums::{Oct, Sym, Typ};
 use std::collections::HashMap;
 
 pub struct Constants {
@@ -8,6 +8,8 @@ pub struct Constants {
 	pub oct_styles: HashMap<Oct, String>,
 	/// style for magnitude and unit of node size
 	pub size_styles: SizeStyles,
+	/// mapping of node type to node type info (including style)
+	pub typ: HashMap<Typ, TypInfo>,
 }
 
 impl Default for Constants {
@@ -37,6 +39,29 @@ impl Default for Constants {
 				prefix: String::default(),
 				base: String::from("dimmed"),
 			},
+			typ: [
+				(Typ::Dir, "d", "<dimmed>/</>", Some("dir"), "blue"),
+				(Typ::Symlink, "l", "<dimmed>@</>", Some("symlink"), ""),
+				(Typ::Fifo, "p", "<dimmed>|</>", None, ""),
+				(Typ::Socket, "s", "<dimmed>=</>", None, ""),
+				(Typ::BlockDevice, "b", "", None, ""),
+				(Typ::CharDevice, "c", "", None, ""),
+				(Typ::File, "<dimmed>f</>", "", None, ""),
+				(Typ::Unknown, "<red>?</>", "", None, ""),
+			]
+			.into_iter()
+			.map(|(k, ch, suffix, icon, style)| {
+				(
+					k,
+					TypInfo {
+						ch: ch.to_string(),
+						suffix: suffix.to_string(),
+						icon: icon.map(String::from),
+						style: style.to_string(),
+					},
+				)
+			})
+			.collect(),
 		}
 	}
 }
@@ -48,4 +73,15 @@ pub struct SizeStyles {
 	pub prefix: String,
 	/// style for the node size base unit
 	pub base: String,
+}
+
+pub struct TypInfo {
+	/// the character for a node type, used in the 'T' column
+	pub ch: String,
+	/// the suffix for a node type, placed after the node name
+	pub suffix: String,
+	/// the fallback icon for the node type, used if no other icon is found
+	pub icon: Option<String>, // not all node types need to have an icon
+	/// the style to use for nodes of a particular node type
+	pub style: String, // applies to name, `ch`, `suffix` and `icon`
 }

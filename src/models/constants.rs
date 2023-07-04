@@ -10,6 +10,10 @@ pub struct Constants {
 	pub size_styles: SizeStyles,
 	/// mapping of node type to node type info (including style)
 	pub typ: HashMap<Typ, TypInfo>,
+	/// styles for the owner user
+	pub user_styles: OwnerStyles,
+	/// styles for the owner group
+	pub group_styles: OwnerStyles,
 }
 
 impl Default for Constants {
@@ -38,6 +42,14 @@ impl Default for Constants {
 				mag: String::from("bold"),
 				prefix: String::default(),
 				base: String::from("dimmed"),
+			},
+			user_styles: OwnerStyles {
+				curr: String::from("blue bold"),
+				other: String::from("dimmed"),
+			},
+			group_styles: OwnerStyles {
+				curr: String::from("blue"),
+				other: String::from("dimmed"),
 			},
 			typ: [
 				(Typ::Dir, "d", "<dimmed>/</>", Some("dir"), "blue"),
@@ -73,6 +85,13 @@ pub struct SizeStyles {
 	pub prefix: String,
 	/// style for the node size base unit
 	pub base: String,
+}
+
+pub struct OwnerStyles {
+	/// style for when the node is owned by the current user/group
+	pub curr: String,
+	/// style for when the node is owned by a different user/group
+	pub other: String,
 }
 
 pub struct TypInfo {

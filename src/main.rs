@@ -1,5 +1,7 @@
+mod config;
 mod enums;
 mod fmt;
+mod models;
 
 use fmt::render;
 

@@ -1,3 +1,4 @@
+use crate::config::Conf;
 use serde::{Deserialize, Serialize};
 
 /// This enum contains different groups of permissions defined on nodes, in a
@@ -29,4 +30,44 @@ pub enum Sym {
 	Execute,
 	/// setuid, setgid or sticky bit
 	Special,
+}
+
+impl Sym {
+	/// Get the symbolic character associated with a permission.
+	///
+	/// This does not support [`Sym::Special`] because that character can vary
+	/// based on other factors, use [`Sym::special_ch`].
+	///
+	/// This function returns a marked-up string.
+	pub fn ch(&self, conf: &Conf) -> String {
+		let ch = match self {
+			Sym::None => '-',
+			Sym::Read => 'r',
+			Sym::Write => 'w',
+			Sym::Execute => 'x',
+			// Special maps to 4 characters: 's', 't', 'S' or 'T'.
+			Sym::Special => panic!("Use `Perm::special_ch` instead."),
+		};
+		format!("<{}>{ch}</>", conf.constants.sym_styles[self])
+	}
+
+	/// Get the symbolic character associated with a special permission.
+	///
+	/// This function is the equivalent of [`Sym::ch`] that specifically
+	/// handles [`Sym::Special`].
+	///
+	/// This function returns a marked-up string.
+	pub fn special_ch(&self, oct: Oct, execute: bool, conf: &Conf) -> String {
+		if self != &Sym::Special {
+			panic!("Use `Perm::ch` instead.")
+		}
+
+		let ch = match (oct, execute) {
+			(Oct::Other, false) => 'T',
+			(Oct::Other, true) => 't',
+			(_, false) => 'S',
+			(_, true) => 's',
+		};
+		format!("<{}>{ch}</>", conf.constants.sym_styles[self])
+	}
 }

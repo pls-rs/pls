@@ -54,6 +54,11 @@ where
 /// Apply a single directive to a `ColoredString` instance, consuming it and
 /// returning a new `ColoredString` instance with that directive applied.
 fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
+	// Handle blank directives fast.
+	if directive.is_empty() {
+		return string;
+	};
+
 	let is_bg = directive.starts_with("bg:");
 	let directive = directive.replace("bg:", "").replace("bright_", "bright ");
 

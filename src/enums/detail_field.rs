@@ -1,4 +1,21 @@
+use clap::ValueEnum;
+use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
+
+lazy_static! {
+	pub static ref STD_FIELDS: Vec<DetailField> =
+		["nlink", "typ", "perm", "user", "group", "size", "mtime"]
+			.into_iter()
+			.filter_map(|item| DetailField::from_str(item, false).ok())
+			.collect();
+	pub static ref ALL_FIELDS: Vec<DetailField> = DetailField::value_variants()
+		.iter()
+		.copied()
+		.filter(|variant| variant != &DetailField::None
+			&& variant != &DetailField::Std
+			&& variant != &DetailField::All)
+		.collect();
+}
 
 /// This enum contains all the metadata about a node that can be provided by a
 /// UNIX-like operating system.
@@ -9,7 +26,9 @@ use serde::{Deserialize, Serialize};
 ///
 /// The `DetailField` variants are closely related to the
 /// [`SortField`](crate::enums::SortField) variants.
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(
+	Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, ValueEnum,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum DetailField {
 	Dev,   // device ID
@@ -39,5 +58,81 @@ pub enum DetailField {
 	Std,  // shorthand: the standard set of details
 	All,  // shorthand: all details
 
+	#[clap(skip)]
 	Name, // node name (not a CLI argument)
+}
+
+impl DetailField {
+	/// Clean the given input.
+	///
+	/// This performs the following operations on the input:
+	///
+	/// * Expand all shorthand values.
+	/// * Ensure that `DetailField::Name` is always present.
+	/// * Sort values by their order in the enum.
+	/// * Remove duplicated values.
+	pub fn clean(input: &[Self]) -> Vec<Self> {
+		let mut cleaned = vec![];
+		for field in input {
+			match field {
+				DetailField::None => cleaned.clear(),
+				DetailField::Std => cleaned.extend_from_slice(&STD_FIELDS),
+				DetailField::All => {
+					cleaned.clear(); // Reduce sorting and de-duplication burden.
+					cleaned.extend_from_slice(&ALL_FIELDS);
+				}
+				_ => cleaned.push(*field),
+			}
+		}
+		cleaned.push(DetailField::Name);
+		cleaned.sort(); // Use the order of the `DetailField` enum.
+		cleaned.dedup(); // Only removes consecutive duplicates, so sort first.
+		cleaned
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use super::DetailField;
+
+	macro_rules! make_clean_test {
+		( $($name:ident: $input:expr => $expected:expr,)* ) => {
+            $(
+                #[test]
+                fn $name() {
+                    assert_eq!(DetailField::clean($input), $expected);
+                }
+            )*
+		};
+	}
+
+	make_clean_test!(
+		test_expands_shorthand: &[DetailField::Std] => vec![
+			DetailField::Nlink,
+			DetailField::Typ,
+			DetailField::Perm,
+			DetailField::User,
+			DetailField::Group,
+			DetailField::Size,
+			DetailField::Mtime,
+			DetailField::Name,
+		],
+		test_none_clears: &[DetailField::Mtime, DetailField::None, DetailField::Gid] => vec![
+			DetailField::Gid,
+			DetailField::Name,
+		],
+		test_ensures_name_present: &[] => vec![
+			DetailField::Name,
+		],
+		test_sorts_by_enum_order: &[DetailField::Gid, DetailField::Uid] => vec![
+			DetailField::Uid,
+			DetailField::Gid,
+			DetailField::Name,
+		],
+		test_removes_duplicates: &[DetailField::Gid, DetailField::Gid, DetailField::User, DetailField::Gid] => vec![
+			DetailField::User,
+			DetailField::Gid,
+			DetailField::Name,
+		],
+	);
 }

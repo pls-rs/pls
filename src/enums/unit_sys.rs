@@ -1,10 +1,11 @@
 use crate::config::Conf;
+use clap::ValueEnum;
 use number_prefix::NumberPrefix;
 use serde::{Deserialize, Serialize};
 
 /// This enum contains different unit systems to express large numbers,
 /// specifically node sizes.
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize, ValueEnum)]
 #[serde(rename_all = "snake_case")]
 pub enum UnitSys {
 	Binary,  // higher units based on powers of 2^10

@@ -1,3 +1,4 @@
+mod enums;
 mod fmt;
 
 use fmt::render;

@@ -3,8 +3,12 @@ mod enums;
 mod fmt;
 mod models;
 
-use fmt::render;
+use models::Pls;
 
+/// Create a `Pls` instance and immediately delegate to it.
+///
+/// This is the entry point of the application.
 fn main() {
-	println!("{}", render("Hello, <blue bold>World!</>"));
+	let pls = Pls::default();
+	pls.run();
 }

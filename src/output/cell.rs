@@ -65,7 +65,7 @@ impl Cell {
 
 		let mut content = format!("{left}{text}{right}");
 		if is_header {
-			content.insert_str(0, "<bold underline>");
+			content.insert_str(0, "<underline>");
 			content.push_str("</>");
 		}
 		render(content)

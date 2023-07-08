@@ -1,4 +1,4 @@
-use crate::enums::{Oct, Sym, Typ};
+use crate::enums::{DetailField, Oct, Sym, Typ};
 use std::collections::HashMap;
 
 pub struct Constants {
@@ -14,6 +14,8 @@ pub struct Constants {
 	pub user_styles: OwnerStyles,
 	/// styles for the owner group
 	pub group_styles: OwnerStyles,
+	/// configuration for the table view
+	pub table: TableInfo,
 }
 
 impl Default for Constants {
@@ -74,6 +76,31 @@ impl Default for Constants {
 				)
 			})
 			.collect(),
+			table: TableInfo {
+				header_style: String::from("bold italic"),
+				column_names: [
+					(DetailField::Dev, "Device"),
+					(DetailField::Ino, "inode"),
+					(DetailField::Nlink, "Link#"),
+					(DetailField::Typ, "T"),
+					(DetailField::Perm, "Permissions"),
+					(DetailField::Oct, "SUGO"),
+					(DetailField::User, "User"),
+					(DetailField::Uid, "UID"),
+					(DetailField::Group, "Group"),
+					(DetailField::Gid, "GID"),
+					(DetailField::Size, "Size"),
+					(DetailField::Btime, "Created"),
+					(DetailField::Ctime, "Changed"),
+					(DetailField::Mtime, "Modified"),
+					(DetailField::Atime, "Accessed"),
+					(DetailField::Git, "Git"),
+					(DetailField::Name, "Name"),
+				]
+				.into_iter()
+				.map(|(k, v)| (k, v.to_string()))
+				.collect(),
+			},
 		}
 	}
 }
@@ -103,4 +130,11 @@ pub struct TypInfo {
 	pub icon: Option<String>, // not all node types need to have an icon
 	/// the style to use for nodes of a particular node type
 	pub style: String, // applies to name, `ch`, `suffix` and `icon`
+}
+
+pub struct TableInfo {
+	/// mapping of detail field to column name
+	pub column_names: HashMap<DetailField, String>,
+	/// the styles to apply to the text in the header row
+	pub header_style: String,
 }

@@ -6,8 +6,6 @@ use std::path::Path;
 /// Represents the entire application state.
 #[derive(Default)]
 pub struct Pls {
-	/// manager for owner info with caching for fast, repeated lookups
-	owner_man: OwnerMan,
 	/// configuration from `.pls.yml` files
 	conf: Conf,
 	/// command-line arguments
@@ -51,6 +49,8 @@ impl Pls {
 			Ok(nodes) => nodes,
 			Err(_) => return Err(()),
 		};
+
+		let mut owner_man = OwnerMan::default();
 
 		for node in nodes {
 			println!("{}", render(node.display_name(&self.conf, &self.args)))

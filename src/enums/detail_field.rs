@@ -1,6 +1,8 @@
+use crate::output::Cell;
 use clap::ValueEnum;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
+use std::fmt::Alignment;
 
 lazy_static! {
 	pub static ref STD_FIELDS: Vec<DetailField> =
@@ -88,6 +90,28 @@ impl DetailField {
 		cleaned.sort(); // Use the order of the `DetailField` enum.
 		cleaned.dedup(); // Only removes consecutive duplicates, so sort first.
 		cleaned
+	}
+
+	/* Getters */
+	/* ======= */
+
+	/// Get the [`Cell`] that should be used to display this field.
+	///
+	/// This cell is right-aligned for numeric fields, and left-aligned for all
+	/// other fields. Fields with uniform width such as octal permissions and
+	/// timestamps need not be aligned at all.
+	pub fn cell(&self) -> Cell {
+		let alignment = match self {
+			DetailField::Dev
+			| DetailField::Ino
+			| DetailField::Nlink
+			| DetailField::Oct
+			| DetailField::Uid
+			| DetailField::Gid
+			| DetailField::Size => Alignment::Right,
+			_ => Alignment::Left,
+		};
+		Cell::new(alignment, (0, 1))
 	}
 }
 

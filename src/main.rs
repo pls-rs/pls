@@ -2,6 +2,7 @@ mod config;
 mod enums;
 mod fmt;
 mod models;
+mod output;
 
 use models::Pls;
 

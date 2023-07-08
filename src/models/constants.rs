@@ -2,6 +2,12 @@ use crate::enums::{DetailField, Oct, Sym, Typ};
 use std::collections::HashMap;
 
 pub struct Constants {
+	/// style for the device number
+	pub dev_style: String,
+	/// style for the inode number
+	pub inode_style: String,
+	/// styles for the number of hard links
+	pub nlink_styles: NlinkStyles,
 	/// mapping of node type to node type info (including style)
 	pub typ: HashMap<Typ, TypInfo>,
 	/// mapping of symbolic permission bits to style
@@ -21,6 +27,14 @@ pub struct Constants {
 impl Default for Constants {
 	fn default() -> Self {
 		Self {
+			dev_style: String::default(),
+			inode_style: String::default(),
+			nlink_styles: NlinkStyles {
+				file_sing: String::from(""),
+				file_plur: String::from("yellow"),
+				dir_sing: String::from("yellow"),
+				dir_plur: String::from(""),
+			},
 			typ: [
 				(Typ::Dir, "d", "<dimmed>/</>", Some("dir"), "blue"),
 				(Typ::Symlink, "l", "<dimmed>@</>", Some("symlink"), ""),
@@ -103,6 +117,17 @@ impl Default for Constants {
 			},
 		}
 	}
+}
+
+pub struct NlinkStyles {
+	/// style to use when file has one hard link
+	pub file_sing: String,
+	/// style to use when file has more than one hard link
+	pub file_plur: String,
+	/// style to use when directory has one hard link
+	pub dir_sing: String,
+	/// style to use when directory has more than one hard link
+	pub dir_plur: String,
 }
 
 pub struct TypInfo {

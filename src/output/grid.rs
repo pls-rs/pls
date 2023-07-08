@@ -1,7 +1,10 @@
 use crate::config::{Args, Conf};
 use crate::enums::DetailField;
-use crate::fmt::render;
+use crate::fmt::len;
+use crate::output::Cell;
 use std::collections::HashMap;
+use std::fmt::Alignment;
+use terminal_size::{terminal_size, Width};
 
 /// The grid view renders the node names in a two dimensional layout to minimise
 /// scrolling. It does not support rendering of node metadata.
@@ -28,12 +31,65 @@ impl Grid {
 	}
 
 	/// Render the grid to STDOUT.
-	pub fn render(&self, _conf: &Conf, _args: &Args) {
-		for entry in &self.entries {
-			print!(
-				"{} ",
-				render(entry.get(&DetailField::Name).unwrap_or(&String::default()))
-			);
+	pub fn render(&self, _conf: &Conf, args: &Args) {
+		let max_width = self.entries.iter().map(len).max();
+		let max_cols = self.columns(max_width);
+
+		let entry_len = self.entries.len();
+		let rows = (entry_len as f64 / max_cols as f64).ceil() as usize;
+		let cols = (entry_len as f64 / rows as f64).ceil() as usize;
+
+		if args.down {
+			self.print(&self.down(rows), cols, max_width);
+		} else {
+			self.print(&self.entries, cols, max_width);
+		};
+	}
+
+	/// Print the entries to the screen.
+	///
+	/// This prints the entries in the specified number of columns, each cell
+	/// padded to span the given max-width.
+	fn print<S>(&self, entries: &[S], cols: usize, max_width: Option<usize>)
+	where
+		S: AsRef<str>,
+	{
+		let entry_len = self.entries.len();
+
+		let cell = Cell::new(Alignment::Left, (0, 2));
+		let end_cell = Cell::new(Alignment::Left, (0, 0));
+		for (idx, text) in entries.iter().enumerate() {
+			if idx % cols == cols - 1 || idx == entry_len - 1 {
+				println!("{}", &end_cell.print(text, false, &max_width));
+			} else {
+				print!("{}", &cell.print(text, false, &max_width));
+			}
+		}
+	}
+
+	/// Shuffle the entries to enable printing down instead of across.
+	///
+	/// Since terminals can only print row-by-row, we split the entries into
+	/// columns and then pick one cell per column, going in cycles till all
+	/// cells are exhausted.
+	fn down(&self, rows: usize) -> Vec<&String> {
+		let chunks: Vec<_> = self.entries.chunks(rows).collect();
+		(0..rows)
+			.flat_map(|row_idx| chunks.iter().filter_map(move |chunk| chunk.get(row_idx)))
+			.collect()
+	}
+
+	/// Get the number of columns that can be accommodated on the screen.
+	///
+	/// If the terminal width cannot be determined, such as when piping to a
+	/// file, the output will be laid out in a single column.
+	fn columns(&self, max_width: Option<usize>) -> u16 {
+		match (terminal_size(), max_width) {
+			(Some((Width(term_width), _)), Some(item_width)) => {
+				let cols = (term_width + 2) / (item_width as u16 + 2);
+				cols.max(1)
+			}
+			(_, _) => 1,
 		}
 	}
 }

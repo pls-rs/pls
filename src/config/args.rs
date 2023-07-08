@@ -49,6 +49,10 @@ pub struct Args {
 	#[clap(help_heading = "Grid view", short, long, default_value = "false", action = clap::ArgAction::Set)]
 	pub grid: bool,
 
+	/// display node names column-first
+	#[clap(help_heading = "Grid view", short = 'D', long, default_value = "false", action = clap::ArgAction::Set)]
+	pub down: bool,
+
 	/// display icons next to node names
 	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
 	pub icon: bool,

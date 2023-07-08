@@ -48,7 +48,7 @@ impl Sym {
 			// Special maps to 4 characters: 's', 't', 'S' or 'T'.
 			Sym::Special => panic!("Use `Perm::special_ch` instead."),
 		};
-		format!("<{}>{ch}</>", conf.constants.sym_styles[self])
+		format!("<{}>{ch}</>", conf.constants.perm_styles[self])
 	}
 
 	/// Get the symbolic character associated with a special permission.
@@ -68,6 +68,6 @@ impl Sym {
 			(_, false) => 'S',
 			(_, true) => 's',
 		};
-		format!("<{}>{ch}</>", conf.constants.sym_styles[self])
+		format!("<{}>{ch}</>", conf.constants.perm_styles[self])
 	}
 }

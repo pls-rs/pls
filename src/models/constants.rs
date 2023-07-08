@@ -5,7 +5,7 @@ pub struct Constants {
 	/// mapping of node type to node type info (including style)
 	pub typ: HashMap<Typ, TypInfo>,
 	/// mapping of symbolic permission bits to style
-	pub sym_styles: HashMap<Sym, String>,
+	pub perm_styles: HashMap<Sym, String>,
 	/// mapping of octal permission bits to style
 	pub oct_styles: HashMap<Oct, String>,
 	/// styles for the owner user
@@ -44,7 +44,7 @@ impl Default for Constants {
 				)
 			})
 			.collect(),
-			sym_styles: [
+			perm_styles: [
 				(Sym::None, "dimmed"),
 				(Sym::Read, "yellow"),
 				(Sym::Write, "red"),

@@ -113,6 +113,23 @@ impl DetailField {
 		};
 		Cell::new(alignment, (0, 1))
 	}
+
+	/// Get whether each entry in the list is equally wide.
+	///
+	/// Computation of max-widths for uniformly wide columns is slightly faster
+	/// because it only needs to compute the width of the cell in the first row.
+	pub fn uniformly_wide(&self) -> bool {
+		matches!(
+			self,
+			DetailField::Typ
+				| DetailField::Oct
+				| DetailField::Btime
+				| DetailField::Ctime
+				| DetailField::Mtime
+				| DetailField::Atime
+				| DetailField::Git
+		)
+	}
 }
 
 #[cfg(test)]

@@ -1,3 +1,4 @@
+use crate::config::Conf;
 use crate::output::Cell;
 use clap::ValueEnum;
 use lazy_static::lazy_static;
@@ -129,6 +130,18 @@ impl DetailField {
 				| DetailField::Atime
 				| DetailField::Git
 		)
+	}
+
+	/* Renderables */
+	/* =========== */
+
+	/// Get the name of the detail field to be used in the column header.
+	///
+	/// This function returns a marked-up string.
+	pub fn name(&self, conf: &Conf) -> String {
+		let name = &conf.constants.table.column_names[self];
+		let directives = &conf.constants.table.header_style;
+		format!("<{directives}>{name}</>")
 	}
 }
 

@@ -31,6 +31,33 @@ impl Node {
 		}
 	}
 
+	/* Aggregators */
+	/* =========== */
+
+	/// Get all styling directives applicable to the node.
+	///
+	/// This function aggregates the `directive` function across all traits.
+	fn directives<'conf>(&self, conf: &'conf Conf, _args: &Args) -> &'conf String {
+		self.typ.directives(conf)
+	}
+
+	/* Name components */
+	/* =============== */
+
+	/// Get the icon associated with the node.
+	///
+	/// A node can get its icon from two sources:
+	///
+	/// * specs associated with the node
+	/// * the node's type
+	fn icon(&self, conf: &Conf) -> String {
+		if let Some(icon_name) = self.typ.icon(conf) {
+			return conf.icons.get(icon_name).cloned().unwrap_or_default();
+		}
+
+		String::default()
+	}
+
 	/* Renderables */
 	/* =========== */
 

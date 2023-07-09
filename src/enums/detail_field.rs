@@ -27,8 +27,8 @@ lazy_static! {
 /// * shorthands for none, the standard set and all of the details
 /// * a name variant that is mandatory as that is the entire point of `pls`
 ///
-/// The `DetailField` variants are closely related to the
-/// [`SortField`](crate::enums::SortField) variants.
+/// The `DetailField` variants are closely related to those of
+/// [`SortField`](crate::enums::SortField).
 #[derive(
 	Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, ValueEnum,
 )]

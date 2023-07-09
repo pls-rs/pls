@@ -1,6 +1,12 @@
+use crate::enums::DetailField;
+use crate::models::{Node, OwnerMan};
+use crate::traits::{Detail, Name};
 use clap::ValueEnum;
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::collections::HashSet;
+#[cfg(unix)]
+use std::os::unix::fs::MetadataExt;
 
 /// This enum contains all the different ways two nodes can be compared to
 /// determine the sorting order.
@@ -132,6 +138,60 @@ impl SortField {
 			(name.trim_end_matches('_').into(), true)
 		} else {
 			(*self, false)
+		}
+	}
+
+	/// Compare two nodes on the basis of a timestamp field.
+	///
+	/// This is extracted into a separate function to prevent repetition for 4
+	/// timestamp fields.
+	fn cmp_time(a: &Node, b: &Node, field: &SortField) -> Ordering {
+		let field = match field {
+			SortField::Btime => DetailField::Btime,
+			SortField::Ctime => DetailField::Ctime,
+			SortField::Mtime => DetailField::Mtime,
+			SortField::Atime => DetailField::Atime,
+			_ => unreachable!(),
+		};
+		let a = a.time_val(field);
+		let b = b.time_val(field);
+		match (a, b) {
+			(Ok(a), Ok(b)) => a.cmp(&b),
+			_ => Ordering::Equal,
+		}
+	}
+
+	/// Compare the two given nodes, using this sort field.
+	///
+	/// This function handles reverse sort fields, the fields suffixed with '_',
+	/// by using the natural sort field's logic and then inverting it.
+	pub fn compare(&self, a: &Node, b: &Node, owner_man: &mut OwnerMan) -> Ordering {
+		let (basis, is_reverse) = self.simplify();
+
+		let ord = match basis {
+			SortField::Dev => a.meta.dev().cmp(&b.meta.dev()),
+			SortField::Ino => a.meta.ino().cmp(&b.meta.ino()),
+			SortField::Nlink => a.meta.nlink().cmp(&b.meta.nlink()),
+			SortField::Typ => a.typ.cmp(&b.typ),
+			SortField::Cat => a.typ.cat().cmp(&b.typ.cat()),
+			SortField::User => a.user_val(owner_man).cmp(&b.user_val(owner_man)),
+			SortField::Uid => a.meta.uid().cmp(&b.meta.uid()),
+			SortField::Group => a.group_val(owner_man).cmp(&b.group_val(owner_man)),
+			SortField::Gid => a.meta.gid().cmp(&b.meta.gid()),
+			SortField::Size => a.size_val().cmp(&b.size_val()),
+			SortField::Btime | SortField::Ctime | SortField::Mtime | SortField::Atime => {
+				Self::cmp_time(a, b, self)
+			}
+			SortField::Name => a.name.cmp(&b.name),
+			SortField::Cname => a.cname().cmp(&b.cname()),
+			SortField::Ext => a.ext().cmp(&b.ext()),
+			_ => unreachable!("src/enums/sort_field.rs / impl SortField / time_val"),
+		};
+
+		if is_reverse {
+			ord.reverse()
+		} else {
+			ord
 		}
 	}
 }

@@ -1,6 +1,7 @@
 use crate::enums::{DetailField, SortField, Typ, UnitSys};
 use crate::fmt::render;
 use clap::Parser;
+#[cfg(test)]
 use std::ffi::OsString;
 use std::path::PathBuf;
 
@@ -107,6 +108,7 @@ impl Default for Args {
 
 impl Args {
 	/// Create a new instance of `Args` parsing the given arguments.
+	#[cfg(test)]
 	pub fn raw<I, T>(itr: I) -> Self
 	where
 		I: IntoIterator<Item = T>,

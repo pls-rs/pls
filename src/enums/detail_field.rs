@@ -139,7 +139,7 @@ impl DetailField {
 	///
 	/// This function returns a marked-up string.
 	pub fn name(&self, conf: &Conf) -> String {
-		let name = &conf.constants.table.column_names[self];
+		let name = &conf.constants.table.column_names.get(self).unwrap();
 		let directives = &conf.constants.table.header_style;
 		format!("<{directives}>{name}</>")
 	}

@@ -96,7 +96,10 @@ impl Perm {
 			.zip([Oct::Special, Oct::User, Oct::Group, Oct::Other])
 			.map(|(ch, oct)| match (oct, ch) {
 				(Oct::Special, '0') => String::from(" "),
-				_ => format!("<{}>{}</>", conf.constants.oct_styles[&oct], ch),
+				_ => {
+					let directives = conf.constants.oct_styles.get(&oct).unwrap();
+					format!("<{directives}>{ch}</>")
+				}
 			})
 			.collect()
 	}

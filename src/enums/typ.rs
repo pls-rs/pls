@@ -100,8 +100,8 @@ impl Typ {
 	///
 	/// This function returns a marked-up string.
 	pub fn ch(&self, conf: &Conf) -> String {
-		let ch = &conf.constants.typ[self].ch;
-		let directives = &conf.constants.typ[self].style;
+		let ch = &conf.constants.typ.get(self).unwrap().ch;
+		let directives = &conf.constants.typ.get(self).unwrap().style;
 		format!("<{directives}>{ch}</>")
 	}
 

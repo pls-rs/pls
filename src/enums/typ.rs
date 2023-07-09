@@ -82,6 +82,17 @@ impl Typ {
 		cleaned
 	}
 
+	/// Get the category of the node from the type of the node.
+	///
+	/// The category is a broader classification of nodes into either directory
+	/// or file.
+	pub fn cat(&self) -> Typ {
+		match self {
+			Typ::Dir => Typ::Dir,
+			_ => Typ::File,
+		}
+	}
+
 	/* Renderables */
 	/* =========== */
 

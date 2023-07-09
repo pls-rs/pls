@@ -3,6 +3,7 @@ mod enums;
 mod fmt;
 mod models;
 mod output;
+mod traits;
 
 use models::Pls;
 

@@ -160,8 +160,8 @@ impl Detail for Node {
 	/// This function returns a marked-up string.
 	fn size(&self, conf: &Conf, args: &Args) -> String {
 		match self.size_val() {
-			None => String::default(),
 			Some(size) => args.unit.size(size, conf),
+			None => String::default(),
 		}
 	}
 

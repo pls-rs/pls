@@ -93,8 +93,28 @@ impl Typ {
 		}
 	}
 
+	/// Get the style directives associated with the node type.
+	///
+	/// These directives are combined with directives from other sources to form
+	/// the full picture of how the node should be styled.
+	pub fn directives<'conf>(&self, conf: &'conf Conf) -> &'conf String {
+		&conf.constants.typ.get(self).unwrap().style
+	}
+
 	/* Name components */
 	/* =============== */
+
+	/// Get the icon associated with the node's type.
+	///
+	/// Note that this function only returns the name of the icon and not the
+	/// glyph itself, to prevent an unnecessary lookup when the fallback is not
+	/// needed and to keep the code for the lookups centralised in one place.
+	///
+	/// This icon is used as a fallback in cases where no other icon is found
+	/// for the node from matching specs.
+	pub fn icon<'conf>(&self, conf: &'conf Conf) -> &'conf Option<String> {
+		&conf.constants.typ.get(self).unwrap().icon
+	}
 
 	/// Get the suffix associated with the nodes type.
 	///
@@ -105,10 +125,8 @@ impl Typ {
 	/// [`ch`](Typ::ch). Suffixes exist for a subset of types and are symbols.
 	///
 	/// This function returns a marked-up string.
-	pub fn suffix(&self, conf: &Conf) -> String {
-		let suffix = &conf.constants.typ.get(self).unwrap().suffix;
-		let directives = &conf.constants.typ.get(self).unwrap().style;
-		format!("<{directives}>{suffix}</>")
+	pub fn suffix<'conf>(&self, conf: &'conf Conf) -> &'conf String {
+		&conf.constants.typ.get(self).unwrap().suffix
 	}
 
 	/* Renderables */
@@ -124,7 +142,7 @@ impl Typ {
 	/// This function returns a marked-up string.
 	pub fn ch(&self, conf: &Conf) -> String {
 		let ch = &conf.constants.typ.get(self).unwrap().ch;
-		let directives = &conf.constants.typ.get(self).unwrap().style;
+		let directives = self.directives(conf);
 		format!("<{directives}>{ch}</>")
 	}
 }
@@ -165,26 +183,48 @@ mod tests {
 		],
 	);
 
-	macro_rules! make_renderables_test {
-        ( $($name:ident: $typ:expr => $expected_ch:expr, $expected_suffix:expr,)* ) => {
+	macro_rules! make_name_components_test {
+        ( $($name:ident: $typ:expr => $icon:expr, $suffix:expr,)* ) => {
             $(
                 #[test]
                 fn $name() {
                     let conf = Conf::default();
-                    assert_eq!($typ.ch(&conf), $expected_ch);
-                    assert_eq!($typ.suffix(&conf), $expected_suffix);
+                    assert_eq!($typ.icon(&conf), $icon);
+                    assert_eq!($typ.suffix(&conf), $suffix);
+                }
+            )*
+        };
+    }
+
+	make_name_components_test!(
+		test_icon_suffix_for_dir: Typ::Dir => &Some(String::from("dir")), "<dimmed>/</>",
+		test_icon_suffix_for_symlink: Typ::Symlink => &Some(String::from("symlink")), "<dimmed>@</>",
+		test_icon_suffix_for_fifo: Typ::Fifo => &None, "<dimmed>|</>",
+		test_icon_suffix_for_socket: Typ::Socket => &None, "<dimmed>=</>",
+		test_icon_suffix_for_block_device: Typ::BlockDevice => &None, "",
+		test_icon_suffix_for_char_device: Typ::CharDevice => &None, "",
+		test_icon_suffix_for_file: Typ::File => &None, "",
+	);
+
+	macro_rules! make_renderables_test {
+        ( $($name:ident: $typ:expr => $ch:expr,)* ) => {
+            $(
+                #[test]
+                fn $name() {
+                    let conf = Conf::default();
+                    assert_eq!($typ.ch(&conf), $ch);
                 }
             )*
         };
     }
 
 	make_renderables_test!(
-		test_dir: Typ::Dir => "<blue>d</>", "<blue><dimmed>/</></>",
-		test_symlink: Typ::Symlink => "<>l</>", "<><dimmed>@</></>",
-		test_fifo: Typ::Fifo => "<>p</>", "<><dimmed>|</></>",
-		test_socket: Typ::Socket => "<>s</>", "<><dimmed>=</></>",
-		test_block_device: Typ::BlockDevice => "<>b</>", "<></>",
-		test_char_device: Typ::CharDevice => "<>c</>", "<></>",
-		test_file: Typ::File => "<><dimmed>f</></>", "<></>",
+		test_ch_for_dir: Typ::Dir => "<blue>d</>",
+		test_ch_for_symlink: Typ::Symlink => "<>l</>",
+		test_ch_for_fifo: Typ::Fifo => "<>p</>",
+		test_ch_for_socket: Typ::Socket => "<>s</>",
+		test_ch_for_block_device: Typ::BlockDevice => "<>b</>",
+		test_ch_for_char_device: Typ::CharDevice => "<>c</>",
+		test_ch_for_file: Typ::File => "<><dimmed>f</></>",
 	);
 }

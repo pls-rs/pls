@@ -1,6 +1,7 @@
 use crate::config::{Args, Conf};
 use crate::fmt::render;
 use crate::models::{Node, OwnerMan};
+use crate::output::{Grid, Table};
 use std::path::Path;
 
 /// Represents the entire application state.
@@ -45,15 +46,28 @@ impl Pls {
 			Err(_) => return Err(()),
 		};
 
-		let nodes = match self.get_contents(&path_buf) {
+		let mut nodes = match self.get_contents(&path_buf) {
 			Ok(nodes) => nodes,
 			Err(_) => return Err(()),
 		};
 
 		let mut owner_man = OwnerMan::default();
 
-		for node in nodes {
-			println!("{}", render(node.display_name(&self.conf, &self.args)))
+		self.args.sort_bases.iter().rev().for_each(|field| {
+			nodes.sort_by(|a, b| field.compare(a, b, &mut owner_man));
+		});
+
+		let entries: Vec<_> = nodes
+			.iter()
+			.map(|node| node.row(&mut owner_man, &self.conf, &self.args))
+			.collect();
+
+		if self.args.grid {
+			let grid = Grid::new(entries);
+			grid.render(&self.conf, &self.args);
+		} else {
+			let table = Table::new(entries);
+			table.render(&self.conf, &self.args);
 		}
 
 		Ok(())

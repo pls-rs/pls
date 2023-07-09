@@ -79,23 +79,28 @@ impl Node {
 		let text_directives = self.directives(conf, args);
 		let icon_directives = self.directives(conf, args).replace("underline", "");
 
-		let icon = if args.icon {
-			self.icon(conf)
-		} else {
-			String::default()
-		};
-		let name = if args.align {
-			self.aligned_name()
-		} else {
-			self.name.clone()
-		};
-		let suffix = if args.suffix {
-			self.typ.suffix(conf)
-		} else {
-			""
-		};
+		let mut parts = String::default();
 
-		format!("<{icon_directives}>{icon}</> <{text_directives}>{name}{suffix}</>")
+		// Icon
+		if args.icon {
+			parts.push_str(&format!("<{icon_directives}>{:<1}</> ", self.icon(conf)));
+		}
+
+		// Name and suffix
+		parts.push_str(&format!("<{text_directives}>"));
+		if args.align {
+			parts.push_str(&self.aligned_name());
+		} else {
+			parts.push_str(&self.name);
+		};
+		if args.suffix {
+			parts.push_str(self.typ.suffix(conf))
+		};
+		parts.push_str("</>");
+
+		// TODO: Symlink target
+
+		parts
 	}
 
 	/* Printer entry */

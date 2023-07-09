@@ -1,5 +1,8 @@
 use crate::config::{Args, Conf};
-use crate::traits::Name;
+use crate::enums::{DetailField, Typ};
+use crate::models::OwnerMan;
+use crate::traits::{Detail, Name};
+use std::collections::HashMap;
 use std::fs::Metadata;
 use std::path::{Path, PathBuf};
 
@@ -93,5 +96,55 @@ impl Node {
 		};
 
 		format!("<{icon_directives}>{icon}</> <{text_directives}>{name}{suffix}</>")
+	}
+
+	/* Printer entry */
+	/* ============= */
+
+	fn get_value(
+		&self,
+		detail: DetailField,
+		owner_man: &mut OwnerMan,
+		conf: &Conf,
+		args: &Args,
+	) -> String {
+		match detail {
+			// `Detail` trait
+			DetailField::Dev => self.dev(conf),
+			DetailField::Ino => self.ino(conf),
+			DetailField::Nlink => self.nlink(conf),
+			DetailField::Perm => self.perm(conf),
+			DetailField::Oct => self.oct(conf),
+			DetailField::User => self.user(owner_man, conf),
+			DetailField::Uid => self.uid(owner_man, conf),
+			DetailField::Group => self.group(owner_man, conf),
+			DetailField::Gid => self.gid(owner_man, conf),
+			DetailField::Btime => self.time(detail, conf),
+			DetailField::Mtime => self.time(detail, conf),
+			DetailField::Ctime => self.time(detail, conf),
+			DetailField::Atime => self.time(detail, conf),
+			DetailField::Size => self.size(conf, args),
+			DetailField::Blocks => self.blocks(conf),
+			// `Typ` enum
+			DetailField::Typ => self.typ.ch(conf),
+			// `Node` struct
+			DetailField::Name => self.display_name(conf, args),
+			_ => String::default(),
+		}
+	}
+
+	/// Get a mapping of detail fields to their values.
+	///
+	/// This information is used to render the table row for a node.
+	pub fn row(
+		&self,
+		owner_man: &mut OwnerMan,
+		conf: &Conf,
+		args: &Args,
+	) -> HashMap<DetailField, String> {
+		args.details
+			.iter()
+			.map(|&detail| (detail, self.get_value(detail, owner_man, conf, args)))
+			.collect()
 	}
 }

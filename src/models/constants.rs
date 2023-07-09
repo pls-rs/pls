@@ -20,6 +20,8 @@ pub struct Constants {
 	pub group_styles: OwnerStyles,
 	/// style for magnitude and unit of node size
 	pub size_styles: SizeStyles,
+	/// mapping of timestamp fields to the human-readable format
+	pub timestamp_formats: HashMap<DetailField, String>,
 	/// configuration for the table view
 	pub table: TableInfo,
 }
@@ -90,6 +92,23 @@ impl Default for Constants {
 				prefix: String::default(),
 				base: String::from("dimmed"),
 			},
+			timestamp_formats: [
+				(DetailField::Btime, "green"),
+				(DetailField::Ctime, "yellow"),
+				(DetailField::Mtime, "yellow"),
+				(DetailField::Atime, "blue"),
+			]
+			.into_iter()
+			.map(|(k, v)| {
+				(
+					k,
+					format!(
+						"<bold {v}>[year]-[month repr:short]-[day]</> \
+						 [hour repr:12]:[minute][period case:lower]"
+					),
+				)
+			})
+			.collect(),
 			table: TableInfo {
 				header_style: String::from("bold italic"),
 				column_names: [

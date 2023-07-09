@@ -1,5 +1,5 @@
 use crate::config::{Args, Conf};
-use crate::enums::Typ;
+use crate::traits::Name;
 use std::fs::Metadata;
 use std::path::{Path, PathBuf};
 
@@ -62,7 +62,36 @@ impl Node {
 	/* =========== */
 
 	/// Get the display name of the node.
-	pub fn display_name(&self, conf: &Conf, args: &Args) -> String {
-		self.name.clone()
+	///
+	/// The display name of a node consists of the following parts:
+	///
+	/// * icon, based on the `--icons` CLI argument
+	/// * actual name, aligned based on the `--align` CLI argument
+	/// * suffix, based on the `--suffix` CLI argument
+	/// * symlink target, based on the `--symlink` CLI argument
+	///
+	/// Additionally, the display name is marked up with the appropriate
+	/// directives obtained from configuration values.
+	fn display_name(&self, conf: &Conf, args: &Args) -> String {
+		let text_directives = self.directives(conf, args);
+		let icon_directives = self.directives(conf, args).replace("underline", "");
+
+		let icon = if args.icon {
+			self.icon(conf)
+		} else {
+			String::default()
+		};
+		let name = if args.align {
+			self.aligned_name()
+		} else {
+			self.name.clone()
+		};
+		let suffix = if args.suffix {
+			self.typ.suffix(conf)
+		} else {
+			""
+		};
+
+		format!("<{icon_directives}>{icon}</> <{text_directives}>{name}{suffix}</>")
 	}
 }

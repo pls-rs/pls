@@ -1,4 +1,5 @@
 use crate::config::{Args, Conf};
+use crate::enums::Typ;
 use std::fs::Metadata;
 use std::path::{Path, PathBuf};
 
@@ -7,6 +8,7 @@ pub struct Node {
 
 	pub path: PathBuf,
 	pub meta: Metadata,
+	pub typ: Typ,
 }
 
 impl Node {
@@ -19,8 +21,14 @@ impl Node {
 
 		let path = path.to_owned();
 		let meta = path.symlink_metadata().unwrap();
+		let typ = meta.file_type().into();
 
-		Self { name, path, meta }
+		Self {
+			name,
+			path,
+			meta,
+			typ,
+		}
 	}
 
 	/* Renderables */

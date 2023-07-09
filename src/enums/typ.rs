@@ -93,25 +93,39 @@ impl Typ {
 		}
 	}
 
+	/* Name components */
+	/* =============== */
+
+	/// Get the suffix associated with the nodes type.
+	///
+	/// The suffix is combined with the name and inherits the
+	/// [`directives`](Node::directives) that style the node's name.
+	///
+	/// Note that it is similar to but not the same as the type character,
+	/// [`ch`](Typ::ch). Suffixes exist for a subset of types and are symbols.
+	///
+	/// This function returns a marked-up string.
+	pub fn suffix(&self, conf: &Conf) -> String {
+		let suffix = &conf.constants.typ.get(self).unwrap().suffix;
+		let directives = &conf.constants.typ.get(self).unwrap().style;
+		format!("<{directives}>{suffix}</>")
+	}
+
 	/* Renderables */
 	/* =========== */
 
-	/// Get the node type's character that's used in the 'T' column.
+	/// Get the type character that's displayed in the 'T' column.
+	///
+	/// Typically the char is a single letter that represents the node's type.
+	///
+	/// Note that it is similar to but not the same as [`suffix`](Typ::suffix).
+	/// Type chars exist for each type and are letters.
 	///
 	/// This function returns a marked-up string.
 	pub fn ch(&self, conf: &Conf) -> String {
 		let ch = &conf.constants.typ.get(self).unwrap().ch;
 		let directives = &conf.constants.typ.get(self).unwrap().style;
 		format!("<{directives}>{ch}</>")
-	}
-
-	/// Get the node's suffix that placed after the node name.
-	///
-	/// This function returns a marked-up string.
-	pub fn suffix(&self, conf: &Conf) -> String {
-		let suffix = &conf.constants.typ[self].suffix;
-		let directives = &conf.constants.typ[self].style;
-		format!("<{directives}>{suffix}</>")
 	}
 }
 

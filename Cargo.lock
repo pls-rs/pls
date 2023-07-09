@@ -430,8 +430,7 @@ checksum = "1dd624098567895118886609431a7c3b8f516e41d30e0643f03d94592a147e36"
 [[package]]
 name = "users"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24cc0f6d6f267b73e5a2cadf007ba8f9bc39c6a6f9666f8cf25ea809a153b032"
+source = "git+https://github.com/dhruvkb/rust-users.git#e6ba8a88e0127f0d17ddd99f80f85d2c1722b227"
 dependencies = [
  "libc",
 ]

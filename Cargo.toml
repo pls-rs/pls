@@ -34,6 +34,9 @@ time = { version = "0.3.22", default-features = false, features = ["std", "alloc
 unicode-segmentation = "1.10.1"
 users = { version = "0.11.0", default-features = false, features = ["cache"] }
 
+[patch.crates-io]
+users = { git = 'https://github.com/dhruvkb/rust-users.git' }
+
 [profile.release]
 # Reference: https://github.com/johnthagen/min-sized-rust
 codegen-units = 1

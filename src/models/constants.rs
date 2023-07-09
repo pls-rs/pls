@@ -123,6 +123,7 @@ impl Default for Constants {
 					(DetailField::Group, "Group"),
 					(DetailField::Gid, "GID"),
 					(DetailField::Size, "Size"),
+					(DetailField::Blocks, "Blocks"),
 					(DetailField::Btime, "Created"),
 					(DetailField::Ctime, "Changed"),
 					(DetailField::Mtime, "Modified"),

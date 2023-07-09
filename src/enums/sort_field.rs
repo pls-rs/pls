@@ -36,7 +36,8 @@ pub enum SortField {
 	Group, // group name
 	Gid,   // group ID
 
-	Size, // storage space
+	Size,   // storage space
+	Blocks, // number of blocks
 
 	Btime, // created at; "b" for birth
 	Ctime, // changed at; originally meant "created at"
@@ -66,6 +67,8 @@ pub enum SortField {
 	Gid_,
 	#[clap(name = "size_")]
 	Size_,
+	#[clap(name = "blocks_")]
+	Blocks_,
 	#[clap(name = "btime_")]
 	Btime_,
 	#[clap(name = "ctime_")]
@@ -179,6 +182,7 @@ impl SortField {
 			SortField::Group => a.group_val(owner_man).cmp(&b.group_val(owner_man)),
 			SortField::Gid => a.meta.gid().cmp(&b.meta.gid()),
 			SortField::Size => a.size_val().cmp(&b.size_val()),
+			SortField::Blocks => a.blocks_val().cmp(&b.blocks_val()),
 			SortField::Btime | SortField::Ctime | SortField::Mtime | SortField::Atime => {
 				Self::cmp_time(a, b, self)
 			}

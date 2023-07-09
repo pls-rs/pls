@@ -48,7 +48,8 @@ pub enum DetailField {
 	Group, // group name
 	Gid,   // group ID
 
-	Size, // storage space
+	Size,   // storage space
+	Blocks, // number of blocks
 
 	Btime, // created at; "b" for birth
 	Ctime, // changed at; originally meant "created at"
@@ -109,7 +110,8 @@ impl DetailField {
 			| DetailField::Oct
 			| DetailField::Uid
 			| DetailField::Gid
-			| DetailField::Size => Alignment::Right,
+			| DetailField::Size
+			| DetailField::Blocks => Alignment::Right,
 			_ => Alignment::Left,
 		};
 		Cell::new(alignment, (0, 1))

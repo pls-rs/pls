@@ -9,6 +9,7 @@ use time::{format_description, OffsetDateTime, UtcOffset};
 pub trait Detail {
 	fn ctime(&self) -> SystemTime;
 	fn size_val(&self) -> Option<u64>;
+	fn blocks_val(&self) -> Option<u64>;
 	fn time_val(&self, field: DetailField) -> std::io::Result<SystemTime>;
 	fn user_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
 	fn group_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
@@ -23,6 +24,7 @@ pub trait Detail {
 	fn group(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String;
 	fn gid(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String;
 	fn size(&self, conf: &Conf, args: &Args) -> String;
+	fn blocks(&self, conf: &Conf) -> String;
 	fn time(&self, field: DetailField, conf: &Conf) -> String;
 }
 
@@ -43,6 +45,15 @@ impl Detail for Node {
 			None
 		} else {
 			Some(self.meta.len())
+		}
+	}
+
+	/// Compute the block count for the node, returning `None` for directories.
+	fn blocks_val(&self) -> Option<u64> {
+		if self.typ == Typ::Dir {
+			None
+		} else {
+			Some(self.meta.blocks())
 		}
 	}
 
@@ -161,6 +172,14 @@ impl Detail for Node {
 	fn size(&self, conf: &Conf, args: &Args) -> String {
 		match self.size_val() {
 			Some(size) => args.unit.size(size, conf),
+			None => String::default(),
+		}
+	}
+
+	/// Get the number of blocks occupied by the file.
+	fn blocks(&self, _conf: &Conf) -> String {
+		match self.blocks_val() {
+			Some(blocks) => blocks.to_string(),
 			None => String::default(),
 		}
 	}

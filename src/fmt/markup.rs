@@ -140,7 +140,7 @@ where
 mod tests {
 	use super::{len, render, select_while};
 
-	macro_rules! make_select_while_tests {
+	macro_rules! make_select_while_test {
         ( $($name:ident: $predicate:expr => $selected:expr,)* ) => {
             $(
                 #[test]
@@ -154,7 +154,7 @@ mod tests {
         };
     }
 
-	make_select_while_tests!(
+	make_select_while_test!(
 		test_select_selects_part_of_string: |c| c != ',' => "Hello",
 		test_select_consumes_till_end_of_string: |c| c != '?' => "Hello, World!",
 	);

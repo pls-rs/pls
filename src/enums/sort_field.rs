@@ -8,8 +8,7 @@ use std::collections::HashSet;
 /// It also contains, for every variant, a corresponding variant with trailing
 /// underscore that sorts in the opposite direction.
 ///
-/// The `SortField` variants are closely related to the
-/// [`DetailField`](crate::enums::DetailField) variants.
+/// The `SortField` variants are closely related to those of [`DetailField`].
 ///
 /// The normal sort order for alphabetical fields is A to Z. The natural sort
 /// order for numeric fields is 0 to 9. Sort fields with trailing underscore
@@ -79,6 +78,23 @@ pub enum SortField {
 	None, // shorthand: no sorting
 }
 
+impl ToString for SortField {
+	fn to_string(&self) -> String {
+		self.to_possible_value()
+			.map(|pos| String::from(pos.get_name()))
+			.unwrap_or_default()
+	}
+}
+
+impl From<&str> for SortField {
+	fn from(value: &str) -> Self {
+		match Self::from_str(value, true) {
+			Ok(field) => field,
+			Err(_) => Self::None,
+		}
+	}
+}
+
 impl SortField {
 	/// Clean the given input.
 	///
@@ -98,6 +114,25 @@ impl SortField {
 		let mut seen = HashSet::new();
 		cleaned.retain(|&x| seen.insert(x));
 		cleaned
+	}
+
+	/// Convert a `SortField` instance into a pair of `SortField` and direction.
+	///
+	/// For natural order fields, i.e. fields without trailing '_', the outcome
+	/// is the same. For reverse order fields, i.e. fields with trailing '_',
+	/// the outcome is the natural order field and the direction is reversed.
+	///
+	/// # Returns
+	///
+	/// * the basis for the field, the natural order field corresponding to this
+	/// * whether the field is reversed from the natural order
+	fn simplify(&self) -> (Self, bool) {
+		let name = self.to_string();
+		if name.ends_with('_') {
+			(name.trim_end_matches('_').into(), true)
+		} else {
+			(*self, false)
+		}
 	}
 }
 

@@ -1,6 +1,9 @@
+use crate::config::Args;
 use crate::models::Node;
 
 pub trait Name {
+	fn passes_filters(&self, args: &Args) -> bool;
+
 	fn ext(&self) -> String;
 	fn cname(&self) -> String;
 
@@ -8,6 +11,21 @@ pub trait Name {
 }
 
 impl Name for Node {
+	/// Get whether the node passes the name-based filters `only` and `exclude`.
+	///
+	/// For a node to pass, it must pass both filter criteria simultaneously,
+	/// i.e. match the `only` pattern while not matching the `exclude` pattern.
+	/// If either pattern is unset, the node is assumed to pass that test.
+	fn passes_filters(&self, args: &Args) -> bool {
+		args.only
+			.as_ref()
+			.map_or(true, |pat| pat.is_match(self.name.as_bytes()))
+			&& args
+				.exclude
+				.as_ref()
+				.map_or(true, |pat| !pat.is_match(self.name.as_bytes()))
+	}
+
 	/* Sort fields */
 	/* =========== */
 

@@ -2,6 +2,7 @@ use crate::config::{Args, Conf};
 use crate::fmt::render;
 use crate::models::{Node, OwnerMan};
 use crate::output::{Grid, Table};
+use crate::traits::Name;
 use std::path::Path;
 
 /// Represents the entire application state.
@@ -28,6 +29,7 @@ impl Pls {
 			let nodes = entries
 				.into_iter()
 				.filter_map(|entry| entry.ok().map(|entry| Node::new(&entry.path())))
+				.filter(|node| node.passes_filters(&self.args))
 				.collect();
 			Ok(nodes)
 		} else {

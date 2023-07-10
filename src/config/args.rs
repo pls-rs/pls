@@ -1,9 +1,23 @@
 use crate::enums::{DetailField, SortField, Typ, UnitSys};
 use crate::fmt::render;
 use clap::Parser;
+use regex::bytes::{Regex, RegexBuilder};
+use regex::Error as RegexError;
 #[cfg(test)]
 use std::ffi::OsString;
 use std::path::PathBuf;
+
+/// Parse the given string into a [`Regex`] while turning off Unicode mode.
+///
+/// The default implementations of `Regex` from string-types are all
+/// Unicode-aware, so the builder pattern from [`RegexBuilder`] must be used.
+///
+/// Since user's can input regexes like 'ab.d', which can match invalid UTF-8
+/// without Unicode mode, we must use `Regex` and `RegexBuilder` from
+/// [`regex::bytes`].
+fn regex_parser(s: &str) -> Result<Regex, RegexError> {
+	RegexBuilder::new(s).unicode(false).build()
+}
 
 #[derive(Parser, Debug)]
 #[command(
@@ -90,12 +104,12 @@ pub struct Args {
 	pub imp: i8,
 
 	/// the pattern of files to selectively hide from the output
-	#[clap(help_heading = "Filtering", short, long)]
-	pub exclude: Option<regex::Regex>,
+	#[clap(help_heading = "Filtering", short, long, value_parser = regex_parser)]
+	pub exclude: Option<Regex>,
 
 	/// the pattern of files to exclusively show in the output
-	#[clap(help_heading = "Filtering", short, long)]
-	pub only: Option<regex::Regex>,
+	#[clap(help_heading = "Filtering", short, long, value_parser = regex_parser)]
+	pub only: Option<Regex>,
 }
 
 impl Default for Args {

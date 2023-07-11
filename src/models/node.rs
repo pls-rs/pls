@@ -78,9 +78,9 @@ impl Node {
 	///
 	/// Additionally, the display name is marked up with the appropriate
 	/// directives obtained from configuration values.
-	fn display_name(&self, conf: &Conf, args: &Args) -> String {
+	pub fn display_name(&self, conf: &Conf, args: &Args) -> String {
 		let text_directives = self.directives(conf, args);
-		let icon_directives = self.directives(conf, args).replace("underline", "");
+		let icon_directives = text_directives.replace("underline", "");
 
 		let mut parts = String::default();
 

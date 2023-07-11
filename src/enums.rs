@@ -1,3 +1,4 @@
+mod appearance;
 mod detail_field;
 mod entity;
 mod perm;
@@ -6,6 +7,7 @@ mod sym_state;
 mod typ;
 mod unit_sys;
 
+pub use appearance::Appearance;
 pub use detail_field::DetailField;
 pub use entity::Entity;
 pub use perm::{Oct, Sym};

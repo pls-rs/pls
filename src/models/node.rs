@@ -1,7 +1,7 @@
 use crate::config::{Args, Conf};
 use crate::enums::{Appearance, DetailField, Typ};
 use crate::models::OwnerMan;
-use crate::traits::{Detail, Name};
+use crate::traits::{Detail, Name, Sym};
 use std::collections::HashMap;
 use std::fs::Metadata;
 use std::path::{Path, PathBuf};
@@ -34,6 +34,19 @@ impl Node {
 			meta,
 			typ,
 			appearance: Appearance::Normal,
+		}
+	}
+
+	/// Get the `Node` instance with the given name hardcoded.
+	///
+	/// This function consumes the given `Node` and returns a new instance with
+	/// the name hardcoded. It should be used to change the name to something
+	/// different from the name derived from the path.
+	pub fn symlink(path: &Path, name: String) -> Self {
+		Self {
+			name,
+			appearance: Appearance::Symlink,
+			..Self::new(path)
 		}
 	}
 
@@ -101,7 +114,11 @@ impl Node {
 		};
 		parts.push_str("</>");
 
-		// TODO: Symlink target
+		if args.sym {
+			if let Some(target) = self.target() {
+				parts.push_str(&target.print(conf, args));
+			}
+		}
 
 		parts
 	}

@@ -1,5 +1,5 @@
 use crate::config::{Args, Conf};
-use crate::enums::{DetailField, Typ};
+use crate::enums::{Appearance, DetailField, Typ};
 use crate::models::OwnerMan;
 use crate::traits::{Detail, Name};
 use std::collections::HashMap;
@@ -12,6 +12,8 @@ pub struct Node {
 	pub path: PathBuf,
 	pub meta: Metadata,
 	pub typ: Typ,
+
+	pub appearance: Appearance,
 }
 
 impl Node {
@@ -31,6 +33,7 @@ impl Node {
 			path,
 			meta,
 			typ,
+			appearance: Appearance::Normal,
 		}
 	}
 
@@ -82,13 +85,13 @@ impl Node {
 		let mut parts = String::default();
 
 		// Icon
-		if args.icon {
+		if args.icon && self.appearance != Appearance::Symlink {
 			parts.push_str(&format!("<{icon_directives}>{:<1}</> ", self.icon(conf)));
 		}
 
 		// Name and suffix
 		parts.push_str(&format!("<{text_directives}>"));
-		if args.align {
+		if args.align && self.appearance != Appearance::Symlink {
 			parts.push_str(&self.aligned_name());
 		} else {
 			parts.push_str(&self.name);

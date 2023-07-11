@@ -1,4 +1,4 @@
-use crate::enums::{DetailField, Oct, Sym, Typ};
+use crate::enums::{DetailField, Oct, Sym, SymState, Typ};
 use std::collections::HashMap;
 
 pub struct Constants {
@@ -22,6 +22,8 @@ pub struct Constants {
 	pub size_styles: SizeStyles,
 	/// mapping of timestamp fields to the human-readable format
 	pub timestamp_formats: HashMap<DetailField, String>,
+	/// mapping of symlink state to more symlink state info (including style)
+	pub symlink: HashMap<SymState, SymlinkInfo>,
 	/// configuration for the table view
 	pub table: TableInfo,
 }
@@ -109,6 +111,23 @@ impl Default for Constants {
 				)
 			})
 			.collect(),
+			symlink: [
+				(SymState::Ok, "→", "magenta"),
+				(SymState::Broken, "↝", "red"),
+				(SymState::Cyclic, "↺", "yellow"),
+				(SymState::Error, "", "red"),
+			]
+			.into_iter()
+			.map(|(k, sep, style)| {
+				(
+					k,
+					SymlinkInfo {
+						sep: sep.to_string(),
+						style: style.to_string(),
+					},
+				)
+			})
+			.collect(),
 			table: TableInfo {
 				header_style: String::from("bold italic"),
 				column_names: [
@@ -175,6 +194,13 @@ pub struct SizeStyles {
 	pub prefix: String,
 	/// style for the node size base unit
 	pub base: String,
+}
+
+pub struct SymlinkInfo {
+	/// the separator to show between the node and its target
+	pub sep: String,
+	/// the style to use for symlinks in a particular symlink state
+	pub style: String, // applies to name and `arrow`
 }
 
 pub struct TableInfo {

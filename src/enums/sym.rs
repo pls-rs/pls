@@ -1,7 +1,7 @@
 use crate::config::{Args, Conf};
+use crate::exc::Exc;
 use crate::models::Node;
 use serde::{Deserialize, Serialize};
-use std::io::Error as IoError;
 use std::path::PathBuf;
 
 /// This enum contains the four states a symlink can be in, out of which one is
@@ -39,7 +39,7 @@ pub enum SymTarget<'node> {
 	Ok(Node<'node>), // Valid targets should print like `Node`s.
 	Broken(PathBuf), // Invalid targets should be kept as-is.
 	Cyclic(PathBuf), // Target is self, so there is nothing to print.
-	Error(IoError),  // Target cannot be determined.
+	Error(Exc),      // Target cannot be determined.
 }
 
 impl<'node> SymTarget<'node> {
@@ -59,8 +59,8 @@ impl<'node> SymTarget<'node> {
 				let path = path.to_string_lossy().to_string();
 				format!(" <{directives}>{sep} {path}</>")
 			}
-			SymTarget::Error(msg) => {
-				format!(" <{directives}>{sep} {msg}</>")
+			SymTarget::Error(exc) => {
+				format!(" <{directives}>{sep} {}</>", exc.to_string())
 			}
 		}
 	}

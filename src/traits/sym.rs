@@ -1,4 +1,5 @@
 use crate::enums::{SymTarget, Typ};
+use crate::exc::Exc;
 use crate::models::Node;
 use std::fs;
 
@@ -18,7 +19,7 @@ impl Sym for Node<'_> {
 
 		let target_path = match fs::read_link(&self.path) {
 			Ok(path) => path,
-			Err(err) => return Some(SymTarget::Error(err)),
+			Err(err) => return Some(SymTarget::Error(Exc::IoError(err))),
 		};
 
 		// Normalise the symlink path. This process handles symlink that use a
@@ -34,7 +35,7 @@ impl Sym for Node<'_> {
 		let target = match abs_target_path.try_exists() {
 			Err(err) => match err.raw_os_error() {
 				Some(62) => SymTarget::Cyclic(target_path), // i.e. 'Too many levels of symbolic links'
-				_ => SymTarget::Error(err),
+				_ => SymTarget::Error(Exc::IoError(err)),
 			},
 			Ok(true) => SymTarget::Ok(Node::symlink(
 				&abs_target_path,

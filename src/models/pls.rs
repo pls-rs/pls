@@ -42,6 +42,9 @@ impl Pls {
 	/// This function contains the core logic of the application, while `run`,
 	/// which calls this function, contains the logic for iterating over the
 	/// paths to be listed.
+	///
+	/// Note that a lot of operations in this function can be done in parallel.
+	/// There is scope for considerable performance improvements here.
 	fn list(&self, path: &Path) -> Result<(), ()> {
 		let path_buf = match path.canonicalize() {
 			Ok(path_buf) => path_buf,
@@ -55,6 +58,8 @@ impl Pls {
 
 		let mut owner_man = OwnerMan::default();
 
+		// Sort the nodes using the sort bases. This is in reverse order because
+		// the first listed base should be the main sorting factor.
 		self.args.sort_bases.iter().rev().for_each(|field| {
 			nodes.sort_by(|a, b| field.compare(a, b, &mut owner_man));
 		});
@@ -64,6 +69,7 @@ impl Pls {
 			.iter_mut()
 			.for_each(|node| node.match_specs(&self.conf.specs));
 
+		// Convert each node into a row that becomes an entry for a printer.
 		let entries: Vec<_> = nodes
 			.iter()
 			.map(|node| node.row(&mut owner_man, &self.conf, &self.args))

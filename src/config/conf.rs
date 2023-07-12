@@ -1,4 +1,5 @@
-use crate::models::Constants;
+use crate::enums::Collapse;
+use crate::models::{Constants, Spec};
 use std::collections::HashMap;
 
 /// Create a [`HashMap`] from a list of key-value pairs.
@@ -12,6 +13,7 @@ macro_rules! map_str_str {
 
 pub struct Conf {
 	pub icons: HashMap<String, String>,
+	pub specs: Vec<Spec>,
 	pub constants: Constants,
 }
 
@@ -55,6 +57,36 @@ impl Default for Conf {
 				"markdown"     => "", // nf-oct-markdown
 				"rust"         => "", // nf-dev-rust
 			),
+			specs: vec![
+				// Exact names
+				Spec::new(r"^\.DS_Store$", "apple"),
+				Spec::new(r"^\.pls\.yml$", "pls").importance(0),
+				Spec::new(r"^\.gitignore$", "git"),
+				Spec::new(r"^\.github$", "github"),
+				Spec::new(r"^src$", "source").importance(1),
+				Spec::new(r"^(justfile|Makefile)$", "runner"),
+				Spec::new(r"^Cargo\.toml$", "package"),
+				Spec::new(r"^Cargo\.lock$", "lock")
+					.importance(-1)
+					.collapse(Collapse::Name(String::from("Cargo.toml"))),
+				Spec::new(r"^rustfmt.toml$", "broom"),
+				// Partial names
+				Spec::new(r"^\.env\b", "env"),
+				Spec::new(r"^README\b", "book").importance(2),
+				Spec::new(r"^LICENSE\b", "law"),
+				Spec::new(r"docker-compose.*\.yml$", "container"),
+				Spec::new(r"Dockerfile", "container"),
+				// Extensions
+				Spec::new(r"\.sh$", "shell"),
+				Spec::new(r"\.rs$", "rust").style("rgb(247,76,0)"),
+				Spec::new(r"\.txt$", "text"),
+				Spec::new(r"\.md$", "markdown"),
+				Spec::new(r"\.ini$", "config"),
+				Spec::new(r"\.(json|toml|yml|yaml)$", "json"),
+				Spec::new(r"\.(jpg|jpeg|png|svg|webp|gif|ico)$", "image"),
+				Spec::new(r"\.(mov|mp4|mkv|webm|avi|flv)$", "video"),
+				Spec::new(r"\.(mp3|flac|ogg|wav)$", "audio"),
+			],
 			constants: Constants::default(),
 		}
 	}

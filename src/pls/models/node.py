@@ -169,9 +169,6 @@ class Node(Tree):
     def table_row(self) -> Optional[dict[str, Optional[str]]]:
         """the mapping of column names and value when tabulating the node"""
 
-        if self.stat_comp.stat is None:  # No table row for non-existent nodes.
-            return None
-
         if not self.is_visible:  # No table row for invisible nodes.
             return None
 

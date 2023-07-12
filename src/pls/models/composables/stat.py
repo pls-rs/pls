@@ -35,6 +35,8 @@ class StatComp:
             self.stat = node.path.lstat()  # does not follow symlinks
         except FileNotFoundError:
             pass
+        except PermissionError:
+            pass
 
     @cached_property
     def cells(self) -> dict[str, str]:

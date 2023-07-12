@@ -7,7 +7,7 @@ mod spec;
 
 pub use constants::Constants;
 pub use node::Node;
-pub use owner::{Owner, OwnerMan};
+pub use owner::OwnerMan;
 pub use perm::Perm;
 pub use pls::Pls;
 pub use spec::Spec;

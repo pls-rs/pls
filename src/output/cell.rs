@@ -68,6 +68,7 @@ impl Cell {
 			content.insert_str(0, "<underline>");
 			content.push_str("</>");
 		}
+
 		render(content)
 	}
 }

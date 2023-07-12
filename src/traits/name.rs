@@ -10,7 +10,7 @@ pub trait Name {
 	fn aligned_name(&self) -> String;
 }
 
-impl Name for Node {
+impl Name for Node<'_> {
 	/// Get whether the node passes the name-based filters `only` and `exclude`.
 	///
 	/// For a node to pass, it must pass both filter criteria simultaneously,

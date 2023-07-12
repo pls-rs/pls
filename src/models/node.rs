@@ -1,12 +1,12 @@
 use crate::config::{Args, Conf};
 use crate::enums::{Appearance, DetailField, Typ};
-use crate::models::OwnerMan;
+use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Name, Sym};
 use std::collections::HashMap;
 use std::fs::Metadata;
 use std::path::{Path, PathBuf};
 
-pub struct Node {
+pub struct Node<'spec> {
 	pub name: String, // lossy
 
 	pub path: PathBuf,
@@ -14,9 +14,11 @@ pub struct Node {
 	pub typ: Typ,
 
 	pub appearance: Appearance,
+
+	pub specs: Vec<&'spec Spec>,
 }
 
-impl Node {
+impl<'spec> Node<'spec> {
 	pub fn new(path: &Path) -> Self {
 		let name = path
 			.file_name()
@@ -34,6 +36,7 @@ impl Node {
 			meta,
 			typ,
 			appearance: Appearance::Normal,
+			specs: vec![],
 		}
 	}
 
@@ -48,6 +51,18 @@ impl Node {
 			appearance: Appearance::Symlink,
 			..Self::new(path)
 		}
+	}
+
+	/* Mutations */
+	/* ========= */
+
+	/// Link the current node with all the specs that apply to it, based on
+	/// whether the spec's `pattern` matches with this node's name.
+	pub fn match_specs(&mut self, all_specs: &'spec [Spec]) {
+		self.specs = all_specs
+			.iter()
+			.filter(|spec| spec.pattern.is_match(&self.name.as_bytes()))
+			.collect();
 	}
 
 	/* Aggregators */

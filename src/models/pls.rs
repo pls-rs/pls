@@ -59,6 +59,11 @@ impl Pls {
 			nodes.sort_by(|a, b| field.compare(a, b, &mut owner_man));
 		});
 
+		// Match all nodes against all specs.
+		nodes
+			.iter_mut()
+			.for_each(|node| node.match_specs(&self.conf.specs));
+
 		let entries: Vec<_> = nodes
 			.iter()
 			.map(|node| node.row(&mut owner_man, &self.conf, &self.args))

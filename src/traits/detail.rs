@@ -28,7 +28,7 @@ pub trait Detail {
 	fn time(&self, field: DetailField, conf: &Conf) -> String;
 }
 
-impl Detail for Node {
+impl Detail for Node<'_> {
 	/// Compute the ctime of the node.
 	fn ctime(&self) -> SystemTime {
 		let sec = self.meta.ctime();

@@ -18,7 +18,7 @@ pub enum SymState {
 	Error,
 }
 
-impl From<&SymTarget> for SymState {
+impl From<&SymTarget<'_>> for SymState {
 	fn from(value: &SymTarget) -> Self {
 		match value {
 			SymTarget::Ok(_) => SymState::Ok,
@@ -35,14 +35,14 @@ impl From<&SymTarget> for SymState {
 /// * `Ok` contains a [`Node`] instance wrapping the target path.
 /// * `Broken` and `Cyclic` contain the target path as a [`PathBuf`] instance.
 /// * `Error` contains the raised [`std::io::Error`] instance.
-pub enum SymTarget {
-	Ok(Node),        // Valid targets should print like `Node`s.
+pub enum SymTarget<'node> {
+	Ok(Node<'node>), // Valid targets should print like `Node`s.
 	Broken(PathBuf), // Invalid targets should be kept as-is.
 	Cyclic(PathBuf), // Target is self, so there is nothing to print.
 	Error(IoError),  // Target cannot be determined.
 }
 
-impl SymTarget {
+impl<'node> SymTarget<'node> {
 	/// Print the symlink target.
 	pub fn print(&self, conf: &Conf, args: &Args) -> String {
 		let state = self.into();

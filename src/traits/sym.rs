@@ -6,7 +6,7 @@ pub trait Sym {
 	fn target(&self) -> Option<SymTarget>;
 }
 
-impl Sym for Node {
+impl Sym for Node<'_> {
 	/// Get the target destination of the node.
 	///
 	/// If the node is not a symlink, the target is `None`. If the node is a

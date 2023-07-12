@@ -112,10 +112,10 @@ impl Default for Constants {
 			})
 			.collect(),
 			symlink: [
-				(SymState::Ok, "→", "magenta"),
-				(SymState::Broken, "↝", "red"),
-				(SymState::Cyclic, "↺", "yellow"),
-				(SymState::Error, "", "red"),
+				(SymState::Ok, "󰁔", "magenta"),    // nf-md-arrow_right
+				(SymState::Broken, "󱞣", "red"),    // nf-md-arrow_down_right
+				(SymState::Cyclic, "󰑙", "yellow"), // nf-md-replay
+				(SymState::Error, "󰜺", "red"),     // nf-md-cancel
 			]
 			.into_iter()
 			.map(|(k, sep, style)| {

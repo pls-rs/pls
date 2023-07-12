@@ -70,9 +70,21 @@ impl<'spec> Node<'spec> {
 
 	/// Get all styling directives applicable to the node.
 	///
-	/// This function aggregates the `directive` function across all traits.
-	fn directives<'conf>(&self, conf: &'conf Conf, _args: &Args) -> &'conf String {
-		self.typ.directives(conf)
+	/// A node can get its style directives from two sources:
+	///
+	/// * the node's type
+	/// * specs associated with the node
+	fn directives(&self, conf: &Conf, _args: &Args) -> String {
+		let mut directives = String::from(self.typ.directives(conf));
+
+		for &spec in &self.specs {
+			if let Some(style) = &spec.style {
+				directives.push(' ');
+				directives.push_str(style);
+			}
+		}
+
+		directives
 	}
 
 	/* Name components */
@@ -85,11 +97,22 @@ impl<'spec> Node<'spec> {
 	/// * specs associated with the node
 	/// * the node's type
 	fn icon(&self, conf: &Conf) -> String {
-		if let Some(icon_name) = self.typ.icon(conf) {
-			return conf.icons.get(icon_name).cloned().unwrap_or_default();
+		let mut icon_name = None;
+		for &spec in self.specs.iter().rev() {
+			if let Some(icon) = &spec.icon {
+				icon_name = Some(icon);
+				break;
+			}
 		}
 
-		String::default()
+		if icon_name.is_none() {
+			icon_name = self.typ.icon(conf).as_ref();
+		}
+
+		match icon_name {
+			Some(name) => conf.icons.get(name).cloned().unwrap_or_default(),
+			None => String::default(),
+		}
 	}
 
 	/* Renderables */

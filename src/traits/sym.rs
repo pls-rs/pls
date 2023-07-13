@@ -37,10 +37,10 @@ impl Sym for Node<'_> {
 				Some(62) => SymTarget::Cyclic(target_path), // i.e. 'Too many levels of symbolic links'
 				_ => SymTarget::Error(Exc::IoError(err)),
 			},
-			Ok(true) => SymTarget::Ok(Node::symlink(
+			Ok(true) => SymTarget::Ok(Box::new(Node::symlink(
 				&abs_target_path,
 				target_path.to_string_lossy().to_string(),
-			)),
+			))),
 			Ok(false) => SymTarget::Broken(target_path),
 		};
 		Some(target)

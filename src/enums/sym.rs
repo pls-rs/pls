@@ -36,10 +36,10 @@ impl From<&SymTarget<'_>> for SymState {
 /// * `Broken` and `Cyclic` contain the target path as a [`PathBuf`] instance.
 /// * `Error` contains the raised [`std::io::Error`] instance.
 pub enum SymTarget<'node> {
-	Ok(Node<'node>), // Valid targets should print like `Node`s.
-	Broken(PathBuf), // Invalid targets should be kept as-is.
-	Cyclic(PathBuf), // Target is self, so there is nothing to print.
-	Error(Exc),      // Target cannot be determined.
+	Ok(Box<Node<'node>>), // Valid targets should print like `Node`s.
+	Broken(PathBuf),      // Invalid targets should be kept as-is.
+	Cyclic(PathBuf),      // Target is self, so there is nothing to print.
+	Error(Exc),           // Target cannot be determined.
 }
 
 impl<'node> SymTarget<'node> {

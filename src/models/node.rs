@@ -61,7 +61,7 @@ impl<'spec> Node<'spec> {
 	pub fn match_specs(&mut self, all_specs: &'spec [Spec]) {
 		self.specs = all_specs
 			.iter()
-			.filter(|spec| spec.pattern.is_match(&self.name.as_bytes()))
+			.filter(|spec| spec.pattern.is_match(self.name.as_bytes()))
 			.collect();
 	}
 

@@ -3,13 +3,15 @@ use crate::fmt::render;
 pub enum Exc {
 	/// wraps all occurrences of errors in I/O operations
 	IoError(std::io::Error),
+	ConfError(figment::Error),
 }
 
 impl ToString for Exc {
 	fn to_string(&self) -> String {
 		let attn = "<bold red>error:</>";
 		match self {
-			Exc::IoError(err) => format!("{attn} {}", err.to_string()),
+			Exc::IoError(err) => format!("{attn} {err}"),
+			Exc::ConfError(err) => format!("{attn} {err}"),
 		}
 	}
 }

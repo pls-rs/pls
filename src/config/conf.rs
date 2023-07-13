@@ -1,6 +1,12 @@
 use crate::enums::Collapse;
+use crate::exc::Exc;
 use crate::models::{Constants, Spec};
+use figment::providers::{Data, Format, Serialized, Yaml};
+use figment::Figment;
+use log::{debug, info};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::path::Path;
 
 /// Create a [`HashMap`] from a list of key-value pairs.
 macro_rules! map_str_str {
@@ -11,6 +17,88 @@ macro_rules! map_str_str {
 	};
 }
 
+/// Manages the configuration system of the application. This manager provides
+/// `Conf` instances tailored to each path, while caching the base configuration
+/// for performance.
+pub struct ConfMan {
+	/// the base configuration, i.e. the serialized output of [`Conf::default`]
+	pub base: Figment,
+}
+
+impl Default for ConfMan {
+	fn default() -> Self {
+		info!("Preparing base configuration.");
+
+		let mut base = Figment::from(Serialized::defaults(Conf::default()));
+		if let Some(home_yaml) = home::home_dir().and_then(Self::conf_at) {
+			base = base.admerge(home_yaml);
+		}
+
+		info!("Base configuration prepared.");
+		Self { base }
+	}
+}
+
+impl ConfMan {
+	/// Look for a config file in the given directory and return its contents.
+	///
+	/// This function will return `None` if no config file is found inside the
+	/// given directory.
+	fn conf_at<P>(dir: P) -> Option<Data<Yaml>>
+	where
+		P: AsRef<Path>,
+	{
+		let conf_file = dir.as_ref().join(".pls.yml");
+		conf_file.exists().then(|| {
+			debug!("Found config file {conf_file:?}.");
+			Yaml::file(conf_file)
+		})
+	}
+
+	/// Collects all the relevant `.pls.yml` config files into a vector.
+	///
+	/// This includes config files from the following locations:
+	///
+	/// * the home directory, if determined
+	/// * TODO: the Git root, if Git-tracked
+	/// * the given path, if a directory, or it's parent
+	///
+	/// # Arguments
+	///
+	/// * `path` - the path to scan for config files
+	fn yaml_contents(path: &Path) -> Vec<Data<Yaml>> {
+		[
+			// TODO: Add Git root here.
+			if path.is_dir() {
+				Some(path.to_path_buf())
+			} else {
+				path.parent().map(Path::to_path_buf)
+			},
+		]
+		.iter()
+		.flatten()
+		.filter_map(Self::conf_at)
+		.collect()
+	}
+
+	/// Get a `Conf` instance for the given path.
+	///
+	/// This merges the path-specific config files with the base and returns the
+	/// resulting [`Conf`] instance, If there is an error parsing the config
+	/// files, an [`Exc`] instance will be returned.
+	pub fn get(&self, path: Option<&Path>) -> Result<Conf, Exc> {
+		let mut fig = self.base.clone();
+
+		if let Some(path) = path {
+			for file in Self::yaml_contents(path) {
+				fig = fig.admerge(file);
+			}
+		}
+
+		fig.extract().map_err(Exc::ConfError)
+	}
+}
+
 /// Represents the complete configuration of `pls`.
 ///
 /// `pls` comes with a lean configuration out-of-the-box and users are
@@ -19,6 +107,7 @@ macro_rules! map_str_str {
 ///
 /// Note that `pls` also accepts CLI arguments, which are not represented here.
 /// Refer to [`Args`](crate::config::Args) for those.
+#[derive(Serialize, Deserialize)]
 pub struct Conf {
 	/// mapping of icon names to actual glyphs from Nerd Fonts
 	pub icons: HashMap<String, String>,

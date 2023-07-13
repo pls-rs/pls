@@ -1,12 +1,14 @@
 use crate::enums::Collapse;
 use regex::bytes::{Regex, RegexBuilder};
+use serde::{Deserialize, Serialize};
 
 /// Represents the specification for identifying and styling a node.
 ///
 /// Specs are the ideological core of `pls` and the key differentiating factor
 /// from other tools.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Spec {
+	#[serde(with = "serde_regex")]
 	pub pattern: Regex,
 	pub icon: Option<String>,
 	pub style: Option<String>,

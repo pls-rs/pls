@@ -1,6 +1,8 @@
 use crate::enums::{DetailField, Oct, Sym, SymState, Typ};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+#[derive(Serialize, Deserialize)]
 pub struct Constants {
 	/// style for the device number
 	pub dev_style: String,
@@ -158,6 +160,7 @@ impl Default for Constants {
 	}
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct NlinkStyles {
 	/// style to use when file has one hard link
 	pub file_sing: String,
@@ -169,6 +172,7 @@ pub struct NlinkStyles {
 	pub dir_plur: String,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct TypInfo {
 	/// the character for a node type, used in the 'T' column
 	pub ch: String,
@@ -180,6 +184,7 @@ pub struct TypInfo {
 	pub style: String, // applies to name, `ch`, `suffix` and `icon`
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct OwnerStyles {
 	/// style for when the node is owned by the current user/group
 	pub curr: String,
@@ -187,6 +192,7 @@ pub struct OwnerStyles {
 	pub other: String,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct SizeStyles {
 	/// style for the node size magnitude
 	pub mag: String,
@@ -196,6 +202,7 @@ pub struct SizeStyles {
 	pub base: String,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct SymlinkInfo {
 	/// the separator to show between the node and its target
 	pub sep: String,
@@ -203,6 +210,7 @@ pub struct SymlinkInfo {
 	pub style: String, // applies to name and `arrow`
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct TableInfo {
 	/// mapping of detail field to column name
 	pub column_names: HashMap<DetailField, String>,

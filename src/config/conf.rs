@@ -11,9 +11,20 @@ macro_rules! map_str_str {
 	};
 }
 
+/// Represents the complete configuration of `pls`.
+///
+/// `pls` comes with a lean configuration out-of-the-box and users are
+/// encouraged to add their own configuration using YAML files in the home
+/// directory, project Git root and/or working directory.
+///
+/// Note that `pls` also accepts CLI arguments, which are not represented here.
+/// Refer to [`Args`](crate::config::Args) for those.
 pub struct Conf {
+	/// mapping of icon names to actual glyphs from Nerd Fonts
 	pub icons: HashMap<String, String>,
+	/// list of node specs, in ascending order of specificity
 	pub specs: Vec<Spec>,
+	/// constants that determine the appearance and styling of the output
 	pub constants: Constants,
 }
 

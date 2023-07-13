@@ -19,6 +19,13 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
 	RegexBuilder::new(s).unicode(false).build()
 }
 
+/// Represents the command-line arguments to `pls`.
+///
+/// `pls` picks sane defaults for the CLI arguments. If you prefer different
+/// defaults, users can alias `pls` with their preferred flags set.
+///
+/// Note that `pls` allows for deep customisation using `.pls.yml` files, which
+/// is not represented here. Refer to [`Conf`](crate::config::Conf) for those.
 #[derive(Parser, Debug)]
 #[command(
     author,
@@ -131,6 +138,10 @@ impl Args {
 		Args::parse_from(itr)
 	}
 
+	/// Clean the parsed arguments and print any warnings that are raised.
+	///
+	/// The output of this function is similar to the format used by
+	/// [`Exc`](crate::exc::Exc) as they serve similar purposes.
 	fn post_process(mut self) -> Self {
 		let warnings = self.clean();
 		for warning in &warnings {

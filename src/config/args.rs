@@ -84,8 +84,8 @@ pub struct Args {
 	pub suffix: bool,
 
 	/// show symlink targets
-	#[clap(help_heading = "Presentation", short = 'l', long, default_value = "true", action = clap::ArgAction::Set)]
-	pub sym: bool,
+	#[clap(help_heading = "Presentation", short = 'l', long, action = clap::ArgAction::Set)]
+	pub sym: Option<bool>,
 
 	/// align items accounting for leading dots
 	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
@@ -167,15 +167,28 @@ impl Args {
 			self.grid = false;
 		}
 
-		if self.grid && self.show_header() {
-			// Headers cannot be shown outside of detailed view.
-			warnings.push("Grid view disabled column headers.");
+		if self.grid {
+			if self.header == Some(true) {
+				// Headers cannot be shown outside of detailed view.
+				warnings.push("Grid view disabled column headers.");
+			}
 			self.header = Some(false);
 		}
-
-		if self.header.is_none() && self.is_detailed() {
+		if self.header.is_none() {
 			// Headers are shown by default in detailed mode.
-			self.header = Some(true);
+			self.header = Some(self.is_detailed());
+		}
+
+		if self.grid {
+			if self.sym == Some(true) {
+				// Symlink targets cannot be shown in grid view.
+				warnings.push("Grid view disabled symlink targets.");
+			}
+			self.sym = Some(false);
+		}
+		if self.sym.is_none() {
+			// Symlink targets are shown by default in detailed mode.
+			self.sym = Some(true);
 		}
 
 		warnings
@@ -185,13 +198,18 @@ impl Args {
 	/* ======= */
 
 	/// Get whether to render the output in detailed view using a table.
-	pub fn is_detailed(&self) -> bool {
+	fn is_detailed(&self) -> bool {
 		self.details.len() >= 2
 	}
 
 	/// Get whether to show the header above the table columns.
 	pub fn show_header(&self) -> bool {
-		self.header.unwrap_or_default()
+		self.header.unwrap() // always `Some`
+	}
+
+	/// Get whether to show the symlink target.
+	pub fn show_sym(&self) -> bool {
+		self.sym.unwrap() // always `Some`
 	}
 }
 
@@ -215,6 +233,7 @@ mod tests {
 	make_warning_test!(
 		test_details_multi_col: ["pls", "--det", "ino", "--grid", "true"] => "Detailed view disabled grid view.",
 		test_multi_col_and_header: ["pls", "--grid", "true", "--header", "true"] => "Grid view disabled column headers.",
+		test_multi_col_and_sym: ["pls", "--grid", "true", "--sym", "true"] => "Grid view disabled symlink targets.",
 	);
 
 	macro_rules! make_clean_test {
@@ -232,7 +251,15 @@ mod tests {
 
 	make_clean_test!(
 		test_details_beats_multi_col: ["pls", "--det", "ino", "--grid", "true"] => grid, false,
+
+		test_default_sym: ["pls"] => sym, Some(true),
+		test_default_sym_when_detailed: ["pls", "--det", "ino"] => sym, Some(true),
+		test_default_sym_when_multi_col: ["pls", "--grid", "true"] => sym, Some(false),
+		test_multi_col_beats_sym: ["pls", "--grid", "true", "--sym", "true"] => sym, Some(false),
+
+		test_default_header: ["pls"] => header, Some(false),
+		test_default_header_when_detailed: ["pls", "--det", "ino"] => header, Some(true),
+		test_default_header_when_multi_col: ["pls", "--grid", "true"] => header, Some(false),
 		test_multi_col_beats_header: ["pls", "--grid", "true", "--header", "true"] => header, Some(false),
-		test_details_aids_header: ["pls", "--det", "ino"] => header, Some(true),
 	);
 }

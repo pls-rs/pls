@@ -1,4 +1,4 @@
-use crate::config::{Args, Conf};
+use crate::config::{Args, ConfMan};
 use crate::exc::Exc;
 use crate::fmt::render;
 use crate::models::{Node, OwnerMan};
@@ -10,8 +10,8 @@ use std::path::Path;
 /// Represents the entire application state.
 #[derive(Default)]
 pub struct Pls {
-	/// configuration from `.pls.yml` files
-	conf: Conf,
+	/// configuration manager for `.pls.yml` files
+	conf_man: ConfMan,
 	/// command-line arguments
 	args: Args,
 }
@@ -47,6 +47,9 @@ impl Pls {
 	fn list(&self, path: &Path) -> Result<(), Exc> {
 		let path_buf = path.canonicalize().map_err(Exc::IoError)?;
 
+		// Create the configuration specific to this path.
+		let conf = self.conf_man.get(Some(path))?;
+
 		// Get all nodes corresponding to this path.
 		let mut nodes = self.get_contents(&path_buf)?;
 
@@ -64,21 +67,21 @@ impl Pls {
 		// Match all nodes against all specs.
 		nodes
 			.iter_mut()
-			.for_each(|node| node.match_specs(&self.conf.specs));
+			.for_each(|node| node.match_specs(&conf.specs));
 
 		// Convert each node into a row that becomes an entry for a printer.
 		let entries: Vec<_> = nodes
 			.iter()
-			.map(|node| node.row(&mut owner_man, &self.conf, &self.args))
+			.map(|node| node.row(&mut owner_man, &conf, &self.args))
 			.collect();
 
 		// Create the printer and render the entries to STDOUT.
 		if self.args.grid {
 			let grid = Grid::new(entries);
-			grid.render(&self.conf, &self.args);
+			grid.render(&conf, &self.args);
 		} else {
 			let table = Table::new(entries);
-			table.render(&self.conf, &self.args);
+			table.render(&conf, &self.args);
 		}
 
 		Ok(())

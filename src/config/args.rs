@@ -122,8 +122,9 @@ pub struct Args {
 impl Default for Args {
 	/// Create a new instance of `Args` parsing real command-line arguments.
 	fn default() -> Self {
-		let args = Args::parse();
-		args.post_process()
+		let mut args = Args::parse();
+		args.post_process();
+		args
 	}
 }
 
@@ -142,15 +143,14 @@ impl Args {
 	///
 	/// The output of this function is similar to the format used by
 	/// [`Exc`](crate::exc::Exc) as they serve similar purposes.
-	fn post_process(mut self) -> Self {
+	fn post_process(&mut self) {
 		let warnings = self.clean();
 		for warning in &warnings {
-			println!("{} {}", render("<bold yellow>WARN:</>"), warning);
+			println!("{} {warning}", render("<bold yellow>warn:</>"))
 		}
 		if !warnings.is_empty() {
 			println!();
 		}
-		self
 	}
 
 	/// Clean the parsed arguments to resolve conflicting arguments.

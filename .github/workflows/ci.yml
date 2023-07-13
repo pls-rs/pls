@@ -58,9 +58,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run unit test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
+        run: cargo test
 
   build:
     name: Build release
@@ -82,7 +80,4 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build release
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
+        run: cargo build --release

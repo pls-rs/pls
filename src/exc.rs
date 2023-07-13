@@ -1,4 +1,5 @@
 use crate::fmt::render;
+use std::fmt::{Display, Formatter, Result};
 
 pub enum Exc {
 	/// wraps all occurrences of errors in I/O operations
@@ -6,20 +7,14 @@ pub enum Exc {
 	ConfError(figment::Error),
 }
 
-impl ToString for Exc {
-	fn to_string(&self) -> String {
+impl Display for Exc {
+	fn fmt(&self, f: &mut Formatter<'_>) -> Result {
 		let attn = "<bold red>error:</>";
-		match self {
-			Exc::IoError(err) => format!("{attn} {err}"),
-			Exc::ConfError(err) => format!("{attn} {err}"),
-		}
-	}
-}
-
-impl Exc {
-	/// Print the error message to STDOUT, rendering any markup that the error
-	/// message may contain.
-	pub fn print(&self) {
-		println!("{}", render(self.to_string()));
+		let err = match self {
+			Exc::IoError(err) => err.to_string(),
+			Exc::ConfError(err) => err.to_string(),
+		};
+		let msg = format!("{attn} {err}");
+		write!(f, "{}", render(msg))
 	}
 }

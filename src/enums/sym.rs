@@ -60,7 +60,7 @@ impl<'node> SymTarget<'node> {
 				format!(" <{directives}>{sep} {path}</>")
 			}
 			SymTarget::Error(exc) => {
-				format!(" <{directives}>{sep} {}</>", exc.to_string())
+				format!(" <{directives}>{sep} {exc}</>",)
 			}
 		}
 	}

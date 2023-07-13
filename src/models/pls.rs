@@ -102,7 +102,7 @@ impl Pls {
 
 			match self.list(path) {
 				Ok(()) => info!("All OK!"),
-				Err(exc) => exc.print(),
+				Err(exc) => println!("{exc}"),
 			}
 		}
 	}

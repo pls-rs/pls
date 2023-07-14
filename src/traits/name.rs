@@ -1,8 +1,9 @@
 use crate::config::Args;
 use crate::models::Node;
+use log::debug;
 
 pub trait Name {
-	fn passes_filters(&self, args: &Args) -> bool;
+	fn is_visible(&self, args: &Args) -> bool;
 
 	fn ext(&self) -> String;
 	fn cname(&self) -> String;
@@ -16,7 +17,8 @@ impl Name for Node<'_> {
 	/// For a node to pass, it must pass both filter criteria simultaneously,
 	/// i.e. match the `only` pattern while not matching the `exclude` pattern.
 	/// If either pattern is unset, the node is assumed to pass that test.
-	fn passes_filters(&self, args: &Args) -> bool {
+	fn is_visible(&self, args: &Args) -> bool {
+		debug!("Checking visibility of \"{self}\" based on name.");
 		args.only
 			.as_ref()
 			.map_or(true, |pat| pat.is_match(self.name.as_bytes()))

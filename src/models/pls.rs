@@ -27,8 +27,12 @@ impl Pls {
 			let entries = path.read_dir().map_err(Exc::IoError)?;
 			let nodes = entries
 				.into_iter()
-				.filter_map(|entry| entry.ok().map(|entry| Node::new(&entry.path())))
-				.filter(|node| node.passes_filters(&self.args))
+				.filter_map(|entry| {
+					entry.ok().and_then(|entry| {
+						let node = Node::new(&entry.path());
+						Name::is_visible(&node, &self.args).then_some(node)
+					})
+				})
 				.collect();
 			Ok(nodes)
 		} else {

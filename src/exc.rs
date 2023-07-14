@@ -8,7 +8,7 @@ pub enum Exc {
 }
 
 impl Display for Exc {
-	fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+	fn fmt(&self, f: &mut Formatter) -> Result {
 		let attn = "<bold red>error:</>";
 		let err = match self {
 			Exc::IoError(err) => err.to_string(),

@@ -3,6 +3,7 @@ use crate::enums::{Appearance, DetailField, Typ};
 use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Name, Sym};
 use std::collections::HashMap;
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::Metadata;
 use std::path::{Path, PathBuf};
 
@@ -209,5 +210,11 @@ impl<'spec> Node<'spec> {
 			.iter()
 			.map(|&detail| (detail, self.get_value(detail, owner_man, conf, args)))
 			.collect()
+	}
+}
+
+impl Display for Node<'_> {
+	fn fmt(&self, f: &mut Formatter) -> FmtResult {
+		write!(f, "{}", self.name)
 	}
 }

@@ -3,7 +3,7 @@ use crate::exc::Exc;
 use crate::fmt::render;
 use crate::models::{Node, OwnerMan};
 use crate::output::{Grid, Table};
-use crate::traits::Name;
+use crate::traits::{Imp, Name};
 use log::info;
 use std::path::Path;
 
@@ -52,7 +52,8 @@ impl Pls {
 		let path_buf = path.canonicalize().map_err(Exc::IoError)?;
 
 		// Create the configuration specific to this path.
-		let conf = self.conf_man.get(Some(path))?;
+		let mut conf = self.conf_man.get(Some(path))?;
+		conf.constants.massage_imps();
 
 		// Get all nodes corresponding to this path.
 		let mut nodes = self.get_contents(&path_buf)?;
@@ -76,7 +77,13 @@ impl Pls {
 		// Convert each node into a row that becomes an entry for a printer.
 		let entries: Vec<_> = nodes
 			.iter()
-			.map(|node| node.row(&mut owner_man, &conf, &self.args))
+			.filter_map(|node| {
+				Imp::is_visible(node, &conf, &self.args).then_some(node.row(
+					&mut owner_man,
+					&conf,
+					&self.args,
+				))
+			})
 			.collect();
 
 		// Create the printer and render the entries to STDOUT.

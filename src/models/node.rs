@@ -1,7 +1,7 @@
 use crate::config::{Args, Conf};
 use crate::enums::{Appearance, DetailField, Typ};
 use crate::models::{OwnerMan, Spec};
-use crate::traits::{Detail, Name, Sym};
+use crate::traits::{Detail, Imp, Name, Sym};
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::Metadata;
@@ -75,8 +75,14 @@ impl<'spec> Node<'spec> {
 	///
 	/// * the node's type
 	/// * specs associated with the node
-	fn directives(&self, conf: &Conf, _args: &Args) -> String {
+	fn directives(&self, conf: &Conf, args: &Args) -> String {
 		let mut directives = String::from(self.typ.directives(conf));
+
+		let imp_dir = Imp::directives(self, conf, args);
+		if let Some(directive) = imp_dir {
+			directives.push(' ');
+			directives.push_str(&directive);
+		}
 
 		for &spec in &self.specs {
 			if let Some(style) = &spec.style {

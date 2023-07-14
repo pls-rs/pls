@@ -152,7 +152,7 @@ impl<'spec> Node<'spec> {
 		};
 		parts.push_str("</>");
 
-		if args.show_sym() {
+		if args.sym {
 			if let Some(target) = self.target() {
 				parts.push_str(&target.print(conf, args));
 			}

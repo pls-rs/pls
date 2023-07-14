@@ -37,7 +37,7 @@ impl Table {
 			})
 			.collect();
 
-		if args.show_header() {
+		if args.header {
 			for (width, det, cell) in &iter_basis {
 				print!("{}", &cell.print(det.name(conf), true, width));
 			}

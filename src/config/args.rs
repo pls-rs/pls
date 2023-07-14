@@ -1,6 +1,7 @@
 use crate::enums::{DetailField, SortField, Typ, UnitSys};
 use crate::fmt::render;
 use clap::Parser;
+use log::warn;
 use regex::bytes::{Regex, RegexBuilder};
 use regex::Error as RegexError;
 #[cfg(test)]
@@ -54,8 +55,8 @@ pub struct Args {
 	pub details: Vec<DetailField>,
 
 	/// show headers above columnar data
-	#[clap(help_heading = "Detailed view", short = 'H', long, action = clap::ArgAction::Set)]
-	pub header: Option<bool>,
+	#[clap(help_heading = "Detailed view", short = 'H', long, default_value = "true", action = clap::ArgAction::Set)]
+	pub header: bool,
 
 	/// the type of units to use for the node sizes
 	#[clap(
@@ -84,8 +85,8 @@ pub struct Args {
 	pub suffix: bool,
 
 	/// show symlink targets
-	#[clap(help_heading = "Presentation", short = 'l', long, action = clap::ArgAction::Set)]
-	pub sym: Option<bool>,
+	#[clap(help_heading = "Presentation", short = 'l', long, default_value = "true", action = clap::ArgAction::Set)]
+	pub sym: bool,
 
 	/// align items accounting for leading dots
 	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
@@ -139,21 +140,22 @@ impl Args {
 		Args::parse_from(itr)
 	}
 
-	/// Clean the parsed arguments and print any warnings that are raised.
+	/// Clean the parsed arguments and log any warnings that are raised.
 	///
 	/// The output of this function is similar to the format used by
 	/// [`Exc`](crate::exc::Exc) as they serve similar purposes.
 	fn post_process(&mut self) {
-		let warnings = self.clean();
-		for warning in &warnings {
-			println!("{} {warning}", render("<bold yellow>warn:</>"))
-		}
-		if !warnings.is_empty() {
-			println!();
-		}
+		self.clean().iter().for_each(|warning| {
+			warn!("{warning}");
+		});
 	}
 
 	/// Clean the parsed arguments to resolve conflicting arguments.
+	///
+	/// `pls` is intentionally lax about conflicting arguments, and will attempt
+	/// to resolve conflicts in a way that is least surprising to the user. So,
+	/// while the clean function generates warnings, they are not surfaced to
+	/// the user and are primarily used for debugging.
 	fn clean(&mut self) -> Vec<&str> {
 		let mut warnings = vec![];
 
@@ -167,28 +169,20 @@ impl Args {
 			self.grid = false;
 		}
 
-		if self.grid {
-			if self.header == Some(true) {
-				// Headers cannot be shown outside of detailed view.
-				warnings.push("Grid view disabled column headers.");
-			}
-			self.header = Some(false);
+		if self.grid && self.header {
+			// Headers cannot be shown outside of detailed view.
+			warnings.push("Grid view disabled column headers.");
+			self.header = false;
 		}
-		if self.header.is_none() {
-			// Headers are shown by default in detailed mode.
-			self.header = Some(self.is_detailed());
+		if !self.is_detailed() && self.header {
+			warnings.push("Lack of metadata disabled column headers.");
+			self.header = false;
 		}
 
-		if self.grid {
-			if self.sym == Some(true) {
-				// Symlink targets cannot be shown in grid view.
-				warnings.push("Grid view disabled symlink targets.");
-			}
-			self.sym = Some(false);
-		}
-		if self.sym.is_none() {
-			// Symlink targets are shown by default in detailed mode.
-			self.sym = Some(true);
+		if self.grid && self.sym {
+			// Symlink targets cannot be shown in grid view.
+			warnings.push("Grid view disabled symlink targets.");
+			self.sym = false;
 		}
 
 		warnings
@@ -200,16 +194,6 @@ impl Args {
 	/// Get whether to render the output in detailed view using a table.
 	fn is_detailed(&self) -> bool {
 		self.details.len() >= 2
-	}
-
-	/// Get whether to show the header above the table columns.
-	pub fn show_header(&self) -> bool {
-		self.header.unwrap() // always `Some`
-	}
-
-	/// Get whether to show the symlink target.
-	pub fn show_sym(&self) -> bool {
-		self.sym.unwrap() // always `Some`
 	}
 }
 
@@ -252,14 +236,16 @@ mod tests {
 	make_clean_test!(
 		test_details_beats_multi_col: ["pls", "--det", "ino", "--grid", "true"] => grid, false,
 
-		test_default_sym: ["pls"] => sym, Some(true),
-		test_default_sym_when_detailed: ["pls", "--det", "ino"] => sym, Some(true),
-		test_default_sym_when_multi_col: ["pls", "--grid", "true"] => sym, Some(false),
-		test_multi_col_beats_sym: ["pls", "--grid", "true", "--sym", "true"] => sym, Some(false),
+		// Symlink target is only shown in detailed view.
+		test_default_sym: ["pls"] => sym, true,
+		test_default_sym_when_detailed: ["pls", "--det", "ino"] => sym, true,
+		test_default_sym_when_multi_col: ["pls", "--grid", "true"] => sym, false,
+		test_multi_col_beats_sym: ["pls", "--grid", "true", "--sym", "true"] => sym, false,
 
-		test_default_header: ["pls"] => header, Some(false),
-		test_default_header_when_detailed: ["pls", "--det", "ino"] => header, Some(true),
-		test_default_header_when_multi_col: ["pls", "--grid", "true"] => header, Some(false),
-		test_multi_col_beats_header: ["pls", "--grid", "true", "--header", "true"] => header, Some(false),
+		// Header is only shown when detailed view is enabled and there is at least one detail field.
+		test_default_header: ["pls"] => header, false,
+		test_default_header_when_detailed: ["pls", "--det", "ino"] => header, true,
+		test_default_header_when_multi_col: ["pls", "--grid", "true"] => header, false,
+		test_multi_col_beats_header: ["pls", "--grid", "true", "--header", "true"] => header, false,
 	);
 }

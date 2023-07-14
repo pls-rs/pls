@@ -154,7 +154,7 @@ impl SortField {
 			SortField::Ctime => DetailField::Ctime,
 			SortField::Mtime => DetailField::Mtime,
 			SortField::Atime => DetailField::Atime,
-			_ => unreachable!(),
+			_ => unreachable!("src/enums/sort_fields.rs / impl SortField / cmp_time"),
 		};
 		let a = a.time_val(field);
 		let b = b.time_val(field);

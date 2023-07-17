@@ -49,7 +49,11 @@ def read_input(arg_path: Path) -> tuple[dict[str, Node], list[Node]]:
         try:
             all_nodes = os.listdir(arg_path)
         except (OSError, PermissionError):
-            all_nodes = PermissionError
+            console.console.print(
+                f"Permission denied for [repr.path]{arg_path}[/].",
+                highlight=False,
+            )
+            return {}, []
     else:
         parent_path = arg_path.parent
         all_nodes = [arg_path.name]
@@ -61,12 +65,6 @@ def read_input(arg_path: Path) -> tuple[dict[str, Node], list[Node]]:
         )
         return {}, []
 
-    if all_nodes == PermissionError:
-        console.console.print(
-            f"Permission denied for [repr.path]{arg_path}[/].",
-            highlight=False,
-        )
-        return {}, []
     node_map = {
         node: Node(name=node, path=parent_path.joinpath(node))
         for node in all_nodes

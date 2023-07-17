@@ -142,7 +142,7 @@ def get_git_statuses(git_root: Path) -> dict[Path, str]:
     except (subprocess.CalledProcessError, FileNotFoundError):
         return status_map
     except (subprocess.CalledProcessError, PermissionError):
-        return None
+        return status_map
 
     for line in status_lines:
         status = line[0:2]

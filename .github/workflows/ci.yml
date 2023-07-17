@@ -21,21 +21,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8" # lowest supported version
 
       - name: Cache pre-commit envs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pre-commit
           key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Run pre-commit to lint files
         run: |
-          pip install git+https://github.com/dhruvkb/pre-commit@main
+          pip install --upgrade pip
+          pip install pre-commit
           pre-commit run --all-files
 
   test:
@@ -49,15 +50,19 @@ jobs:
           - windows-latest
           - macos-latest
         python:
+          - "3.11"
           - "3.10"
           - "3.9"
           - "3.8"
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Python
         id: setup-python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
       - name: Setup Poetry
@@ -75,7 +80,7 @@ jobs:
 
       - name: Load cached virtualenv
         id: load-cached-venv
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}

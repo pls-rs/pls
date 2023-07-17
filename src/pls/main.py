@@ -110,6 +110,7 @@ def treerender(node, child_list, show_header: bool):
     """
 
     from rich.live import Live
+
     from pls.output.table_printer import TablePrinter
 
     printer = TablePrinter(node, child_list)
@@ -118,7 +119,8 @@ def treerender(node, child_list, show_header: bool):
         printer.table,
         vertical_overflow="visible",
         refresh_per_second=20,
-    ) as live:
+    ):
+
         def populate_callback(_):
             printer.tabulate_node(_)
 

@@ -7,7 +7,9 @@ from pls.globals import args
 
 
 if TYPE_CHECKING:
-    from typing import Optional
+    from typing import Callable, Optional
+
+    from pls.models.node_spec import NodeSpec
 
 
 class Tree:
@@ -119,3 +121,10 @@ class Tree:
             sub_node.pre_shapes.extend(pre_shapes)
             sub_node.set_sub_pre_shapes()
             sub_node.last_shape = sub_node._get_last_shape()
+
+    def populate_tree(
+        self,
+        specs: list[NodeSpec],
+        populate_callback: Callable = lambda _: None,
+    ):
+        raise NotImplementedError

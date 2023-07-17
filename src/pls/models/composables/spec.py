@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pls.globals import args
 from pls.models.node_spec import NodeSpec
 
 

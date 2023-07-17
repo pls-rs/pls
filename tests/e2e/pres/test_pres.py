@@ -19,7 +19,7 @@ from tests.e2e.utils import run_pls
 def test_icon_nerd_fonts(args: list[str], icon_workbench: Path):
     args.append(str(icon_workbench))
     proc = run_pls(args)
-    for icon in ["", "", ""]:
+    for icon in ["", "", ""]:
         assert icon in proc.stdout
 
 
@@ -149,18 +149,18 @@ def test_collapse_gt_one(args: list[str], collapse_workbench: Path):
     "args, out_lines",
     [
         (
-            ["--tree"],
+            ["--tree", "--all"],
             [
                 "   a/",
                 "   ├─ c/",
                 "    │  ├─ d",
-                "   │  └─.gitignore",
+                "   │  └─.gitignore",
                 "    └─ b",
                 "    e",
             ],
         ),
         (
-            ["--tree", "--icon=none"],
+            ["--tree", "--icon=none", "--all"],
             [
                 " a/",
                 " ├─ c/",
@@ -171,23 +171,23 @@ def test_collapse_gt_one(args: list[str], collapse_workbench: Path):
             ],
         ),
         (
-            ["--tree", "--sort=name"],
+            ["--tree", "--sort=name", "--all"],
             [
                 "   a/",
                 "    ├─ b",
                 "   └─ c/",
                 "       ├─ d",
-                "      └─.gitignore",
+                "      └─.gitignore",
                 "    e",
             ],
         ),
         (
-            ["--tree", "--no-align"],
+            ["--tree", "--no-align", "--all"],
             [
                 "  a/",
                 "  ├─c/",
                 "   │ ├─d",
-                "  │ └─.gitignore",
+                "  │ └─.gitignore",
                 "   └─b",
                 "   e",
             ],
@@ -198,5 +198,6 @@ def test_tree(args: list[str], out_lines: list[str], tree_workbench: Path):
     args.insert(0, str(tree_workbench))
     proc = run_pls(args)
     lines = [line.rstrip() for line in proc.stdout.split("\n")]
+    print(lines)
     for line in out_lines:
         assert line in lines

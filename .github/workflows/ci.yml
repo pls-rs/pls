@@ -35,7 +35,8 @@ jobs:
 
       - name: Run pre-commit to lint files
         run: |
-          pip install git+https://github.com/dhruvkb/pre-commit@main
+          pip install --upgrade pip
+          pip install pre-commit
           pre-commit run --all-files
 
   test:

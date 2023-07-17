@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import cached_property
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from rich.markup import escape
 
@@ -129,7 +129,11 @@ class Node(Tree):
             return self.format_rules.format_icon(icon)
         return ""
 
-    def populate_tree(self, specs: list[NodeSpec], populate_callback: callable = lambda _: None):
+    def populate_tree(
+        self,
+        specs: list[NodeSpec],
+        populate_callback: Callable = lambda _: None,
+    ):
         """
         Populate nodes with their children for a treeview preview, recursively.
 

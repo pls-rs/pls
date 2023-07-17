@@ -23,9 +23,9 @@ def test_help(arg: str):
     expected_lines = [
         "usage: pls [-h] [-v]",
         "`pls` is a prettier and powerful `ls` for the pros.",
-        "[node ...]",
-        "--help/-h",
-        "--version/-v",
+        "node",  # positional arguments
+        "--help/-h",  # meta
+        "--version/-v",  # meta
     ]
     for line in expected_lines:
         assert line in proc.stdout

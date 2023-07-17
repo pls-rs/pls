@@ -50,6 +50,7 @@ jobs:
           - windows-latest
           - macos-latest
         python:
+          - "3.11"
           - "3.10"
           - "3.9"
           - "3.8"

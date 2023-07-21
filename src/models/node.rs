@@ -78,10 +78,12 @@ impl<'spec> Node<'spec> {
 	fn directives(&self, conf: &Conf, args: &Args) -> String {
 		let mut directives = String::from(self.typ.directives(conf));
 
-		let imp_dir = Imp::directives(self, conf, args);
-		if let Some(directive) = imp_dir {
-			directives.push(' ');
-			directives.push_str(&directive);
+		if self.appearance != Appearance::Symlink {
+			let imp_dir = Imp::directives(self, conf, args);
+			if let Some(directive) = imp_dir {
+				directives.push(' ');
+				directives.push_str(&directive);
+			}
 		}
 
 		for &spec in &self.specs {

@@ -47,8 +47,8 @@ jobs:
     strategy:
       matrix:
         os:
-        - ubuntu-latest
-        - macos-latest
+          - ubuntu-latest
+          - macos-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -68,9 +68,16 @@ jobs:
       - unit
     strategy:
       matrix:
-        os:
-        - ubuntu-latest
-        - macos-latest
+        build:
+          - linux
+          - macos
+        include:
+          - build: linux
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - build: macos
+            os: macos-latest
+            target: x86_64-apple-darwin
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -78,6 +85,17 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+        with:
+          target: ${{ matrix.target }}
+
+      - name: Install Cross
+        run: cargo install cross
 
       - name: Build release
-        run: cargo build --release
+        run: cross build --verbose --release --target ${{ matrix.target }}
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pls-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/pls

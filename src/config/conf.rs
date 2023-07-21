@@ -159,7 +159,7 @@ impl Default for Conf {
 			),
 			specs: vec![
 				// Exact names
-				Spec::new(r"^\.DS_Store$", "apple"),
+				Spec::new(r"^\.DS_Store$", "apple").importance(-2),
 				Spec::new(r"^\.pls\.yml$", "pls").importance(0),
 				Spec::new(r"^\.gitignore$", "git"),
 				Spec::new(r"^\.github$", "github"),

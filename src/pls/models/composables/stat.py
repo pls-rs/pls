@@ -33,9 +33,7 @@ class StatComp:
         self.stat: Optional[os.stat_result] = None
         try:
             self.stat = node.path.lstat()  # does not follow symlinks
-        except FileNotFoundError:
-            pass
-        except PermissionError:
+        except (FileNotFoundError, PermissionError):
             pass
 
     @cached_property

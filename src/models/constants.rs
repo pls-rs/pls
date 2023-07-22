@@ -22,6 +22,8 @@ pub struct Constants {
 	pub group_styles: OwnerStyles,
 	/// style for magnitude and unit of node size
 	pub size_styles: SizeStyles,
+	/// style for the number of blocks occupied by the file
+	pub blocks_style: String,
 	/// mapping of timestamp fields to the human-readable format
 	pub timestamp_formats: HashMap<DetailField, String>,
 	/// mapping of symlink state to more symlink state info (including style)
@@ -102,6 +104,7 @@ impl Default for Constants {
 				prefix: String::default(),
 				base: String::from("dimmed"),
 			},
+			blocks_style: String::default(),
 			timestamp_formats: [
 				(DetailField::Btime, "green"),
 				(DetailField::Ctime, "yellow"),

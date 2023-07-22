@@ -177,11 +177,13 @@ impl Detail for Node<'_> {
 	}
 
 	/// Get the number of blocks occupied by the file.
-	fn blocks(&self, _conf: &Conf) -> String {
-		match self.blocks_val() {
-			Some(blocks) => blocks.to_string(),
-			None => String::default(),
-		}
+	fn blocks(&self, conf: &Conf) -> String {
+		self.blocks_val()
+			.map(|blocks| {
+				let directives = &conf.constants.blocks_style;
+				format!("<{directives}>{blocks}</>")
+			})
+			.unwrap_or_default()
 	}
 
 	/// Get the chosen timestamp field.

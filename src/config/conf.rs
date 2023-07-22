@@ -128,7 +128,7 @@ impl Default for Conf {
 				"file"         => "", // nf-fa-file
 				"dir"          => "", // nf-fa-folder
 				"symlink"      => "󰌹", // nf-md-link-variant
-				"pipe"         => "󰟥", // nf-md-pipe
+				"fifo"         => "󰟥", // nf-md-pipe
 				"socket"       => "󰟨", // nf-md-power_socket_uk
 				"char_device"  => "", // nf-fa-paragraph
 				"block_device" => "󰋊", // nf-md-harddisk

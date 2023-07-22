@@ -110,7 +110,9 @@ where
 		let mut acc = acc;
 		if !curr.is_empty() {
 			let directives: Vec<_> = stack.iter().flatten().collect();
-			acc.push_str(&fmt(&curr, &directives));
+			if !directives.contains(&&String::from("hidden")) {
+				acc.push_str(&fmt(&curr, &directives));
+			}
 			curr.clear();
 		}
 		acc
@@ -129,8 +131,12 @@ pub fn len<S>(markup: S) -> usize
 where
 	S: AsRef<str>,
 {
-	reduce_markup(markup, 0, |_, curr, acc| {
-		let count = curr.graphemes(true).count();
+	reduce_markup(markup, 0, |stack, curr, acc| {
+		let count = if curr.is_empty() || stack.iter().flatten().any(|tag| tag == "hidden") {
+			0
+		} else {
+			curr.graphemes(true).count()
+		};
 		curr.clear();
 		acc + count
 	})
@@ -184,6 +190,7 @@ mod tests {
 		test_render_handles_unclosed_tags: "<bold>bold" => "\x1b[1mbold\x1b[0m",
 		test_render_handles_trailing_text: "<bold>bold</> trailing" => "\x1b[1mbold\x1b[0m trailing",
 		test_render_handles_nested_tags: "<blue><italic>blue italic</> blue</>" => "\x1b[3;34mblue italic\x1b[0m\x1b[34m blue\x1b[0m",
+		test_render_drops_hidden_tags: "<blue>blue<hidden>hidden</></>" => "\x1b[34mblue\x1b[0m",
 
 		test_render_ignores_escaped_tags: "\\<bold>\\bold" => "<bold>\\bold",
 		test_render_keeps_backslash_in_text: "some\\ text" => "some\\ text",
@@ -218,5 +225,6 @@ mod tests {
 		test_len_handles_nerd_font: "" => 1, // nf-fa-folder
 
 		test_len_ignores_tags: "<bold>bold</>" => 4,
+		test_len_drops_hidden_text: "<blue>blue<hidden>hidden</></>" => 4,
 	);
 }

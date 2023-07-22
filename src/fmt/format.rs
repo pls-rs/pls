@@ -67,7 +67,7 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 		"blink" => return string.blink(),
 		"bold" => return string.bold(),
 		"dimmed" => return string.dimmed(),
-		"hidden" => return string.hidden(),
+		"hidden" => return string.hidden(), // This shouldn't be reachable.
 		"italic" => return string.italic(),
 		"reversed" => return string.reversed(),
 		"strikethrough" => return string.strikethrough(),

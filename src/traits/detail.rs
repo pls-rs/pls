@@ -95,7 +95,7 @@ impl Detail for Node<'_> {
 	/// This function returns a marked-up string.
 	fn ino(&self, conf: &Conf) -> String {
 		let ino = self.meta.ino().to_string();
-		let directives = &conf.constants.inode_style;
+		let directives = &conf.constants.ino_style;
 		format!("<{directives}>{ino}</>")
 	}
 

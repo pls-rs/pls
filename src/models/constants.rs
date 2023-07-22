@@ -7,7 +7,7 @@ pub struct Constants {
 	/// style for the device number
 	pub dev_style: String,
 	/// style for the inode number
-	pub inode_style: String,
+	pub ino_style: String,
 	/// styles for the number of hard links
 	pub nlink_styles: NlinkStyles,
 	/// mapping of node type to node type info (including style)
@@ -40,7 +40,7 @@ impl Default for Constants {
 	fn default() -> Self {
 		Self {
 			dev_style: String::default(),
-			inode_style: String::default(),
+			ino_style: String::default(),
 			nlink_styles: NlinkStyles {
 				file_sing: String::from(""),
 				file_plur: String::from("yellow"),

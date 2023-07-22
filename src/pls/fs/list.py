@@ -46,33 +46,37 @@ def read_input(arg_path: Path) -> tuple[dict[str, Node], list[Node]]:
 
     if arg_path.is_dir():
         parent_path = arg_path
-        all_nodes = os.listdir(arg_path)
+        try:
+            all_nodes = os.listdir(arg_path)
+        except (OSError, PermissionError):
+            console.console.print(
+                f"Permission denied for [repr.path]{arg_path}[/].",
+                highlight=False,
+            )
+            return {}, []
     else:
         parent_path = arg_path.parent
         all_nodes = [arg_path.name]
-
-    node_map = {}
-    node_list = []
 
     if not all_nodes:
         console.console.print(
             f"There are no files or folders in [repr.path]{arg_path}[/].",
             highlight=False,
         )
-    else:
-        node_map = {
-            node: Node(name=node, path=parent_path.joinpath(node))
-            for node in all_nodes
-            if passes_name_filters(node)
-        }
-        node_list = list(node_map.values())
+        return {}, []
 
-        sort_fields = args.args.sort
-        for field in reversed(sort_fields):
-            item = field.rstrip("-")
-            node_list.sort(
-                key=lambda node: node.sort_keys[item],
-                reverse=field.endswith("-"),
-            )
+    node_map = {
+        node: Node(name=node, path=parent_path.joinpath(node))
+        for node in all_nodes
+        if passes_name_filters(node)
+    }
+    node_list = list(node_map.values())
+    sort_fields = args.args.sort
+    for field in reversed(sort_fields):
+        item = field.rstrip("-")
+        node_list.sort(
+            key=lambda node: node.sort_keys[item],
+            reverse=field.endswith("-"),
+        )
 
     return node_map, node_list

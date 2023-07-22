@@ -26,7 +26,10 @@ def _is_valid(path: Path) -> bool:
     :return: ``True`` if the path is an existing file, ``False`` otherwise
     """
 
-    is_valid = path.exists() and path.is_file()
+    try:
+        is_valid = path.exists() and path.is_file()
+    except (OSError, PermissionError):
+        return False
     logger.debug(f'{path}: {"valid" if is_valid else "invalid"}')
     return is_valid
 

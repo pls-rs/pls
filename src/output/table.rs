@@ -39,14 +39,16 @@ impl Table {
 
 		if args.header {
 			for (width, det, cell) in &iter_basis {
-				print!("{}", &cell.print(det.name(conf), true, width));
+				let name = det.name(conf);
+				let directives = conf.constants.table.header_style.clone();
+				print!("{}", &cell.print(name, width, Some(directives)));
 			}
 			println!();
 		}
 
 		for entry in &self.entries {
 			for (width, det, cell) in &iter_basis {
-				print!("{}", &cell.print(entry.get(det).unwrap(), false, width));
+				print!("{}", &cell.print(entry.get(det).unwrap(), width, None));
 			}
 			println!();
 		}

@@ -140,7 +140,7 @@ impl Default for Constants {
 			})
 			.collect(),
 			table: TableInfo {
-				header_style: String::from("bold italic"),
+				header_style: String::from("bold italic underline"),
 				column_names: [
 					(DetailField::Dev, "Device"),
 					(DetailField::Ino, "inode"),

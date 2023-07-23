@@ -38,9 +38,9 @@ impl Cell {
 	/// # Arguments
 	///
 	/// * `text` - the text to print in the cell
-	/// * `is_header` - whether the cell is a column header with special styles
 	/// * `width` - the width that the cell should span
-	pub fn print<S>(&self, text: S, is_header: bool, width: &Option<usize>) -> String
+	/// * `directives` - styles to apply to the entire cell, including padding
+	pub fn print<S>(&self, text: S, width: &Option<usize>, directives: Option<String>) -> String
 	where
 		S: AsRef<str>,
 	{
@@ -64,8 +64,10 @@ impl Cell {
 		);
 
 		let mut content = format!("{left}{text}{right}");
-		if is_header {
-			content.insert_str(0, "<underline>");
+
+		if let Some(directives) = directives {
+			content.insert_str(0, "<>");
+			content.insert_str(1, &directives);
 			content.push_str("</>");
 		}
 
@@ -85,7 +87,7 @@ mod tests {
 				#[test]
 				fn $name() {
 					let cell = Cell { padding: ($left, $right), ..Cell::default() };
-					assert_eq!(cell.print($text, false, &None), $expected);
+					assert_eq!(cell.print($text, &None, None), $expected);
 				}
 			)*
 		};
@@ -104,7 +106,7 @@ mod tests {
 				fn $name() {
 					colored::control::set_override(true); // needed when running tests in CLion
 					let cell = Cell{ alignment: $alignment, ..Cell::default() };
-					assert_eq!(cell.print($text, false, &$width), $expected);
+					assert_eq!(cell.print($text, &$width, None), $expected);
 				}
 			)*
 		};

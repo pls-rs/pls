@@ -60,9 +60,9 @@ impl Grid {
 		let end_cell = Cell::new(Alignment::Left, (0, 0));
 		for (idx, text) in entries.iter().enumerate() {
 			if idx % cols == cols - 1 || idx == entry_len - 1 {
-				println!("{}", &end_cell.print(text, false, &max_width));
+				println!("{}", &end_cell.print(text, &max_width, None));
 			} else {
-				print!("{}", &cell.print(text, false, &max_width));
+				print!("{}", &cell.print(text, &max_width, None));
 			}
 		}
 	}

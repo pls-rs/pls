@@ -84,12 +84,24 @@ impl Grid {
 	/// If the terminal width cannot be determined, such as when piping to a
 	/// file, the output will be laid out in a single column.
 	fn columns(&self, max_width: Option<usize>) -> u16 {
-		match (terminal_size(), max_width) {
-			(Some((Width(term_width), _)), Some(item_width)) => {
+		match (Self::term_width(), max_width) {
+			(Some(term_width), Some(item_width)) => {
 				let cols = (term_width + 2) / (item_width as u16 + 2);
 				cols.max(1)
 			}
-			(_, _) => 1,
+			_ => 1,
 		}
+	}
+
+	/// Get the terminal width.
+	///
+	/// If the `PLS_COLUMNS` environment variable is set, the value of that
+	/// variable is used as the terminal width. Otherwise, the terminal width is
+	/// determined using the `terminal_size` crate.
+	fn term_width() -> Option<u16> {
+		std::env::var("PLS_COLUMNS") // development hack
+			.ok()
+			.and_then(|width_str| width_str.parse::<u16>().ok())
+			.or_else(|| terminal_size().map(|(Width(term_width), _)| term_width))
 	}
 }

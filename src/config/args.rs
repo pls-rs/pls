@@ -169,8 +169,8 @@ impl Args {
 			self.grid = false;
 		}
 
+		// Headers cannot be shown outside of detailed view.
 		if self.grid && self.header {
-			// Headers cannot be shown outside of detailed view.
 			warnings.push("Grid view disabled column headers.");
 			self.header = false;
 		}

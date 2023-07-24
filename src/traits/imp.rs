@@ -71,9 +71,7 @@ impl Imp for Node<'_> {
 		let min_val = conf.constants.min_imp();
 		debug!("\"{self}\" has relative importance {rel_imp} (min: {min_val}, max: {max_val})");
 
-		if rel_imp > max_val {
-			rel_imp = max_val;
-		}
+		rel_imp = rel_imp.clamp(min_val, max_val);
 		conf.constants.imp_map.get(&rel_imp).cloned()
 	}
 }

@@ -109,9 +109,11 @@ impl Pls {
 
 		// Sort the nodes using the sort bases. This is in reverse order because
 		// the first listed base should be the main sorting factor.
-		self.args.sort_bases.iter().rev().for_each(|field| {
-			nodes.sort_by(|a, b| field.compare(a, b, &mut owner_man));
-		});
+		if nodes.len() > 1 {
+			self.args.sort_bases.iter().rev().for_each(|field| {
+				nodes.sort_by(|a, b| field.compare(a, b, &mut owner_man));
+			});
+		}
 
 		// Convert each node into a row that becomes an entry for a printer.
 		let entries: Vec<_> = nodes

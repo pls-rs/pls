@@ -1,10 +1,12 @@
-use crate::config::{Args, ConfMan};
+use crate::config::{Args, Conf, ConfMan};
 use crate::exc::Exc;
 use crate::fmt::render;
 use crate::models::{Node, OwnerMan};
 use crate::output::{Grid, Table};
-use crate::traits::{Imp, Name};
-use log::info;
+use crate::traits::Imp;
+use log::{debug, info};
+use std::fs::DirEntry;
+use std::os::unix::ffi::OsStrExt;
 use std::path::Path;
 
 /// Represents the entire application state.
@@ -17,26 +19,67 @@ pub struct Pls {
 }
 
 impl Pls {
+	/// Create a node from the given entry of a directory.
+	///
+	/// This function performs filtering of nodes based on the following
+	/// criteria, returning `None` if the node is to be filtered out.
+	///
+	/// * name (using the args `--only` and `--exclude`)
+	/// * type (using the arg `--types`)
+	/// * importance (using the arg `--imp`)
+	fn get_node<'pls>(&'pls self, entry: DirEntry, conf: &'pls Conf) -> Option<Node> {
+		let name = entry.file_name();
+		debug!("Checking visibility of name {name:?}.");
+		let haystack = name.as_bytes();
+		let is_visible = self
+			.args
+			.only
+			.as_ref()
+			.map_or(true, |pat| pat.is_match(haystack))
+			&& self
+				.args
+				.exclude
+				.as_ref()
+				.map_or(true, |pat| !pat.is_match(haystack));
+		if !is_visible {
+			return None;
+		}
+
+		let mut node = Node::new(&entry.path());
+		debug!("Checking visibility of typ {:?}.", node.typ);
+		if !self.args.typs.contains(&node.typ) {
+			return None;
+		}
+
+		node.match_specs(&conf.specs);
+		if !node.is_visible(conf, &self.args) {
+			return None;
+		}
+
+		Some(node)
+	}
+
 	/// Get the list of nodes for a given path.
 	///
 	/// If the path is a directory, the list will consist of the immediate
 	/// contents of that directory. If the path is a file, the list will consist
 	/// of just that file.
-	fn get_contents(&self, path: &Path) -> Result<Vec<Node>, Exc> {
+	///
+	/// We do not perform visibility checks when a single file is to be listed
+	/// because it goes against the users expectations to see a blank output
+	/// when wanting to see information about a specific file.
+	fn get_contents<'pls>(&'pls self, path: &Path, conf: &'pls Conf) -> Result<Vec<Node>, Exc> {
 		if path.is_dir() {
 			let entries = path.read_dir().map_err(Exc::IoError)?;
 			let nodes = entries
 				.into_iter()
-				.filter_map(|entry| {
-					entry.ok().and_then(|entry| {
-						let node = Node::new(&entry.path());
-						Name::is_visible(&node, &self.args).then_some(node)
-					})
-				})
+				.filter_map(|entry| entry.ok().and_then(|entry| self.get_node(entry, conf)))
 				.collect();
 			Ok(nodes)
 		} else {
-			Ok(vec![Node::new(path)])
+			let mut node = Node::new(path);
+			node.match_specs(&conf.specs);
+			Ok(vec![node])
 		}
 	}
 
@@ -55,8 +98,9 @@ impl Pls {
 		let mut conf = self.conf_man.get(Some(path))?;
 		conf.constants.massage_imps();
 
-		// Get all nodes corresponding to this path.
-		let mut nodes = self.get_contents(&path_buf)?;
+		// Get all nodes corresponding to this path. This list is already
+		// filtered by all filtering criteria.
+		let mut nodes = self.get_contents(&path_buf, &conf)?;
 
 		// Create the ownership manager. This instance caches user and
 		// membership information, so it should be reused for both sorting and
@@ -69,21 +113,10 @@ impl Pls {
 			nodes.sort_by(|a, b| field.compare(a, b, &mut owner_man));
 		});
 
-		// Match all nodes against all specs.
-		nodes
-			.iter_mut()
-			.for_each(|node| node.match_specs(&conf.specs));
-
 		// Convert each node into a row that becomes an entry for a printer.
 		let entries: Vec<_> = nodes
 			.iter()
-			.filter_map(|node| {
-				Imp::is_visible(node, &conf, &self.args).then_some(node.row(
-					&mut owner_man,
-					&conf,
-					&self.args,
-				))
-			})
+			.map(|node| node.row(&mut owner_man, &conf, &self.args))
 			.collect();
 
 		// Create the printer and render the entries to STDOUT.

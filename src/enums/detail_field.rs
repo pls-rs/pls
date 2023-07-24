@@ -42,11 +42,11 @@ pub enum DetailField {
 	Perm, // symbolic permissions
 	Oct,  // octal permissions
 
-	User, // user name
-	Uid,  // user ID
+	User, // owner user name
+	Uid,  // owner user ID
 
-	Group, // group name
-	Gid,   // group ID
+	Group, // owner group name
+	Gid,   // owner group ID
 
 	Size,   // storage space
 	Blocks, // number of blocks

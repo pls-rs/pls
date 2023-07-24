@@ -31,17 +31,24 @@ impl Pls {
 		let name = entry.file_name();
 		debug!("Checking visibility of name {name:?}.");
 		let haystack = name.as_bytes();
-		let is_visible = self
+
+		let include = self
 			.args
 			.only
 			.as_ref()
-			.map_or(true, |pat| pat.is_match(haystack))
-			&& self
-				.args
-				.exclude
-				.as_ref()
-				.map_or(true, |pat| !pat.is_match(haystack));
-		if !is_visible {
+			.map_or(true, |pat| pat.is_match(haystack));
+		if !include {
+			debug!("Name {name:?} did not match `--only`.");
+			return None;
+		}
+
+		let exclude = self
+			.args
+			.exclude
+			.as_ref()
+			.map_or(false, |pat| pat.is_match(haystack));
+		if exclude {
+			debug!("Name {name:?} matched `--exclude`.");
 			return None;
 		}
 

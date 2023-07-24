@@ -158,6 +158,22 @@ impl Default for Conf {
 				"rust"         => "", // nf-dev-rust
 			),
 			specs: vec![
+				// Extensions
+				Spec::new(r"\.sh$", "shell"),
+				Spec::new(r"\.rs$", "rust").style("rgb(247,76,0)"),
+				Spec::new(r"\.txt$", "text"),
+				Spec::new(r"\.md$", "markdown"),
+				Spec::new(r"\.ini$", "config"),
+				Spec::new(r"\.(json|toml|yml|yaml)$", "json"),
+				Spec::new(r"\.(jpg|jpeg|png|svg|webp|gif|ico)$", "image"),
+				Spec::new(r"\.(mov|mp4|mkv|webm|avi|flv)$", "video"),
+				Spec::new(r"\.(mp3|flac|ogg|wav)$", "audio"),
+				// Partial names
+				Spec::new(r"^\.env\b", "env"),
+				Spec::new(r"^README\b", "book").importance(2),
+				Spec::new(r"^LICENSE\b", "law"),
+				Spec::new(r"docker-compose.*\.yml$", "container"),
+				Spec::new(r"Dockerfile", "container"),
 				// Exact names
 				Spec::new(r"^\.DS_Store$", "apple").importance(-2),
 				Spec::new(r"^\.pls\.yml$", "pls").importance(0),
@@ -170,22 +186,6 @@ impl Default for Conf {
 					.importance(-1)
 					.collapse(Collapse::Name(String::from("Cargo.toml"))),
 				Spec::new(r"^rustfmt.toml$", "broom"),
-				// Partial names
-				Spec::new(r"^\.env\b", "env"),
-				Spec::new(r"^README\b", "book").importance(2),
-				Spec::new(r"^LICENSE\b", "law"),
-				Spec::new(r"docker-compose.*\.yml$", "container"),
-				Spec::new(r"Dockerfile", "container"),
-				// Extensions
-				Spec::new(r"\.sh$", "shell"),
-				Spec::new(r"\.rs$", "rust").style("rgb(247,76,0)"),
-				Spec::new(r"\.txt$", "text"),
-				Spec::new(r"\.md$", "markdown"),
-				Spec::new(r"\.ini$", "config"),
-				Spec::new(r"\.(json|toml|yml|yaml)$", "json"),
-				Spec::new(r"\.(jpg|jpeg|png|svg|webp|gif|ico)$", "image"),
-				Spec::new(r"\.(mov|mp4|mkv|webm|avi|flv)$", "video"),
-				Spec::new(r"\.(mp3|flac|ogg|wav)$", "audio"),
 			],
 			constants: Constants::default(),
 		}

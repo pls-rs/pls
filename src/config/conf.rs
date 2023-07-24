@@ -177,6 +177,7 @@ impl Default for Conf {
 				// Exact names
 				Spec::new(r"^\.DS_Store$", "apple").importance(-2),
 				Spec::new(r"^\.pls\.yml$", "pls").importance(0),
+				Spec::new(r"^\.git$", "git").importance(-2),
 				Spec::new(r"^\.gitignore$", "git"),
 				Spec::new(r"^\.github$", "github"),
 				Spec::new(r"^src$", "source").importance(1),

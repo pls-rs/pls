@@ -10,7 +10,7 @@ lazy_static! {
 	pub static ref ALL_TYP: Vec<Typ> = Typ::value_variants()
 		.iter()
 		.copied()
-		.filter(|variant| variant != &Typ::All)
+		.filter(|variant| variant != &Typ::All && variant != &Typ::None)
 		.collect();
 }
 
@@ -37,7 +37,8 @@ pub enum Typ {
 	CharDevice,  // character special device file
 	File,        // regular file
 
-	All, // shorthand: all types
+	None, // shorthand: no node types
+	All,  // shorthand: all node types
 
 	#[clap(skip)]
 	Unknown, // unrecognised type (not a CLI argument)
@@ -70,6 +71,7 @@ impl Typ {
 		let mut cleaned = vec![];
 		for node_type in input {
 			match node_type {
+				Typ::None => cleaned.clear(),
 				Typ::All => {
 					cleaned.clear();
 					cleaned.extend_from_slice(&ALL_TYP);

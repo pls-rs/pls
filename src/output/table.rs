@@ -75,7 +75,7 @@ impl Table {
 				self.entries[0..end_lim]
 					.iter()
 					.filter_map(|entry| entry.get(det).map(len))
-					.chain(once(len(det.name(conf))))
+					.chain(once(if args.header { len(det.name(conf)) } else { 0 }))
 					.max()
 			})
 			.collect()

@@ -46,7 +46,7 @@ pub struct Args {
 
 	/// the data points to show about each node
 	#[clap(
-		help_heading = "Detailed view",
+		help_heading = "Detail view",
 		short,
 		long = "det",
 		default_value = "none",
@@ -55,12 +55,12 @@ pub struct Args {
 	pub details: Vec<DetailField>,
 
 	/// show headers above columnar data
-	#[clap(help_heading = "Detailed view", short = 'H', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Detail view", short = 'H', long, default_value = "true", action = clap::ArgAction::Set)]
 	pub header: bool,
 
 	/// the type of units to use for the node sizes
 	#[clap(
-		help_heading = "Detailed view",
+		help_heading = "Detail view",
 		short,
 		long,
 		default_value = "binary",

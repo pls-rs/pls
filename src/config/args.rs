@@ -92,10 +92,6 @@ pub struct Args {
 	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
 	pub align: bool,
 
-	/// the set of fields to sort by, trailing `_` reverses the direction
-	#[clap(help_heading = "Sorting", short, long = "sort", default_values = ["cat", "cname"], value_enum)]
-	pub sort_bases: Vec<SortField>,
-
 	/// the set of node types to include in the output
 	#[clap(
 		help_heading = "Filtering",
@@ -118,6 +114,10 @@ pub struct Args {
 	/// the pattern of files to exclusively show in the output
 	#[clap(help_heading = "Filtering", short, long, value_parser = regex_parser)]
 	pub only: Option<Regex>,
+
+	/// the set of fields to sort by, trailing `_` reverses the direction
+	#[clap(help_heading = "Sorting", short, long = "sort", default_values = ["cat", "cname"], value_enum)]
+	pub sort_bases: Vec<SortField>,
 }
 
 impl Default for Args {

@@ -96,7 +96,7 @@ pub struct Args {
 	#[clap(
 		help_heading = "Filtering",
 		short = 't',
-		long = "types",
+		long = "typ",
 		default_value = "all",
 		value_enum,
         value_names = ["TYPES"],

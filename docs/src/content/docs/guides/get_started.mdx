@@ -1,0 +1,107 @@
+---
+title: Get started
+description:
+  Installing and using pls is easy and straightforward. pls can be installed via
+  most package managers, downloaded as a binary, or built from source.
+---
+
+Thanks for giving <Pls /> a try. We hope you like using it as much as we do.
+
+## Prerequisites
+
+- **macOS or Linux:** Windows is [currently not supported](/pls/about/faq/).
+- **Terminal:** [iTerm2](https://iterm2.com/) and VSCode's have good Nerd Font
+  support.
+- **[Nerd Fonts](https://www.nerdfonts.com/):** Needed to render icons in the
+  terminal.
+
+:::tip
+
+Nerd Fonts are good for more than just <Pls />. A number of CLI tools, like
+[Starship](https://starship.rs/) and
+[Powerlevel10k](https://github.com/romkatv/powerlevel10k), recommend using Nerd
+Fonts.
+
+When picking a Nerd Font, we recommend you opt for one that has programming
+ligatures, such as JetBrains Mono (used in the examples on this site).
+
+:::
+
+## Installation
+
+We are working on adding <Pls /> to package managers like `apt`, `dnf` and
+`brew`, but in the meantime, there is no way to install this package from any
+package manager. These are your approaches.
+
+### Build from source
+
+If you have the Rust toolchain installed on your computer, you can build from
+source locally for your operating system and architecture. Also, we welcome your
+contributions!
+
+### Download the latest binary
+
+The CI + CD job compiles binaries for macOS and Linux on every commit. You can
+download the latest binary for your operating system and architecture by
+following these steps.
+
+1. Visit the page for <Pls />'s
+   [CI + CD workflow](https://github.com/dhruvkb/pls/actions/workflows/ci.yml).
+2. Click on the last successful workflow.
+3. Scroll down to the "Artifacts" section.
+4. Download the binary as per your operating system i.e.
+   `pls-x86_64-apple-darwin` for macOS and `pls-x86_64-unknown-linux-musl` for
+   Linux.
+5. Unzip the archive to a suitable location.
+6. Add the location to your `$PATH` or move/symlink the binary to a location
+   that is already on your `$PATH`.
+
+## Verification
+
+You can check if <Pls /> was installed correctly and present on your `$PATH` by
+running the following command. If you see a version number, you're good to go!
+
+```console
+$ pls --version
+```
+
+<pre className="terminal">
+  pls <Version />
+</pre>
+
+## Usage
+
+To run <Pls />, type the following command into any terminal.
+
+```console
+$ pls
+```
+
+By default, <Pls /> lists the contents of the current working directory, but you
+can pass a different file or directory as a positional argument.
+
+If a directory path is passed, all the files and directories within that
+directory are listed. This is useful to see what's in the folder. If a file path
+is passed, only the file itself is listed. On its own, that's not very useful
+except to see if that file exists. But with the
+[`--det`/`-d` flag](/pls/features/detail_view/), <Pls /> can display quite a lot
+of metadata for the file.
+
+## Help
+
+To see what <Pls /> is capable of, and how to use those features, check out the
+built-in help. You can see the detailed help or a quick reference using the
+`--help`/`-h` flags respectively.
+
+```console
+$ pls --help # or -h
+```
+
+{/* prettier-ignore-start */}
+<pre className="terminal">
+<b><span style='color:var(--red,#a00)'>`pls`</span></b> is a prettier and powerful `ls` for the pros.
+&nbsp;
+<b><u>Usage:</u></b> <b>pls</b> [OPTIONS] [PATHS]...
+...
+</pre>
+{/* prettier-ignore-end */}

@@ -1,0 +1,89 @@
+---
+title: FAQ
+description:
+  The arrival of a new alternative to ls(1) is bound to raise questions. Here
+  are the answers to questions raised (or anticipated to be raised) about pls.
+---
+
+Here are some questions you might have about <Pls />, and the answers to those
+questions.
+
+---
+
+**Why the name <Pls />?**
+
+The name <Pls /> is a play on the `ls(1)` command. I picked it because it was
+short, [memorable](/pls/about/intro/#features) and only one keypress away from
+`ls(1)`. If you prefer a different name you can always alias it.
+
+```bash
+alias rls="pls"
+```
+
+---
+
+**Does <Pls /> support Windows?**
+
+No. <Pls />, being a tool for pros, favours operating systems that are popular
+with those users, which Windows is not. This may change in the future if there
+is [considerable demand](https://github.com/dhruvkb/pls/issues/80) and there are
+open-source contributions towards that goal.
+
+---
+
+**Is <Pls /> a replacement for `ls(1)`?**
+
+No. <Pls /> is an alternative, not a replacement, for `ls(1)`. It some more
+features, prints prettier output and offers a lot of customisation, which make
+it ideal for human usage, but for scripts, `ls(1)` is still a better choice
+because it is tried, tested and trusted, not to mention ubiquitous.
+
+---
+
+**Why build an `ls(1)` alternative?**
+
+IDEs and code editors use helpful UI patterns like icons and colors to
+disambiguate files and provide more information about them like their file type
+and VCS status. <Pls /> brings these features to the terminal.
+
+---
+
+**Why build another `ls(1)` alternative?**
+
+None of the existing `ls(1)` alternatives have features that make pro workflows
+easier or more pleasant. <Pls /> is the first `ls(1)` alternative that focuses
+on the niche demographic of pros who will appreciate a powerful feature set and
+deep customisation.
+
+---
+
+**Why Rust and not _&lt;language&gt;_?**
+
+Rust is a good choice for CLI utilities because it enables them to be very
+performant. The pros don't want to see lag in a core part of your workflow.
+
+Before I learned Rust, <Pls /> was written in Python (which was another reason
+it's called <Pls />). It seemed like a good fit at the time because it was
+decently fast and easy to develop and distribute, but at a certain point Python
+started becoming a speed bottleneck. The point being, give me a good reason, and
+I'll rewrite it.
+
+---
+
+**Is <Pls /> better than _&lt;alternative&gt;_?**
+
+<Pls /> makes no claim of being better than any other tool, although we do try!
+Our claim is that <Pls /> is a better fit for developers and pros because it has
+some powerful, and thus complex, features that not everyone will use. If another
+tool has a feature you miss, feel free to open an issue or better yet, a pull
+request! See [how <Pls /> compares](/pls/about/comparison/) to other `ls(1)`
+alternatives.
+
+---
+
+**Is <Pls /> free?**
+
+<Pls /> is free in both senses of the word. It does not cost anything to
+download and install and the source code is freely available to read, modify and
+distribute. <Pls /> is licensed under [version 3, or later, of the GNU
+GPL](https://www.gnu.org/licenses/gpl-3.0.en.html).

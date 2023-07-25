@@ -1,0 +1,88 @@
+---
+title: Comparison
+description:
+  There are many alternatives to ls(1) but pls is unique in its target
+  demographic of pro users and its focus on customisation.
+---
+
+<Pls /> has the distinction of being an `ls(1)` replacement specifically
+targeted a a pro audience. This leads to different motivations, different
+decisions, different choices and different defaults. This also gives us the
+advantage of being able to provide features that are powerful but complex.
+
+There are other `ls(1)` alternatives that have been around for longer and have
+sizeable user bases.
+
+| Tool                                                     | Language | GitHub stars                                  |
+| -------------------------------------------------------- | -------- | --------------------------------------------- |
+| [exa](<(https://github.com/ogham/exa)>)                  | Rust     | <Stars owner="ogham" repo="exa" />            |
+| [`lsd`](<(https://github.com/lsd-rs/lsd)>)               | Rust     | <Stars owner="lsd-rs" repo="lsd" />           |
+| [`colorls`](<(https://github.com/athityakumar/colorls)>) | Ruby     | <Stars owner="athityakumar" repo="colorls" /> |
+
+<Pls /> strives to provide all the features expected from these tools, and more.
+For an idea, here is a comparison between <Pls /> and the most popular
+alternative, [exa](https://the.exa.website).
+
+## Pros
+
+- exa hides files with a leading dot by default, an approach it inherits from
+  `ls(1)`. <Pls /> dims or hides files based on their
+  [importance](/pls/features/importance/), making it suitable for modern dev
+  workflows involving tooling configs.
+
+- exa uses arcane environment variables for customisation. <Pls /> uses
+  [cascading YAML files](/pls/guides/conf/) to enable per-project configuration
+  that's also more readable, maintainable and ergonomic. You can also check
+  these config files into your VCS and share them with your team.
+
+- exa uses globs which limits the match to simple queries. <Pls /> uses
+  [specs](/pls/guides/specs/) which match files using the full power of regex
+  and then provide both styling and [icons](/pls/features/icons/) for their
+  matches. These specs can also be cascaded.
+
+- exa output is very colorful, but limited to customisation using ANSI escape
+  codes. <Pls /> employs sparse color and formatting, to add meaning or context,
+  and these [styles](/pls/guides/markup/) can be customised using English names
+  or even RGB notation.
+
+- <Pls /> has more [metadata fields](/pls/features/detail_view/) compared to
+  exa. It also allows the user to view some metadata fields in multiple ways
+  (including simultaneously), which exa cannot do.
+
+- exa provides filtering by glob matches and sorting by one field. <Pls />
+  provides filtering (by [regex](/pls/features/name_filter/) or
+  [type](/pls/features/type_filter/)) and [sorting](/pls/features/sorting) (by
+  multiple selections out of over 18 bases &times; 2 directions).
+
+- exa defaults to no icons, grid view, files mixed with folders and sorting by
+  name. <Pls /> defaults to showing icons, list view, folders listed first and
+  leading dots aligned and sorting by canonical name.
+
+- exa, being a mature project, moves very slowly. <Pls /> is new and actively in
+  developed, which is why it iterates fast and pushes releases more often.
+
+## Cons
+
+- exa's interface is much more compatible with `ls(1)` in the base case. A lot
+  of `ls(1)` options map 1:1 with exa. <Pls /> does not care for option
+  compatibility with `ls(1)` at all.
+
+- exa is a mature product with a large contributor base. <Pls /> is a young
+  project with a [novice 🦀 Rustacean maintainer](https://dhruvkb.dev/).
+  Contributions, both in [code](https://github.com/dhruvkb/pls) and as
+  [sponsorship](https://github.com/sponsors/dhruvkb), are welcome!
+
+- The spec system <Pls /> uses might be slow when listing lots of files due to
+  its Cartesian product complexity. Also, <Pls /> lacks the speed optimisations
+  that a mature tool like exa has built over time.
+
+- exa can show if a file has extended attributes. <Pls /> opted not to do this
+  because it's not a common use case.
+
+- exa has a long grid view (which is a combination of <Pls />'s
+  [detail](/pls/features/detail_view/) and [grid](/pls/features/grid_view/)
+  views) that <Pls /> [does not yet have](/pls/features/upcoming/).
+
+- exa has a tree mode that <Pls /> [does not yet have](/pls/features/upcoming/).
+
+- exa supports Windows which <Pls /> [does not yet do](/pls/about/faq/).

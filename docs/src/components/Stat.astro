@@ -1,0 +1,21 @@
+---
+import Dhruv from "@/components/Dhruv.astro";
+import Icon from "@/components/Icon.astro";
+import Stars from "@/components/Stars.astro";
+import Version from "@/components/Version.astro";
+---
+
+<div class="stat">
+  <Icon name="github" /><div class="not-content"><Dhruv />/pls</div>
+  <Icon name="star" /><Stars owner="dhruvkb" repo="pls" />
+  <Icon name="tag" /><Version />
+</div>
+
+<style>
+  div.stat {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+</style>

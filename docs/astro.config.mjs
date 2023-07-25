@@ -9,9 +9,11 @@ export default defineConfig({
     autoImport({
       imports: [
         "@/components/Dhruv.astro",
+        "@/components/Footer.astro",
         "@/components/Icon.astro",
         "@/components/Pls.astro",
         "@/components/Stars.astro",
+        "@/components/Stat.astro",
         "@/components/Version.astro",
       ],
     }),
@@ -24,6 +26,22 @@ export default defineConfig({
       social: {
         github: "https://github.com/dhruvkb/pls",
       },
+      sidebar: [
+        {
+          label: "About",
+          items: [
+            { label: "Introduction", link: "/about/intro" },
+            { label: "FAQ", link: "/about/faq/" },
+            { label: "Comparison", link: "/about/comparison/" },
+          ],
+        },
+        {
+          label: "Guides",
+          items: [
+            { label: "Get started", link: "/guides/get_started/" },
+          ],
+        },
+      ],
       customCss: [
         "./src/styles/brand.css",
         "./src/styles/font.css",

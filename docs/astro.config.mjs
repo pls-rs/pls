@@ -1,10 +1,20 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import autoImport from "astro-auto-import";
 
 // https://astro.build/config
 export default defineConfig({
   base: "/pls", // Search and update `/pls` links if changing this.
   integrations: [
+    autoImport({
+      imports: [
+        "@/components/Dhruv.astro",
+        "@/components/Icon.astro",
+        "@/components/Pls.astro",
+        "@/components/Stars.astro",
+        "@/components/Version.astro",
+      ],
+    }),
     starlight({
       title: "pls",
       logo: {

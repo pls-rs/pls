@@ -31,7 +31,7 @@ pub struct Constants {
 	/// configuration for the table view
 	pub table: TableInfo,
 	/// pairings of importance levels with styling directives
-	pub imp: Vec<(i8, String)>,
+	pub imp_styles: Vec<(i8, String)>,
 
 	/// mapping of importance levels to styling directives, derived from `imp`
 	#[serde(skip)]
@@ -165,7 +165,7 @@ impl Default for Constants {
 				.map(|(k, v)| (k, v.to_string()))
 				.collect(),
 			},
-			imp: [(-1, "dimmed"), (1, "italic"), (2, "underline")]
+			imp_styles: [(-1, "dimmed"), (1, "italic"), (2, "underline")]
 				.into_iter()
 				.map(|(k, v)| (k, v.to_string()))
 				.collect(),
@@ -182,10 +182,14 @@ impl Constants {
 	/// will be retained in `imp_map`. The levels will be sorted by importance
 	/// in `imp`.
 	pub fn massage_imps(&mut self) {
-		self.imp_map = self.imp.iter().map(|(k, v)| (*k, v.to_string())).collect();
+		self.imp_map = self
+			.imp_styles
+			.iter()
+			.map(|(k, v)| (*k, v.to_string()))
+			.collect();
 
-		self.imp = self.imp_map.clone().into_iter().collect();
-		self.imp.sort_by_cached_key(|entry| entry.0);
+		self.imp_styles = self.imp_map.clone().into_iter().collect();
+		self.imp_styles.sort_by_cached_key(|entry| entry.0);
 	}
 
 	/// Get the lowest configured importance level, i.e. zeroth index in `imp`.
@@ -195,7 +199,7 @@ impl Constants {
 
 	/// Get the highest configured importance level, i.e. last index in `imp`.
 	pub fn max_imp(&self) -> i8 {
-		self.get_imp(self.imp.len() - 1)
+		self.get_imp(self.imp_styles.len() - 1)
 	}
 
 	/// Get the importance level at the given index.
@@ -203,7 +207,10 @@ impl Constants {
 	/// This returns 0 (default for `i8`) if the `imp` vector does not have the
 	/// given index.
 	fn get_imp(&self, idx: usize) -> i8 {
-		self.imp.get(idx).map(|row| row.0).unwrap_or_default()
+		self.imp_styles
+			.get(idx)
+			.map(|row| row.0)
+			.unwrap_or_default()
 	}
 }
 
@@ -275,7 +282,7 @@ mod tests {
             $(
                 #[test]
                 fn $name() {
-                    let imp: Vec<(i8, String)> = $imp
+                    let imp_styles: Vec<(i8, String)> = $imp
                         .into_iter()
                         .map(|(k, v): (i8, &str)| (k, v.to_string()))
                         .collect();
@@ -289,11 +296,11 @@ mod tests {
                         .collect();
 
                     let mut constants = Constants {
-                        imp,
+                        imp_styles,
                         ..Constants::default()
                     };
                     constants.massage_imps();
-                    assert_eq!(constants.imp, exp_imp);
+                    assert_eq!(constants.imp_styles, exp_imp);
                     assert_eq!(constants.imp_map, exp_imp_map);
                 }
             )*

@@ -1,0 +1,19 @@
+{
+  "name": "pls_docs",
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "fmt": "prettier --ignore-path .gitignore --ignore-path .prettierignore --write ."
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.5.2",
+    "astro": "2.7.0",
+    "astro-auto-import": "^0.3.0"
+  },
+  "packageManager": "pnpm@8.6.10"
+}

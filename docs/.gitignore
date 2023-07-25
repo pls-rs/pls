@@ -1,0 +1,8 @@
+# Build artifacts
+dist/
+
+# Astro generated types
+.astro/
+
+# Dependencies
+node_modules/

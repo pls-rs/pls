@@ -1,0 +1,11 @@
+.hero {
+  grid-template-columns: 1fr;
+}
+
+.hero .copy {
+  align-items: center;
+}
+
+.hero .actions {
+  justify-content: center;
+}

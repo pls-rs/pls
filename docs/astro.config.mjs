@@ -14,6 +14,13 @@ export default defineConfig({
       social: {
         github: "https://github.com/dhruvkb/pls",
       },
+      customCss: [
+        "./src/styles/brand.css",
+        "./src/styles/font.css",
+        "./src/styles/layout.css",
+        "./src/styles/terminal.css",
+        "./src/styles/typography.css",
+      ],
     }),
   ],
   markdown: {

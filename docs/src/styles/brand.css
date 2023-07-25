@@ -1,0 +1,11 @@
+:root {
+  --color-brand: var(--sol-red);
+  --sl-hue-accent: var(--sl-hue-red);
+}
+
+h1[data-page-title],
+a.site-title {
+  font-family: var(--__sl-font-mono);
+  font-weight: bold;
+  color: var(--color-brand);
+}

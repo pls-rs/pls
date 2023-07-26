@@ -102,7 +102,7 @@ impl Pls {
 		let path_buf = path.canonicalize().map_err(Exc::IoError)?;
 
 		// Create the configuration specific to this path.
-		let mut conf = self.conf_man.get(Some(path))?;
+		let mut conf = self.conf_man.get(Some(&path_buf))?;
 		conf.constants.massage_imps();
 
 		// Get all nodes corresponding to this path. This list is already

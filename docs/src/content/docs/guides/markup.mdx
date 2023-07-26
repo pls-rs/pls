@@ -1,0 +1,193 @@
+---
+title: Markup
+description:
+  pls uses a novel approach towards styling in the terminal using XML-like tags
+  to specify colors and formatting.
+---
+
+The terminal is a unique interface. It is purely text-based yet capable of
+displaying colors and formatting, using ANSI escape codes. These codes are
+difficult to remember and use, so <Pls /> uses a custom approach.
+
+## Markup
+
+The markup language used by <Pls /> is similar to XML. The directives are
+written inside `<` and `>` and wrapped around the text to style. The closing tag
+always matches the last opened tag, regardless of the text inside it, so it's
+customary to leave it blank.
+
+You can use a single directive, or a combination of directives, separated by
+spaces.
+
+```
+<bold>bold text</> <bold italic>bold italic text</>
+```
+
+<pre className="terminal">
+  <b>bold text</b>{" "}
+  <b>
+    <i>bold italic text</i>
+  </b>
+</pre>
+
+Tags can be nested inside each other and will be joined in order.
+
+```
+<bold><italic>bold italic text</> only bold text</>
+```
+
+<pre className="terminal">
+  <b>
+    <i>bold italic text</i> only bold text
+  </b>
+</pre>
+
+To overwrite all outer tags and start a fresh context, use `clear`.
+
+```
+<bold><clear blue><clear>plain text</> only blue text</> only bold text</>
+```
+
+<pre className="terminal">
+  <span>plain text</span>
+  <span style="color:var(--blue,#00a)"> only blue text</span>
+  <b> only bold text</b>
+</pre>
+
+## Directives
+
+### Styles
+
+Terminals can style text in many ways. <Pls /> allows you to use any permutation
+of these styles in your configs.
+
+- blink
+- bold
+- dimmed
+- hidden
+- italic
+- reversed
+- strikethrough
+- underline
+
+:::caution
+
+Not all terminals support every style. For example, iTerm2 does not support
+`blink`. The only style guaranteed to work is `hidden` because it uses a custom
+implementation that drops the hidden text entirely.
+
+:::
+
+You can use a single style directive.
+
+```
+<bold>bold text</>
+```
+
+<pre className="terminal">
+  <b>bold text</b>
+</pre>
+
+You can use any combination of style directives.
+
+```
+<bold italic underline strikethrough>BIUS text</>
+```
+
+<pre className="terminal">
+  <b>
+    <i>
+      <u>
+        <s>BIUS text</s>
+      </u>
+    </i>
+  </b>
+</pre>
+
+### Colors
+
+Color support in terminals can range from 16 named colors to 16 million RGB
+colors! <Pls /> allows you to use all the colors supported by your terminal.
+
+#### Named
+
+Named colors consist of 8 regular colors and 8 bright colors (one for each of
+the regular ones).
+
+- black
+- red
+- green
+- yellow
+- blue
+- magenta
+- cyan
+- white
+
+To use the named colors in <Pls /> you can use the color name directly as a
+directive in the tag.
+
+```
+<blue>blue text</>
+```
+
+<pre className="terminal">
+  <span style="color:var(--blue,#00a)">blue text</span>
+</pre>
+
+To use the bright variant, you can prefix `bright_` before the color name.
+
+:::note
+
+Some themes like [Solarized](https://ethanschoonover.com/solarized/) may opt to
+use the bright color space for additional colors not covered in the regular set
+(like orange in `bright_red`, violet in `bright_magenta`).
+
+:::
+
+```
+<bright_red>orange text</> <bright_magenta>violet text</>
+```
+
+<pre className="terminal">
+  <span style="color:var(--bright-red,#f55)">orange text</span>{" "}
+  <span style="color:var(--bright-magenta,#f5f)">violet text</span>
+</pre>
+
+To use a color as the background, you can prefix `bg:` before the color name.
+
+```
+<bg:blue><black>black text</> <white>white text</></>
+```
+
+<pre className="terminal">
+  <span style="background:var(--blue,#00a)">
+    <span style="color:var(--black,#000)">black text</span>{" "}
+    <span style="color:var(--white,#fff)">white text</span>
+  </span>
+</pre>
+
+#### True colors
+
+<Pls /> also supports using RGB colors. These colors can be specified using a
+triplet of three `u8` numbers, each between 0 and 255, both inclusive.
+
+```
+<rgb(0,255,0)>pure green text</>
+```
+
+<pre className="terminal">
+  <span style="color:rgb(0,255,0)">pure green text</span>
+</pre>
+
+To use a color as the background, you can prefix `bg:` before the color name.
+
+```
+<bg:rgb(255,0,0)><black>black text</> <white>white text</></>
+```
+
+<pre className="terminal">
+  <span style="background:rgb(255,0,0)">
+    <span style="color:var(--black,#000)">black text</span>{" "}
+    <span style="color:var(--white,#fff)">white text</span>
+  </span>
+</pre>

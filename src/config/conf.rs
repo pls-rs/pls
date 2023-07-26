@@ -3,6 +3,7 @@ use crate::exc::Exc;
 use crate::models::{Constants, Spec};
 use figment::providers::{Data, Format, Serialized, Yaml};
 use figment::Figment;
+use git2::Repository;
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -68,7 +69,11 @@ impl ConfMan {
 	/// * `path` - the path to scan for config files
 	fn yaml_contents(path: &Path) -> Vec<Data<Yaml>> {
 		[
-			// TODO: Add Git root here.
+			// Git root
+			Repository::discover(path)
+				.ok()
+				.and_then(|repo| repo.workdir().map(Path::to_path_buf)),
+			// Working directory
 			if path.is_dir() {
 				Some(path.to_path_buf())
 			} else {

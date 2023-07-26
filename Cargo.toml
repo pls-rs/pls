@@ -27,6 +27,7 @@ clap = { version = "4.3.11", features = ["derive", "wrap_help"] }
 colored = "2.0.0"
 env_logger = { version = "0.10.0", default-features = false }
 figment = { version = "0.10.10", features = ["yaml", "test"] }
+git2 = { version = "0.17.2", default-features = false }
 home = "0.5.5"
 lazy_static = "1.4.0"
 log = { version = "0.4.19", features = ["release_max_level_off"] }

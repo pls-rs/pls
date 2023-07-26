@@ -38,6 +38,7 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
 		"<bold>Get source:</> https://github.com/dhruvkb/pls",
 		"<bold>Sponsor:</> https://github.com/sponsors/dhruvkb"
 	].join("\n")),
+    args_override_self = true,
 )]
 pub struct Args {
 	/// the paths to list, each of which may be a file or directory

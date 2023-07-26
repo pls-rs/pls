@@ -161,8 +161,8 @@ impl Default for Conf {
 				// Extensions
 				Spec::new(r"\.sh$", "shell"),
 				Spec::new(r"\.rs$", "rust").style("rgb(247,76,0)"),
-				Spec::new(r"\.txt$", "text"),
-				Spec::new(r"\.md$", "markdown"),
+				Spec::new(r"\.(txt|rtf)$", "text"),
+				Spec::new(r"\.mdx?$", "markdown"),
 				Spec::new(r"\.ini$", "config"),
 				Spec::new(r"\.(json|toml|yml|yaml)$", "json"),
 				Spec::new(r"\.(jpg|jpeg|png|svg|webp|gif|ico)$", "image"),

@@ -1,0 +1,43 @@
+---
+title: Direction
+description:
+  When using the grid view, pls can display node names either row-wise or
+  column-wise based on the reading preferences of the user.
+---
+
+import { Content as DirectionOn } from "@/examples/direction/on.mdx";
+import { Content as DirectionOff } from "@/examples/direction/off.mdx";
+
+In the grid view, <Pls /> can position nodes in one of two ways.
+
+- Down: <Pls /> will place nodes along a column and move on to the next column
+  once the current one has been filled with a specific number of rows.
+
+- Across: <Pls /> will place nodes along a row and move on to the next row once
+  the current one has been filled with a specific number of columns.
+
+## Arguments
+
+`--down`/`-D` can be used to turn the downward direction on or off. It is turned
+off by default because writing row-wise requires fewer steps.
+
+:::caution
+
+This flag has no effect unless the [grid view](/pls/features/grid_view) is
+enabled with `--grid`/`-g`.
+
+:::
+
+### Examples
+
+```console
+$ pls --grid=true # or --down=false or -D=false
+```
+
+<DirectionOff />
+
+```console
+$ pls --grid=true --down=true # or -D=true
+```
+
+<DirectionOn />

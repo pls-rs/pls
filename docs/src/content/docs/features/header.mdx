@@ -1,0 +1,46 @@
+---
+title: Header
+description:
+  pls shows helpful headers for columns in the detail view and enables users to
+  customise the text and style of these headers.
+---
+
+import { Content as HeaderOn } from "@/examples/header/on.mdx";
+import { Content as HeaderOff } from "@/examples/header/off.mdx";
+
+<Pls /> shows headers above columns to help understand the output better. If not
+set, these headers intelligently appear when they are needed.
+
+## Arguments
+
+`--header`/`-H` can be used to turn headers on or off. It is turned on by
+default if the details view is enabled.
+
+:::caution
+
+This flag has no effect unless the [detail view](/pls/features/detail_view/) is
+enabled with `--det`/`-d`.
+
+:::
+
+### Examples
+
+```console
+$ pls --det=std # or --header=true or -H=true
+```
+
+<HeaderOn />
+
+```console
+$ pls --det=std --header=false # or -H=false
+```
+
+<HeaderOff />
+
+## Configuration
+
+Using the configuration system, you can modify the column headers and change
+their appearance using styling rules.
+
+See the [detail view configuration](/pls/features/detail_view#configuration) for
+an example.

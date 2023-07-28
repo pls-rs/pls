@@ -1,0 +1,62 @@
+---
+title: Icons
+description:
+  pls shows pretty Nerd Fonts icons prior to node names to help visually
+  identify the nodes and their types.
+---
+
+import { Content as IconsOn } from "@/examples/icons/on.mdx";
+import { Content as IconsOff } from "@/examples/icons/off.mdx";
+import { Content as IconsConf } from "@/examples/icons/conf.mdx";
+import { Content as IconsConfd } from "@/examples/icons/confd.mdx";
+
+<Pls /> shows pretty and helpful icons next to files by default. These icons can
+help when visually searching for a specific type of file.
+
+## Arguments
+
+`--icon`/`-i` can be used to turn icons on or off. Icons are shown by default
+because they're so pretty and helpful.
+
+### Examples
+
+```console
+$ pls # or --icon=true or -i=true
+```
+
+<IconsOn />
+
+```console
+$ pls --icon=false # or -i=false
+```
+
+<IconsOff />
+
+## Configuration
+
+Using the configuration system, you can add more icons, in addition to the
+default set included with <Pls />, and change the default glyphs of built-in
+icons.
+
+Icons are defined in two steps.
+
+1. Map an icon name to a glyph.
+
+   If you map a built-in name, you can change default glyphs shown by <Pls />
+   for that node. You can use the
+   [Nerd Fonts reference](https://www.nerdfonts.com/cheat-sheet) to find your
+   preferred icons.
+
+2. Associate file name patterns to icon names.
+
+   Refer to the [specs guide](/pls/guides/specs/) to learn how to do that.
+
+<Pls /> shows a default icon for some file types (like directory and symlink)
+but comes with dormant mappings for every file type. See the example below for
+how to enable the default icon or use a custom one.
+
+### Examples
+
+<IconsConf />
+
+<IconsConfd />

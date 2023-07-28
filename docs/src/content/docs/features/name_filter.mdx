@@ -1,0 +1,54 @@
+---
+title: Name filter
+description:
+  pls provides a way to filter the contents by regex matching on names,
+  providing a way to exclude, or only include, certain names.
+---
+
+import { Content as NameFilterOn } from "@/examples/name_filter/on.mdx";
+import { Content as NameFilterOff } from "@/examples/name_filter/off.mdx";
+import { Content as NameFilterDis } from "@/examples/name_filter/dis.mdx";
+
+<Pls /> allows the user to filter the contents by regex matching on names. Name
+matching can be used to exclude the names that match a certain pattern or only
+include the names that match a certain pattern. Both can be used in tandem to
+perform very powerful filtering.
+
+## Arguments
+
+`--exclude`/`-e` can be used to remove the files that match the given pattern.
+`--only`/`-o` can be used to remove the files that do not match the given
+pattern.
+
+:::caution
+
+Specifying both `--only`/`-o` and `--exclude`/`-e` will limit <Pls /> to only
+showing files that simultaneously match both rules.
+
+:::
+
+:::caution
+
+Name filtering is not applicable when listing a specific node.
+
+:::
+
+## Examples
+
+```console
+$ pls # or --only='.*' --exclude='$^'
+```
+
+<NameFilterOff />
+
+```console
+$ pls --only='(a|c)' --exclude='\.jpe?g$'
+```
+
+<NameFilterOn />
+
+```console
+$ pls --exclude='\.jpe?g$' a.jpg # `--exclude` has no effect
+```
+
+<NameFilterDis />

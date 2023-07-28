@@ -1,0 +1,41 @@
+---
+title: Colors
+description:
+  pls uses colors to differentiate between files of different types and
+  programming languages and to style different parts of the output.
+---
+
+import { Content as ColorsOn } from "@/examples/colors/on.mdx";
+import { Content as ColorsOff } from "@/examples/colors/off.mdx";
+
+<Pls /> makes a lot of use of colors throughout the output. This makes it very
+easy to grok the output and also makes it look pretty.
+
+## Environment
+
+By default <Pls /> will display colors if the terminal supports it and will
+disable colors if the output is being piped to another command.
+
+<Pls /> also respects the `NOCOLOR` and `CLICOLOR_FORCE` environment variables
+that can be used forcefully disable or enable colors respectively.
+
+:::caution
+
+Turning off colors also turns off other ANSI-based styling such as bold, italic
+underlines etc.
+
+:::
+
+### Examples
+
+```console
+$ env NOCOLOR=true pls # or pls | cat
+```
+
+<ColorsOff />
+
+```console
+$ pls # or env CLICOLOR_FORCE=true pls | cat
+```
+
+<ColorsOn />

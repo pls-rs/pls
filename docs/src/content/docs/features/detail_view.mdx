@@ -1,0 +1,271 @@
+---
+title: Detail view
+description:
+  pls can show a lot of metadata about each file in a tabular layout when the
+  detail view has been activated.
+---
+
+import { Content as DetailViewNone } from "@/examples/detail_view/none.mdx";
+import { Content as DetailViewSel } from "@/examples/detail_view/sel.mdx";
+import { Content as DetailViewStd } from "@/examples/detail_view/std.mdx";
+import { Content as DetailViewAll } from "@/examples/detail_view/all.mdx";
+import { Content as DetailViewConf } from "@/examples/detail_view/conf.mdx";
+import { Content as DetailViewConfd } from "@/examples/detail_view/confd.mdx";
+
+<Pls /> can stat the nodes to derive more information, called metadata, about
+them, which it can then present in a tabular format. This is called the detail
+view.
+
+## Arguments
+
+`--det`/`-d` can be used to select the detail columns the user wants to see, and
+indirectly turn the detail view on or off. The detail view is considered to be
+turned off if no detail field is chosen.
+
+The `--det`/`-d` flag can be specified multiple times to enable multiple fields.
+Each time it can take one of these values.
+
+| Value    | Description                                | Standard |
+| -------- | ------------------------------------------ | -------- |
+| `dev`    | device ID                                  |          |
+| `ino`    | inode number                               |          |
+| `nlink`  | number of hard links                       | Yes      |
+| `typ`    | node type                                  | Yes      |
+| `perm`   | symbolic permissions                       | Yes      |
+| `oct`    | octal permissions                          |          |
+| `user`   | owner user name                            | Yes      |
+| `uid`    | owner user ID                              |          |
+| `group`  | owner group name                           | Yes      |
+| `gid`    | owner group ID                             |          |
+| `size`   | storage space                              | Yes      |
+| `blocks` | number of blocks                           |          |
+| `btime`  | created at; "b" for birth                  |          |
+| `ctime`  | changed at; originally meant "created at"  |          |
+| `mtime`  | modified at                                | Yes      |
+| `atime`  | accessed at                                |          |
+| `git`    | Git status                                 |          |
+| `none`   | **shorthand:** no details                  |          |
+| `std`    | **shorthand:** the standard set of details |          |
+| `all`    | **shorthand:** all details                 |          |
+
+The column headers for the detail view can be toggled using the
+[`--header`/`-H` flag](/pls/features/header/).
+
+:::caution
+
+Note that the detail view is incompatible with the
+[grid view](/pls/features/grid_view/). In case of conflict, the detail view will
+be used and the grid view will be turned off.
+
+:::
+
+### Mechanism
+
+When parsing the `--det`/`-d` argument, values are read from the CLI, in order,
+and added to a vector of fields till we encounter a shorthand value. If the
+shorthand value is `none`, the vector is cleared. The other two shorthands are
+expanded and added to the vector.
+
+- `std` can be used to show the fields shown by `ls(1)` with the `-l` flag
+- `all` can be used to show every available metadata field
+
+For example, consider the <Pls /> invocation below.
+
+```console
+$ pls --det=dev --det=ino --det=none --det=std --det=git
+```
+
+- `dev` is added to the list.
+- `ino` is added to the list.
+- All entries so far are dropped when `none` is encountered.
+- `nlink`, `typ`, `perm`, `user`, `group`, `size` and `mtime` are added to the
+  list when `std` is encountered
+- `git` is added to the list.
+
+The final set is thus `nlink`, `typ`, `perm`, `user`, `group`, `size`, `mtime`
+and `git`. Since this is more than zero, <Pls /> will activate the detail view.
+
+### Examples
+
+```console
+$ pls # or --det=none or -d=none
+```
+
+<DetailViewNone />
+
+```console
+$ pls --det=user --det=group # or -d=user -d=group
+```
+
+<DetailViewSel />
+
+```console
+$ pls --det=std # or -d=std
+```
+
+<DetailViewStd />
+
+```console
+$ pls --det=all # or -d=all
+```
+
+<DetailViewAll />
+
+## Configuration
+
+Each of the detail fields is deeply customisable. Read on to know more the
+customisation options supported by each field.
+
+### Fields
+
+#### `dev` - Device ID
+
+This field can by styled by specifying `constants.dev_style`. <Pls /> does not
+style this field by default, because a style would not add any meaning.
+
+#### `ino` - Inode number
+
+This field can by styled by specifying `constants.ino_style`. <Pls /> does not
+style this field by default, because a style would not add any meaning.
+
+#### `nlink` - Number of hard links
+
+This field can be styled different based on the type of the node and the number
+of hard links the node has. <Pls /> allows files with more than one hard link
+and directories with only one hard link to be styled differently because these
+are peculiar cases. The opposite scenario is more common.
+
+| Type | `nlink` | Style                              |
+| ---- | ------- | ---------------------------------- |
+| file | 1       | `constants.nlink_styles.file_sing` |
+| file | >1      | `constants.nlink_styles.file_plur` |
+| dir  | 1       | `constants.nlink_styles.dir_sing`  |
+| dir  | >1      | `constants.nlink_styles.dir_plur`  |
+
+#### `typ` - Node type character
+
+<Pls /> allows you to completely change the type character to whatever makes you
+think of the node's type.
+
+| Type         | Character                       |
+| ------------ | ------------------------------- |
+| Dir          | `constants.typ.dir.ch`          |
+| Symlink      | `constants.typ.symlink.ch`      |
+| FIFO         | `constants.typ.fifo.ch`         |
+| Socket       | `constants.typ.socket.ch`       |
+| Block device | `constants.typ.block_device.ch` |
+| Char device  | `constants.typ.char_device.ch`  |
+| File         | `constants.typ.file.ch`         |
+| Unknown      | `constants.typ.unknown.ch`      |
+
+#### `perm` - Symbolic permissions
+
+This field can by styled by specifying `constants.perm_style`. <Pls /> allows
+individual customisation of each of the permission characters for read (`r`),
+write (`w`), execute (`x`), special (`s`/`S`/`t`/`T`) and none (`-`).
+
+| Bit     | Style                           |
+| ------- | ------------------------------- |
+| Read    | `constants.perm_styles.read`    |
+| Write   | `constants.perm_styles.write`   |
+| Execute | `constants.perm_styles.execute` |
+| Special | `constants.perm_styles.special` |
+| None    | `constants.perm_styles.none`    |
+
+#### `oct` - Octal permissions
+
+An octal permission has either three (user, group, other) or four (special, plus
+the previous three) digits. <Pls /> allows customisation of each of these digits
+individually.
+
+| Digit   | Style                          |
+| ------- | ------------------------------ |
+| Special | `constants.oct_styles.special` |
+| User    | `constants.oct_styles.user`    |
+| Group   | `constants.oct_styles.group`   |
+| Other   | `constants.oct_styles.other`   |
+
+#### `user`/`uid` - Owner user name/UID
+
+<Pls /> styles the name or UID of the user that owns the node differently based
+on whether the user is the current user or not. These styles apply identically
+to the user name and the UID.
+
+| User    | Style                         |
+| ------- | ----------------------------- |
+| Current | `constants.user_styles.curr`  |
+| Other   | `constants.user_styles.other` |
+
+#### `group`/`gid` - Owner group name/GID
+
+<Pls /> styles the name or GID of the group that owns the node differently based
+on whether the current user belongs to the group or not. These styles apply
+identically to the group name and the GID.
+
+| Group   | Style                          |
+| ------- | ------------------------------ |
+| Current | `constants.group_styles.curr`  |
+| Other   | `constants.group_styles.other` |
+
+#### `size` - Storage space
+
+<Pls /> shows the size of the node in human readable format by default, while
+allowing the user to choose between three unit systems. See
+[units](/pls/features/units/) for more information about unit systems.
+
+You can style the three components of a size value independently. Ideally, you
+want to emphasise magnitude and prefix and de-emphasise the base (which is
+always "B" for bytes).
+
+| Component | Style                          |
+| --------- | ------------------------------ |
+| Magnitude | `constants.size_styles.mag`    |
+| Prefix    | `constants.size_styles.prefix` |
+| Base unit | `constants.size_styles.base`   |
+
+#### `blocks` - Storage blocks
+
+<Pls /> shows the total number of physical blocks of size 512 bytes actually
+allocated on the disk for the node. This can be more than what the actual size
+on disk indicates if the node has "holes".
+
+:::note
+
+On macOS, the minimum block size is generally 4096 bytes so any file smaller
+than 4KiB will still take 8 blocks, and the number of blocks will also be a
+multiple of 8.
+
+:::
+
+This field can by styled by specifying `constants.blocks_style`. <Pls /> does
+not style this field by default, because a style would not add any meaning.
+
+#### `btime`/`ctime`/`mtime`/`atime` - Timestamps
+
+<Pls /> can display the four common timestamps of a file. <Pls /> allows you to
+choose the exact format in which you prefer the timestamps to be.
+
+| Timestamp   | Format                              |
+| ----------- | ----------------------------------- |
+| Created at  | `constants.timestamp_formats.btime` |
+| Changed at  | `constants.timestamp_formats.ctime` |
+| Modified at | `constants.timestamp_formats.mtime` |
+| Accessed at | `constants.timestamp_formats.atime` |
+
+The timestamp can use components from the `time` crate's
+[format description](https://time-rs.github.io/book/api/format-description.html#components)
+freely mixed with [markup tags](/pls/guides/markup/).
+
+#### `git` - Git status
+
+🚧 This feature is a work in progress and will be coming in a future version.
+
+### Examples
+
+Here is a custom config that approximately matches the output of
+[exa](https://the.exa.website) for at least the columns that exa has in common
+with <Pls /> (<Pls /> has more, in case you were wondering).
+
+<DetailViewConf />
+
+<DetailViewConfd />

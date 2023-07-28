@@ -1,0 +1,33 @@
+---
+title: Alignment
+description:
+  pls uses variable alignment when listing nodes to account for leading dots and
+  to ensure that the first characters in node names line up.
+---
+
+import { Content as AlignmentOn } from "@/examples/alignment/on.mdx";
+import { Content as AlignmentOff } from "@/examples/alignment/off.mdx";
+
+<Pls /> performs slight tweaks to alignment to account for leading dots. When
+alignment is enabled, the leading dots are moved one position to the left, so
+that the actual file names are aligned. Also the leading dots are slightly
+dimmed to reduce their visual prominence.
+
+## Arguments
+
+`--align`/`-a` can be used to turn alignment on or off. File names are aligned
+by default because usually it's the name that's important.
+
+### Examples
+
+```console
+$ pls # or --align=true or -a=true
+```
+
+<AlignmentOn />
+
+```console
+$ pls --align=false # or -a=false
+```
+
+<AlignmentOff />

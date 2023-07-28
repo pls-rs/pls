@@ -1,0 +1,54 @@
+---
+title: Grid view
+pls:
+  pls can display node names in two dimensions by showing multiple nodes per row
+  reducing vertical space when the grid view has been activated.
+---
+
+import { Content as GridViewOff } from "@/examples/grid_view/off.mdx";
+import { Content as GridViewOn } from "@/examples/grid_view/on.mdx";
+
+<Pls /> can reduce the amount of vertical space taken by the output, thus
+reducing the amount of strolling required, by placing the node names in a grid
+instead of a column.
+
+## Arguments
+
+`--grid`/`-g` can be used to turn the grid mode on or off. Grid mode is turned
+off by default because it reduces the amount of info shown per file.
+
+The direction of the grid can be changed with the
+[`--down`/`-D` flag](/pls/features/direction/).
+
+:::caution
+
+Note that the grid view is incompatible with the
+[detail view](/pls/features/detail_view/). In case of conflict, the detail view
+will be used and the grid view will be turned off.
+
+Otherwise, you may disable the detail view using `--det=none`/`-d=none`.
+
+:::
+
+:::caution
+
+Note that the grid view is also incompatible with
+[symlink tracing](/pls/features/symlink/) (which can take large amounts of
+horizontal space). In case of conflict, the grid view will be used and symlink
+tracing will be turned off.
+
+:::
+
+### Examples
+
+```console
+$ pls # or --grid=false or -g=false
+```
+
+<GridViewOff />
+
+```console
+$ pls --grid=true # or -g=true
+```
+
+<GridViewOn />

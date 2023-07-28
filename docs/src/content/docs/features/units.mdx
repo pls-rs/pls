@@ -1,0 +1,58 @@
+---
+title: Units
+description:
+  pls can show the sizes of files in three unit systems, binary (powers of 2),
+  decimal (powers of 10), and none.
+---
+
+import { Content as UnitsBinary } from "@/examples/units/binary.mdx";
+import { Content as UnitsDecimal } from "@/examples/units/decimal.mdx";
+import { Content as UnitsNone } from "@/examples/units/none.mdx";
+
+<Pls /> can show the sizes of files in three unit systems.
+
+- binary, which uses higher powers of 2 such as 2<sup>10</sup> as kibi (Ki),
+  2<sup>20</sup> as mibi (Mi) etc.
+- decimal, which users higher powers of 10 such as 10<sup>3</sup> as kilo (k),
+  10<sup>6</sup> as mega (M) etc.
+- none, which lists the exact number of bytes (B) as is.
+
+## Arguments
+
+`--unit`/`-u` can be used to set the unit system to use. <Pls /> uses the binary
+unit system by default.
+
+:::caution
+
+This flag has no effect unless the [detail view](/pls/features/detail_view/)
+contains the `size` field with `--det=size`/`-D=size`.
+
+:::
+
+### Examples
+
+```console
+$ pls --det=size # or --unit=binary or --u=binary
+```
+
+<UnitsBinary />
+
+```console
+$ pls --det=size --unit=decimal # or --u=decimal
+```
+
+<UnitsDecimal />
+
+```console
+$ pls --det=size --unit=none # or --u=binary
+```
+
+<UnitsNone />
+
+## Configuration
+
+Using the configuration system, you can modify the appearance of size magnitude,
+prefix and base unit.
+
+See the [detail view configuration](/pls/features/detail_view#configuration) for
+an example.

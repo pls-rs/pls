@@ -1,0 +1,86 @@
+---
+title: Importance
+description:
+  pls uses an importance-based system to emphasize, de-emphasize or hide nodes
+  instead of naïvely checking if the node name has a leading dot.
+---
+
+import { Content as ImportanceM2 } from "@/examples/importance/imp_m2.mdx";
+import { Content as ImportanceM1 } from "@/examples/importance/imp_m1.mdx";
+import { Content as Importance0 } from "@/examples/importance/imp_0.mdx";
+import { Content as Importance1 } from "@/examples/importance/imp_1.mdx";
+import { Content as Importance2 } from "@/examples/importance/imp_2.mdx";
+import { Content as ImportanceDis } from "@/examples/importance/dis.mdx";
+import { Content as ImportanceConf } from "@/examples/importance/conf.mdx";
+import { Content as ImportanceConfd } from "@/examples/importance/confd.mdx";
+
+<Pls /> uses an importance system to both hide certain unimportant nodes as well
+as emphasize certain important ones.
+
+Each node has a default importance of -1 if it starts with a leading dot, and 0
+otherwise. This importance can be overridden using [specs](/pls/guides/specs/).
+
+An importance scale maps importance levels to styling attributes. Any files with
+importance below the scale are hidden.
+
+## Arguments
+
+`--imp`/`-I` can be used to set the baseline importance level. This affects the
+relative importance of all nodes. The default is 0. Setting a higher number will
+reduce the importance level of nodes and hide more of them.
+
+At `--imp=-2`, a node with importance -2 behaves as it has an importance of 0, a
+node with importance -1 behaves as it has an importance of 1, and so on.
+
+:::caution
+
+Filtering by importance is not applicable when listing a specific node.
+
+:::
+
+### Examples
+
+```console
+$ pls --imp=-2 # or -I=-2
+```
+
+<ImportanceM2 />
+
+```console
+$ pls --imp=-1 # or -I=-1
+```
+
+<ImportanceM1 />
+
+```console
+$ pls # or --imp=0 or -I=0
+```
+
+<Importance0 />
+
+```console
+$ pls --imp=1 # or -I=1
+```
+
+<Importance1 />
+
+```console
+$ pls --imp=2 # or -I=2
+```
+
+<Importance2 />
+
+```console
+$ pls --imp=2 file # `--imp` has no effect
+```
+
+<ImportanceDis />
+
+## Configuration
+
+Using the configuration system, you can extend the importance scale to higher or
+lower levels and change the default styles applicable at each level.
+
+<ImportanceConf />
+
+<ImportanceConfd />

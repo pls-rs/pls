@@ -6,3 +6,6 @@ dist/
 
 # Dependencies
 node_modules/
+
+# Generated examples
+src/examples/

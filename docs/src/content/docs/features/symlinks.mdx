@@ -1,0 +1,55 @@
+---
+title: Symlinks
+description:
+  pls can trace symlinks to their targets and identify broken or circular
+  symlinks in the process, even expanding chains of symlinks.
+---
+
+import { Content as SymlinkOn } from "@/examples/symlinks/on.mdx";
+import { Content as SymlinkOff } from "@/examples/symlinks/off.mdx";
+import { Content as SymlinkConf } from "@/examples/symlinks/conf.mdx";
+import { Content as SymlinkConfd } from "@/examples/symlinks/confd.mdx";
+
+<Pls /> can trace symlinks to their targets, and in the process identify broken
+or circular symlinks. <Pls /> will also expand chains of symlinks.
+
+## Arguments
+
+`--sym`/`-l` can be used to turn symlink tracing on or off. It is turned on by
+default but disabled in grid view due to space constraints.
+
+:::caution
+
+Note that symlink tracing (which can take large amounts of horizontal space) is
+incompatible with the [grid view](/pls/features/grid_view/). In case of
+conflict, the grid view will be used and symlink tracing will be turned off.
+
+Otherwise, you may disable the grid view using `--grid=false`/`-g=false`.
+
+:::
+
+### Examples
+
+```console
+$ pls # or --sym=true or -l=true
+```
+
+<SymlinkOn />
+
+```console
+$ pls --sym=false # or -l=false
+```
+
+<SymlinkOff />
+
+## Configuration
+
+Using the configuration system, you can customise the symlink styles and arrows.
+Note that for valid symlinks, the style is only applied to the arrow and not the
+target.
+
+### Examples
+
+<SymlinkConf />
+
+<SymlinkConfd />

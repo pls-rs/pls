@@ -44,6 +44,46 @@ export default defineConfig({
             { label: "Contribute", link: "/guides/contribute/" },
           ],
         },
+        {
+          label: "Features",
+          items: [
+            {
+              label: "Detail view",
+              items: [
+                { label: "View", link: "/features/detail_view/" },
+                { label: "Header", link: "/features/header/" },
+                { label: "Units", link: "/features/units/" },
+              ],
+            },
+            {
+              label: "Grid view",
+              items: [
+                { label: "View", link: "/features/grid_view/" },
+                { label: "Direction", link: "/features/direction/" },
+              ],
+            },
+            {
+              label: "Presentation",
+              items: [
+                { label: "Icons", link: "/features/icons/" },
+                { label: "Suffixes", link: "/features/suffixes/" },
+                { label: "Symlinks", link: "/features/symlinks/" },
+                { label: "Alignment", link: "/features/alignment/" },
+              ],
+            },
+            {
+              label: "Filtering",
+              items: [
+                { label: "Name filter", link: "/features/name_filter/" },
+                { label: "Type filter", link: "/features/type_filter/" },
+                { label: "Importance", link: "/features/importance/" },
+              ],
+            },
+            { label: "Sorting", link: "/features/sorting/" },
+            { label: "Colors", link: "/features/colors/" },
+            { label: "Upcoming", link: "/features/upcoming/" },
+          ],
+        },
       ],
       customCss: [
         "./src/styles/brand.css",

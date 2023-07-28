@@ -1,0 +1,92 @@
+---
+title: Sorting
+description:
+  pls offers an unmatched 18 bases for sorting nodes and 2 directions for each
+  basis, of which you can choose multiple to apply in sequence.
+---
+
+import { Content as SortingDef } from "@/examples/sorting/def.mdx";
+import { Content as SortingCust } from "@/examples/sorting/cust.mdx";
+
+<Pls /> offers the ability to sort the output in your preferred order by
+choosing as many as you prefer from 18 bases &times; 2 directions per base.
+
+## Arguments
+
+`--sort`/`-s` can be used to select the sort bases. The flag can be specified
+multiple times to sort by multiple bases. Each time it can take one of these
+values. All values except `none` can optionally suffixed with an underscore `_`
+to reverse their direction.
+
+| Name   | Description                                                       |
+| ------ | ----------------------------------------------------------------- |
+| dev    | device ID                                                         |
+| ino    | inode number                                                      |
+| nlink  | number of hard links                                              |
+| typ    | node type                                                         |
+| cat    | node category (directory or file)                                 |
+| user   | user name                                                         |
+| uid    | user ID                                                           |
+| group  | group name                                                        |
+| gid    | group ID                                                          |
+| size   | storage space                                                     |
+| blocks | number of blocks                                                  |
+| btime  | created at; "b" for birth                                         |
+| ctime  | changed at; originally meant "created at"                         |
+| mtime  | modified at                                                       |
+| atime  | accessed at                                                       |
+| name   | node name                                                         |
+| cname  | canonical name (name in lower case with leading symbols stripped) |
+| ext    | file extension                                                    |
+| none   | **shorthand:** no sorting                                         |
+
+By default, <Pls /> sorts file by `cat` and `cname`, which means
+
+- directories are listed before files (`cat`)
+- nodes are sorted by their canonical names (`cname`)
+
+When sorting by multiple sort bases, the first listed basis is the primary sort
+basis, the second is the tie-breaker for the first, the third is the tie-breaker
+for the second and so on.
+
+:::note
+
+The canonical name of a file is obtained by stripping leading symbols from the
+name and then converting it to lowercase.
+
+So the canonical name of the `.DS_Store` file would be 'ds_store'. This name is
+helpful when sorting because it allows for dotfiles and case-mixed files to be
+sorted along with the other files, instead of being separated out.
+
+:::
+
+### Mechanism
+
+When parsing the `--sort`/`-s` flag, values are read from the CLI, in order, and
+added to a vector of sort bases till we encounter the shorthand value `none`,
+which clears the vector.
+
+For example, consider the <Pls /> invocation below.
+
+```console
+$ pls --sort=cat --sort=cname --sort=none --sort=mtime_
+```
+
+- `cat` is added to the list.
+- `cname` is added to the list.
+- All entries so far are dropped when `none` is encountered.
+- `mtime_` is added to the list.
+
+### Examples
+
+```console
+$ pls # or --sort=cat --sort=cname or -s=cat -s=cname
+```
+
+<SortingDef />
+
+```console
+$ pls --det=ino --det=typ --det=size --sort=cat_ --sort=size_ --sort=inode
+```
+
+<SortingCust />

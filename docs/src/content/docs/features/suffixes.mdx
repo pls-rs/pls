@@ -1,0 +1,46 @@
+---
+title: Suffixes
+description:
+  pls shows symbolic suffixes after node names to help identify the node type
+  when it is not a regular file.
+---
+
+import { Content as SuffixesOn } from "@/examples/suffixes/on.mdx";
+import { Content as SuffixesOff } from "@/examples/suffixes/off.mdx";
+import { Content as SuffixesConf } from "@/examples/suffixes/conf.mdx";
+import { Content as SuffixesConfd } from "@/examples/suffixes/confd.mdx";
+
+<Pls /> shows suffixes for many common file types. This is usually helpful to
+identify file types by just looking at the name. The suffixes are generally
+dimmed so as to not appear like they're actually a part of the file name.
+
+## Arguments
+
+`--suffix`/`-S` can be used to turn suffixes on or off. Suffixes are shown by
+default because of their utility.
+
+### Examples
+
+```console
+$ pls # or --suffix=true or -S=true
+```
+
+<SuffixesOn />
+
+```console
+$ pls --suffix=false # or -S=false
+```
+
+<SuffixesOff />
+
+## Configuration
+
+Using the configuration system, you can add suffixes for more file types, in
+addition to the default set included with <Pls />, and change the existing
+suffixes to your liking.
+
+### Examples
+
+<SuffixesConf />
+
+<SuffixesConfd />

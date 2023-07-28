@@ -4,7 +4,8 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["src/components/*"]
+      "@/components/*": ["src/components/*"],
+      "@/examples/*": ["src/examples/*"]
     }
   }
 }

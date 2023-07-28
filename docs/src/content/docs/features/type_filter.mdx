@@ -1,0 +1,77 @@
+---
+title: Type filter
+description:
+  pls provides a way to filter the contents by node type which, combined with
+  the name filter, makes it easier to find what you are searching for.
+---
+
+import { Content as TypeFilterOff } from "@/examples/type_filter/off.mdx";
+import { Content as TypeFilterOn } from "@/examples/type_filter/on.mdx";
+import { Content as TypeFilterDis } from "@/examples/type_filter/dis.mdx";
+
+<Pls /> allows the user to only list specific node types in the output.
+
+## Arguments
+
+`--typ`/`-t` can be used to select the node types the user wants to see. The
+flag can be specified multiple times to enable multiple file types. Each time it
+can take one of these values.
+
+| Value        | Description                   |
+| ------------ | ----------------------------- |
+| dir          | regular folder                |
+| symlink      | symbolic link                 |
+| fifo         | named pipe                    |
+| socket       | file-based socket             |
+| block_device | block special device file     |
+| char_device  | character special device file |
+| file         | regular file                  |
+| none         | **shorthand:** no node types  |
+| all          | **shorthand:** all node types |
+
+:::caution
+
+Type filtering is not applicable when listing a specific node.
+
+:::
+
+### Mechanism
+
+When parsing the `--typ`/`-t` flag, values are read from the CLI, in order, and
+added to a vector of node types till we encounter a shorthand value. If the
+shorthand value is `none`, the vector is cleared. If the shorthand value is
+`all`, the vector is filled with all the node types.
+
+For example, consider the <Pls /> invocation below.
+
+```console
+$ pls --typ=symlink --typ=all --typ=none --typ=dir
+```
+
+- `symlink` is added to the list.
+- All the file types are added to the list, including the already existing
+  `symlink`.
+- All entries so far are dropped when `none` is encountered.
+- `dir` is added to the list.
+
+The final set contains only `dir` and so <Pls /> will only list the directories.
+
+### Examples
+
+```console
+$ pls # or --typ=all or --t=all
+```
+
+<TypeFilterOff />
+
+```console
+$ pls --typ=dir --typ=symlink # or -t=dir -t=symlink
+```
+
+<TypeFilterOn />
+
+```console
+$ pls --typ=dir --typ=symlink fifo # `--typ` has no effect
+```
+
+<TypeFilterDis />

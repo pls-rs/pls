@@ -9,3 +9,6 @@ target
 flamegraph.svg
 report.json
 report.html
+
+# pre-commit executable
+pre-commit.pyz

@@ -11,6 +11,9 @@
     <a href="https://github.com/dhruvkb/pls/actions/workflows/ci.yml">
       <img src="https://github.com/dhruvkb/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
     </a>
+    <a href="https://dhruvkb.github.io/pls/">
+      <img src="https://img.shields.io/badge/docs-dhruvkb.github.io/pls-blue" alt="Documentation"/>
+    </a>
   </p>
 </h1>
 
@@ -25,3 +28,5 @@
 - **personable**: `pls` prioritises consumption by humans over scripts.
 
 Pick whichever adjective helps you remember the command name.
+
+For more information, see the [documentation](https://dhruvkb.github.io/pls/).

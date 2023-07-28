@@ -62,6 +62,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Setup `just`
+        uses: extractions/setup-just@v1
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
@@ -76,7 +79,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run unit test
-        run: cargo test
+        run: just test
 
   build:
     name: Build release

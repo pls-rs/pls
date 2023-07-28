@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "examples"
+version = "0.0.0"
+description = "Generate examples for `pls` documentation"
+authors = ["Dhruv Bhanushali <dhruv_b@live.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.14.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

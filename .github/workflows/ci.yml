@@ -103,6 +103,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Setup `just`
+        uses: extractions/setup-just@v1
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -118,11 +121,10 @@ jobs:
             target/
           key: ${{ runner.os }}-cross-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install Cross
-        run: cargo install cross
-
       - name: Build release
-        run: cross build --verbose --release --target ${{ matrix.target }}
+        run: |
+          just get-cross
+          just cross ${{ matrix.target }}
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v3

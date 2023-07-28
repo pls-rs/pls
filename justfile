@@ -56,6 +56,14 @@ test *args:
 release:
     cargo build --release
 
+# Install `cross`, if it does not already exist.
+get-cross:
+    [ -x "$(command -v cross)" ] || cargo install cross
+
+# Build a release binary for the given target with `cross`.
+cross target:
+    cross build --release --verbose --target {{ target }}
+
 ###########
 # Aliases #
 ###########

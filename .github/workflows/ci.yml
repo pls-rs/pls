@@ -12,17 +12,20 @@ env:
   RUSTFLAGS: "-Dwarnings"
 
 jobs:
-  lint:
+  lint: # Also checks formatting.
     name: Run lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Setup `just`
+        uses: extractions/setup-just@v1
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          components: clippy
+          components: clippy, rustfmt
 
       - uses: actions/cache@v3
         with:
@@ -33,34 +36,19 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pre-commit
+          key:
+            ${{ runner.os }}-pre-commit-${{
+            hashFiles('**/.pre-commit-config.yaml') }}
 
       - name: Run lint
-        run: cargo clippy --all-targets --all-features
-
-  fmt:
-    name: Check formatting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Check formatting
-        run: cargo fmt --all -- --check
+        run: |
+          just pre-commit
+          just lint
 
   unit:
     name: Run unit test
@@ -94,7 +82,6 @@ jobs:
     name: Build release
     needs:
       - lint
-      - fmt
       - unit
     strategy:
       matrix:

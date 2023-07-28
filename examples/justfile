@@ -1,0 +1,37 @@
+set dotenv-load := false
+set fallback
+
+# Show all available recipes.
+@_default:
+    just --list --unsorted
+
+#########
+# Setup #
+#########
+
+# Install Python dependencies.
+install:
+    poetry install
+
+###########
+# Recipes #
+###########
+
+# Generate the specified examples file.
+gen file:
+    poetry run python src/examples/{{ file }}.py
+
+# Regenerate all examples.
+all:
+    just gen hero
+    just gen specs
+    just gen detail_view
+    just gen grid_view
+    just gen presentation
+    just gen filtering
+    just gen sorting
+    just gen colors
+
+# Create a Python shell.
+shell:
+    poetry run ipython

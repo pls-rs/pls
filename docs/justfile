@@ -1,0 +1,26 @@
+set dotenv-load := false
+set fallback
+
+# Show all available recipes.
+@_default:
+    just --list --unsorted
+
+#########
+# Setup #
+#########
+
+# Install Node.js dependencies.
+install:
+    pnpm install
+
+###########
+# Recipes #
+###########
+
+# Delete the built assets.
+clean:
+    rm -rf dist/
+
+# Remove all examples from the codebase.
+clean-eg:
+    rm -rf src/examples/

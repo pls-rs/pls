@@ -190,6 +190,9 @@ jobs:
       - name: Install all dependencies
         run: just install
 
+      - name: Build release binary
+        run: just release
+
       - name: Generate examples
         working-directory: examples/
         run: just all

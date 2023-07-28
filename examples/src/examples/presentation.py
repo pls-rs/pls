@@ -44,25 +44,28 @@ def symlinks():
                 ("b", lambda p: p.symlink_to("c")),
                 ("c", lambda p: p.symlink_to("b")),
                 ("d", lambda p: p.symlink_to("nonexistent")),
-                (
-                    "e",
-                    lambda p: [
-                        p.symlink_to("dir"),
-                        os.chmod(p, 000, follow_symlinks=False),
-                    ],
-                ),
+                ("e", lambda p: p.symlink_to("dir")),
                 ("f", lambda p: p.symlink_to("dir")),
                 ("g", lambda p: p.symlink_to("f")),
             ],
         )
     ) as bench:
+        # Make the symlink unreadable.
+        try:
+            os.chmod(bench / "e", 000, follow_symlinks=False)
+        except NotImplementedError:
+            pass
+
         write_out(bench=bench, dest_name="on")
         write_out("--sym=false", bench=bench, dest_name="off")
         copy_write_conf(bench)
         write_out(bench=bench, dest_name="confd")
 
         # Re-allow deletion during cleanup.
-        os.chmod(bench / "e", 777, follow_symlinks=False)
+        try:
+            os.chmod(bench / "e", 777, follow_symlinks=False)
+        except NotImplementedError:
+            pass
 
 
 def alignment():

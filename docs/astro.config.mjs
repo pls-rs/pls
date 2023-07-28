@@ -41,6 +41,7 @@ export default defineConfig({
             { label: "Get started", link: "/guides/get_started/" },
             { label: "Markup", link: "/guides/markup/" },
             { label: "Specs", link: "/guides/specs/" },
+            { label: "Contribute", link: "/guides/contribute/" },
           ],
         },
       ],

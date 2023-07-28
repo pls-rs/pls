@@ -153,6 +153,11 @@ jobs:
         with:
           python-version: 3.11
 
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-in-project: true
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:

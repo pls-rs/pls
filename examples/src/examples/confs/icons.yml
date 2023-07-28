@@ -1,0 +1,9 @@
+icons:
+  pls: "󰱫" # Override the built-in glyph for 'pls'.
+  sock: "󰓚" # Define new icon-glyph mapping.
+constants:
+  typ:
+    fifo:
+      icon: fifo # Enable and use the built-in glyph for FIFO pipes.
+    socket:
+      icon: sock # Enable and use a custom icon for sockets.

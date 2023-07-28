@@ -1,0 +1,16 @@
+constants:
+  typ:
+    file:
+      suffix: "<dimmed>!</>"
+    dir:
+      suffix: "<dimmed>></>"
+    symlink:
+      suffix: "<dimmed>↗</>"
+    fifo:
+      suffix: "<dimmed>-</>"
+    socket:
+      suffix: "<dimmed>↔</>"
+    char_device:
+      suffix: "<dimmed>󰗧</>"
+    block_device:
+      suffix: "<dimmed></>"

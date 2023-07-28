@@ -1,0 +1,25 @@
+icons:
+  javascript: "󰌞" # nf-md-language_javascript
+  typescript: "󰛦" # nf-md-language_typescript
+specs:
+  - pattern: \.ts$
+    icon: typescript
+    style: rgb(49,120,198)
+  - pattern: \.js$
+    icon: javascript
+    style: rgb(247,223,30)
+    importance: -1
+    collapse:
+      ext: ts
+  - pattern: prettier
+    icon: broom
+  - pattern: ^package\.json$
+    icon: package
+  - pattern: ^pnpm-lock\.yaml$
+    icon: lock
+    importance: -1
+    collapse:
+      name: package.json
+  - pattern: ^(justfile|README.md)$
+    style: green bold
+    importance: 2

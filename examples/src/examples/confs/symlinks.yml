@@ -1,0 +1,14 @@
+constants:
+  symlink:
+    ok:
+      sep: -->
+      style: green
+    broken:
+      sep: ~~>
+      style: red bold
+    cyclic:
+      sep: \<-> # '<' must be escaped
+      style: yellow italic
+    error:
+      sep: -x-
+      style: red italic

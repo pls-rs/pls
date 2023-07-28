@@ -1,0 +1,6 @@
+constants:
+  imp_styles:
+    - [-2, "red"]
+    - [-1, "yellow"]
+    - [1, "green"]
+    - [2, "bright_magenta"]

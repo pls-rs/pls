@@ -1,0 +1,64 @@
+constants:
+  dev_style: magenta
+  ino_style: magenta
+  nlink_styles:
+    file_sing: red bold
+    file_plur: red bold
+    dir_sing: red bold
+    dir_plur: red bold
+  typ:
+    dir:
+      ch: <bold cyan>d</>
+    symlink:
+      ch: <magenta>l</>
+    fifo:
+      ch: <yellow>|</>
+    socket:
+      ch: <green>s</>
+    char_device:
+      ch: <blue bg:green>b</>
+    block_device:
+      ch: <blue bg:yellow>c</>
+    file:
+      ch: "."
+  oct_styles:
+    special: magenta
+    user: magenta
+    group: magenta
+    other: magenta
+  user_styles:
+    curr: bold yellow
+    other: ""
+  group_styles:
+    curr: bold yellow
+    other: ""
+  size_styles:
+    mag: green bold
+    prefix: green
+    base: hidden
+  blocks_style: cyan
+  timestamp_formats:
+    btime: <blue>[day] [month repr:short] [hour repr:24]:[minute]</>
+    ctime: <blue>[day] [month repr:short] [hour repr:24]:[minute]</>
+    mtime: <blue>[day] [month repr:short] [hour repr:24]:[minute]</>
+    atime: <blue>[day] [month repr:short] [hour repr:24]:[minute]</>
+  table:
+    header_style: clear
+    column_names:
+      dev: <underline>Device</>
+      ino: <underline>inode</>
+      perm: <underline>Permissions</>
+      oct: <underline>Octal</>
+      nlink: <underline>Links</>
+      size: <underline>Size</>
+      blocks: <underline>Blocks</>
+      user: <underline>User</>
+      uid: <underline>UID</>
+      group: <underline>Group</>
+      gid: <underline>GID</>
+      btime: <underline>Date Created</>
+      mtime: <underline>Date Modified</>
+      ctime: <underline>Date Changed</>
+      atime: <underline>Date Accessed</>
+      git: <underline>Git</>
+      name: <underline>Name</>

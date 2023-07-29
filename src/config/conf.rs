@@ -27,6 +27,9 @@ pub struct ConfMan {
 }
 
 impl Default for ConfMan {
+	/// This includes config files from the following locations:
+	///
+	/// * the home directory, if determined
 	fn default() -> Self {
 		info!("Preparing base configuration.");
 
@@ -60,30 +63,39 @@ impl ConfMan {
 	///
 	/// This includes config files from the following locations:
 	///
-	/// * the home directory, if determined
-	/// * TODO: the Git root, if Git-tracked
+	/// * all parent directories up to the Git root, if Git-tracked
 	/// * the given path, if a directory, or it's parent
 	///
 	/// # Arguments
 	///
 	/// * `path` - the path to scan for config files
 	fn yaml_contents(path: &Path) -> Vec<Data<Yaml>> {
-		[
-			// Git root
-			Repository::discover(path)
-				.ok()
-				.and_then(|repo| repo.workdir().map(Path::to_path_buf)),
-			// Working directory
-			if path.is_dir() {
-				Some(path.to_path_buf())
-			} else {
-				path.parent().map(Path::to_path_buf)
-			},
-		]
-		.iter()
-		.flatten()
-		.filter_map(Self::conf_at)
-		.collect()
+		// the given path, if a directory, or it's parent
+		let mut curr = if path.is_dir() {
+			path.to_path_buf()
+		} else {
+			match path.parent() {
+				Some(par) => par.to_path_buf(),
+				None => return vec![],
+			}
+		};
+
+		let mut paths = vec![curr.clone()];
+
+		let repo_root = Repository::discover(path)
+			.ok()
+			.and_then(|repo| repo.workdir().map(Path::to_path_buf));
+		if let Some(repo_root) = repo_root {
+			while curr.pop() {
+				paths.push(curr.clone());
+				if curr == repo_root {
+					break;
+				}
+			}
+		}
+		debug!("Checking for configs in {paths:?}.");
+
+		paths.iter().rev().filter_map(Self::conf_at).collect()
 	}
 
 	/// Get a `Conf` instance for the given path.

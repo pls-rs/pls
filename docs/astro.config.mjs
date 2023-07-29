@@ -92,6 +92,9 @@ export default defineConfig({
         "./src/styles/terminal.css",
         "./src/styles/typography.css",
       ],
+      editLink: {
+        baseUrl: "https://github.com/dhruvkb/pls/edit/main/docs/",
+      },
     }),
   ],
   markdown: {

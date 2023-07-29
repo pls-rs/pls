@@ -34,7 +34,9 @@ impl Sym for Node<'_> {
 
 		let target = match abs_target_path.try_exists() {
 			Err(err) => match err.raw_os_error() {
-				Some(62) => SymTarget::Cyclic(target_path), // i.e. 'Too many levels of symbolic links'
+				// 62: 'Too many levels of symbolic links'
+				// 40: 'Symbolic link loop'
+				Some(62) | Some(40) => SymTarget::Cyclic(target_path),
 				_ => SymTarget::Error(Exc::IoError(err)),
 			},
 			Ok(true) => SymTarget::Ok(Box::new(Node::symlink(

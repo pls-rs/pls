@@ -112,23 +112,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup `just`
-        uses: extractions/setup-just@v1
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - name: Setup env
+        uses: ./.github/actions/setup-env
         with:
-          target: ${{ matrix.target }}
+          rust_cache_key: docs
 
-      - uses: actions/cache@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-docs-${{ hashFiles('**/Cargo.lock') }}
+          name: pls-x86_64-unknown-linux-musl
+          path: /tmp/pls
+
+      - name: Make binary accessible and executable
+        run: |
+          chmod +x /tmp/pls/pls
+          echo "/tmp/pls" >> $GITHUB_PATH
+
+      # This must be a separate step because `$PATH` changes are not reflected
+      # immediately.
+      - name: Ensure binary is accessible
+        run: pls --version
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -154,9 +157,6 @@ jobs:
 
       - name: Install all dependencies
         run: just install
-
-      - name: Build release binary
-        run: just release
 
       - name: Generate examples
         working-directory: examples/

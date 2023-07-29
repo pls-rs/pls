@@ -18,7 +18,7 @@ def run_to_html(args: list[str], **kwargs) -> str:
     post-processes the HTML into something the docs site can readily use.
 
     It assumes the project root to be the working directory and that a release
-    build of ``pls`` is present in the ``./target/release/`` directory.
+    build of ``pls`` is present on the ``$PATH``.
 
     All keyword arguments are forwarded as-is to ``run_cmd``.
 
@@ -26,7 +26,7 @@ def run_to_html(args: list[str], **kwargs) -> str:
     """
 
     args = " ".join(args)
-    cmd = ["to-html", f"./target/release/pls {args}"]
+    cmd = ["to-html", f"pls {args}"]
     print(f"Running command {cmd}")
 
     proc = run_cmd(cmd, **kwargs)

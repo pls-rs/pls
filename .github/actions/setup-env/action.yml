@@ -1,0 +1,39 @@
+name: pls/setup-env
+description: Setup environment for CI + CD jobs
+
+inputs:
+  rust_cache_key:
+    description: The key to use to identify the Rust toolchain cache
+    default: cargo
+  rust_components:
+    description: dtolnay/rust-toolchain#components
+    required: false
+  rust_target:
+    description: dtolnay/rust-toolchain#target
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Setup `just`
+      uses: extractions/setup-just@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: ${{ inputs.rust_components }}
+        target: ${{ inputs.rust_target }}
+
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key:
+          ${{ runner.os }}-${{ inputs.rust_cache_key }}-${{
+          hashFiles('**/Cargo.lock') }}

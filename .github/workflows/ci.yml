@@ -19,23 +19,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup `just`
-        uses: extractions/setup-just@v1
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - name: Setup env
+        uses: ./.github/actions/setup-env
         with:
-          components: clippy, rustfmt
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          rust_cache_key: cargo
+          rust_components: clippy, rustfmt
 
       - uses: actions/cache@v3
         with:
@@ -62,21 +50,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup `just`
-        uses: extractions/setup-just@v1
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - uses: actions/cache@v3
+      - name: Setup env
+        uses: ./.github/actions/setup-env
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          rust_cache_key: cargo
 
       - name: Run unit test
         run: just test
@@ -103,23 +80,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup `just`
-        uses: extractions/setup-just@v1
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - name: Setup env
+        uses: ./.github/actions/setup-env
         with:
-          target: ${{ matrix.target }}
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cross-${{ hashFiles('**/Cargo.lock') }}
+          rust_cache_key: cross
+          rust_target: ${{ matrix.target }}
 
       - name: Build release
         run: |

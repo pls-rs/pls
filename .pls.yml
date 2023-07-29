@@ -1,0 +1,34 @@
+icons:
+  editorconfig: "" # nf-seti-editorconfig
+  egg: "󰪯" # nf-md-egg
+  rocket: "" # nf-oct-rocket
+specs:
+  - pattern: ^docs$
+    icon: book
+  - pattern: ^examples$
+    icon: egg
+  - pattern: ^.idea$
+    importance: -2
+  - pattern: ^src$
+    style: bold
+    importance: 1
+  - pattern: ^target$
+    icon: rocket
+  - pattern: ^(justfile|README.md)$
+    style: green bold
+    importance: 2
+  - pattern: ^\.editorconfig$
+    icon: editorconfig
+  - pattern: ^(pre-commit\.pyz|\.pre-commit-config\.yaml)$
+    icon: broom
+  - pattern: ^(.prettierignore|prettier.config.mjs)$
+    icon: broom
+constants:
+  table:
+    header_style: clear
+    column_names:
+      user: <bold>bol</><italic>ita</>
+      group: <strikethrough>str</><blink>bli</>
+  typ:
+    dir:
+      style: cyan

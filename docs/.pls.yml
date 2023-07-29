@@ -1,0 +1,20 @@
+icons:
+  javascript: "󰌞" # nf-md-language_javascript
+  typescript: "󰛦" # nf-md-language_typescript
+specs:
+  - pattern: \.ts$
+    icon: typescript
+    style: rgb(49,120,198)
+  - pattern: \.m?js$
+    icon: javascript
+    style: rgb(247,223,30)
+  - pattern: \.astro$
+    icon: rocket
+    style: rgb(255,93,1)
+  - pattern: ^package-lock\.json$
+    icon: package
+  - pattern: ^pnpm-lock.yaml$
+    icon: lock
+    importance: -1
+    collapse:
+      name: package.json

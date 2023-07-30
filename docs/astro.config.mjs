@@ -84,6 +84,12 @@ export default defineConfig({
             { label: "Upcoming", link: "/features/upcoming/" },
           ],
         },
+        {
+          label: "Cookbooks",
+          autogenerate: {
+            directory: "cookbooks",
+          },
+        },
       ],
       customCss: [
         "./src/styles/brand.css",

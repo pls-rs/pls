@@ -1,0 +1,81 @@
+---
+title: Starter configs
+description:
+  The USP of pls is that it uses plaintext YAML configurations that can be
+  checked into VCS and shared with others. Here are some to get you started.
+---
+
+<Pls /> uses simple YAML-based config files. This makes it easy to
+
+- check these configs into VCS to ensure your teammates can enjoy them
+- back them up with the rest of your dotfiles
+- share them with others to help them get started
+
+This page consists of some configs to get you started. If you have a config that
+you'd like to share with others, [please share](/pls/guides/contribute/) with
+us.
+
+## Rust
+
+<Pls /> being a Rust project, comes with the configuration for Rust projects
+baked-in.
+
+## Python
+
+If you build Python projects using Pipenv or Poetry, this config is for you.
+
+```yaml
+icons:
+  python: "" # nf-seti-python
+specs:
+  - pattern: \.py$
+    icon: python
+    style: rgb(255,212,59)
+  - pattern: requirements.*\.txt$
+    icon: lock
+  - pattern: ^(pyproject\.toml|Pipfile)$
+    icon: package
+  - pattern: ^poetry\.lock$
+    icon: lock
+    importance: -1
+    collapse:
+      name: pyproject.toml
+  - pattern: ^Pipfile.lock$
+    icon: lock
+    importance: -1
+    collapse:
+      name: Pipfile
+```
+
+## JavaScript/TypeScript
+
+If you build JavaScript/TypeScript projects, this config is for you. It supports
+npm and pnpm as package managers, and Vue and React frameworks as well.
+
+```yaml
+icons:
+  javascript: "󰌞" # nf-md-language_javascript
+  typescript: "󰛦" # nf-md-language_typescript
+  vue: "" # nf-seti-vue
+  react: "" # nf-seti-react
+specs:
+  - pattern: \.ts$
+    icon: typescript
+    style: rgb(49,120,198)
+  - pattern: \.(c|m)?js$
+    icon: javascript
+    style: rgb(247,223,30)
+  - pattern: \.vue$
+    icon: vue
+    style: rgb(79,192,141)
+  - pattern: \.(j|t)sx$
+    icon: react
+    style: rgb(97,218,251)
+  - pattern: ^package-lock\.json$
+    icon: package
+  - pattern: ^(pnpm-lock.yaml|package-lock.json)$
+    icon: lock
+    importance: -1
+    collapse:
+      name: package.json
+```

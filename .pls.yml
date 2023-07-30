@@ -24,11 +24,6 @@ specs:
   - pattern: ^(.prettierignore|prettier.config.mjs)$
     icon: broom
 constants:
-  table:
-    header_style: clear
-    column_names:
-      user: <bold>bol</><italic>ita</>
-      group: <strikethrough>str</><blink>bli</>
   typ:
     dir:
       style: cyan

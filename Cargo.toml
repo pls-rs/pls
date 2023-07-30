@@ -49,3 +49,11 @@ codegen-units = 1
 panic = "abort"
 lto = true
 strip = true
+
+[package.metadata.release]
+sign-commit = true
+sign-tag = true
+publish = false
+push = false
+pre-release-commit-message = "Release {{version}}"
+tag-message = "Release {{crate_name}} version {{version}}"

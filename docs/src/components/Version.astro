@@ -1,8 +1,25 @@
 <!-- TODO: Get the latest version from GitHub. -->
-<pls-version>0.0.0</pls-version>
+<pls-version><span id="version">0.0.0</span></pls-version>
 
 <script>
-  class PlsVersion extends HTMLElement {}
+  class PlsVersion extends HTMLElement {
+    constructor() {
+      super();
+
+      const owner = "dhruvkb";
+      const repo = "pls";
+      fetch(`https://api.github.com/repos/${owner}/${repo}/releases`)
+        .then(res => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            throw new Error("Failed to fetch latest version.");
+          }
+        }).then(data => {
+          this.querySelector("#version").textContent = data[0].name;
+        })
+    }
+  }
 
   customElements.define('pls-version', PlsVersion);
 </script>

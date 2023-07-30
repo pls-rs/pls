@@ -106,22 +106,14 @@ impl<'spec> Node<'spec> {
 	/// * specs associated with the node
 	/// * the node's type
 	fn icon(&self, conf: &Conf) -> String {
-		let mut icon_name = None;
-		for &spec in self.specs.iter().rev() {
-			if let Some(icon) = &spec.icon {
-				icon_name = Some(icon);
-				break;
-			}
-		}
-
-		if icon_name.is_none() {
-			icon_name = self.typ.icon(conf).as_ref();
-		}
-
-		match icon_name {
-			Some(name) => conf.icons.get(name).cloned().unwrap_or_default(),
-			None => String::default(),
-		}
+		self.specs
+			.iter()
+			.rev()
+			.find(|spec| spec.icon.is_some())
+			.and_then(|spec| spec.icon.as_ref())
+			.or_else(|| self.typ.icon(conf).as_ref())
+			.and_then(|icon_name| conf.icons.get(icon_name).cloned())
+			.unwrap_or_default()
 	}
 
 	/* Renderables */

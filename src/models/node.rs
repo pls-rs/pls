@@ -7,7 +7,7 @@ use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::Metadata;
 use std::path::{Path, PathBuf};
 
-pub struct Node<'spec> {
+pub struct Node<'pls> {
 	pub name: String, // lossy
 
 	pub path: PathBuf,
@@ -16,10 +16,10 @@ pub struct Node<'spec> {
 
 	pub appearance: Appearance,
 
-	pub specs: Vec<&'spec Spec>,
+	pub specs: Vec<&'pls Spec>,
 }
 
-impl<'spec> Node<'spec> {
+impl<'pls> Node<'pls> {
 	pub fn new(path: &Path) -> Self {
 		let name = path
 			.file_name()
@@ -59,7 +59,7 @@ impl<'spec> Node<'spec> {
 
 	/// Link the current node with all the specs that apply to it, based on
 	/// whether the spec's `pattern` matches with this node's name.
-	pub fn match_specs(&mut self, all_specs: &'spec [Spec]) {
+	pub fn match_specs(&mut self, all_specs: &'pls [Spec]) {
 		self.specs = all_specs
 			.iter()
 			.filter(|spec| spec.pattern.is_match(self.name.as_bytes()))

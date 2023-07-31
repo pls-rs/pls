@@ -50,16 +50,19 @@ A spec consists of four components, of which only the first is mandatory.
 
 ### Collapse
 
-:::caution
-
-🚧 This feature is a work in progress and will be coming in a future version.
-
-:::
-
 The goal of collapsing is to indicate that a node is a derivative of another
-adjacent node. For example, a JS file with the same name as a sibling TS file
-likely indicates that it's a transpiled version of the latter. Similarly, a
-`Cargo.lock` file is a derived version of `Cargo.toml`.
+adjacent node. Collapsing can be performed in two ways.
+
+- **name**
+
+  In this case, a node with a specific name is collasped into another with a
+  specific name. For example, `Cargo.lock` collapses into `Cargo.toml`.
+
+- **ext**
+
+  In this case, every node with a specific extension is collapsed into another
+  node with the same stem but different extension. For example, `index.js` and
+  `lib.js` collapse into `index.ts` and `lib.ts` respectively.
 
 ## Configuration
 
@@ -68,14 +71,23 @@ Specs are configured in the [`.pls.yml` file](/pls/guides/conf/).
 ### Examples
 
 Consider a typical JavaScript project. When listing it with <Pls /> the output
-is very plain. Notice the regular JSON and YAML icons for `package.json` and
-`pnpm-lock.yaml`? Notice how files related to Prettier have no icon at all?
+is very plain. That's because <Pls /> ships with a very lean config out of the
+box.
 
 ```console
 $ pls
 ```
 
 <SpecsDef />
+
+But we can make some things better here.
+
+- Use better icons for `package.json` and `pnpm-lock.yaml`.
+- Make `pnpm-lock.yaml` collapse into `package.json`.
+- Add icons for files related to Prettier.
+- Add icons and color for TypeScript and JavaScript files.
+- Make JavaScript files collapse into their corresponding TypeScript files.
+- Emphasise `README.md` and `justfile` as they are starting files.
 
 Let's add a spec file to it.
 

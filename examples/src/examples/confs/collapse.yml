@@ -1,0 +1,21 @@
+constants:
+  tree:
+    pipe_space: "<magenta>|</>   "
+    space_space: "    " # should be as wide as the other entries for alignment
+    tee_dash: "<green>+--</> "
+    bend_dash: "<blue>+--</> "
+specs:
+  - pattern: ^\.?\w{1}$
+    icon: file
+  - pattern: b
+    collapse:
+      name: a
+  - pattern: c
+    collapse:
+      name: b
+  - pattern: \.d
+    collapse:
+      name: b
+  - pattern: e
+    collapse:
+      name: a

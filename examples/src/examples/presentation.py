@@ -68,6 +68,29 @@ def symlinks():
             pass
 
 
+def collapse():
+    with fs(
+        (
+            "collapse",
+            [
+                "Cargo.toml",
+                "Cargo.lock",
+            ],
+        )
+    ) as bench:
+        write_out(bench=bench, dest_name="on")
+        write_out("--collapse=false", bench=bench, dest_name="off")
+
+    with fs(
+        (
+            "collapse",
+            ["a", "b", "c", ".d", "e"],
+        )
+    ) as bench:
+        copy_write_conf(bench)
+        write_out(bench=bench, dest_name="confd")
+
+
 def alignment():
     with fs(
         (
@@ -88,4 +111,5 @@ if __name__ == "__main__":
     suffixes()
     icons()
     symlinks()
+    collapse()
     alignment()

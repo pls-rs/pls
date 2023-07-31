@@ -68,6 +68,7 @@ export default defineConfig({
                 { label: "Icons", link: "/features/icons/" },
                 { label: "Suffixes", link: "/features/suffixes/" },
                 { label: "Symlinks", link: "/features/symlinks/" },
+                { label: "Collapse", link: "/features/collapse/" },
                 { label: "Alignment", link: "/features/alignment/" },
               ],
             },

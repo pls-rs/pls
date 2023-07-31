@@ -2,6 +2,7 @@ use crate::models::Node;
 
 pub trait Name {
 	fn ext(&self) -> String;
+	fn stem(&self) -> String;
 	fn cname(&self) -> String;
 
 	fn aligned_name(&self) -> String;
@@ -17,6 +18,17 @@ impl Name for Node<'_> {
 	fn ext(&self) -> String {
 		self.path
 			.extension()
+			.unwrap_or_default()
+			.to_string_lossy()
+			.to_string()
+	}
+
+	/// Get the name for the node, without the extension, if any.
+	///
+	/// Returns the full name if the node does not have an extension.
+	fn stem(&self) -> String {
+		self.path
+			.file_stem()
 			.unwrap_or_default()
 			.to_string_lossy()
 			.to_string()

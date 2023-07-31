@@ -2,6 +2,7 @@
 /// appearance controls the `display_name` of the node.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Appearance {
-	Normal,  // the node appears as a primary listing
-	Symlink, // the node appears as the target of a symlink
+	Normal,    // the node appears as a primary listing
+	Symlink,   // the node appears as the target of a symlink
+	TreeChild, // the node appears as a child of another
 }

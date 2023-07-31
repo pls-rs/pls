@@ -52,7 +52,7 @@ impl<'node> SymTarget<'node> {
 
 		match self {
 			SymTarget::Ok(node) => {
-				let path = node.display_name(conf, args);
+				let path = node.display_name(conf, args, &[]);
 				format!(" <{directives}>{sep}</> {path}")
 			}
 			SymTarget::Broken(path) | SymTarget::Cyclic(path) => {

@@ -89,6 +89,10 @@ pub struct Args {
 	#[clap(help_heading = "Presentation", short = 'l', long, default_value = "true", action = clap::ArgAction::Set)]
 	pub sym: bool,
 
+	/// show dependent nodes as children of their principal nodes
+	#[clap(help_heading = "Presentation", short = 'c', long, default_value = "true", action = clap::ArgAction::Set)]
+	pub collapse: bool,
+
 	/// align items accounting for leading dots
 	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
 	pub align: bool,

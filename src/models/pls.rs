@@ -5,6 +5,7 @@ use crate::models::{Node, OwnerMan};
 use crate::output::{Grid, Table};
 use crate::traits::Imp;
 use log::{debug, info};
+use std::collections::HashMap;
 use std::fs::DirEntry;
 use std::os::unix::ffi::OsStrExt;
 use std::path::Path;
@@ -90,6 +91,54 @@ impl Pls {
 		}
 	}
 
+	/// Convert the given node into a tree.
+	///
+	/// This function recursively makes trees if the children of this node are
+	/// tree parents themselves.
+	fn make_tree_node<'pls>(
+		node: Node<'pls>,
+		child_map: &mut HashMap<String, Vec<Node<'pls>>>,
+	) -> Node<'pls> {
+		let mut children = vec![];
+		if let Some((_id, child_nodes)) = child_map.remove_entry(&node.name) {
+			for child_node in child_nodes {
+				children.push(Self::make_tree_node(child_node, child_map));
+			}
+		}
+		node.tree_parent(children)
+	}
+
+	/// Convert the vector of nodes into a tree hierarchy.
+	///
+	/// This function moves children nodes into the `children` field of their
+	/// parent nodes and removes them from the vector. This leaves the vector
+	/// to only contain top-level nodes.
+	fn resolve_collapses<'pls>(&'pls self, nodes: Vec<Node<'pls>>) -> Vec<Node> {
+		let nodes: Vec<_> = nodes
+			.into_iter()
+			.map(|mut node| {
+				node.find_collapse();
+				node
+			})
+			.collect();
+
+		let mut roots = vec![];
+		let mut child_map: HashMap<String, Vec<Node>> = HashMap::new();
+		nodes.into_iter().for_each(|node| {
+			if let Some(collapse) = node.collapse_name.clone() {
+				let children = child_map.entry(collapse).or_insert(vec![]);
+				children.push(node.tree_child());
+			} else {
+				roots.push(node);
+			}
+		});
+
+		roots
+			.into_iter()
+			.map(|root| Self::make_tree_node(root, &mut child_map))
+			.collect()
+	}
+
 	/// List the given path.
 	///
 	/// This function contains the core logic of the application, while `run`,
@@ -122,10 +171,18 @@ impl Pls {
 			});
 		}
 
+		// Make collapsed notes children of their parents.
+		// This step is performed after sorting so that collapsed nodes are
+		// internally sorted.
+		if self.args.collapse {
+			nodes = self.resolve_collapses(nodes);
+		}
+
 		// Convert each node into a row that becomes an entry for a printer.
-		let entries: Vec<_> = nodes
+		// If a node has children, they will be inserted after the parent.
+		let entries = nodes
 			.iter()
-			.map(|node| node.row(&mut owner_man, &conf, &self.args))
+			.flat_map(|node| node.entries(&mut owner_man, &conf, &self.args, &[], None))
 			.collect();
 
 		// Create the printer and render the entries to STDOUT.

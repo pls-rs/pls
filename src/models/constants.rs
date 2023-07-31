@@ -30,6 +30,8 @@ pub struct Constants {
 	pub symlink: HashMap<SymState, SymlinkInfo>,
 	/// configuration for the table view
 	pub table: TableInfo,
+	/// shapes to use to print trees
+	pub tree: TreeInfo,
 	/// pairings of importance levels with styling directives
 	pub imp_styles: Vec<(i8, String)>,
 
@@ -165,6 +167,12 @@ impl Default for Constants {
 				.map(|(k, v)| (k, v.to_string()))
 				.collect(),
 			},
+			tree: TreeInfo {
+				pipe_space: String::from("│  "),
+				space_space: String::from("   "),
+				tee_dash: String::from("├─ "),
+				bend_dash: String::from("└─ "),
+			},
 			imp_styles: [(-1, "dimmed"), (1, "italic"), (2, "underline")]
 				.into_iter()
 				.map(|(k, v)| (k, v.to_string()))
@@ -270,6 +278,18 @@ pub struct TableInfo {
 	pub column_names: HashMap<DetailField, String>,
 	/// the styles to apply to the text in the header row
 	pub header_style: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct TreeInfo {
+	/// "│  "
+	pub pipe_space: String,
+	/// "   "
+	pub space_space: String,
+	/// "├─ "
+	pub tee_dash: String,
+	/// "└─ "
+	pub bend_dash: String,
 }
 
 #[cfg(test)]

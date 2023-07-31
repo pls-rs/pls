@@ -61,6 +61,8 @@ def ts_bench(name: str = None):
                         "index.js",
                         "lib.ts",
                         "lib.js",
+                        "no_parent.js",
+                        "no_child.ts",
                     ],
                 ),
                 "package.json",

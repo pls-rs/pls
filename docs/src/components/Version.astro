@@ -16,7 +16,7 @@
             throw new Error("Failed to fetch latest version.");
           }
         }).then(data => {
-          this.querySelector("#version").textContent = data[0].name;
+          this.querySelector("#version").textContent = data[0].name.replace(/^v/, "");
         })
     }
   }

@@ -37,24 +37,42 @@ package manager. These are your approaches.
 
 If you have the Rust toolchain installed on your computer, you can build from
 source locally for your operating system and architecture. Also, we welcome your
-contributions!
+[contributions](/pls/guides/contribute/)!
 
-### Download the latest binary
+### Download binary
 
-The CI + CD job compiles binaries for macOS and Linux on every commit. You can
-download the latest binary for your operating system and architecture by
-following these steps.
+The CI + CD job compiles binaries for each supported OS on every commit.
+Additionally, we also cut periodic releases from the `main` branch of the
+repository. You can download the binary for your operating system and
+architecture by following these steps.
 
-1. Visit the page for <Pls />'s
-   [CI + CD workflow](https://github.com/dhruvkb/pls/actions/workflows/ci.yml).
-2. Click on the last successful workflow.
-3. Scroll down to the "Artifacts" section.
-4. Download the binary as per your operating system i.e.
-   `pls-x86_64-apple-darwin` for macOS and `pls-x86_64-unknown-linux-musl` for
-   Linux.
-5. Unzip the archive to a suitable location.
-6. Add the location to your `$PATH` or move/symlink the binary to a location
-   that is already on your `$PATH`.
+1. Download the binary file. You can either download the binary associated with
+   a release or a commit.
+
+   - **Release**
+
+     1. Go to the GitHub [Releases](https://github.com/dhruvkb/pls/releases)
+        page for <Pls />.
+     2. Find the latest release i.e. v<Version />.
+     3. Expand the "Assets" attached to the release.
+
+   - **Commit**
+
+     1. Visit the page for <Pls />'s
+        [CI + CD workflow](https://github.com/dhruvkb/pls/actions/workflows/ci.yml).
+     2. Click on the last successful workflow.
+     3. Scroll down to the "Artifacts" section.
+
+2. Download the binary as per your operating system.
+
+   - `pls-x86_64-apple-darwin` for macOS
+   - `pls-x86_64-unknown-linux-musl` for Linux
+
+3. Unzip the archive and find the single `pls` executable.
+
+4. Place the executable on your `$PATH`. To do this, you can either add the
+   directory that contains it to the path, or move/symlink the binary to a
+   directory that is already on your `$PATH`.
 
 ## Verification
 

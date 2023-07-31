@@ -96,15 +96,18 @@ impl Pls {
 	/// This function recursively makes trees if the children of this node are
 	/// tree parents themselves.
 	fn make_tree_node<'pls>(
+		&self,
 		node: Node<'pls>,
 		child_map: &mut HashMap<String, Vec<Node<'pls>>>,
+		owner_man: &mut OwnerMan,
 	) -> Node<'pls> {
 		let mut children = vec![];
 		if let Some((_id, child_nodes)) = child_map.remove_entry(&node.name) {
 			for child_node in child_nodes {
-				children.push(Self::make_tree_node(child_node, child_map));
+				children.push(self.make_tree_node(child_node.tree_child(), child_map, owner_man));
 			}
 		}
+		self.sort(&mut children, owner_man);
 		node.tree_parent(children)
 	}
 
@@ -113,7 +116,11 @@ impl Pls {
 	/// This function moves children nodes into the `children` field of their
 	/// parent nodes and removes them from the vector. This leaves the vector
 	/// to only contain top-level nodes.
-	fn resolve_collapses<'pls>(&'pls self, nodes: Vec<Node<'pls>>) -> Vec<Node> {
+	fn resolve_collapses<'pls>(
+		&'pls self,
+		nodes: Vec<Node<'pls>>,
+		owner_man: &mut OwnerMan,
+	) -> Vec<Node> {
 		let nodes: Vec<_> = nodes
 			.into_iter()
 			.map(|mut node| {
@@ -127,16 +134,32 @@ impl Pls {
 		nodes.into_iter().for_each(|node| {
 			if let Some(collapse) = node.collapse_name.clone() {
 				let children = child_map.entry(collapse).or_insert(vec![]);
-				children.push(node.tree_child());
+				children.push(node);
 			} else {
 				roots.push(node);
 			}
 		});
 
-		roots
+		let mut roots: Vec<_> = roots
 			.into_iter()
-			.map(|root| Self::make_tree_node(root, &mut child_map))
-			.collect()
+			.map(|root| self.make_tree_node(root, &mut child_map, owner_man))
+			.collect();
+		roots.extend(child_map.into_values().flatten());
+		roots
+	}
+
+	/// Sort the given list of nodes.
+	///
+	/// This function iterates over all the sort bases and sorts the given list
+	/// of nodes. It is invoked both from the top-level and from each parent
+	/// node to sort its children.
+	fn sort(&self, nodes: &mut [Node], owner_man: &mut OwnerMan) {
+		if nodes.len() <= 1 {
+			return;
+		}
+		self.args.sort_bases.iter().rev().for_each(|field| {
+			nodes.sort_by(|a, b| field.compare(a, b, owner_man));
+		});
 	}
 
 	/// List the given path.
@@ -163,20 +186,15 @@ impl Pls {
 		// detail fields.
 		let mut owner_man = OwnerMan::default();
 
-		// Sort the nodes using the sort bases. This is in reverse order because
-		// the first listed base should be the main sorting factor.
-		if nodes.len() > 1 {
-			self.args.sort_bases.iter().rev().for_each(|field| {
-				nodes.sort_by(|a, b| field.compare(a, b, &mut owner_man));
-			});
+		// Make collapsed notes children of their parents. Each node handles
+		// the sorting of its children.
+		if self.args.collapse {
+			nodes = self.resolve_collapses(nodes, &mut owner_man);
 		}
 
-		// Make collapsed notes children of their parents.
-		// This step is performed after sorting so that collapsed nodes are
-		// internally sorted.
-		if self.args.collapse {
-			nodes = self.resolve_collapses(nodes);
-		}
+		// Sort the nodes using the sort bases. This is in reverse order because
+		// the first listed base should be the main sorting factor.
+		self.sort(&mut nodes, &mut owner_man);
 
 		// Convert each node into a row that becomes an entry for a printer.
 		// If a node has children, they will be inserted after the parent.

@@ -50,7 +50,7 @@ To overwrite all outer tags and start a fresh context, use `clear`.
 
 <pre className="terminal">
   <span>plain text</span>
-  <span style="color:var(--blue,#00a)"> only blue text</span>
+  <span style="color:var(--blue)"> only blue text</span>
   <b> only bold text</b>
 </pre>
 
@@ -131,7 +131,7 @@ directive in the tag.
 ```
 
 <pre className="terminal">
-  <span style="color:var(--blue,#00a)">blue text</span>
+  <span style="color:var(--blue)">blue text</span>
 </pre>
 
 To use the bright variant, you can prefix `bright_` before the color name.
@@ -149,8 +149,8 @@ use the bright color space for additional colors not covered in the regular set
 ```
 
 <pre className="terminal">
-  <span style="color:var(--bright-red,#f55)">orange text</span>{" "}
-  <span style="color:var(--bright-magenta,#f5f)">violet text</span>
+  <span style="color:var(--bright-red)">orange text</span>{" "}
+  <span style="color:var(--bright-magenta)">violet text</span>
 </pre>
 
 To use a color as the background, you can prefix `bg:` before the color name.
@@ -160,9 +160,9 @@ To use a color as the background, you can prefix `bg:` before the color name.
 ```
 
 <pre className="terminal">
-  <span style="background:var(--blue,#00a)">
-    <span style="color:var(--black,#000)">black text</span>{" "}
-    <span style="color:var(--white,#fff)">white text</span>
+  <span style="background:var(--blue)">
+    <span style="color:var(--black)">black text</span>{" "}
+    <span style="color:var(--white)">white text</span>
   </span>
 </pre>
 
@@ -187,7 +187,7 @@ To use a color as the background, you can prefix `bg:` before the color name.
 
 <pre className="terminal">
   <span style="background:rgb(255,0,0)">
-    <span style="color:var(--black,#000)">black text</span>{" "}
-    <span style="color:var(--white,#fff)">white text</span>
+    <span style="color:var(--black)">black text</span>{" "}
+    <span style="color:var(--white)">white text</span>
   </span>
 </pre>

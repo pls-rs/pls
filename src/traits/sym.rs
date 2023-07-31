@@ -39,10 +39,9 @@ impl Sym for Node<'_> {
 				Some(62) | Some(40) => SymTarget::Cyclic(target_path),
 				_ => SymTarget::Error(Exc::IoError(err)),
 			},
-			Ok(true) => SymTarget::Ok(Box::new(Node::symlink(
-				&abs_target_path,
-				target_path.to_string_lossy().to_string(),
-			))),
+			Ok(true) => SymTarget::Ok(Box::new(
+				Node::new(&abs_target_path).symlink(target_path.to_string_lossy().to_string()),
+			)),
 			Ok(false) => SymTarget::Broken(target_path),
 		};
 		Some(target)

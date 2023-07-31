@@ -46,11 +46,11 @@ impl<'spec> Node<'spec> {
 	/// This function consumes the given `Node` and returns a new instance with
 	/// the name hardcoded. It should be used to change the name to something
 	/// different from the name derived from the path.
-	pub fn symlink(path: &Path, name: String) -> Self {
+	pub fn symlink(self, name: String) -> Self {
 		Self {
 			name,
 			appearance: Appearance::Symlink,
-			..Self::new(path)
+			..self
 		}
 	}
 

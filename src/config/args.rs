@@ -190,6 +190,12 @@ impl Args {
 			self.sym = false;
 		}
 
+		if self.grid && self.collapse {
+			// Collapsed nodes cannot be shown in grid view.
+			warnings.push("Grid view disabled collapsing.");
+			self.collapse = false;
+		}
+
 		warnings
 	}
 
@@ -223,6 +229,7 @@ mod tests {
 		test_details_multi_col: ["pls", "--det", "ino", "--grid", "true"] => "Detailed view disabled grid view.",
 		test_multi_col_and_header: ["pls", "--grid", "true", "--header", "true"] => "Grid view disabled column headers.",
 		test_multi_col_and_sym: ["pls", "--grid", "true", "--sym", "true"] => "Grid view disabled symlink targets.",
+		test_multi_col_and_col: ["pls", "--grid", "true", "--collapse", "true"] => "Grid view disabled collapsing.",
 	);
 
 	macro_rules! make_clean_test {
@@ -246,6 +253,12 @@ mod tests {
 		test_default_sym_when_detailed: ["pls", "--det", "ino"] => sym, true,
 		test_default_sym_when_multi_col: ["pls", "--grid", "true"] => sym, false,
 		test_multi_col_beats_sym: ["pls", "--grid", "true", "--sym", "true"] => sym, false,
+
+		// Collapsing is only performed in detailed view.
+		test_default_col: ["pls"] => collapse, true,
+		test_default_col_when_detailed: ["pls", "--det", "ino"] => collapse, true,
+		test_default_col_when_multi_col: ["pls", "--grid", "true"] => collapse, false,
+		test_multi_col_beats_col: ["pls", "--grid", "true", "--collapse", "true"] => collapse, false,
 
 		// Header is only shown when detailed view is enabled and there is at least one detail field.
 		test_default_header: ["pls"] => header, false,

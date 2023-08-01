@@ -121,6 +121,10 @@ impl Pls {
 		nodes: Vec<Node<'pls>>,
 		owner_man: &mut OwnerMan,
 	) -> Vec<Node> {
+		if nodes.len() <= 1 {
+			return nodes;
+		}
+
 		let nodes: Vec<_> = nodes
 			.into_iter()
 			.map(|mut node| {
@@ -140,7 +144,11 @@ impl Pls {
 			}
 		});
 
-		let mut roots: Vec<_> = roots
+		if child_map.is_empty() {
+			return roots;
+		}
+
+		roots = roots
 			.into_iter()
 			.map(|root| self.make_tree_node(root, &mut child_map, owner_man))
 			.collect();

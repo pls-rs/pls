@@ -1,18 +1,18 @@
 <h1 align="center">
-  <img height="128px" src="https://raw.githubusercontent.com/dhruvkb/pls/main/readme_assets/pls.svg"/>
+  <img height="128px" src="https://raw.githubusercontent.com/pls-rs/pls/main/readme_assets/pls.svg"/>
 
   <p align="center">
-    <a href="https://github.com/dhruvkb/pls/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/dhruvkb/pls" alt="GPL-3.0"/>
+    <a href="https://github.com/pls-rs/pls/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/pls-rs/pls" alt="GPL-3.0"/>
     </a>
     <a href="https://pypi.org/project/pls/">
       <img src="https://img.shields.io/static/v1?label=supported%20OS&message=posix&color=informational" alt="Platforms"/>
     </a>
-    <a href="https://github.com/dhruvkb/pls/actions/workflows/ci.yml">
-      <img src="https://github.com/dhruvkb/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
+    <a href="https://github.com/pls-rs/pls/actions/workflows/ci.yml">
+      <img src="https://github.com/pls-rs/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
     </a>
-    <a href="https://dhruvkb.github.io/pls/">
-      <img src="https://img.shields.io/badge/docs-dhruvkb.github.io/pls-blue" alt="Documentation"/>
+    <a href="https://pls-rs.github.io/pls/">
+      <img src="https://img.shields.io/badge/docs-pls--rs.github.io/pls-blue" alt="Documentation"/>
     </a>
   </p>
 </h1>
@@ -29,4 +29,4 @@
 
 Pick whichever adjective helps you remember the command name.
 
-For more information, see the [documentation](https://dhruvkb.github.io/pls/).
+For more information, see the [documentation](https://pls-rs.github.io/pls/).

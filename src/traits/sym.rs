@@ -19,7 +19,7 @@ impl Sym for Node<'_> {
 
 		let target_path = match fs::read_link(&self.path) {
 			Ok(path) => path,
-			Err(err) => return Some(SymTarget::Error(Exc::IoError(err))),
+			Err(err) => return Some(SymTarget::Error(Exc::Io(err))),
 		};
 
 		// Normalise the symlink path. This process handles symlink that use a
@@ -37,7 +37,7 @@ impl Sym for Node<'_> {
 				// 62: 'Too many levels of symbolic links'
 				// 40: 'Symbolic link loop'
 				Some(62) | Some(40) => SymTarget::Cyclic(target_path),
-				_ => SymTarget::Error(Exc::IoError(err)),
+				_ => SymTarget::Error(Exc::Io(err)),
 			},
 			Ok(true) => SymTarget::Ok(Box::new(
 				Node::new(&abs_target_path).symlink(target_path.to_string_lossy().to_string()),

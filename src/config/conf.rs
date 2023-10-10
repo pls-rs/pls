@@ -112,7 +112,7 @@ impl ConfMan {
 			}
 		}
 
-		fig.extract().map_err(Exc::ConfError)
+		fig.extract().map_err(Exc::Conf)
 	}
 }
 

@@ -5,6 +5,7 @@ mod fmt;
 mod models;
 mod output;
 mod traits;
+mod utils;
 
 use log::debug;
 use models::Pls;

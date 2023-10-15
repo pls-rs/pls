@@ -1,10 +1,12 @@
 use crate::config::Conf;
+use crate::exc::Exc;
 use clap::ValueEnum;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::fs::FileType;
 #[cfg(unix)]
 use std::os::unix::fs::FileTypeExt;
+use std::path::Path;
 
 lazy_static! {
 	pub static ref ALL_TYP: Vec<Typ> = Typ::value_variants()
@@ -56,6 +58,17 @@ impl From<FileType> for Typ {
 			_ if value.is_file() => Typ::File,
 			_ => Typ::Unknown,
 		}
+	}
+}
+
+impl TryFrom<&Path> for Typ {
+	type Error = Exc;
+
+	fn try_from(value: &Path) -> Result<Self, Self::Error> {
+		value
+			.symlink_metadata()
+			.map(|meta| meta.file_type().into())
+			.map_err(Self::Error::Io)
 	}
 }
 

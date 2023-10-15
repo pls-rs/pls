@@ -51,10 +51,27 @@ pub enum DetailField {
 	Size,   // storage space
 	Blocks, // number of blocks
 
-	Btime, // created at; "b" for birth
-	Ctime, // changed at; originally meant "created at"
-	Mtime, // modified at
-	Atime, // accessed at
+	/// created at
+	///
+	/// Uses OS-normalized timestamp field
+	/// [`created`](std::fs::Metadata::created).
+	Btime,
+	/// changed at
+	///
+	/// Uses Unix-specific extension fields
+	/// [`ctime`](std::os::unix::fs::MetadataExt::ctime) and
+	/// [`ctime_nsec`](std::os::unix::fs::MetadataExt::ctime_nsec).
+	Ctime,
+	/// modified at
+	///
+	/// Uses OS-normalized timestamp field
+	/// [`modified`](std::fs::Metadata::modified).
+	Mtime,
+	/// accessed at
+	///
+	/// Uses OS-normalized timestamp field
+	/// [`accessed`](std::fs::Metadata::accessed).
+	Atime,
 
 	Git, // git status
 

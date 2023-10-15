@@ -16,4 +16,9 @@ pub enum Appearance {
 	/// The tree-drawing shapes are shown before the name of the node, which is
 	/// the same as [`Appearance::Normal`].
 	TreeChild,
+	/// The node appears as the parent of another.
+	///
+	/// This provides the ability to use an alternative "open-folder" icon for
+	/// directories.
+	TreeParent,
 }

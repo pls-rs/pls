@@ -74,7 +74,11 @@ impl<'pls> Node<'pls> {
 
 	/// Get the `Node` instance with children populated.
 	pub fn tree_parent(self, children: Vec<Node<'pls>>) -> Self {
-		Self { children, ..self }
+		Self {
+			children,
+			appearance: Appearance::TreeParent,
+			..self
+		}
 	}
 
 	/* Mutations */

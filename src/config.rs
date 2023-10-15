@@ -9,14 +9,22 @@
 //! shown in a given run, whereas the `.pls.yml` file can be used to change the
 //! individual name for these columns.
 //!
-//! The public interface of the module consists of three structs:
+//! The public interface of the module consists of five structs:
 //!
+//! * [`AppConst`]
 //! * [`Args`]
 //! * [`Conf`]
+//! * [`EntryConst`]
 //! * [`ConfMan`]
 
+mod app_const;
 mod args;
 mod conf;
+mod entry_const;
+mod man;
 
+pub use app_const::AppConst;
 pub use args::Args;
-pub use conf::{Conf, ConfMan};
+pub use conf::Conf;
+pub use entry_const::EntryConst;
+pub use man::ConfMan;

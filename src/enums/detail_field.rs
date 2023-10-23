@@ -111,8 +111,9 @@ impl DetailField {
 		cleaned
 	}
 
-	/* Getters */
-	/* ======= */
+	// =======
+	// Getters
+	// =======
 
 	/// Get the [`Cell`] that should be used to display this field.
 	///
@@ -151,8 +152,9 @@ impl DetailField {
 		)
 	}
 
-	/* Renderables */
-	/* =========== */
+	// ===========
+	// Renderables
+	// ===========
 
 	/// Get the name of the detail field to be used in the column header.
 	///

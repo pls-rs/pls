@@ -9,8 +9,9 @@ pub trait Name {
 }
 
 impl Name for Node<'_> {
-	/* Sort fields */
-	/* =========== */
+	// ===========
+	// Sort fields
+	// ===========
 
 	/// Get the extension for a node.
 	///
@@ -45,8 +46,9 @@ impl Name for Node<'_> {
 			.to_string()
 	}
 
-	/* Name components */
-	/* =============== */
+	// ===============
+	// Name components
+	// ===============
 
 	/// Get the name of the node when aligning for leading dots.
 	///

@@ -114,8 +114,9 @@ impl Owner {
 		format!("<{}>{}</>", directives, text)
 	}
 
-	/* Rendering */
-	/* ========= */
+	// =========
+	// Rendering
+	// =========
 
 	/// Render the ID of the owner.
 	///

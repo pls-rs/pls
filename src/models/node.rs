@@ -47,6 +47,10 @@ impl<'pls> Node<'pls> {
 		}
 	}
 
+	// ===========
+	// Appearances
+	// ===========
+
 	/// Get the `Node` instance with the given name hardcoded.
 	///
 	/// This function consumes the given `Node` and returns a new instance with
@@ -81,8 +85,9 @@ impl<'pls> Node<'pls> {
 		}
 	}
 
-	/* Mutations */
-	/* ========= */
+	// =========
+	// Mutations
+	// =========
 
 	/// Link the current node with all the specs that apply to it, based on
 	/// whether the spec's `pattern` matches with this node's name.
@@ -111,8 +116,9 @@ impl<'pls> Node<'pls> {
 		}
 	}
 
-	/* Aggregators */
-	/* =========== */
+	// ===========
+	// Aggregators
+	// ===========
 
 	/// Get all styling directives applicable to the node.
 	///
@@ -141,8 +147,9 @@ impl<'pls> Node<'pls> {
 		directives
 	}
 
-	/* Name components */
-	/* =============== */
+	// ===============
+	// Name components
+	// ===============
 
 	/// Get the icon associated with the node.
 	///
@@ -161,8 +168,9 @@ impl<'pls> Node<'pls> {
 			.unwrap_or_default()
 	}
 
-	/* Renderables */
-	/* =========== */
+	// ===========
+	// Renderables
+	// ===========
 
 	/// Get the display name of the node.
 	///
@@ -228,8 +236,9 @@ impl<'pls> Node<'pls> {
 		parts
 	}
 
-	/* Printer entry */
-	/* ============= */
+	// =============
+	// Printer entry
+	// =============
 
 	fn get_value(
 		&self,

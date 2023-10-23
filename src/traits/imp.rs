@@ -54,8 +54,9 @@ impl Imp for Node<'_> {
 		is_visible
 	}
 
-	/* Directives */
-	/* ========== */
+	// ==========
+	// Directives
+	// ==========
 
 	/// Get the directives associated with the node's relative importance.
 	///

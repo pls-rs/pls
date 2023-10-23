@@ -49,8 +49,9 @@ impl Detail for Node<'_> {
 		}
 	}
 
-	/* Sort fields */
-	/* =========== */
+	// ===========
+	// Sort fields
+	// ===========
 
 	/// Compute the size of the node, returning `None` for directories.
 	fn size_val(&self) -> Option<u64> {
@@ -91,8 +92,9 @@ impl Detail for Node<'_> {
 		owner_man.group(self.meta.gid()).name
 	}
 
-	/* Renderables */
-	/* =========== */
+	// ===========
+	// Renderables
+	// ===========
 
 	/// Get the device number, not the human-readable device name, of the node.
 	///

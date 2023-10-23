@@ -116,8 +116,9 @@ impl Typ {
 		&entry_const.typ.get(self).unwrap().style
 	}
 
-	/* Name components */
-	/* =============== */
+	// ===============
+	// Name components
+	// ===============
 
 	/// Get the icon associated with the node's type.
 	///
@@ -144,8 +145,9 @@ impl Typ {
 		&entry_const.typ.get(self).unwrap().suffix
 	}
 
-	/* Renderables */
-	/* =========== */
+	// ===========
+	// Renderables
+	// ===========
 
 	/// Get the type character that's displayed in the 'T' column.
 	///

@@ -199,8 +199,9 @@ impl Args {
 		warnings
 	}
 
-	/* Getters */
-	/* ======= */
+	// =======
+	// Getters
+	// =======
 
 	/// Get whether to render the output in detailed view using a table.
 	fn is_detailed(&self) -> bool {

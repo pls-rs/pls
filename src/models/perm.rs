@@ -66,8 +66,9 @@ impl Perm {
 		}
 	}
 
-	/* Renderables */
-	/* =========== */
+	// ===========
+	// Renderables
+	// ===========
 
 	/// Render the permissions in symbolic representation.
 	///

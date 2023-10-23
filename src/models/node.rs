@@ -337,6 +337,7 @@ impl<'pls> Node<'pls> {
 	///
 	/// Each entry in the vector is a row that can be used to render a table.
 	///
+	#[allow(clippy::too_many_arguments)]
 	pub fn entries(
 		&self,
 		owner_man: &mut OwnerMan,

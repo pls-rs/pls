@@ -30,6 +30,10 @@ pub struct Node<'pls> {
 }
 
 impl<'pls> Node<'pls> {
+	// ===========
+	// Constructor
+	// ===========
+
 	pub fn new(path: &Path) -> Self {
 		let name = path
 			.file_name()

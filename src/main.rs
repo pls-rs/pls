@@ -19,7 +19,7 @@ fn main() {
 	env_logger::init();
 	debug!("Hello!");
 
-	let pls = Pls::default();
+	let mut pls = Pls::default();
 	pls.run();
 
 	debug!("Bye!");

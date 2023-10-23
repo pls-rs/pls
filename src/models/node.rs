@@ -5,6 +5,7 @@ use crate::traits::{Detail, Imp, Name, Sym};
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::Metadata;
+use std::io::Result as IoResult;
 use std::iter::once;
 use std::path::{Path, PathBuf};
 
@@ -12,8 +13,8 @@ pub struct Node<'pls> {
 	pub name: String, // lossy
 
 	pub path: PathBuf,
-	pub meta: Metadata,
-	pub typ: Typ,
+	meta: IoResult<Metadata>,
+	pub typ: Typ, // `Typ::Unknown` if `meta` is `Err`
 
 	pub appearance: Appearance,
 
@@ -32,8 +33,8 @@ impl<'pls> Node<'pls> {
 			.to_string();
 
 		let path = path.to_owned();
-		let meta = path.symlink_metadata().unwrap();
-		let typ = meta.file_type().into();
+		let meta = path.symlink_metadata();
+		let typ = path.as_path().try_into().unwrap_or(Typ::Unknown);
 
 		Self {
 			name,
@@ -83,6 +84,15 @@ impl<'pls> Node<'pls> {
 			appearance: Appearance::TreeParent,
 			..self
 		}
+	}
+
+	// =======
+	// Getters
+	// =======
+
+	/// Get the metadata of the node if it was successfully retrieved.
+	pub fn meta_ok(&self) -> Option<&Metadata> {
+		self.meta.as_ref().ok()
 	}
 
 	// =========
@@ -247,7 +257,7 @@ impl<'pls> Node<'pls> {
 		entry_const: &EntryConst,
 		args: &Args,
 	) -> String {
-		match detail {
+		let val = match detail {
 			// `Detail` trait
 			DetailField::Dev => self.dev(entry_const),
 			DetailField::Ino => self.ino(entry_const),
@@ -266,8 +276,9 @@ impl<'pls> Node<'pls> {
 			DetailField::Blocks => self.blocks(entry_const),
 			// `Typ` enum
 			DetailField::Typ => Some(self.typ.ch(entry_const)),
-			_ => String::default(),
-		}
+			_ => Some(String::default()),
+		};
+		val.unwrap_or_default()
 	}
 
 	/// Get a mapping of detail fields to their values.

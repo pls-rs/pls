@@ -2,6 +2,7 @@ use crate::config::{Args, EntryConst};
 use crate::enums::{DetailField, Typ};
 use crate::ext::Ctime;
 use crate::models::{Node, OwnerMan, Perm};
+use log::warn;
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
 use std::time::SystemTime;
@@ -10,22 +11,22 @@ use time::{format_description, OffsetDateTime, UtcOffset};
 pub trait Detail {
 	fn size_val(&self) -> Option<u64>;
 	fn blocks_val(&self) -> Option<u64>;
-	fn time_val(&self, field: DetailField) -> std::io::Result<SystemTime>;
+	fn time_val(&self, field: DetailField) -> Option<SystemTime>;
 	fn user_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
 	fn group_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
 
-	fn dev(&self, entry_const: &EntryConst) -> String;
-	fn ino(&self, entry_const: &EntryConst) -> String;
-	fn nlink(&self, entry_const: &EntryConst) -> String;
-	fn perm(&self, entry_const: &EntryConst) -> String;
-	fn oct(&self, entry_const: &EntryConst) -> String;
-	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
-	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
-	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
-	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
-	fn size(&self, entry_const: &EntryConst, args: &Args) -> String;
-	fn blocks(&self, entry_const: &EntryConst) -> String;
-	fn time(&self, field: DetailField, entry_const: &EntryConst) -> String;
+	fn dev(&self, entry_const: &EntryConst) -> Option<String>;
+	fn ino(&self, entry_const: &EntryConst) -> Option<String>;
+	fn nlink(&self, entry_const: &EntryConst) -> Option<String>;
+	fn perm(&self, entry_const: &EntryConst) -> Option<String>;
+	fn oct(&self, entry_const: &EntryConst) -> Option<String>;
+	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
+	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
+	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
+	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
+	fn size(&self, entry_const: &EntryConst, args: &Args) -> Option<String>;
+	fn blocks(&self, entry_const: &EntryConst) -> Option<String>;
+	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String>;
 }
 
 impl Detail for Node<'_> {
@@ -35,41 +36,42 @@ impl Detail for Node<'_> {
 
 	/// Compute the size of the node, returning `None` for directories.
 	fn size_val(&self) -> Option<u64> {
-		if self.typ == Typ::Dir {
-			None
-		} else {
-			Some(self.meta.len())
-		}
+		self.meta_ok()
+			.filter(|_| self.typ != Typ::Dir)
+			.map(|meta| meta.len())
 	}
 
 	/// Compute the block count for the node, returning `None` for directories.
 	fn blocks_val(&self) -> Option<u64> {
-		if self.typ == Typ::Dir {
-			None
-		} else {
-			Some(self.meta.blocks())
-		}
+		self.meta_ok()
+			.filter(|_| self.typ != Typ::Dir)
+			.map(|meta| meta.blocks())
 	}
 
 	/// Get the value of the system time field specified by `field`.
-	fn time_val(&self, field: DetailField) -> std::io::Result<SystemTime> {
-		match field {
-			DetailField::Atime => self.meta.accessed(),
-			DetailField::Btime => self.meta.created(),
-			DetailField::Ctime => self.ctime(),
-			DetailField::Mtime => self.meta.modified(),
-			_ => unreachable!("src/traits/det.rs / impl Detail for Node / time_val"),
-		}
+	fn time_val(&self, field: DetailField) -> Option<SystemTime> {
+		self.meta_ok().and_then(|meta| {
+			match field {
+				DetailField::Atime => meta.accessed(),
+				DetailField::Btime => meta.created(),
+				DetailField::Ctime => meta.c_time(),
+				DetailField::Mtime => meta.modified(),
+				_ => unreachable!("src/traits/det.rs / impl Detail for Node / time_val"),
+			}
+			.ok()
+		})
 	}
 
 	/// Get the name of the user that owns this node, if known.
 	fn user_val(&self, owner_man: &mut OwnerMan) -> Option<String> {
-		owner_man.user(self.meta.uid()).name
+		self.meta_ok()
+			.and_then(|meta| owner_man.user(meta.uid()).name)
 	}
 
 	/// Get the name of the group that owns this node, if known.
 	fn group_val(&self, owner_man: &mut OwnerMan) -> Option<String> {
-		owner_man.group(self.meta.gid()).name
+		self.meta_ok()
+			.and_then(|meta| owner_man.group(meta.gid()).name)
 	}
 
 	// ===========
@@ -79,19 +81,23 @@ impl Detail for Node<'_> {
 	/// Get the device number, not the human-readable device name, of the node.
 	///
 	/// This function returns a marked-up string.
-	fn dev(&self, entry_const: &EntryConst) -> String {
-		let dev = self.meta.dev().to_string();
-		let directives = &entry_const.dev_style;
-		format!("<{directives}>{dev}</>")
+	fn dev(&self, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok().map(|meta| {
+			let dev = meta.dev().to_string();
+			let directives = &entry_const.dev_style;
+			format!("<{directives}>{dev}</>")
+		})
 	}
 
 	/// Get the inode number of the node.
 	///
 	/// This function returns a marked-up string.
-	fn ino(&self, entry_const: &EntryConst) -> String {
-		let ino = self.meta.ino().to_string();
-		let directives = &entry_const.ino_style;
-		format!("<{directives}>{ino}</>")
+	fn ino(&self, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok().map(|meta| {
+			let ino = meta.ino().to_string();
+			let directives = &entry_const.ino_style;
+			format!("<{directives}>{ino}</>")
+		})
 	}
 
 	/// Get the number of hard links pointing to the node.
@@ -101,102 +107,99 @@ impl Detail for Node<'_> {
 	/// link.
 	///
 	/// This function returns a marked-up string.
-	fn nlink(&self, entry_const: &EntryConst) -> String {
-		let nlink = self.meta.nlink();
-		let directives = match (self.typ, nlink) {
-			(Typ::Dir, 1) => entry_const.nlink_styles.dir_sing,
-			(Typ::Dir, _) => entry_const.nlink_styles.dir_plur,
-			(_, 1) => entry_const.nlink_styles.file_sing,
-			(_, _) => entry_const.nlink_styles.file_plur,
-		};
-		format!("<{directives}>{nlink}</>")
+	fn nlink(&self, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok()
+			.map(|meta| entry_const.nlink_styles.format(meta.nlink(), &self.typ))
 	}
 
 	/// Get the symbolic representation of the permissions of the node.
 	///
 	/// This function returns a marked-up string.
-	fn perm(&self, entry_const: &EntryConst) -> String {
-		let perm: Perm = self.meta.mode().into();
-		perm.sym(entry_const)
+	fn perm(&self, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok()
+			.map(|meta| Perm::from(meta.mode()).sym(entry_const))
 	}
 
 	/// Get the octal representation of the permissions of a node.
 	///
 	/// This function returns a marked-up string.
-	fn oct(&self, entry_const: &EntryConst) -> String {
-		let perm: Perm = self.meta.mode().into();
-		perm.oct(entry_const)
+	fn oct(&self, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok()
+			.map(|meta| Perm::from(meta.mode()).oct(entry_const))
 	}
 
 	/// Get the name of the user that owns this node. The name is highlighted if
 	/// the owner is the current user.
 	///
 	/// This function returns a marked-up string.
-	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
-		owner_man.user(self.meta.uid()).name(entry_const)
+	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok()
+			.map(|meta| owner_man.user(meta.uid()).name(entry_const))
 	}
 
 	/// Get the UID of the user that owns this node. The UID is highlighted if
 	/// the owner is the current user.
 	///
 	/// This function returns a marked-up string.
-	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
-		owner_man.user(self.meta.uid()).id(entry_const)
+	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok()
+			.map(|meta| owner_man.user(meta.uid()).id(entry_const))
 	}
 
 	/// Get the name of the group that owns this node. The name is highlighted
 	/// if the current user belongs to this group.
 	///
 	/// This function returns a marked-up string.
-	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
-		owner_man.group(self.meta.gid()).name(entry_const)
+	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok()
+			.map(|meta| owner_man.group(meta.gid()).name(entry_const))
 	}
 
 	/// Get the GID of the group that owns this node. The GID is highlighted
 	/// if the current user belongs to this group.
 	///
 	/// This function returns a marked-up string.
-	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
-		owner_man.group(self.meta.gid()).id(entry_const)
+	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+		self.meta_ok()
+			.map(|meta| owner_man.group(meta.gid()).id(entry_const))
 	}
 
 	/// Get the size of the file in bytes, optionally with higher units in
 	/// powers of 2^10 or 10^3.
 	///
 	/// This function returns a marked-up string.
-	fn size(&self, entry_const: &EntryConst, args: &Args) -> String {
-		match self.size_val() {
-			Some(size) => args.unit.size(size, entry_const),
-			None => String::default(),
-		}
+	fn size(&self, entry_const: &EntryConst, args: &Args) -> Option<String> {
+		self.size_val()
+			.map(|size| args.unit.size(size, entry_const))
 	}
 
 	/// Get the number of blocks occupied by the file.
-	fn blocks(&self, entry_const: &EntryConst) -> String {
-		self.blocks_val()
-			.map(|blocks| {
-				let directives = &entry_const.blocks_style;
-				format!("<{directives}>{blocks}</>")
-			})
-			.unwrap_or_default()
+	///
+	/// This function returns a marked-up string.
+	fn blocks(&self, entry_const: &EntryConst) -> Option<String> {
+		self.blocks_val().map(|blocks| {
+			let directives = &entry_const.blocks_style;
+			format!("<{directives}>{blocks}</>")
+		})
 	}
 
 	/// Get the chosen timestamp field.
 	///
 	/// This function returns a marked-up string.
-	fn time(&self, field: DetailField, entry_const: &EntryConst) -> String {
-		let time = match self.time_val(field) {
-			Ok(mtime) => mtime,
-			Err(_) => return String::default(),
-		};
-		let mut dt: OffsetDateTime = time.into();
-		if let Ok(offset) = UtcOffset::current_local_offset() {
-			dt = dt.to_offset(offset);
-		}
-		let format = format_description::parse_borrowed::<2>(
-			entry_const.timestamp_formats.get(&field).unwrap(),
-		)
-		.unwrap();
-		dt.format(&format).unwrap()
+	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String> {
+		self.time_val(field).map(|time| {
+			let mut dt: OffsetDateTime = time.into();
+			match UtcOffset::current_local_offset() {
+				Ok(offset) => dt = dt.to_offset(offset),
+				Err(_) => {
+					warn!("Could not determine UTC offset")
+				}
+			}
+			let format = format_description::parse_borrowed::<2>(
+				entry_const.timestamp_formats.get(&field).unwrap(),
+			)
+			.unwrap();
+			dt.format(&format).unwrap()
+		})
 	}
 }

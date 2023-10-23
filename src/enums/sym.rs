@@ -48,16 +48,17 @@ impl<'node> SymTarget<'node> {
 		let state = self.into();
 		let sym_conf = conf.entry_const.symlink.get(&state).unwrap();
 		let directives = &sym_conf.style;
+		let ref_directives = &sym_conf.ref_style;
 		let sep = &sym_conf.sep;
 
 		match self {
 			SymTarget::Ok(node) => {
 				let path = node.display_name(conf, &conf.app_const, &conf.entry_const, args, &[]);
-				format!(" <{directives}>{sep}</> {path}")
+				format!(" <{directives}>{sep}</> <{ref_directives}>{path}</>")
 			}
 			SymTarget::Broken(path) | SymTarget::Cyclic(path) => {
 				let path = path.to_string_lossy().to_string();
-				format!(" <{directives}>{sep} {path}</>")
+				format!(" <{directives}>{sep} <{ref_directives}>{path}</></>")
 			}
 			SymTarget::Error(exc) => {
 				format!(" <{directives}>{sep} {exc}</>",)

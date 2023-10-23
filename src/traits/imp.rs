@@ -1,4 +1,4 @@
-use crate::config::{Args, Conf};
+use crate::config::{AppConst, Args, Conf};
 use crate::models::Node;
 use log::debug;
 
@@ -8,7 +8,7 @@ pub trait Imp {
 
 	fn is_visible(&self, conf: &Conf, args: &Args) -> bool;
 
-	fn directives(&self, conf: &Conf, args: &Args) -> Option<String>;
+	fn directives(&self, app_const: &AppConst, args: &Args) -> Option<String>;
 }
 
 impl Imp for Node<'_> {
@@ -45,7 +45,7 @@ impl Imp for Node<'_> {
 	fn is_visible(&self, conf: &Conf, args: &Args) -> bool {
 		debug!("Checking visibility of \"{self}\" based on importance.");
 		let rel_imp = self.imp_val(args);
-		let min_val = conf.constants.min_imp();
+		let min_val = conf.app_const.min_imp();
 
 		let is_visible = rel_imp >= min_val;
 		if !is_visible {
@@ -65,13 +65,13 @@ impl Imp for Node<'_> {
 	/// If the node's importance is above the maximum defined, it will be set to
 	/// the maximum. If it is below the minimum defined, it will already be
 	/// hidden by [`is_visible`](Imp::is_visible).
-	fn directives(&self, conf: &Conf, args: &Args) -> Option<String> {
+	fn directives(&self, app_const: &AppConst, args: &Args) -> Option<String> {
 		let mut rel_imp = self.imp_val(args);
-		let max_val = conf.constants.max_imp();
-		let min_val = conf.constants.min_imp();
+		let max_val = app_const.max_imp();
+		let min_val = app_const.min_imp();
 		debug!("\"{self}\" has relative importance {rel_imp} (min: {min_val}, max: {max_val})");
 
 		rel_imp = rel_imp.clamp(min_val, max_val);
-		conf.constants.imp_map.get(&rel_imp).cloned()
+		app_const.imp_map.get(&rel_imp).cloned()
 	}
 }

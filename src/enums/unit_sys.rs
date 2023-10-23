@@ -1,4 +1,4 @@
-use crate::config::Conf;
+use crate::config::EntryConst;
 use clap::ValueEnum;
 use number_prefix::NumberPrefix;
 use serde::{Deserialize, Serialize};
@@ -44,15 +44,15 @@ impl UnitSys {
 	/// preferred unit system.
 	///
 	/// This function returns a marked-up string.
-	pub fn size(&self, size: u64, conf: &Conf) -> String {
-		let mag_directive = &conf.constants.size_styles.mag;
-		let base_directive = &conf.constants.size_styles.base;
+	pub fn size(&self, size: u64, entry_const: &EntryConst) -> String {
+		let mag_directive = &entry_const.size_styles.mag;
+		let base_directive = &entry_const.size_styles.base;
 
 		if self == &UnitSys::None {
 			return format!("<{mag_directive}>{size}</> <{base_directive}>B</>");
 		}
 
-		let prefix_directive = &conf.constants.size_styles.prefix;
+		let prefix_directive = &entry_const.size_styles.prefix;
 
 		let (width, mag, prefix) = self.convert(size);
 		format!(
@@ -67,15 +67,15 @@ impl UnitSys {
 #[cfg(test)]
 mod tests {
 	use super::UnitSys;
-	use crate::config::Conf;
+	use crate::config::EntryConst;
 
 	macro_rules! make_test {
 		( $($name:ident: $unit:expr, $num:expr => $str:expr,)* ) => {
 			$(
 				#[test]
 				fn $name() {
-                    let conf = Conf::default();
-					let text = $unit.size($num, &conf);
+                    let entry_const = EntryConst::default();
+					let text = $unit.size($num, &entry_const);
 					assert_eq!(text, $str);
 				}
 			)*

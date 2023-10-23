@@ -1,4 +1,4 @@
-use crate::config::{Args, Conf};
+use crate::config::{AppConst, Args};
 use crate::enums::DetailField;
 use crate::fmt::len;
 use std::collections::HashMap;
@@ -21,8 +21,8 @@ impl Table {
 	}
 
 	/// Render the table to STDOUT.
-	pub fn render(&self, conf: &Conf, args: &Args) {
-		let max_widths = self.max_widths(conf, args);
+	pub fn render(&self, app_const: &AppConst, args: &Args) {
+		let max_widths = self.max_widths(app_const, args);
 
 		let iter_basis: Vec<_> = args
 			.details
@@ -39,8 +39,8 @@ impl Table {
 
 		if args.header {
 			for (width, det, cell) in &iter_basis {
-				let name = det.name(conf);
-				let directives = conf.constants.table.header_style.clone();
+				let name = det.name(app_const);
+				let directives = app_const.table.header_style.clone();
 				print!("{}", &cell.print(name, width, Some(directives)));
 			}
 			println!();
@@ -56,7 +56,7 @@ impl Table {
 
 	/// Get mapping of detail field to the maximum width of the cells in that
 	/// column.
-	fn max_widths(&self, conf: &Conf, args: &Args) -> Vec<Option<usize>> {
+	fn max_widths(&self, app_const: &AppConst, args: &Args) -> Vec<Option<usize>> {
 		args.details
 			.iter()
 			.enumerate()
@@ -75,7 +75,11 @@ impl Table {
 				self.entries[0..end_lim]
 					.iter()
 					.filter_map(|entry| entry.get(det).map(len))
-					.chain(once(if args.header { len(det.name(conf)) } else { 0 }))
+					.chain(once(if args.header {
+						len(det.name(app_const))
+					} else {
+						0
+					}))
 					.max()
 			})
 			.collect()

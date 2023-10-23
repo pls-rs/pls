@@ -1,4 +1,4 @@
-use crate::config::Conf;
+use crate::config::EntryConst;
 use serde::{Deserialize, Serialize};
 
 /// This enum contains different groups of permissions defined on nodes, in a
@@ -39,7 +39,7 @@ impl Sym {
 	/// based on other factors, use [`Sym::special_ch`].
 	///
 	/// This function returns a marked-up string.
-	pub fn ch(&self, conf: &Conf) -> String {
+	pub fn ch(&self, entry_const: &EntryConst) -> String {
 		let ch = match self {
 			Sym::None => '-',
 			Sym::Read => 'r',
@@ -48,7 +48,7 @@ impl Sym {
 			// Special maps to 4 characters: 's', 't', 'S' or 'T'.
 			Sym::Special => panic!("Use `Perm::special_ch` instead."),
 		};
-		let directives = conf.constants.perm_styles.get(self).unwrap();
+		let directives = entry_const.perm_styles.get(self).unwrap();
 		format!("<{directives}>{ch}</>")
 	}
 
@@ -58,7 +58,7 @@ impl Sym {
 	/// handles [`Sym::Special`].
 	///
 	/// This function returns a marked-up string.
-	pub fn special_ch(&self, oct: Oct, execute: bool, conf: &Conf) -> String {
+	pub fn special_ch(&self, oct: Oct, execute: bool, entry_const: &EntryConst) -> String {
 		if self != &Sym::Special {
 			panic!("Use `Perm::ch` instead.")
 		}
@@ -69,7 +69,7 @@ impl Sym {
 			(_, false) => 'S',
 			(_, true) => 's',
 		};
-		let directives = conf.constants.perm_styles.get(self).unwrap();
+		let directives = entry_const.perm_styles.get(self).unwrap();
 		format!("<{directives}>{ch}</>")
 	}
 }

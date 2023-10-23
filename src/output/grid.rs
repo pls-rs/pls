@@ -1,4 +1,4 @@
-use crate::config::{Args, Conf};
+use crate::config::{AppConst, Args};
 use crate::enums::DetailField;
 use crate::fmt::len;
 use crate::output::Cell;
@@ -31,7 +31,7 @@ impl Grid {
 	}
 
 	/// Render the grid to STDOUT.
-	pub fn render(&self, _conf: &Conf, args: &Args) {
+	pub fn render(&self, _app_const: &AppConst, args: &Args) {
 		let max_width = self.entries.iter().map(len).max();
 		let max_cols = self.columns(max_width);
 

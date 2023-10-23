@@ -1,4 +1,4 @@
-use crate::config::Conf;
+use crate::config::EntryConst;
 use crate::enums::{Oct, Sym};
 use std::collections::HashMap;
 
@@ -42,27 +42,27 @@ impl Perm {
 	/// Get the symbol character for read and write permissions.
 	///
 	/// This function returns a marked-up string.
-	fn perm_ch(&self, oct: Oct, perm: Sym, conf: &Conf) -> String {
+	fn perm_ch(&self, oct: Oct, perm: Sym, constants: &EntryConst) -> String {
 		let has_perm = self.perm_map[&(oct, perm)];
 		if has_perm {
-			perm.ch(conf)
+			perm.ch(constants)
 		} else {
-			Sym::None.ch(conf)
+			Sym::None.ch(constants)
 		}
 	}
 
 	/// Get the symbol for the combined execute and special permissions.
 	///
 	/// This function returns a marked-up string.
-	fn xs_perm_ch(&self, oct: Oct, conf: &Conf) -> String {
+	fn xs_perm_ch(&self, oct: Oct, constants: &EntryConst) -> String {
 		let has_exec = self.perm_map[&(oct, Sym::Execute)];
 		let has_special = self.perm_map[&(oct, Sym::Special)];
 		if has_special {
-			Sym::Special.special_ch(oct, has_exec, conf)
+			Sym::Special.special_ch(oct, has_exec, constants)
 		} else if has_exec {
-			Sym::Execute.ch(conf)
+			Sym::Execute.ch(constants)
 		} else {
-			Sym::None.ch(conf)
+			Sym::None.ch(constants)
 		}
 	}
 
@@ -72,14 +72,14 @@ impl Perm {
 	/// Render the permissions in symbolic representation.
 	///
 	/// This function returns a marked-up string.
-	pub fn sym(&self, conf: &Conf) -> String {
+	pub fn sym(&self, constants: &EntryConst) -> String {
 		[Oct::User, Oct::Group, Oct::Other]
 			.into_iter()
 			.map(|oct| {
 				[
-					self.perm_ch(oct, Sym::Read, conf),
-					self.perm_ch(oct, Sym::Write, conf),
-					self.xs_perm_ch(oct, conf),
+					self.perm_ch(oct, Sym::Read, constants),
+					self.perm_ch(oct, Sym::Write, constants),
+					self.xs_perm_ch(oct, constants),
 				]
 				.join("")
 			})
@@ -90,14 +90,14 @@ impl Perm {
 	/// Render the permissions in octal representation.
 	///
 	/// This function returns a marked-up string.
-	pub fn oct(&self, conf: &Conf) -> String {
+	pub fn oct(&self, constants: &EntryConst) -> String {
 		format!("{:04o}", self.mode % 0o10000)
 			.chars()
 			.zip([Oct::Special, Oct::User, Oct::Group, Oct::Other])
 			.map(|(ch, oct)| match (oct, ch) {
 				(Oct::Special, '0') => String::from(" "),
 				_ => {
-					let directives = conf.constants.oct_styles.get(&oct).unwrap();
+					let directives = constants.oct_styles.get(&oct).unwrap();
 					format!("<{directives}>{ch}</>")
 				}
 			})
@@ -108,17 +108,17 @@ impl Perm {
 #[cfg(test)]
 mod tests {
 	use super::Perm;
-	use crate::config::Conf;
+	use crate::config::EntryConst;
 
 	macro_rules! make_renderables_test {
 		( $($name:ident: $mode:expr => $expected_sym:expr, $expected_oct:expr,)* ) => {
 			$(
 				#[test]
 				fn $name() {
-                    let conf = Conf::default();
+                    let entry_const = EntryConst::default();
 					let perm: Perm = $mode.into();
-					assert_eq!(perm.sym(&conf), String::from($expected_sym));
-					assert_eq!(perm.oct(&conf), String::from($expected_oct));
+					assert_eq!(perm.sym(&entry_const), String::from($expected_sym));
+					assert_eq!(perm.oct(&entry_const), String::from($expected_oct));
 				}
 			)*
 		};

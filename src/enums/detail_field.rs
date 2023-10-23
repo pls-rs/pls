@@ -1,4 +1,4 @@
-use crate::config::Conf;
+use crate::config::AppConst;
 use crate::output::Cell;
 use clap::ValueEnum;
 use lazy_static::lazy_static;
@@ -157,13 +157,8 @@ impl DetailField {
 	/// Get the name of the detail field to be used in the column header.
 	///
 	/// This function returns a marked-up string.
-	pub fn name(&self, conf: &Conf) -> String {
-		conf.constants
-			.table
-			.column_names
-			.get(self)
-			.cloned()
-			.unwrap()
+	pub fn name(&self, app_const: &AppConst) -> String {
+		app_const.table.column_names.get(self).cloned().unwrap()
 	}
 }
 

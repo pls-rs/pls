@@ -1,4 +1,4 @@
-use crate::config::Conf;
+use crate::config::EntryConst;
 use crate::enums::Entity;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -104,12 +104,12 @@ pub struct Owner {
 }
 
 impl Owner {
-	fn format(&self, text: &String, conf: &Conf) -> String {
+	fn format(&self, text: &String, constants: &EntryConst) -> String {
 		let directives = match (&self.entity, self.is_curr) {
-			(Entity::User, true) => &conf.constants.user_styles.curr,
-			(Entity::User, false) => &conf.constants.user_styles.other,
-			(Entity::Group, true) => &conf.constants.group_styles.curr,
-			(Entity::Group, false) => &conf.constants.group_styles.other,
+			(Entity::User, true) => &constants.user_styles.curr,
+			(Entity::User, false) => &constants.user_styles.other,
+			(Entity::Group, true) => &constants.group_styles.curr,
+			(Entity::Group, false) => &constants.group_styles.other,
 		};
 		format!("<{}>{}</>", directives, text)
 	}
@@ -120,17 +120,17 @@ impl Owner {
 	/// Render the ID of the owner.
 	///
 	/// This function returns a marked-up string.
-	pub fn id(&self, conf: &Conf) -> String {
-		self.format(&self.id.to_string(), conf)
+	pub fn id(&self, constants: &EntryConst) -> String {
+		self.format(&self.id.to_string(), constants)
 	}
 
 	/// Render the name of the owner.
 	///
 	/// This function returns a marked-up string.
-	pub fn name(&self, conf: &Conf) -> String {
+	pub fn name(&self, constants: &EntryConst) -> String {
 		match &self.name {
-			Some(name) => self.format(name, conf),
-			None => self.id(conf),
+			Some(name) => self.format(name, constants),
+			None => self.id(constants),
 		}
 	}
 }
@@ -138,7 +138,7 @@ impl Owner {
 #[cfg(test)]
 mod tests {
 	use super::Owner;
-	use crate::config::Conf;
+	use crate::config::EntryConst;
 	use crate::enums::Entity;
 
 	macro_rules! make_renderables_test {
@@ -146,15 +146,15 @@ mod tests {
             $(
                 #[test]
                 fn $name() {
-                    let conf = Conf::default();
+                    let entry_const = EntryConst::default();
                     let owner = Owner {
                         entity: $entity,
                         id: $raw_id,
                         name: $raw_name,
                         is_curr: $is_curr,
                     };
-                    assert_eq!(owner.id(&conf), $fmt_id);
-                    assert_eq!(owner.name(&conf), $fmt_name);
+                    assert_eq!(owner.id(&entry_const), $fmt_id);
+                    assert_eq!(owner.name(&entry_const), $fmt_name);
                 }
             )*
         };

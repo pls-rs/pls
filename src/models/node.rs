@@ -1,4 +1,4 @@
-use crate::config::{Args, Conf};
+use crate::config::{AppConst, Args, Conf, EntryConst};
 use crate::enums::{Appearance, Collapse, DetailField, Typ};
 use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
@@ -120,11 +120,11 @@ impl<'pls> Node<'pls> {
 	///
 	/// * the node's type
 	/// * specs associated with the node
-	fn directives(&self, conf: &Conf, args: &Args) -> String {
-		let mut directives = String::from(self.typ.directives(conf));
+	fn directives(&self, app_const: &AppConst, entry_const: &EntryConst, args: &Args) -> String {
+		let mut directives = String::from(self.typ.directives(entry_const));
 
 		if self.appearance != Appearance::Symlink {
-			let imp_dir = Imp::directives(self, conf, args);
+			let imp_dir = Imp::directives(self, app_const, args);
 			if let Some(directive) = imp_dir {
 				directives.push(' ');
 				directives.push_str(&directive);
@@ -150,13 +150,13 @@ impl<'pls> Node<'pls> {
 	///
 	/// * specs associated with the node
 	/// * the node's type
-	fn icon(&self, conf: &Conf) -> String {
+	fn icon(&self, conf: &Conf, entry_const: &EntryConst) -> String {
 		self.specs
 			.iter()
 			.rev()
 			.find(|spec| spec.icon.is_some())
 			.and_then(|spec| spec.icon.as_ref())
-			.or_else(|| self.typ.icon(conf).as_ref())
+			.or_else(|| self.typ.icon(entry_const).as_ref())
 			.and_then(|icon_name| conf.icons.get(icon_name).cloned())
 			.unwrap_or_default()
 	}
@@ -175,8 +175,15 @@ impl<'pls> Node<'pls> {
 	///
 	/// Additionally, the display name is marked up with the appropriate
 	/// directives obtained from configuration values.
-	pub fn display_name(&self, conf: &Conf, args: &Args, tree_shapes: &[&str]) -> String {
-		let text_directives = self.directives(conf, args);
+	pub fn display_name(
+		&self,
+		conf: &Conf,
+		app_const: &AppConst,
+		entry_const: &EntryConst,
+		args: &Args,
+		tree_shapes: &[&str],
+	) -> String {
+		let text_directives = self.directives(app_const, entry_const, args);
 		let icon_directives = text_directives.replace("underline", "");
 
 		let mut parts = String::default();
@@ -194,7 +201,10 @@ impl<'pls> Node<'pls> {
 
 		// Icon
 		if args.icon && self.appearance != Appearance::Symlink {
-			parts.push_str(&format!("<{icon_directives}>{:<1}</> ", self.icon(conf)));
+			parts.push_str(&format!(
+				"<{icon_directives}>{:<1}</> ",
+				self.icon(conf, entry_const),
+			));
 		}
 
 		// Name and suffix
@@ -205,7 +215,7 @@ impl<'pls> Node<'pls> {
 			parts.push_str(&self.name);
 		};
 		if args.suffix {
-			parts.push_str(self.typ.suffix(conf))
+			parts.push_str(self.typ.suffix(entry_const))
 		};
 		parts.push_str("</>");
 
@@ -225,31 +235,28 @@ impl<'pls> Node<'pls> {
 		&self,
 		detail: DetailField,
 		owner_man: &mut OwnerMan,
-		conf: &Conf,
+		entry_const: &EntryConst,
 		args: &Args,
-		tree_shape: &[&str],
 	) -> String {
 		match detail {
 			// `Detail` trait
-			DetailField::Dev => self.dev(conf),
-			DetailField::Ino => self.ino(conf),
-			DetailField::Nlink => self.nlink(conf),
-			DetailField::Perm => self.perm(conf),
-			DetailField::Oct => self.oct(conf),
-			DetailField::User => self.user(owner_man, conf),
-			DetailField::Uid => self.uid(owner_man, conf),
-			DetailField::Group => self.group(owner_man, conf),
-			DetailField::Gid => self.gid(owner_man, conf),
-			DetailField::Btime => self.time(detail, conf),
-			DetailField::Mtime => self.time(detail, conf),
-			DetailField::Ctime => self.time(detail, conf),
-			DetailField::Atime => self.time(detail, conf),
-			DetailField::Size => self.size(conf, args),
-			DetailField::Blocks => self.blocks(conf),
+			DetailField::Dev => self.dev(entry_const),
+			DetailField::Ino => self.ino(entry_const),
+			DetailField::Nlink => self.nlink(entry_const),
+			DetailField::Perm => self.perm(entry_const),
+			DetailField::Oct => self.oct(entry_const),
+			DetailField::User => self.user(owner_man, entry_const),
+			DetailField::Uid => self.uid(owner_man, entry_const),
+			DetailField::Group => self.group(owner_man, entry_const),
+			DetailField::Gid => self.gid(owner_man, entry_const),
+			DetailField::Btime => self.time(detail, entry_const),
+			DetailField::Mtime => self.time(detail, entry_const),
+			DetailField::Ctime => self.time(detail, entry_const),
+			DetailField::Atime => self.time(detail, entry_const),
+			DetailField::Size => self.size(entry_const, args),
+			DetailField::Blocks => self.blocks(entry_const),
 			// `Typ` enum
-			DetailField::Typ => self.typ.ch(conf),
-			// `Node` struct
-			DetailField::Name => self.display_name(conf, args, tree_shape),
+			DetailField::Typ => Some(self.typ.ch(entry_const)),
 			_ => String::default(),
 		}
 	}
@@ -257,20 +264,26 @@ impl<'pls> Node<'pls> {
 	/// Get a mapping of detail fields to their values.
 	///
 	/// This information is used to render the table row for a node.
-	fn row(
+	pub fn row(
 		&self,
 		owner_man: &mut OwnerMan,
 		conf: &Conf,
+		app_const: &AppConst,
+		entry_const: &EntryConst,
 		args: &Args,
 		tree_shape: &[&str],
 	) -> HashMap<DetailField, String> {
 		args.details
 			.iter()
 			.map(|&detail| {
-				(
-					detail,
-					self.get_value(detail, owner_man, conf, args, tree_shape),
-				)
+				if detail == DetailField::Name {
+					(
+						detail,
+						self.display_name(conf, app_const, entry_const, args, tree_shape),
+					)
+				} else {
+					(detail, self.get_value(detail, owner_man, entry_const, args))
+				}
 			})
 			.collect()
 	}
@@ -283,6 +296,8 @@ impl<'pls> Node<'pls> {
 		&self,
 		owner_man: &mut OwnerMan,
 		conf: &Conf,
+		app_const: &AppConst,
+		entry_const: &EntryConst,
 		args: &Args,
 		parent_shapes: &[&str],  // list of shapes inherited from the parent
 		own_shape: Option<&str>, // shape to show just before the current node
@@ -294,29 +309,31 @@ impl<'pls> Node<'pls> {
 		let mut all_shapes = parent_shapes.to_vec();
 
 		if let Some(more_shape) = own_shape {
-			child_parent_shapes.push(if more_shape == conf.constants.tree.tee_dash {
+			child_parent_shapes.push(if more_shape == app_const.tree.tee_dash {
 				// Current node is not the last of its parent, so child nodes
 				// will have a pipe for continuity.
-				&conf.constants.tree.pipe_space
+				&app_const.tree.pipe_space
 			} else {
 				// Current node is the last of its parent, so child nodes will
 				// not have a pipe, but rather spaces for padding.
-				&conf.constants.tree.space_space
+				&app_const.tree.space_space
 			});
 			all_shapes.push(more_shape);
 		}
 
-		once(self.row(owner_man, conf, args, &all_shapes))
+		once(self.row(owner_man, conf, app_const, entry_const, args, &all_shapes))
 			.chain(self.children.iter().enumerate().flat_map(|(idx, child)| {
 				let child_own_shape = if idx == self.children.len() - 1 {
-					&conf.constants.tree.bend_dash
+					&app_const.tree.bend_dash
 				} else {
-					&conf.constants.tree.tee_dash
+					&app_const.tree.tee_dash
 				};
 
 				child.entries(
 					owner_man,
 					conf,
+					app_const,
+					entry_const,
 					args,
 					&child_parent_shapes,
 					Some(child_own_shape),

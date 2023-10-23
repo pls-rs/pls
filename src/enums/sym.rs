@@ -46,13 +46,13 @@ impl<'node> SymTarget<'node> {
 	/// Print the symlink target.
 	pub fn print(&self, conf: &Conf, args: &Args) -> String {
 		let state = self.into();
-		let sym_conf = conf.constants.symlink.get(&state).unwrap();
+		let sym_conf = conf.entry_const.symlink.get(&state).unwrap();
 		let directives = &sym_conf.style;
 		let sep = &sym_conf.sep;
 
 		match self {
 			SymTarget::Ok(node) => {
-				let path = node.display_name(conf, args, &[]);
+				let path = node.display_name(conf, &conf.app_const, &conf.entry_const, args, &[]);
 				format!(" <{directives}>{sep}</> {path}")
 			}
 			SymTarget::Broken(path) | SymTarget::Cyclic(path) => {

@@ -1,4 +1,4 @@
-use crate::config::Conf;
+use crate::config::EntryConst;
 use crate::exc::Exc;
 use clap::ValueEnum;
 use lazy_static::lazy_static;
@@ -112,8 +112,8 @@ impl Typ {
 	///
 	/// These directives are combined with directives from other sources to form
 	/// the full picture of how the node should be styled.
-	pub fn directives<'conf>(&self, conf: &'conf Conf) -> &'conf String {
-		&conf.constants.typ.get(self).unwrap().style
+	pub fn directives<'conf>(&self, entry_const: &'conf EntryConst) -> &'conf String {
+		&entry_const.typ.get(self).unwrap().style
 	}
 
 	/* Name components */
@@ -127,8 +127,8 @@ impl Typ {
 	///
 	/// This icon is used as a fallback in cases where no other icon is found
 	/// for the node from matching specs.
-	pub fn icon<'conf>(&self, conf: &'conf Conf) -> &'conf Option<String> {
-		&conf.constants.typ.get(self).unwrap().icon
+	pub fn icon<'conf>(&self, entry_const: &'conf EntryConst) -> &'conf Option<String> {
+		&entry_const.typ.get(self).unwrap().icon
 	}
 
 	/// Get the suffix associated with the nodes type.
@@ -140,8 +140,8 @@ impl Typ {
 	/// [`ch`](Typ::ch). Suffixes exist for a subset of types and are symbols.
 	///
 	/// This function returns a marked-up string.
-	pub fn suffix<'conf>(&self, conf: &'conf Conf) -> &'conf String {
-		&conf.constants.typ.get(self).unwrap().suffix
+	pub fn suffix<'conf>(&self, entry_const: &'conf EntryConst) -> &'conf String {
+		&entry_const.typ.get(self).unwrap().suffix
 	}
 
 	/* Renderables */
@@ -155,9 +155,9 @@ impl Typ {
 	/// Type chars exist for each type and are letters.
 	///
 	/// This function returns a marked-up string.
-	pub fn ch(&self, conf: &Conf) -> String {
-		let ch = &conf.constants.typ.get(self).unwrap().ch;
-		let directives = self.directives(conf);
+	pub fn ch(&self, entry_const: &EntryConst) -> String {
+		let ch = &entry_const.typ.get(self).unwrap().ch;
+		let directives = self.directives(entry_const);
 		format!("<{directives}>{ch}</>")
 	}
 }
@@ -165,7 +165,7 @@ impl Typ {
 #[cfg(test)]
 mod tests {
 	use super::Typ;
-	use crate::config::Conf;
+	use crate::config::EntryConst;
 
 	macro_rules! make_clean_test {
 		( $($name:ident: $input:expr => $expected:expr,)* ) => {
@@ -203,9 +203,9 @@ mod tests {
             $(
                 #[test]
                 fn $name() {
-                    let conf = Conf::default();
-                    assert_eq!($typ.icon(&conf), $icon);
-                    assert_eq!($typ.suffix(&conf), $suffix);
+                    let entry_const = EntryConst::default();
+                    assert_eq!($typ.icon(&entry_const), $icon);
+                    assert_eq!($typ.suffix(&entry_const), $suffix);
                 }
             )*
         };
@@ -226,8 +226,8 @@ mod tests {
             $(
                 #[test]
                 fn $name() {
-                    let conf = Conf::default();
-                    assert_eq!($typ.ch(&conf), $ch);
+                    let entry_const = EntryConst::default();
+                    assert_eq!($typ.ch(&entry_const), $ch);
                 }
             )*
         };

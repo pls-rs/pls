@@ -1,4 +1,4 @@
-use crate::config::{Args, Conf};
+use crate::config::{Args, EntryConst};
 use crate::enums::{DetailField, Typ};
 use crate::models::{Node, OwnerMan, Perm};
 use std::io::{Error as IoError, Result as IoResult};
@@ -16,18 +16,18 @@ pub trait Detail {
 	fn user_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
 	fn group_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
 
-	fn dev(&self, conf: &Conf) -> String;
-	fn ino(&self, conf: &Conf) -> String;
-	fn nlink(&self, conf: &Conf) -> String;
-	fn perm(&self, conf: &Conf) -> String;
-	fn oct(&self, conf: &Conf) -> String;
-	fn user(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String;
-	fn uid(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String;
-	fn group(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String;
-	fn gid(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String;
-	fn size(&self, conf: &Conf, args: &Args) -> String;
-	fn blocks(&self, conf: &Conf) -> String;
-	fn time(&self, field: DetailField, conf: &Conf) -> String;
+	fn dev(&self, entry_const: &EntryConst) -> String;
+	fn ino(&self, entry_const: &EntryConst) -> String;
+	fn nlink(&self, entry_const: &EntryConst) -> String;
+	fn perm(&self, entry_const: &EntryConst) -> String;
+	fn oct(&self, entry_const: &EntryConst) -> String;
+	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
+	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
+	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
+	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String;
+	fn size(&self, entry_const: &EntryConst, args: &Args) -> String;
+	fn blocks(&self, entry_const: &EntryConst) -> String;
+	fn time(&self, field: DetailField, entry_const: &EntryConst) -> String;
 }
 
 impl Detail for Node<'_> {
@@ -97,18 +97,18 @@ impl Detail for Node<'_> {
 	/// Get the device number, not the human-readable device name, of the node.
 	///
 	/// This function returns a marked-up string.
-	fn dev(&self, conf: &Conf) -> String {
+	fn dev(&self, entry_const: &EntryConst) -> String {
 		let dev = self.meta.dev().to_string();
-		let directives = &conf.constants.dev_style;
+		let directives = &entry_const.dev_style;
 		format!("<{directives}>{dev}</>")
 	}
 
 	/// Get the inode number of the node.
 	///
 	/// This function returns a marked-up string.
-	fn ino(&self, conf: &Conf) -> String {
+	fn ino(&self, entry_const: &EntryConst) -> String {
 		let ino = self.meta.ino().to_string();
-		let directives = &conf.constants.ino_style;
+		let directives = &entry_const.ino_style;
 		format!("<{directives}>{ino}</>")
 	}
 
@@ -119,13 +119,13 @@ impl Detail for Node<'_> {
 	/// link.
 	///
 	/// This function returns a marked-up string.
-	fn nlink(&self, conf: &Conf) -> String {
+	fn nlink(&self, entry_const: &EntryConst) -> String {
 		let nlink = self.meta.nlink();
 		let directives = match (self.typ, nlink) {
-			(Typ::Dir, 1) => &conf.constants.nlink_styles.dir_sing,
-			(Typ::Dir, _) => &conf.constants.nlink_styles.dir_plur,
-			(_, 1) => &conf.constants.nlink_styles.file_sing,
-			(_, _) => &conf.constants.nlink_styles.file_plur,
+			(Typ::Dir, 1) => entry_const.nlink_styles.dir_sing,
+			(Typ::Dir, _) => entry_const.nlink_styles.dir_plur,
+			(_, 1) => entry_const.nlink_styles.file_sing,
+			(_, _) => entry_const.nlink_styles.file_plur,
 		};
 		format!("<{directives}>{nlink}</>")
 	}
@@ -133,67 +133,67 @@ impl Detail for Node<'_> {
 	/// Get the symbolic representation of the permissions of the node.
 	///
 	/// This function returns a marked-up string.
-	fn perm(&self, conf: &Conf) -> String {
+	fn perm(&self, entry_const: &EntryConst) -> String {
 		let perm: Perm = self.meta.mode().into();
-		perm.sym(conf)
+		perm.sym(entry_const)
 	}
 
 	/// Get the octal representation of the permissions of a node.
 	///
 	/// This function returns a marked-up string.
-	fn oct(&self, conf: &Conf) -> String {
+	fn oct(&self, entry_const: &EntryConst) -> String {
 		let perm: Perm = self.meta.mode().into();
-		perm.oct(conf)
+		perm.oct(entry_const)
 	}
 
 	/// Get the name of the user that owns this node. The name is highlighted if
 	/// the owner is the current user.
 	///
 	/// This function returns a marked-up string.
-	fn user(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String {
-		owner_man.user(self.meta.uid()).name(conf)
+	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
+		owner_man.user(self.meta.uid()).name(entry_const)
 	}
 
 	/// Get the UID of the user that owns this node. The UID is highlighted if
 	/// the owner is the current user.
 	///
 	/// This function returns a marked-up string.
-	fn uid(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String {
-		owner_man.user(self.meta.uid()).id(conf)
+	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
+		owner_man.user(self.meta.uid()).id(entry_const)
 	}
 
 	/// Get the name of the group that owns this node. The name is highlighted
 	/// if the current user belongs to this group.
 	///
 	/// This function returns a marked-up string.
-	fn group(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String {
-		owner_man.group(self.meta.gid()).name(conf)
+	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
+		owner_man.group(self.meta.gid()).name(entry_const)
 	}
 
 	/// Get the GID of the group that owns this node. The GID is highlighted
 	/// if the current user belongs to this group.
 	///
 	/// This function returns a marked-up string.
-	fn gid(&self, owner_man: &mut OwnerMan, conf: &Conf) -> String {
-		owner_man.group(self.meta.gid()).id(conf)
+	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> String {
+		owner_man.group(self.meta.gid()).id(entry_const)
 	}
 
 	/// Get the size of the file in bytes, optionally with higher units in
 	/// powers of 2^10 or 10^3.
 	///
 	/// This function returns a marked-up string.
-	fn size(&self, conf: &Conf, args: &Args) -> String {
+	fn size(&self, entry_const: &EntryConst, args: &Args) -> String {
 		match self.size_val() {
-			Some(size) => args.unit.size(size, conf),
+			Some(size) => args.unit.size(size, entry_const),
 			None => String::default(),
 		}
 	}
 
 	/// Get the number of blocks occupied by the file.
-	fn blocks(&self, conf: &Conf) -> String {
+	fn blocks(&self, entry_const: &EntryConst) -> String {
 		self.blocks_val()
 			.map(|blocks| {
-				let directives = &conf.constants.blocks_style;
+				let directives = &entry_const.blocks_style;
 				format!("<{directives}>{blocks}</>")
 			})
 			.unwrap_or_default()
@@ -202,7 +202,7 @@ impl Detail for Node<'_> {
 	/// Get the chosen timestamp field.
 	///
 	/// This function returns a marked-up string.
-	fn time(&self, field: DetailField, conf: &Conf) -> String {
+	fn time(&self, field: DetailField, entry_const: &EntryConst) -> String {
 		let time = match self.time_val(field) {
 			Ok(mtime) => mtime,
 			Err(_) => return String::default(),
@@ -212,7 +212,7 @@ impl Detail for Node<'_> {
 			dt = dt.to_offset(offset);
 		}
 		let format = format_description::parse_borrowed::<2>(
-			conf.constants.timestamp_formats.get(&field).unwrap(),
+			entry_const.timestamp_formats.get(&field).unwrap(),
 		)
 		.unwrap();
 		dt.format(&format).unwrap()

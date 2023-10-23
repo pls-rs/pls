@@ -1,3 +1,4 @@
+mod args;
 mod config;
 mod enums;
 mod exc;

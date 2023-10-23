@@ -1,6 +1,7 @@
 mod config;
 mod enums;
 mod exc;
+mod ext;
 mod fmt;
 mod models;
 mod output;

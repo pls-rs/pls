@@ -1,15 +1,13 @@
 use crate::config::{Args, EntryConst};
 use crate::enums::{DetailField, Typ};
+use crate::ext::Ctime;
 use crate::models::{Node, OwnerMan, Perm};
-use std::io::{Error as IoError, Result as IoResult};
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::SystemTime;
 use time::{format_description, OffsetDateTime, UtcOffset};
 
 pub trait Detail {
-	fn ctime(&self) -> IoResult<SystemTime>;
-
 	fn size_val(&self) -> Option<u64>;
 	fn blocks_val(&self) -> Option<u64>;
 	fn time_val(&self, field: DetailField) -> std::io::Result<SystemTime>;
@@ -31,24 +29,6 @@ pub trait Detail {
 }
 
 impl Detail for Node<'_> {
-	/// Compute the ctime of the node.
-	///
-	/// This function matches the signature of other timestamp fields such as
-	/// [`accessed`](std::fs::Metadata::accessed),
-	/// [`created`](std::fs::Metadata::created) and
-	/// [`modified`](std::fs::Metadata::modified).
-	fn ctime(&self) -> IoResult<SystemTime> {
-		match &self.meta {
-			Ok(meta) => {
-				let sec = meta.ctime();
-				let nanosec = meta.ctime_nsec();
-				let ctime = UNIX_EPOCH + Duration::new(sec as u64, nanosec as u32);
-				Ok(ctime)
-			}
-			Err(e) => Err(IoError::new(e.kind(), e.to_string())),
-		}
-	}
-
 	// ===========
 	// Sort fields
 	// ===========

@@ -10,7 +10,12 @@ use std::iter::once;
 use std::path::{Path, PathBuf};
 
 pub struct Node<'pls> {
-	pub name: String, // lossy
+	/// the name of the node on the file system, determined from the path and
+	/// lossily converted into a string
+	pub name: String,
+	/// the name of the node to show to the user, equal to the `name` unless
+	/// overridden by an appearance mode
+	pub display_name: String,
 
 	pub path: PathBuf,
 	meta: IoResult<Metadata>,
@@ -31,6 +36,7 @@ impl<'pls> Node<'pls> {
 			.unwrap_or_default()
 			.to_string_lossy()
 			.to_string();
+		let display_name = name.clone();
 
 		let path = path.to_owned();
 		let meta = path.symlink_metadata();
@@ -38,6 +44,7 @@ impl<'pls> Node<'pls> {
 
 		Self {
 			name,
+			display_name,
 			path,
 			meta,
 			typ,
@@ -57,9 +64,22 @@ impl<'pls> Node<'pls> {
 	/// This function consumes the given `Node` and returns a new instance with
 	/// the name hardcoded. It should be used to change the name to something
 	/// different from the name derived from the path.
+	pub fn solo_file(self, name: String) -> Self {
+		Self {
+			display_name: name,
+			appearance: Appearance::SoloFile,
+			..self
+		}
+	}
+
+	/// Get the `Node` instance with the given name hardcoded.
+	///
+	/// This function consumes the given `Node` and returns a new instance with
+	/// the name hardcoded. It should be used to change the name to something
+	/// different from the name derived from the path.
 	pub fn symlink(self, name: String) -> Self {
 		Self {
-			name,
+			display_name: name,
 			appearance: Appearance::Symlink,
 			..self
 		}
@@ -227,12 +247,13 @@ impl<'pls> Node<'pls> {
 
 		// Name and suffix
 		parts.push_str(&format!("<{text_directives}>"));
-		if args.align && self.appearance != Appearance::Symlink {
-			parts.push_str(&self.aligned_name());
-		} else {
-			parts.push_str(&self.name);
-		};
-		if args.suffix {
+		match self.appearance {
+			Appearance::Symlink | Appearance::SoloFile => parts.push_str(&self.display_name),
+			_ if args.align => parts.push_str(&self.aligned_name()),
+			_ => parts.push_str(&self.display_name),
+		}
+		if args.suffix && self.appearance != Appearance::Symlink {
+			// Symlink should not have suffix because it should show the path reference without modifications
 			parts.push_str(self.typ.suffix(entry_const))
 		};
 		parts.push_str("</>");

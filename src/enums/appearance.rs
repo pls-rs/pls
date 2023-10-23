@@ -21,4 +21,9 @@ pub enum Appearance {
 	/// This provides the ability to use an alternative "open-folder" icon for
 	/// directories.
 	TreeParent,
+	/// The node appears as an individual file being listed.
+	///
+	/// The name of the node is shown exactly as it was passed to the CLI. It
+	/// could be the name, or a relative/absolute path.
+	SoloFile,
 }

@@ -1,4 +1,5 @@
 use crate::models::Node;
+use std::path::PathBuf;
 
 pub trait Name {
 	fn ext(&self) -> String;
@@ -55,11 +56,21 @@ impl Name for Node<'_> {
 	/// If the node name starts with a dot, the dot is dimmed. If not, the name
 	/// is left-padded with a space to line up the alphabetic characters.
 	fn aligned_name(&self) -> String {
-		// 'clear' ensures that the dot and padding spaces are not formatted.
-		if self.name.starts_with('.') {
-			format!("<clear dimmed>.</>{}", &self.name[1..])
-		} else {
-			format!("<clear> </>{}", self.name)
+		let path = PathBuf::from(&self.display_name);
+		if let Some(name) = path.file_name() {
+			let name = name.to_string_lossy();
+
+			// 'clear' ensures that the dot and padding spaces are not formatted.
+			let aligned_name = if name.starts_with('.') {
+				format!("<clear dimmed>.</>{}", name.strip_prefix('.').unwrap())
+			} else {
+				format!("<clear> </>{}", name)
+			};
+
+			if let Some(parent) = path.parent() {
+				return parent.join(aligned_name).to_string_lossy().to_string();
+			}
 		}
+		self.display_name.clone()
 	}
 }

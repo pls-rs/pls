@@ -165,7 +165,11 @@ impl DirGroup {
 				children.push(Self::re_make_node(child_node.tree_child(), child_map));
 			}
 		}
-		node.tree_parent(children)
+		if children.is_empty() {
+			node
+		} else {
+			node.tree_parent(children)
+		}
 	}
 
 	/// Move children nodes into their parent nodes and return only top-level nodes.

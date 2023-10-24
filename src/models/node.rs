@@ -3,6 +3,7 @@ use crate::enums::{Appearance, Collapse, DetailField, Typ};
 use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use std::collections::HashMap;
+use std::fmt::Write;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::Metadata;
 use std::io::Result as IoResult;
@@ -233,12 +234,10 @@ impl<'pls> Node<'pls> {
 		// Tree shape
 		if Appearance::TreeChild == self.appearance {
 			let offset = " ".repeat(if args.align { 3 } else { 2 });
-			parts.push_str(
-				&tree_shapes
-					.iter()
-					.map(|shape| format!("{offset}{shape}"))
-					.collect::<String>(),
-			);
+			parts.push_str(&tree_shapes.iter().fold(String::new(), |mut acc, shape| {
+				let _ = write!(acc, "{offset}{shape}"); // `write!`-ing into a `String` can never fail.
+				acc
+			}));
 		}
 
 		// Icon

@@ -7,9 +7,9 @@ authors = ["Dhruv Bhanushali <hi@dhruvkb.dev>"]
 
 license = "GPL-3.0-or-later"
 
-homepage = "https://dhruvkb.github.io/pls"
-repository = "https://github.com/dhruvkb/pls"
-documentation = "https://dhruvkb.github.io/pls"
+homepage = "https://pls-rs.github.io/pls"
+repository = "https://github.com/pls-rs/pls"
+documentation = "https://pls-rs.github.io/pls"
 readme = "README.md"
 exclude = [".github/", "/readme_assets", "/justfile", "/.gitignore"]
 

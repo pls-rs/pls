@@ -24,7 +24,7 @@ export default defineConfig({
         dark: "./src/assets/logo_dark.svg",
       },
       social: {
-        github: "https://github.com/dhruvkb/pls",
+        github: "https://github.com/pls-rs/pls",
       },
       sidebar: [
         {
@@ -100,7 +100,7 @@ export default defineConfig({
         "./src/styles/typography.css",
       ],
       editLink: {
-        baseUrl: "https://github.com/dhruvkb/pls/edit/main/docs/",
+        baseUrl: "https://github.com/pls-rs/pls/edit/main/docs/",
       },
     }),
   ],

@@ -4,6 +4,7 @@ use crate::enums::DetailField;
 use crate::models::{Node, OwnerMan};
 use crate::traits::Imp;
 use log::debug;
+use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::fs::DirEntry;
 use std::os::unix::ffi::OsStrExt;
@@ -188,8 +189,16 @@ impl DirGroup {
 		let mut child_map: HashMap<String, Vec<Node>> = HashMap::new();
 		nodes.into_iter().for_each(|node| {
 			if let Some(collapse) = node.collapse_name.clone() {
-				let children = child_map.entry(collapse).or_insert(vec![]);
-				children.push(node);
+				match child_map.entry(collapse) {
+					Entry::Occupied(mut entry) => {
+						let children = entry.get_mut();
+						children.push(node);
+					}
+					Entry::Vacant(entry) => {
+						let children = vec![node];
+						entry.insert(children);
+					}
+				};
 			} else {
 				roots.push(node);
 			}

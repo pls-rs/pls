@@ -138,17 +138,17 @@ impl<'pls> Node<'pls> {
 	/// If the collapse uses a name, use that name.
 	/// If the collapse uses an ext, use this node's stem with that ext.
 	pub fn find_collapse(&mut self) {
-		let collapse = self
+		self.collapse_name = self
 			.specs
 			.iter()
 			.rev()
-			.find(|spec| spec.collapse.is_some())
-			.and_then(|spec| spec.collapse.clone());
-		self.collapse_name = match collapse {
-			Some(Collapse::Name(name)) => Some(name),
-			Some(Collapse::Ext(ext)) => Some(format!("{}.{}", self.stem(), ext)),
-			None => None,
-		}
+			.filter_map(|spec| spec.collapse.as_ref())
+			.next()
+			.map(|collapse| match collapse {
+				Collapse::Name(name) => name.clone(),
+				Collapse::Ext(ext) if ext.is_empty() => self.stem(),
+				Collapse::Ext(ext) => format!("{}.{}", self.stem(), ext),
+			});
 	}
 
 	// ===========

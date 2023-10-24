@@ -1,0 +1,4 @@
+specs:
+  - pattern: \.rs$
+    collapse:
+      ext: "" # Collapse module index files under their corresponding directories.

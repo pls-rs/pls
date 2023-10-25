@@ -6,17 +6,6 @@ import autoImport from "astro-auto-import";
 export default defineConfig({
   base: "/pls", // Search and update `/pls` links if changing this.
   integrations: [
-    autoImport({
-      imports: [
-        "@/components/Dhruv.astro",
-        "@/components/Footer.astro",
-        "@/components/Icon.astro",
-        "@/components/Pls.astro",
-        "@/components/Stars.astro",
-        "@/components/Stat.astro",
-        "@/components/Version.astro",
-      ],
-    }),
     starlight({
       title: "pls",
       logo: {
@@ -102,6 +91,17 @@ export default defineConfig({
       editLink: {
         baseUrl: "https://github.com/pls-rs/pls/edit/main/docs/",
       },
+    }),
+    autoImport({
+      imports: [
+        "@/components/Dhruv.astro",
+        "@/components/Footer.astro",
+        "@/components/Icon.astro",
+        "@/components/Pls.astro",
+        "@/components/Stars.astro",
+        "@/components/Stat.astro",
+        "@/components/Version.astro",
+      ],
     }),
   ],
   markdown: {

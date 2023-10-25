@@ -4,7 +4,8 @@
 }
 
 h1[data-page-title],
-a.site-title {
+a.site-title,
+code.pls {
   font-family: var(--__sl-font-mono);
   font-weight: bold;
   color: var(--color-brand);

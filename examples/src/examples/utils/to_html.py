@@ -49,9 +49,9 @@ def _cleanup_html(html: str) -> str:
     """
 
     lines = [
-        _substitutions(line)
+        _substitutions(line) if line else '<span style="opacity:0;">&nbsp;</span>'
         for line in html.split("\n")
-        if line and "<span class='shell'>" not in line
+        if "<span class='shell'>" not in line
     ]
     lines[1] = f"​{lines[1]}"
     return "\n".join(lines)

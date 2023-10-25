@@ -5,6 +5,7 @@ This package contains code for invoking `to-html`_ and processing its output.
 """
 
 import re
+from decouple import config
 
 from examples.utils.sub import run_cmd
 
@@ -25,8 +26,9 @@ def run_to_html(args: list[str], **kwargs) -> str:
     :return: the processed HTML output
     """
 
+    pls_bin = config("PLS_BIN", default="pls")
     args = " ".join(args)
-    cmd = ["to-html", f"pls {args}"]
+    cmd = ["to-html", f"{pls_bin} {args}"]
     print(f"Running command {cmd}")
 
     proc = run_cmd(cmd, **kwargs)

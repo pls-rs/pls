@@ -18,6 +18,10 @@ install:
 # Recipes #
 ###########
 
+# Create the `.env` file from the template file
+env:
+    cp .env.template .env
+
 # Generate the specified examples file.
 gen file:
     poetry run python src/examples/{{ file }}.py

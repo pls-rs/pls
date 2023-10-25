@@ -6,6 +6,7 @@ authors = ["Dhruv Bhanushali <dhruv_b@live.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+python-decouple = "^3.8"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.14.0"

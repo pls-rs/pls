@@ -2,7 +2,7 @@ use crate::config::{AppConst, Args, Conf, EntryConst};
 use crate::enums::{Appearance, Collapse, DetailField, Typ};
 use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Write;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::Metadata;
@@ -22,7 +22,7 @@ pub struct Node<'pls> {
 	meta: IoResult<Metadata>,
 	pub typ: Typ, // `Typ::Unknown` if `meta` is `Err`
 
-	pub appearance: Appearance,
+	pub appearances: HashSet<Appearance>,
 
 	pub specs: Vec<&'pls Spec>,
 
@@ -53,7 +53,7 @@ impl<'pls> Node<'pls> {
 			path,
 			meta,
 			typ,
-			appearance: Appearance::Normal,
+			appearances: HashSet::new(),
 			specs: vec![],
 			collapse_name: None,
 			children: vec![],
@@ -69,12 +69,10 @@ impl<'pls> Node<'pls> {
 	/// This function consumes the given `Node` and returns a new instance with
 	/// the name hardcoded. It should be used to change the name to something
 	/// different from the name derived from the path.
-	pub fn solo_file(self, name: String) -> Self {
-		Self {
-			display_name: name,
-			appearance: Appearance::SoloFile,
-			..self
-		}
+	pub fn solo_file(mut self, name: String) -> Self {
+		self.display_name = name;
+		self.appearances.insert(Appearance::SoloFile);
+		self
 	}
 
 	/// Get the `Node` instance with the given name hardcoded.
@@ -82,12 +80,10 @@ impl<'pls> Node<'pls> {
 	/// This function consumes the given `Node` and returns a new instance with
 	/// the name hardcoded. It should be used to change the name to something
 	/// different from the name derived from the path.
-	pub fn symlink(self, name: String) -> Self {
-		Self {
-			display_name: name,
-			appearance: Appearance::Symlink,
-			..self
-		}
+	pub fn symlink(mut self, name: String) -> Self {
+		self.display_name = name;
+		self.appearances.insert(Appearance::Symlink);
+		self
 	}
 
 	/// Get the `Node` instance with some tree-drawing characters.
@@ -95,20 +91,16 @@ impl<'pls> Node<'pls> {
 	/// This function consumes the given `Node` and returns a new instance with
 	/// the appearance configured with the tree shapes. It is used to make the
 	/// node the child of another node.
-	pub fn tree_child(self) -> Self {
-		Self {
-			appearance: Appearance::TreeChild,
-			..self
-		}
+	pub fn tree_child(mut self) -> Self {
+		self.appearances.insert(Appearance::TreeChild);
+		self
 	}
 
 	/// Get the `Node` instance with children populated.
-	pub fn tree_parent(self, children: Vec<Node<'pls>>) -> Self {
-		Self {
-			children,
-			appearance: Appearance::TreeParent,
-			..self
-		}
+	pub fn tree_parent(mut self, children: Vec<Node<'pls>>) -> Self {
+		self.children = children;
+		self.appearances.insert(Appearance::TreeParent);
+		self
 	}
 
 	// =======
@@ -164,7 +156,7 @@ impl<'pls> Node<'pls> {
 	fn directives(&self, app_const: &AppConst, entry_const: &EntryConst, args: &Args) -> String {
 		let mut directives = String::from(self.typ.directives(entry_const));
 
-		if self.appearance != Appearance::Symlink {
+		if !self.appearances.contains(&Appearance::Symlink) {
 			let imp_dir = Imp::directives(self, app_const, args);
 			if let Some(directive) = imp_dir {
 				directives.push(' ');
@@ -232,7 +224,7 @@ impl<'pls> Node<'pls> {
 		let mut parts = String::default();
 
 		// Tree shape
-		if Appearance::TreeChild == self.appearance {
+		if self.appearances.contains(&Appearance::TreeChild) {
 			let offset = " ".repeat(if args.align { 3 } else { 2 });
 			parts.push_str(&tree_shapes.iter().fold(String::new(), |mut acc, shape| {
 				let _ = write!(acc, "{offset}{shape}"); // `write!`-ing into a `String` can never fail.
@@ -241,7 +233,7 @@ impl<'pls> Node<'pls> {
 		}
 
 		// Icon
-		if args.icon && self.appearance != Appearance::Symlink {
+		if args.icon && !self.appearances.contains(&Appearance::Symlink) {
 			parts.push_str(&format!(
 				"<{icon_directives}>{:<1}</> ",
 				self.icon(conf, entry_const),
@@ -250,12 +242,15 @@ impl<'pls> Node<'pls> {
 
 		// Name and suffix
 		parts.push_str(&format!("<{text_directives}>"));
-		match self.appearance {
-			Appearance::Symlink | Appearance::SoloFile => parts.push_str(&self.display_name),
-			_ if args.align => parts.push_str(&self.aligned_name()),
-			_ => parts.push_str(&self.display_name),
+		if !args.align
+			|| self.appearances.contains(&Appearance::Symlink)
+			|| self.appearances.contains(&Appearance::SoloFile)
+		{
+			parts.push_str(&self.display_name)
+		} else {
+			parts.push_str(&self.aligned_name())
 		}
-		if args.suffix && self.appearance != Appearance::Symlink {
+		if args.suffix && !self.appearances.contains(&Appearance::Symlink) {
 			// Symlink should not have suffix because it should show the path reference without modifications
 			parts.push_str(self.typ.suffix(entry_const))
 		};

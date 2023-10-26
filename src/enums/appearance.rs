@@ -1,11 +1,9 @@
 /// This enum contains all the different ways a node can appear.
-#[derive(Clone, Debug, PartialEq, Eq)]
+///
+/// A node can be a combination of appearances as well. For example, a node may be a tree parent as
+/// well as a tree child. When a node has no special appearances, it is a normal listing.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Appearance {
-	/// The node appears as a normal listing.
-	///
-	/// The name of the node is determined from the last segment of the path.
-	/// The display text is based on this name.
-	Normal,
 	/// The node appears as the target of a symlink.
 	///
 	/// The display text of the node is set to the symlink destination. It is

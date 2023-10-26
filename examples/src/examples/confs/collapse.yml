@@ -1,4 +1,4 @@
-constants:
+app_const:
   tree:
     pipe_space: "<magenta>|</>   "
     space_space: "    " # should be as wide as the other entries for alignment

@@ -1,4 +1,4 @@
-constants:
+entry_const:
   dev_style: magenta
   ino_style: magenta
   nlink_styles:
@@ -42,6 +42,7 @@ constants:
     ctime: <blue>[day] [month repr:short] [hour repr:24]:[minute]</>
     mtime: <blue>[day] [month repr:short] [hour repr:24]:[minute]</>
     atime: <blue>[day] [month repr:short] [hour repr:24]:[minute]</>
+app_const:
   table:
     header_style: clear
     column_names:

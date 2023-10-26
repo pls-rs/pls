@@ -1,4 +1,4 @@
-constants:
+entry_const:
   typ:
     file:
       suffix: "<dimmed>!</>"

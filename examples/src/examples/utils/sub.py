@@ -22,7 +22,7 @@ def run_cmd(args: list[str], **kwargs) -> subprocess.CompletedProcess:
 
     proc = subprocess.run(
         args,
-        cwd=PROJECT_ROOT,
+        cwd=kwargs.pop("cwd", PROJECT_ROOT),
         capture_output=True,
         text=True,
         encoding="utf-8",

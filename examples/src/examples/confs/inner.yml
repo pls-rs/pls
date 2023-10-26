@@ -1,0 +1,12 @@
+app_const:
+  table:
+    header_style: blue
+entry_const:
+  nlink_styles:
+    file_sing: blue
+  timestamp_formats:
+    mtime: "<bold blue>[year]-[month]-[day]</>"
+specs:
+  - pattern: ^a$
+    style: blue
+    icon: file

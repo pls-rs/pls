@@ -1,0 +1,10 @@
+app_const:
+  table:
+    header_style: red bold underline
+entry_const:
+  user_styles:
+    curr: green bold
+    other: green bold
+specs:
+  - pattern: ^a$
+    style: red underline

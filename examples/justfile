@@ -36,6 +36,7 @@ all:
     just gen filtering
     just gen sorting
     just gen colors
+    just gen paths
 
 # Create a Python shell.
 shell:

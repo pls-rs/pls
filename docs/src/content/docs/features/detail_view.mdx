@@ -120,12 +120,12 @@ customisation options supported by each field.
 
 #### `dev` - Device ID
 
-This field can by styled by specifying `constants.dev_style`. <Pls /> does not
+This field can by styled by specifying `entry_const.dev_style`. <Pls /> does not
 style this field by default, because a style would not add any meaning.
 
 #### `ino` - Inode number
 
-This field can by styled by specifying `constants.ino_style`. <Pls /> does not
+This field can by styled by specifying `entry_const.ino_style`. <Pls /> does not
 style this field by default, because a style would not add any meaning.
 
 #### `nlink` - Number of hard links
@@ -135,42 +135,39 @@ of hard links the node has. <Pls /> allows files with more than one hard link
 and directories with only one hard link to be styled differently because these
 are peculiar cases. The opposite scenario is more common.
 
-| Type | `nlink` | Style                              |
-| ---- | ------- | ---------------------------------- |
-| file | 1       | `constants.nlink_styles.file_sing` |
-| file | >1      | `constants.nlink_styles.file_plur` |
-| dir  | 1       | `constants.nlink_styles.dir_sing`  |
-| dir  | >1      | `constants.nlink_styles.dir_plur`  |
+| Type | `nlink` | Style                                |
+| ---- | ------- | ------------------------------------ |
+| file | 1       | `entry_const.nlink_styles.file_sing` |
+| file | >1      | `entry_const.nlink_styles.file_plur` |
+| dir  | 1       | `entry_const.nlink_styles.dir_sing`  |
+| dir  | >1      | `entry_const.nlink_styles.dir_plur`  |
 
 #### `typ` - Node type character
 
 <Pls /> allows you to completely change the type character to whatever makes you
 think of the node's type.
 
-| Type         | Character                       |
-| ------------ | ------------------------------- |
-| Dir          | `constants.typ.dir.ch`          |
-| Symlink      | `constants.typ.symlink.ch`      |
-| FIFO         | `constants.typ.fifo.ch`         |
-| Socket       | `constants.typ.socket.ch`       |
-| Block device | `constants.typ.block_device.ch` |
-| Char device  | `constants.typ.char_device.ch`  |
-| File         | `constants.typ.file.ch`         |
-| Unknown      | `constants.typ.unknown.ch`      |
+| Type         | Character                         |
+| ------------ | --------------------------------- |
+| Dir          | `entry_const.typ.dir.ch`          |
+| Symlink      | `entry_const.typ.symlink.ch`      |
+| FIFO         | `entry_const.typ.fifo.ch`         |
+| Socket       | `entry_const.typ.socket.ch`       |
+| Block device | `entry_const.typ.block_device.ch` |
+| Char device  | `entry_const.typ.char_device.ch`  |
+| File         | `entry_const.typ.file.ch`         |
+| Unknown      | `entry_const.typ.unknown.ch`      |
 
 #### `perm` - Symbolic permissions
 
-This field can by styled by specifying `constants.perm_style`. <Pls /> allows
+This field can by styled by specifying `entry_const.perm_style`. <Pls /> allows
 individual customisation of each of the permission characters for read (`r`),
 write (`w`), execute (`x`), special (`s`/`S`/`t`/`T`) and none (`-`).
 
-| Bit     | Style                           |
-| ------- | ------------------------------- |
-| Read    | `constants.perm_styles.read`    |
-| Write   | `constants.perm_styles.write`   |
-| Execute | `constants.perm_styles.execute` |
-| Special | `constants.perm_styles.special` |
-| None    | `constants.perm_styles.none`    |
+| Bit | Style | | ------- | entry_const | | Read |
+`entry_const.perm_styles.read` | | Write | `entry_const.perm_styles.write` | |
+Execute | `entry_const.perm_styles.execute` | | Special |
+`entry_const.perm_styles.special` | | None | `entry_const.perm_styles.none` |
 
 #### `oct` - Octal permissions
 
@@ -178,12 +175,12 @@ An octal permission has either three (user, group, other) or four (special, plus
 the previous three) digits. <Pls /> allows customisation of each of these digits
 individually.
 
-| Digit   | Style                          |
-| ------- | ------------------------------ |
-| Special | `constants.oct_styles.special` |
-| User    | `constants.oct_styles.user`    |
-| Group   | `constants.oct_styles.group`   |
-| Other   | `constants.oct_styles.other`   |
+| Digit   | Style                            |
+| ------- | -------------------------------- |
+| Special | `entry_const.oct_styles.special` |
+| User    | `entry_const.oct_styles.user`    |
+| Group   | `entry_const.oct_styles.group`   |
+| Other   | `entry_const.oct_styles.other`   |
 
 #### `user`/`uid` - Owner user name/UID
 
@@ -191,10 +188,10 @@ individually.
 on whether the user is the current user or not. These styles apply identically
 to the user name and the UID.
 
-| User    | Style                         |
-| ------- | ----------------------------- |
-| Current | `constants.user_styles.curr`  |
-| Other   | `constants.user_styles.other` |
+| User    | Style                           |
+| ------- | ------------------------------- |
+| Current | `entry_const.user_styles.curr`  |
+| Other   | `entry_const.user_styles.other` |
 
 #### `group`/`gid` - Owner group name/GID
 
@@ -202,10 +199,10 @@ to the user name and the UID.
 on whether the current user belongs to the group or not. These styles apply
 identically to the group name and the GID.
 
-| Group   | Style                          |
-| ------- | ------------------------------ |
-| Current | `constants.group_styles.curr`  |
-| Other   | `constants.group_styles.other` |
+| Group   | Style                            |
+| ------- | -------------------------------- |
+| Current | `entry_const.group_styles.curr`  |
+| Other   | `entry_const.group_styles.other` |
 
 #### `size` - Storage space
 
@@ -217,11 +214,11 @@ You can style the three components of a size value independently. Ideally, you
 want to emphasise magnitude and prefix and de-emphasise the base (which is
 always "B" for bytes).
 
-| Component | Style                          |
-| --------- | ------------------------------ |
-| Magnitude | `constants.size_styles.mag`    |
-| Prefix    | `constants.size_styles.prefix` |
-| Base unit | `constants.size_styles.base`   |
+| Component | Style                            |
+| --------- | -------------------------------- |
+| Magnitude | `entry_const.size_styles.mag`    |
+| Prefix    | `entry_const.size_styles.prefix` |
+| Base unit | `entry_const.size_styles.base`   |
 
 #### `blocks` - Storage blocks
 
@@ -237,7 +234,7 @@ multiple of 8.
 
 :::
 
-This field can by styled by specifying `constants.blocks_style`. <Pls /> does
+This field can by styled by specifying `entry_const.blocks_style`. <Pls /> does
 not style this field by default, because a style would not add any meaning.
 
 #### `btime`/`ctime`/`mtime`/`atime` - Timestamps
@@ -245,12 +242,12 @@ not style this field by default, because a style would not add any meaning.
 <Pls /> can display the four common timestamps of a file. <Pls /> allows you to
 choose the exact format in which you prefer the timestamps to be.
 
-| Timestamp   | Format                              |
-| ----------- | ----------------------------------- |
-| Created at  | `constants.timestamp_formats.btime` |
-| Changed at  | `constants.timestamp_formats.ctime` |
-| Modified at | `constants.timestamp_formats.mtime` |
-| Accessed at | `constants.timestamp_formats.atime` |
+| Timestamp   | Format                                |
+| ----------- | ------------------------------------- |
+| Created at  | `entry_const.timestamp_formats.btime` |
+| Changed at  | `entry_const.timestamp_formats.ctime` |
+| Modified at | `entry_const.timestamp_formats.mtime` |
+| Accessed at | `entry_const.timestamp_formats.atime` |
 
 The timestamp can use components from the `time` crate's
 [format description](https://time-rs.github.io/book/api/format-description.html#components)

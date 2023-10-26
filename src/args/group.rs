@@ -73,7 +73,7 @@ impl Group {
 			let grid = Grid::new(entries);
 			grid.render(&self.conf().app_const, args);
 		} else {
-			let table = Table::new(entries);
+			let table = Table::new(entries, matches!(self, Self::Files(_)));
 			table.render(&self.conf().app_const, args);
 		}
 

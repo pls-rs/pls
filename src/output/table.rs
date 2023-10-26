@@ -12,12 +12,13 @@ use std::iter::once;
 #[derive(Default)]
 pub struct Table {
 	pub entries: Vec<HashMap<DetailField, String>>,
+	pub is_solo: bool,
 }
 
 impl Table {
 	/// Create a new instance of `Table`, taking ownership of the given entries.
-	pub fn new(entries: Vec<HashMap<DetailField, String>>) -> Self {
-		Self { entries }
+	pub fn new(entries: Vec<HashMap<DetailField, String>>, is_solo: bool) -> Self {
+		Self { entries, is_solo }
 	}
 
 	/// Render the table to STDOUT.
@@ -64,7 +65,7 @@ impl Table {
 				if det_idx == args.details.len() - 1 {
 					return None;
 				}
-				let end_lim = if det.uniformly_wide() {
+				let end_lim = if !self.is_solo && det.uniformly_wide() {
 					// For uniform column, only compare the header and row #1...
 					1
 				} else {

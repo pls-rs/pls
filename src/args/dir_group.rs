@@ -45,8 +45,10 @@ impl DirGroup {
 		owner_man: &mut OwnerMan,
 		args: &Args,
 	) -> Vec<HashMap<DetailField, String>> {
-		let nodes = self.nodes(args);
-		let mut nodes = Self::make_tree(nodes);
+		let mut nodes = self.nodes(args);
+		if args.collapse {
+			nodes = Self::make_tree(nodes);
+		}
 		Self::re_sort(&mut nodes, owner_man, args);
 
 		nodes

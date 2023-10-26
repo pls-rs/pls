@@ -7,7 +7,7 @@ def type_filter():
     with typ_bench() as bench:
         write_out(bench=bench, dest_name="off")
         write_out("--typ=dir", "--typ=symlink", bench=bench, dest_name="on")
-        write_out("--typ=dir", str(bench.absolute() / "fifo"), dest_name="dis")
+        write_out("--typ=dir", "fifo", cwd=bench, include_bench=False, dest_name="dis")
 
 
 def name_filter():
@@ -20,7 +20,11 @@ def name_filter():
         write_out("--only='(a|c)'", r"--exclude='\.jpe?g'", bench=bench, dest_name="on")
         write_out(bench=bench, dest_name="off")
         write_out(
-            r"--exclude='\.jpe?g'", str(bench.absolute() / "a.jpg"), dest_name="dis"
+            r"--exclude='\.jpe?g'",
+            "a.jpg",
+            cwd=bench,
+            include_bench=False,
+            dest_name="dis",
         )
 
 
@@ -42,7 +46,7 @@ def importance():
             write_out(
                 f"--imp={imp}", bench=bench, dest_name=f"imp_{imp}".replace("-", "m")
             )
-        write_out("--imp=2", str(bench.absolute() / "file"), dest_name="dis")
+        write_out("--imp=2", "file", cwd=bench, include_bench=False, dest_name="dis")
         copy_write_conf(bench)
         write_out(bench=bench, dest_name="confd")
 

@@ -28,6 +28,7 @@ export default defineConfig({
           label: "Guides",
           items: [
             { label: "Get started", link: "/guides/get_started/" },
+            { label: "Paths", link: "/guides/paths/" },
             { label: "Markup", link: "/guides/markup/" },
             { label: "Specs", link: "/guides/specs/" },
             { label: "Contribute", link: "/guides/contribute/" },

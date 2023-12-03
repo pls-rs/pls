@@ -199,23 +199,3 @@ pub struct SymlinkInfo {
 	/// the style to use for the symlink reference
 	pub ref_style: String, // applies to reference only
 }
-
-#[derive(Serialize, Deserialize)]
-pub struct TableInfo {
-	/// mapping of detail field to column name
-	pub column_names: HashMap<DetailField, String>,
-	/// the styles to apply to the text in the header row
-	pub header_style: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct TreeInfo {
-	/// "│  "
-	pub pipe_space: String,
-	/// "   "
-	pub space_space: String,
-	/// "├─ "
-	pub tee_dash: String,
-	/// "└─ "
-	pub bend_dash: String,
-}

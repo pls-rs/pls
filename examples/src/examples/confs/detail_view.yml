@@ -48,18 +48,18 @@ app_const:
     column_names:
       dev: <underline>Device</>
       ino: <underline>inode</>
+      nlink: <underline>Links</>
       perm: <underline>Permissions</>
       oct: <underline>Octal</>
-      nlink: <underline>Links</>
-      size: <underline>Size</>
-      blocks: <underline>Blocks</>
       user: <underline>User</>
       uid: <underline>UID</>
       group: <underline>Group</>
       gid: <underline>GID</>
+      size: <underline>Size</>
+      blocks: <underline>Blocks</>
       btime: <underline>Date Created</>
-      mtime: <underline>Date Modified</>
       ctime: <underline>Date Changed</>
+      mtime: <underline>Date Modified</>
       atime: <underline>Date Accessed</>
       git: <underline>Git</>
       name: <underline>Name</>

@@ -84,6 +84,7 @@ export default defineConfig({
       ],
       customCss: [
         "./src/styles/brand.css",
+        "./src/styles/color.css",
         "./src/styles/font.css",
         "./src/styles/layout.css",
         "./src/styles/terminal.css",
@@ -102,6 +103,7 @@ export default defineConfig({
         "@/components/Stars.astro",
         "@/components/Stat.astro",
         "@/components/Version.astro",
+        "@/components/DocBlock.astro",
       ],
     }),
   ],

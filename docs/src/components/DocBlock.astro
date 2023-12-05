@@ -1,0 +1,79 @@
+---
+let {
+  title,
+  fqTitle,
+  required,
+  type,
+  subfieldsType,
+} = Astro.props;
+---
+
+<div class="doc-block">
+  <div class="header">
+    <strong class="title">
+      <code class="not-content">
+        <slot name="heading">
+          <span id={fqTitle || title}>{ title }</span>
+        </slot>
+      </code>
+    </strong>
+    {required && <span class="required">*</span>}
+    <code class="type">{ type }</code>
+  </div>
+
+  <slot></slot>
+
+  {Astro.slots.has('subfields') && (
+    <details>
+      <summary>Properties of <code>{ subfieldsType || type }</code></summary>
+      <div><slot name="subfields"></slot></div>
+    </details>
+  )}
+
+  {Astro.slots.has('examples') && (
+    <details>
+      <summary>Examples of <code>{ title }</code></summary>
+      <div><slot name="examples"></slot></div>
+    </details>
+  )}
+</div>
+
+<style is:global>
+  div.doc-block h1,
+  div.doc-block h2,
+  div.doc-block h3,
+  div.doc-block h4,
+  div.doc-block h5,
+  div.doc-block h6 {
+    display: inline;
+  }
+</style>
+
+<style>
+  div.header {
+    margin-bottom: -1.5rem;
+  }
+
+  span.required {
+    color: var(--sl-color-red);
+  }
+
+  code.type {
+    margin-left: 0.5rem;
+  }
+
+  details {
+    padding-block: 1rem;
+    background-color: var(--color-background-tint);
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.25rem;
+  }
+
+  details summary {
+    padding-inline: 1rem;
+  }
+
+  details > div {
+    padding-inline: 1rem;
+  }
+</style>

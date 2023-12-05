@@ -20,19 +20,19 @@ pub struct AppConst {
 pub struct TableInfo {
 	/// mapping of detail field to column name
 	pub column_names: HashMap<DetailField, String>,
-	/// the styles to apply to the text in the header row
+	/// styles to apply to the text in the header row
 	pub header_style: String,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct TreeInfo {
-	/// "│  "
+	/// the shape to use an alternative to "│  "
 	pub pipe_space: String,
-	/// "   "
+	/// the shape to use an alternative to "   "
 	pub space_space: String,
-	/// "├─ "
+	/// the shape to use an alternative to "├─ "
 	pub tee_dash: String,
-	/// "└─ "
+	/// the shape to use an alternative to "└─ "
 	pub bend_dash: String,
 }
 

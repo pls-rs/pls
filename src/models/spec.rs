@@ -8,11 +8,16 @@ use serde::{Deserialize, Serialize};
 /// from other tools.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Spec {
+	/// a regex pattern to match against the node's name
 	#[serde(with = "serde_regex")]
 	pub pattern: Regex,
+	/// the name of the icon to use for the node
 	pub icon: Option<String>,
+	/// styles to apply to the node name and icon
 	pub style: Option<String>,
+	/// the importance level of the node
 	pub importance: Option<i8>,
+	/// the rule for determining the parent node, if any, for this node
 	pub collapse: Option<Collapse>,
 }
 

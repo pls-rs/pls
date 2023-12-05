@@ -20,7 +20,7 @@ pub struct EntryConst {
 	pub user_styles: OwnerStyles,
 	/// styles for the owner group
 	pub group_styles: OwnerStyles,
-	/// style for magnitude and unit of node size
+	/// style for magnitude and unit (prefix and base) of node size
 	pub size_styles: SizeStyles,
 	/// style for the number of blocks occupied by the file
 	pub blocks_style: String,

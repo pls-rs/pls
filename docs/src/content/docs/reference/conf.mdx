@@ -1,0 +1,486 @@
+---
+title: Configuration
+description: Configuration
+---
+
+<Pls /> supports a powerful, and complex, configuration system that offers a lot
+of powerful customization options. Configuration is specified in the form of a
+`.pls.yml` YAML file (which means you can just use JSON if you hate YAML so
+much).
+
+This is the schema of the file.
+
+## Schema
+
+<DocBlock title="icons" type="map<str, str>">
+  <Fragment slot="heading">
+    ### icons
+  </Fragment>
+
+mapping of icon names to actual glyphs from Nerd Fonts
+
+You can also use emojis as the glyphs but it's not recommended as you can run
+into issues regarding character width in some terminals.
+
+  <div slot="examples">
+    ```yaml
+    icons:
+      python: "" # nf-seti-python
+      javascript: "󰌞" # nf-md-language_javascript
+      applescript: "🍎"
+    ```
+  </div>
+</DocBlock>
+
+---
+
+<DocBlock title="specs" type="seq<Spec>" subfieldsType="Spec">
+  <Fragment slot="heading">
+    ### specs
+  </Fragment>
+
+list of node specs, in ascending order of specificity
+
+  <div slot="subfields">
+    <DocBlock title="pattern" type="str(Regex)" required>
+      a regex pattern to match against the node's name; In YAML this can be
+      specified more clearly if the quotes are omitted.
+    </DocBlock>
+
+    <DocBlock title="icon" type="str">
+      the name of the icon to use for the node; It should be a key from the
+      built-in icons or from the `icons` section.
+    </DocBlock>
+
+    <DocBlock title="style" type="str">
+      styles to apply to the node name and icon
+    </DocBlock>
+
+    <DocBlock title="importance" type="int">
+      the importance level of the node
+    </DocBlock>
+
+    <DocBlock title="collapse" type="Collapse">
+      the rule for determining the parent node, if any, for this node
+
+      <div slot="subfields">
+        `Collapse` is an enum type so exactly one of `name` or `ext` should be
+        specified.
+
+        <DocBlock title="name" type="str">
+          the exact name of the parent file; Name-based collapsing matches this
+          node with another having the exact given name.
+        </DocBlock>
+
+        <DocBlock title="ext" type="str">
+          the extension of the parent file; Extension-based collapsing matches
+          this node with another having the same base name and the given
+          extension.
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        collapse:
+          name: package.json # matches exactly `package.json`
+        ```
+
+        ```yaml
+        collapse:
+          ext: ts # matches file with same base name and `.ts` extension
+        ```
+      </div>
+    </DocBlock>
+
+  </div>
+
+  <div slot="examples">
+    ```yaml
+    specs:
+      - pattern: ^(pnpm-lock.yaml|package-lock.json)$
+        icon: lock
+        importance: -1
+        collapse:
+          name: package.json
+      - pattern: \.(c|m)?js$
+        icon: javascript
+        style: rgb(247,223,30)
+        collapse:
+          ext: ts
+    ```
+  </div>
+</DocBlock>
+
+---
+
+<DocBlock title="entry_const" type="EntryConst">
+  <Fragment slot="heading">
+    ### entry_const
+  </Fragment>
+
+constants that determine the appearance and styling of each entry
+
+  <div slot="subfields">
+    <DocBlock title="dev_style" type="str">
+      style for the device number
+    </DocBlock>
+    <DocBlock title="ino_style" type="str">
+      style for the inode number
+    </DocBlock>
+
+    <DocBlock title="nlink_styles" type="NlinkStyles">
+      styles for the number of hard links
+
+      <div slot="subfields">
+        <DocBlock title="file_sing" type="str">
+          style to use when file has one hard link
+        </DocBlock>
+        <DocBlock title="file_plur" type="str">
+          style to use when file has more than one hard link
+        </DocBlock>
+        <DocBlock title="dir_sing" type="str">
+          style to use when directory has one hard link
+        </DocBlock>
+        <DocBlock title="dir_plur" type="str">
+          style to use when directory has more than one hard link
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        nlink_styles:
+          file_sing: ""
+          file_plur: yellow
+          dir_sing: yellow
+          dir_plur: ""
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="typ" type="map<str(Typ), TypInfo>" subfieldsType="TypInfo">
+      mapping of node type to node type info (including style)
+
+      The key for the map i.e. `Typ` can be any of the following strings:
+      `'dir'`, `'symlink'`, `'fifo'`, `'socket'`, `'block_device'`,
+      `'char_device'`, `'file'` or `'unknown'`.
+
+      <div slot="subfields">
+        <DocBlock title="ch" type="str">
+          the character for a node type, used in the 'T' column
+        </DocBlock>
+        <DocBlock title="suffix" type="str">
+          the suffix for a node type, placed after the node name
+        </DocBlock>
+        <DocBlock title="icon" fqTitle="typ__icon" type="str">
+          the fallback icon for the node type, used if no other icon is found;
+          Not all node types need to have an icon.
+        </DocBlock>
+        <DocBlock title="style" fqTitle="typ__style" type="str">
+          the style to use for nodes of a particular node type; This applies to
+          name, `ch`, `suffix` and `icon` as well.
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        typ:
+          dir:
+            ch: <bold cyan>d</>
+            suffix: <dimmed>/</>
+            icon: dir
+            style: blue
+          symlink:
+            ch: <magenta>l</>
+            suffix: <dimmed>@</>
+            icon: symlink
+          char_device:
+            ch: <blue bg:green>b</>
+          block_device:
+            ch: <blue bg:yellow>c</>
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="perm_styles" type="map<str(Sym), str>">
+      mapping of symbolic permission bits to style
+
+      The key for the map i.e. `Sym` can be any of the following strings:
+      `'none'`, `'read'`, `'write'`, `'execute'`, or `'special'`.
+
+      <div slot="examples">
+        **Example:**
+
+        ```yaml
+        perm_styles:
+          none: dimmed
+          read: yellow
+          write: red
+          execute: green
+          special: magenta
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="oct_styles" type="map<str(Oct), str>">
+      mapping of octal permission bits to style
+
+      The key for the map i.e. `Oct` can be any of the following strings:
+      `'special'`, `'user'`, `'group'` or `'other'`.
+
+      <div slot="examples">
+        ```yaml
+        oct_styles:
+          special: magenta
+          user: blue
+          group: blue dimmed
+          other: dimmed
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="user_styles" type="OwnerStyles">
+      styles for the owner user
+
+      <div slot="subfields">
+        <DocBlock title="curr" type="str">
+          style for when the node is owned by the current user/group
+        </DocBlock>
+        <DocBlock title="other" type="str">
+          style for when the node is owned by a different user/group
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        user_styles:
+          curr: blue bold
+          other: dimmed
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="group_styles" type="OwnerStyles">
+      styles for the owner group
+
+      <div slot="subfields">
+        <DocBlock title="curr" fqTitle="group_styles__curr" type="str">
+          style for when the node is owned by the current user/group
+        </DocBlock>
+        <DocBlock title="other" fqTitle="group_style__other" type="str">
+          style for when the node is owned by a different user/group
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        group_styles:
+          curr: blue
+          other: dimmed
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="size_styles" type="SizeStyles">
+      style for magnitude and unit (prefix and base) of node size
+
+      <div slot="subfields">
+        <DocBlock title="mag" type="str">
+          the style for the node size magnitude
+        </DocBlock>
+        <DocBlock title="prefix" type="str">
+          the style for the node size unit prefix
+        </DocBlock>
+        <DocBlock title="base" type="str">
+          the style for the node size base unit
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        size_styles:
+          mag: bold
+          prefix: italic
+          base: dimmed
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="blocks_style" type="str">
+      style for the number of blocks occupied by the file
+    </DocBlock>
+
+    <DocBlock title="timestamp_formats" type="map<str(DetailField), str>">
+      mapping of timestamp fields to the human-readable format
+
+      The key for the map i.e. `DetailField` can be any of the following
+      strings: `'btime'`, `'ctime'`, `'mtime'` or `'atime'`.
+
+      The format string should contain [format description components](https://time-rs.github.io/book/api/format-description.html#components) from the `time` crate.
+
+      <div slot="examples">
+        ```yaml
+        timestamp_formats:
+          btime: <bold green>[day] [month repr:short]</> [hour repr:24]:[minute]
+          ctime: <bold yellow>[day] [month repr:short]</> [hour repr:24]:[minute]
+          mtime: <bold yellow>[day] [month repr:short]</> [hour repr:24]:[minute]
+          atime: <bold blue>[day] [month repr:short]</> [hour repr:24]:[minute]
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="symlink" type="map<str(SymState), SymlinkInfo>" subfieldsType="SymlinkInfo">
+      mapping of symlink state to more symlink state info (including style)
+
+      The key for the map i.e. `SymState` can be any of the following strings:
+      `'ok'`, `'broken'`, `'cyclic'` or `'error'`.
+
+      <div slot="subfields">
+        <DocBlock title="sep" type="str">
+          the separator to show between the node and its target
+        </DocBlock>
+        <DocBlock title="style" fqTitle="symlink__style" type="str">
+          the style to use for symlinks in a particular symlink state; This
+          applies to both the name and the separator.
+        </DocBlock>
+        <DocBlock title="ref_style" type="str">
+          the style to use for the symlink reference; This applies to the
+          reference only.
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        symlink:
+          ok:
+            sep: 󰁔
+            style: magenta
+          broken:
+            sep: 󱞣
+            style: red
+            ref_style: strikethrough
+        ```
+      </div>
+    </DocBlock>
+
+  </div>
+
+  <div slot="examples">
+    ```yaml
+    entry_const:
+      dev_style: magenta
+      ino_style: magenta
+      blocks_style: cyan
+    ```
+  </div>
+</DocBlock>
+
+---
+
+<DocBlock title="app_const" type="AppConst">
+  <Fragment slot="heading">
+    ### app_const
+  </Fragment>
+
+constants that determine the appearance and styling of the entire UI
+
+  <div slot="subfields">
+    <DocBlock title="table" type="TableInfo">
+      configuration for the table view
+
+      <div slot="subfields">
+        <DocBlock title="column_names" type="map<str(DetailField), str>">
+          mapping of detail field to column name
+
+          The key for the map i.e. `DetailField` can be any of the following:
+          strings: `'dev'`, `'ino'`, `'nlink'`, `'typ'`, `'perm'`, `'oct'`,
+          `'user'`, `'uid'`, `'group'`, `'gid'`, `'size'`, `'blocks'`,
+          `'btime'`, `'ctime'`, `'mtime'`, `'atime'`, `'git'` or `'name'`.
+
+          <div slot="examples">
+            ```yaml
+            column_names:
+              btime: <green>Date Created</>
+              ctime: <yellow>Date Changed</>
+              mtime: <yellow>Date Modified</>
+              atime: <blue>Date Accessed</>
+            ```
+          </div>
+        </DocBlock>
+
+        <DocBlock title="header_style" type="str">
+          styles to apply to the text in the header row
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        table:
+          header_style: clear underline
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="tree" type="TreeInfo">
+      shapes to use to print trees
+
+      <div slot="subfields">
+        <DocBlock title="pipe_space" type="str">
+          the shape to use an alternative to "│  "
+        </DocBlock>
+        <DocBlock title="space_space" type="str">
+          the shape to use an alternative to "   "
+        </DocBlock>
+        <DocBlock title="tee_dash" type="str">
+          the shape to use an alternative to "├─ "
+        </DocBlock>
+        <DocBlock title="bend_dash" type="str">
+          the shape to use an alternative to "└─ "
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        tree:
+          pipe_space: "║  "
+          space_space: "   "
+          tee_dash: "╠═ "
+          bend_dash: "╚═ "
+        ```
+      </div>
+    </DocBlock>
+
+    <DocBlock title="imp_styles" type="seq<(int, string)>" subfieldsType="(int, str)">
+      pairings of importance levels with styling directives
+
+      <div slot="subfields">
+        <DocBlock title="0" type="int">
+          the importance level
+        </DocBlock>
+        <DocBlock title="1" type="str">
+          the style to use for nodes of a particular importance level
+        </DocBlock>
+      </div>
+
+      <div slot="examples">
+        ```yaml
+        imp_styles:
+          - [-1, "dimmed"]
+          - [1, "italic"]
+          - [2, "underline"]
+        ```
+      </div>
+    </DocBlock>
+
+  </div>
+</DocBlock>
+
+## Examples
+
+You can see the `.pls.yml` files from <Pls />'s source code itself to get a feel
+for how these configurations work. Feel free to copy them or use as inspiration
+for your own projects.
+
+- [`.pls.yml`](https://github.com/pls-rs/pls/blob/main/.pls.yml)
+- [`docs/.pls.yml`](https://github.com/pls-rs/pls/blob/main/docs/.pls.yml)
+- [`examples/.pls.yml`](https://github.com/pls-rs/pls/blob/main/examples/.pls.yml)
+- [`src/.pls.yml`](https://github.com/pls-rs/pls/blob/main/src/.pls.yml)

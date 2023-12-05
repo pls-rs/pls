@@ -81,6 +81,12 @@ export default defineConfig({
             directory: "cookbooks",
           },
         },
+        {
+          label: "Reference",
+          autogenerate: {
+            directory: "reference",
+          },
+        },
       ],
       customCss: [
         "./src/styles/brand.css",

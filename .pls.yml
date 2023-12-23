@@ -23,7 +23,7 @@ specs:
     icon: broom
   - pattern: ^(.prettierignore|prettier.config.mjs)$
     icon: broom
-constants:
+entry_const:
   typ:
     dir:
       style: cyan

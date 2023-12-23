@@ -92,7 +92,7 @@ jobs:
           just cross ${{ matrix.target }}
 
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pls-${{ matrix.target }}
           path: target/${{ matrix.target }}/release/pls
@@ -118,7 +118,7 @@ jobs:
           rust_cache_key: docs
 
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: pls-x86_64-unknown-linux-musl
           path: /tmp/pls

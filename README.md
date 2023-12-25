@@ -11,8 +11,8 @@
     <a href="https://github.com/pls-rs/pls/actions/workflows/ci.yml">
       <img src="https://github.com/pls-rs/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
     </a>
-    <a href="https://pls-rs.github.io/pls/">
-      <img src="https://img.shields.io/badge/docs-pls--rs.github.io/pls-blue" alt="Documentation"/>
+    <a href="https://pls.cli.rs/">
+      <img src="https://img.shields.io/badge/docs-pls.cli.rs-blue" alt="Documentation"/>
     </a>
   </p>
 </h1>
@@ -29,4 +29,4 @@
 
 Pick whichever adjective helps you remember the command name.
 
-For more information, see the [documentation](https://pls-rs.github.io/pls/).
+For more information, see the [documentation](https://pls.cli.rs/).

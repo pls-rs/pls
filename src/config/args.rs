@@ -34,7 +34,7 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
     about = render("<red bold>`pls`</> is a prettier and powerful `ls` for the pros."),
 	long_about = render([
 		"<red bold>`pls`</> is a prettier and powerful `ls` for the pros.\n",
-		"<bold>Read docs:</> https://pls-rs.github.io/pls",
+		"<bold>Read docs:</> https://pls.cli.rs/",
 		"<bold>Get source:</> https://github.com/pls-rs/pls",
 		"<bold>Sponsor:</> https://github.com/sponsors/dhruvkb"
 	].join("\n")),

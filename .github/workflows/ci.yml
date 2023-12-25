@@ -164,18 +164,19 @@ jobs:
         working-directory: examples/
         run: just all
 
-      - name: Build docs
+      - name: Build and publish docs
+        if: |
+          github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch'
         working-directory: docs/
-        run: pnpm build
-
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: docs/dist/
-
-      - id: deployment
-        name: Deploy to GitHub Pages
-        if:
-          github.event_name == 'push' || github.event_name ==
-          'workflow_dispatch'
-        uses: actions/deploy-pages@v2
+        run: |
+          pnpm build
+          cd dist
+          git init --initial-branch=gh-pages
+          git config user.name "Dhruv Bhanushali"
+          git config user.email "hi@dhruvkb.dev"
+          touch .nojekyll
+          git add .
+          git commit --all --message "Build documentation"
+          git remote add origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/pls-rs/pls-rs.github.io.git
+          git push --force origin gh-pages

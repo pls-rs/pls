@@ -30,20 +30,20 @@ A spec consists of four components, of which only the first is mandatory.
 
 - **icon:** `String`
 
-  This is the name, and not the actual glyph, of the [icon](/pls/features/icons)
-  to use for nodes matching this spec. When specs cascade, the last defined icon
+  This is the name, and not the actual glyph, of the [icon](/features/icons) to
+  use for nodes matching this spec. When specs cascade, the last defined icon
   definition is used. If no specs match a node, the default icon for the node
   type is used.
 
 - **style:** `String`
 
-  This is a [markup](/pls/guides/markup) directive that must be applied to the
-  nodes that match this spec. When specs cascade, their directives are combined
-  with latter rules overriding previous ones if they conflict.
+  This is a [markup](/guides/markup) directive that must be applied to the nodes
+  that match this spec. When specs cascade, their directives are combined with
+  latter rules overriding previous ones if they conflict.
 
 - **importance:** `i8`
 
-  This defines the [importance level](/pls/features/importance/) of the file and
+  This defines the [importance level](/features/importance/) of the file and
   overrides the default value (determined by the leading dot).
 
 - **collapse:** [`Collapse`](#collapse)
@@ -66,7 +66,7 @@ adjacent node. Collapsing can be performed in two ways.
 
 ## Configuration
 
-Specs are configured in the [`.pls.yml` file](/pls/reference/conf/).
+Specs are configured in the [`.pls.yml` file](/reference/conf/).
 
 ### Examples
 

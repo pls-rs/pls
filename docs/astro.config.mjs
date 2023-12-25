@@ -4,7 +4,6 @@ import autoImport from "astro-auto-import";
 
 // https://astro.build/config
 export default defineConfig({
-  base: "/pls", // Search and update `/pls` links if changing this.
   integrations: [
     starlight({
       title: "pls",

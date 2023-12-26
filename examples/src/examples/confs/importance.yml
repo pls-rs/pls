@@ -1,3 +1,4 @@
+# .pls.yml
 app_const:
   imp_styles:
     - [-2, "red"]

@@ -1,3 +1,4 @@
+# .pls.yml
 app_const:
   tree:
     pipe_space: "<magenta>|</>   "

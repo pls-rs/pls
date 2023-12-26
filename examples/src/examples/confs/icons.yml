@@ -1,3 +1,4 @@
+# .pls.yml
 icons:
   pls: "󰱫" # Override the built-in glyph for 'pls'.
   sock: "󰓚" # Define new icon-glyph mapping.

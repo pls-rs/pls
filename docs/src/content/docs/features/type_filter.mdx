@@ -44,8 +44,8 @@ shorthand value is `none`, the vector is cleared. If the shorthand value is
 
 For example, consider the <Pls /> invocation below.
 
-```console
-$ pls --typ=symlink --typ=all --typ=none --typ=dir
+```bash
+pls --typ=symlink --typ=all --typ=none --typ=dir
 ```
 
 - `symlink` is added to the list.
@@ -58,20 +58,20 @@ The final set contains only `dir` and so <Pls /> will only list the directories.
 
 ### Examples
 
-```console
-$ pls # or --typ=all or --t=all
+```bash
+pls # or --typ=all or --t=all
 ```
 
 <TypeFilterOff />
 
-```console
-$ pls --typ=dir --typ=symlink # or -t=dir -t=symlink
+```bash
+pls --typ=dir --typ=symlink # or -t=dir -t=symlink
 ```
 
 <TypeFilterOn />
 
-```console
-$ pls --typ=dir --typ=symlink fifo # `--typ` has no effect
+```bash
+pls --typ=dir --typ=symlink fifo # `--typ` has no effect
 ```
 
 <TypeFilterDis />

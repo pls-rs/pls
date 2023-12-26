@@ -17,8 +17,8 @@ import { Content as Destination } from "@/examples/symlinks/destination.mdx";
 First <Pls /> organises paths supplied as CLI arguments into groups of solo
 files and individual directories. Then it prints each group one by one.
 
-```console
-$ pls README.md Cargo.toml Cargo.lock src docs
+```bash
+pls README.md Cargo.toml Cargo.lock src docs
 ```
 
 <FilesAndDirs />
@@ -54,8 +54,8 @@ file_group
   </TabItem>
 </Tabs>
 
-```console
-$ pls a ./../file_group/./subdir/a
+```bash
+pls a ./../file_group/./subdir/a
 ```
 
 <FileGroup />
@@ -70,14 +70,14 @@ By default, <Pls /> does not follow symlinks in the arguments provided to it. So
 a symlink to a directory will be treated as a file input and will not list the
 contents of the target directory.
 
-```console
-$ pls sym
+```bash
+pls sym
 ```
 
 <Symlinks />
 
-```console
-$ pls ./dir
+```bash
+pls ./dir
 ```
 
 <Destination />

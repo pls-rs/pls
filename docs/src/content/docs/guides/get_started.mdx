@@ -43,8 +43,8 @@ We are working on adding <Pls /> to more package managers like `apt` and `dnf`.
 tap](http://github.com/pls-rs/homebrew-pls/). Currently <Pls /> is not available
 through Homebrew core, but it is planned for the future.
 
-```console
-$ brew install pls-rs/pls/pls
+```bash
+brew install pls-rs/pls/pls
 ```
 
 This command will fetch and install the latest release of <Pls /> from GitHub.
@@ -55,8 +55,8 @@ If you have the Rust toolchain installed on your computer, you can build from
 source locally for your operating system and architecture. Also, we welcome your
 [contributions](/guides/contribute/)!
 
-```console
-$ cargo install --git https://github.com/pls-rs/pls
+```bash
+cargo install --git https://github.com/pls-rs/pls
 ```
 
 You can use `--tag` to install a specific version, The current latest version is
@@ -104,8 +104,8 @@ architecture by following these steps.
 You can check if <Pls /> was installed correctly and present on your `$PATH` by
 running the following command. If you see a version number, you're good to go!
 
-```console
-$ pls --version # or -V
+```bash
+pls --version # or -V
 ```
 
 <pre className="terminal">
@@ -116,8 +116,8 @@ $ pls --version # or -V
 
 To run <Pls />, type the following command into any terminal.
 
-```console
-$ pls
+```bash
+pls
 ```
 
 By default, <Pls /> lists the contents of the current working directory, but you
@@ -137,8 +137,8 @@ To see what <Pls /> is capable of, and how to use those features, check out the
 built-in help. You can see the detailed help or a quick reference using the
 `--help`/`-h` flags respectively.
 
-```console
-$ pls --help # or -h
+```bash
+pls --help # or -h
 ```
 
 {/* prettier-ignore-start */}

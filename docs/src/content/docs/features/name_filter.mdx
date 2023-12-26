@@ -35,20 +35,20 @@ Name filtering is not applicable when listing a specific node.
 
 ## Examples
 
-```console
-$ pls # or --only='.*' --exclude='$^'
+```bash
+pls # or --only='.*' --exclude='$^'
 ```
 
 <NameFilterOff />
 
-```console
-$ pls --only='(a|c)' --exclude='\.jpe?g$'
+```bash
+pls --only='(a|c)' --exclude='\.jpe?g$'
 ```
 
 <NameFilterOn />
 
-```console
-$ pls --exclude='\.jpe?g$' a.jpg # `--exclude` has no effect
+```bash
+pls --exclude='\.jpe?g$' a.jpg # `--exclude` has no effect
 ```
 
 <NameFilterDis />

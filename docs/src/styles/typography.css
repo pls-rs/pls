@@ -2,3 +2,7 @@ span.math {
   font-family: serif;
   font-style: italic;
 }
+
+.ec-line::before {
+  content: "$ ";
+}

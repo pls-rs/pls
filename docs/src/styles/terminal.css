@@ -47,7 +47,7 @@ pre.terminal p {
   overflow-x: auto;
 }
 
-pre.astro-code + pre.terminal {
+div.expressive-code + pre.terminal {
   margin-top: 0;
   border-top-width: 0;
 }

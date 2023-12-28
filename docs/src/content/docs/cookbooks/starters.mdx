@@ -47,10 +47,40 @@ specs:
       name: Pipfile
 ```
 
+## Web development
+
+If you build web applications without any of the major JavaScript frameworks,
+this config is for you.
+
+```yaml
+icons:
+  html: "" # nf-seti-html
+  css: "" # nf-seti-css
+  sass: "" # nf-seti-sass
+  less: "" # nf-seti-less
+specs:
+  - pattern: \.x?html?$
+    icon: html
+    style: rgb(255,212,59)
+  - pattern: \.s[ac]ss$
+    icon: sass
+    style: rgb(255,212,59)
+  - pattern: \.less$
+    icon: less
+    style: rgb(255,212,59)
+  - pattern: \.css$
+    icon: css
+    style: rgb(79,192,141)
+    collapse:
+      ext: scss
+```
+
 ## JavaScript/TypeScript
 
 If you build JavaScript/TypeScript projects, this config is for you. It supports
-npm and pnpm as package managers, and Vue and React frameworks as well.
+npm and pnpm as package managers, and Vue and React frameworks as well. If you
+use JavaScript for frontend development, you should also inherit the web dev
+config above.
 
 ```yaml
 icons:

@@ -4,6 +4,7 @@ use figment::providers::{Data, Format, Serialized, Yaml};
 use figment::Figment;
 use git2::Repository;
 use log::{debug, info};
+use std::env;
 use std::path::Path;
 
 /// Manages the configuration system of the application. This manager provides
@@ -15,14 +16,17 @@ pub struct ConfMan {
 }
 
 impl Default for ConfMan {
-	/// This includes config files from the following locations:
+	/// This includes config files from the one of the following locations:
 	///
-	/// * the home directory, if determined
+	/// * the file referenced in the `PLS_CONFIG` environment variable
+	/// * `.pls.yml` in the user's home directory
 	fn default() -> Self {
 		info!("Preparing base configuration.");
 
 		let mut base = Figment::from(Serialized::defaults(Conf::default()));
-		if let Some(home_yaml) = home::home_dir().and_then(Self::conf_at) {
+		if let Ok(config_path) = env::var("PLS_CONFIG") {
+			base = base.admerge(Yaml::file(config_path));
+		} else if let Some(home_yaml) = home::home_dir().and_then(Self::conf_at) {
 			base = base.admerge(home_yaml);
 		}
 

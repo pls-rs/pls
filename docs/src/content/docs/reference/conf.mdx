@@ -8,9 +8,19 @@ of powerful customization options. Configuration is specified in the form of a
 `.pls.yml` YAML file (which means you can just use JSON if you hate YAML so
 much).
 
-This is the schema of the file.
+## Placement
+
+<Pls /> uses a cascading system for multiple config files. You can have config
+files at the directory level, at the repository level and at the global level.
+
+The global config file can be placed in the home directory at `~/.pls.yml`. If
+you prefer a clean home directory, you can set the `PLS_CONFIG` environment
+variable to a point to a config file placed elsewhere on your computer, in which
+case <Pls /> will not look for one in the home directory.
 
 ## Schema
+
+This is the schema of the file.
 
 <DocBlock title="icons" type="map<str, str>">
   <Fragment slot="heading">

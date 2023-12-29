@@ -456,7 +456,7 @@ dependencies = [
  "terminal_size",
  "time",
  "unicode-segmentation",
- "users",
+ "uzers",
 ]
 
 [[package]]
@@ -744,18 +744,19 @@ dependencies = [
 ]
 
 [[package]]
-name = "users"
-version = "0.11.0"
-source = "git+https://github.com/dhruvkb/rust-users.git#e6ba8a88e0127f0d17ddd99f80f85d2c1722b227"
-dependencies = [
- "libc",
-]
-
-[[package]]
 name = "utf8parse"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "711b9620af191e0cdc7468a8d14e709c3dcdb115b36f838e601583af800a370a"
+
+[[package]]
+name = "uzers"
+version = "0.11.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76d283dc7e8c901e79e32d077866eaf599156cbf427fffa8289aecc52c5c3f63"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "vcpkg"

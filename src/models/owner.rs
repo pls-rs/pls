@@ -3,8 +3,8 @@ use crate::enums::Entity;
 use std::collections::HashMap;
 use std::sync::Arc;
 #[cfg(unix)]
-use users::os::unix::GroupExt;
-use users::{Groups, User, Users, UsersCache};
+use uzers::os::unix::GroupExt;
+use uzers::{Groups, User, Users, UsersCache};
 
 /// Manages owner information. This manager provides access to the user and
 /// group that own a node. It also implements caching.

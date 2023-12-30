@@ -169,9 +169,7 @@ jobs:
           git init --initial-branch=gh-pages
           git config user.name "Dhruv Bhanushali"
           git config user.email "hi@dhruvkb.dev"
-          touch .nojekyll
-          echo "pls.cli.rs" > CNAME
           git add .
-          git commit --all --message "Build documentation"
+          git commit --message "Build documentation"
           git remote add origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/pls-rs/pls-rs.github.io.git
           git push --force origin gh-pages

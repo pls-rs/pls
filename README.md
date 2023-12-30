@@ -3,16 +3,19 @@
 
   <p align="center">
     <a href="https://github.com/pls-rs/pls/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/pls-rs/pls" alt="GPL-3.0"/>
+      <img src="https://img.shields.io/github/license/pls-rs/pls?logo=gnu" alt="GPL-3.0"/>
     </a>
     <a href="https://pypi.org/project/pls/">
-      <img src="https://img.shields.io/static/v1?label=supported%20OS&message=posix&color=informational" alt="Platforms"/>
+      <img src="https://img.shields.io/badge/platforms-macOS,_Linux-blue" alt="Platforms"/>
     </a>
     <a href="https://github.com/pls-rs/pls/actions/workflows/ci.yml">
       <img src="https://github.com/pls-rs/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
     </a>
     <a href="https://pls.cli.rs/">
       <img src="https://img.shields.io/badge/docs-pls.cli.rs-blue" alt="Documentation"/>
+    </a>
+    <a href="https://pls.cli.rs/guides/get_started">
+      <img src="https://img.shields.io/github/v/tag/pls-rs/pls?label=rel" alt="Release" />
     </a>
   </p>
 </h1>

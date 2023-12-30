@@ -1,0 +1,37 @@
+name: Package
+
+on:
+  release:
+  workflow_dispatch:
+
+jobs:
+  brew:
+    name: Update tap
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: code
+
+      - name: Checkout tap
+        uses: actions/checkout@v4
+        with:
+          repository: pls-rs/homebrew-pls
+          path: tap
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Update tap
+        working-directory: code
+        run: |
+          ./pkg/brew/update_formula.sh "pkg/brew/pls.template" "$GITHUB_WORKSPACE/tap/Formula/pls.rb"
+
+      - name: Commit and push changes
+        working-directory: tap
+        run: |
+          if ! git diff-index --quiet HEAD; then
+            git config user.name "Dhruv Bhanushali"
+            git config user.email "hi@dhruvkb.dev"
+            git commit --all --message "Update formula"
+            git push origin main
+          fi

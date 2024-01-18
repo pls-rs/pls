@@ -65,11 +65,14 @@ impl Table {
 				if det_idx == args.details.len() - 1 {
 					return None;
 				}
-				let end_lim = if !self.is_solo && det.uniformly_wide() {
-					// For uniform column, only compare the header and row #1...
+				let end_lim = if self.entries.is_empty() {
+					// If there are no entries, the limit must be zero.
+					0
+				} else if !self.is_solo && det.uniformly_wide() {
+					// For uniform columns, only compare the header and row #1.
 					1
 				} else {
-					// ...else, compare the header and every row.
+					// For non-uniform columns, compare the header and every row.
 					// This is much slower as makes two passes over every cell.
 					self.entries.len()
 				};

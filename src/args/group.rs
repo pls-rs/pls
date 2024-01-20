@@ -67,7 +67,7 @@ impl Group {
 			}
 		}
 
-		let entries = self.entries(owner_man, args);
+		let entries = self.entries(owner_man, args)?;
 
 		if args.grid {
 			let grid = Grid::new(entries);
@@ -98,10 +98,10 @@ impl Group {
 		&self,
 		owner_man: &mut OwnerMan,
 		args: &Args,
-	) -> Vec<HashMap<DetailField, String>> {
+	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
 		match self {
 			Self::Dir(group) => group.entries(owner_man, args),
-			Self::Files(group) => group.entries(owner_man, args),
+			Self::Files(group) => Ok(group.entries(owner_man, args)),
 		}
 	}
 }

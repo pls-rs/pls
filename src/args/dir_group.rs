@@ -1,6 +1,7 @@
 use crate::args::input::Input;
 use crate::config::Args;
 use crate::enums::DetailField;
+use crate::exc::Exc;
 use crate::models::{Node, OwnerMan};
 use crate::traits::Imp;
 use log::debug;
@@ -44,14 +45,14 @@ impl DirGroup {
 		&self,
 		owner_man: &mut OwnerMan,
 		args: &Args,
-	) -> Vec<HashMap<DetailField, String>> {
-		let mut nodes = self.nodes(args);
+	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
+		let mut nodes = self.nodes(args)?;
 		if args.collapse {
 			nodes = Self::make_tree(nodes);
 		}
 		Self::re_sort(&mut nodes, owner_man, args);
 
-		nodes
+		let entries = nodes
 			.iter()
 			.flat_map(|node| {
 				node.entries(
@@ -64,7 +65,8 @@ impl DirGroup {
 					None,
 				)
 			})
-			.collect()
+			.collect();
+		Ok(entries)
 	}
 
 	// =======
@@ -126,13 +128,13 @@ impl DirGroup {
 	///
 	/// Unlike [`FilesGroup`](crate::args::files_group::FilesGroup), this
 	/// function filters out nodes based on visibility.
-	fn nodes(&self, args: &Args) -> Vec<Node> {
-		self.input
-			.path
-			.read_dir()
-			.unwrap()
+	fn nodes(&self, args: &Args) -> Result<Vec<Node>, Exc> {
+		let entries = self.input.path.read_dir().map_err(Exc::Io)?;
+
+		let entries = entries
 			.filter_map(|entry| entry.ok().and_then(|entry| self.node(entry, args)))
-			.collect()
+			.collect();
+		Ok(entries)
 	}
 
 	// ======

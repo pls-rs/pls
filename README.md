@@ -24,11 +24,11 @@
 
 - **pretty**: `pls` output is cleaner, friendlier and more colorful.
 - **powerful**: `pls` provides more features than the competition.
-- **performant**: `pls` is speedy and performant (written in Rust).
+- **performing**: `pls` is speedy and performing (written in Rust).
 - **practical**: `pls` has sensible defaults and an effortless interface.
 - **petite**: `pls` is a small, single-file, binary executable.
 - **pliable**: `pls` can be extensively tweaked by power users and pros.
-- **personable**: `pls` prioritises consumption by humans over scripts.
+- **personable**: `pls` prioritizes consumption by humans over scripts.
 
 Pick whichever adjective helps you remember the command name.
 

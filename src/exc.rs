@@ -1,5 +1,5 @@
 use crate::fmt::render;
-use std::fmt::{Display, Formatter, Result};
+use std::fmt::{Display, Formatter, Result as FmtResult};
 
 pub enum Exc {
 	/// wraps all occurrences of errors in I/O operations
@@ -8,7 +8,7 @@ pub enum Exc {
 }
 
 impl Display for Exc {
-	fn fmt(&self, f: &mut Formatter) -> Result {
+	fn fmt(&self, f: &mut Formatter) -> FmtResult {
 		let attn = "<bold red>error:</>";
 		let err = match self {
 			Exc::Io(err) => err.to_string(),

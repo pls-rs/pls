@@ -4,7 +4,7 @@
 //! underlying file system to check if these paths have any real file at the
 //! location they reference.
 //!
-//! The public interface of the module consists of two functions:
+//! The public interface of the module consists of one function:
 //!
 //! * [`common_ancestor`]
 

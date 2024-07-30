@@ -102,6 +102,7 @@ where
 /// # Arguments
 ///
 /// * `markup` - the marked-up string to be rendered
+#[allow(clippy::needless_borrows_for_generic_args)]
 pub fn render<S>(markup: S) -> String
 where
 	S: AsRef<str>,

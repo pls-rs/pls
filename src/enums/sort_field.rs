@@ -5,6 +5,7 @@ use clap::ValueEnum;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::collections::HashSet;
+use std::fmt::{Display, Formatter, Result as FmtResult};
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
 
@@ -104,11 +105,13 @@ pub enum SortField {
 	None, // shorthand: no sorting
 }
 
-impl ToString for SortField {
-	fn to_string(&self) -> String {
-		self.to_possible_value()
+impl Display for SortField {
+	fn fmt(&self, f: &mut Formatter) -> FmtResult {
+		let string = self
+			.to_possible_value()
 			.map(|pos| String::from(pos.get_name()))
-			.unwrap_or_default()
+			.unwrap_or_default();
+		write!(f, "{}", string)
 	}
 }
 

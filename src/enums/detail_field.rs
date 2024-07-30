@@ -1,5 +1,6 @@
 use crate::config::AppConst;
 use crate::output::Cell;
+use crate::utils::vectors::dedup;
 use clap::ValueEnum;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
@@ -106,8 +107,7 @@ impl DetailField {
 			}
 		}
 		cleaned.push(DetailField::Name);
-		cleaned.sort(); // Use the order of the `DetailField` enum.
-		cleaned.dedup(); // Only removes consecutive duplicates, so sort first.
+		cleaned = dedup(cleaned);
 		cleaned
 	}
 
@@ -195,11 +195,6 @@ mod tests {
 			DetailField::Name,
 		],
 		test_ensures_name_present: &[] => vec![
-			DetailField::Name,
-		],
-		test_sorts_by_enum_order: &[DetailField::Gid, DetailField::Uid] => vec![
-			DetailField::Uid,
-			DetailField::Gid,
 			DetailField::Name,
 		],
 		test_removes_duplicates: &[DetailField::Gid, DetailField::Gid, DetailField::User, DetailField::Gid] => vec![

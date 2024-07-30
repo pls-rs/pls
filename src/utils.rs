@@ -4,5 +4,7 @@
 //! can contain any number of utility functions.
 //!
 //! * [`paths`]
+//! * [`vectors`]
 
 pub mod paths;
+pub mod vectors;

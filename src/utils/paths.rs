@@ -21,7 +21,7 @@ use std::path::{Path, PathBuf};
 ///
 /// # Arguments
 ///
-/// * paths - the paths for which to find the common ancestor
+/// * `paths` - the paths for which to find the common ancestor
 pub fn common_ancestor(paths: &[&Path]) -> Option<PathBuf> {
 	if paths.is_empty() {
 		return None;
@@ -47,8 +47,8 @@ pub fn common_ancestor(paths: &[&Path]) -> Option<PathBuf> {
 ///
 /// # Arguments
 ///
-/// * one - the first path
-/// * two - the second path
+/// * `one` - the first path
+/// * `two` - the second path
 fn common_ancestor_two(one: &Path, two: &Path) -> Option<PathBuf> {
 	let mut one = one.to_path_buf();
 	loop {

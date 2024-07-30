@@ -10,7 +10,7 @@ use std::collections::{HashSet, VecDeque};
 ///
 /// # Arguments
 ///
-/// * vec - the vector to deduplicate
+/// * `vec` - the vector to deduplicate
 pub fn dedup<T: std::hash::Hash + Eq + Clone>(vec: Vec<T>) -> Vec<T> {
 	let mut dedup = VecDeque::new();
 

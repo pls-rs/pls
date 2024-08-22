@@ -44,7 +44,8 @@ baked-in.
 
 ## Python
 
-If you build Python projects using Pipenv or Poetry, this config is for you.
+If you build Python projects using Pipenv, Poetry or PDM, this config is for
+you.
 
 ```yaml
 icons:
@@ -57,7 +58,7 @@ specs:
     icon: lock
   - pattern: ^(pyproject\.toml|Pipfile)$
     icon: package
-  - pattern: ^poetry\.lock$
+  - pattern: ^(poetry|pdm)\.lock$
     icon: lock
     importance: -1
     collapse:

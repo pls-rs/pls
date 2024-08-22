@@ -6,7 +6,7 @@ specs:
     style: rgb(255,212,59)
   - pattern: ^pyproject\.toml$
     icon: package
-  - pattern: ^poetry\.lock$
+  - pattern: ^pdm\.lock$
     icon: lock
     importance: -1
     collapse:

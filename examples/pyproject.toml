@@ -1,16 +1,20 @@
-[tool.poetry]
+[project]
 name = "examples"
 version = "0.0.0"
 description = "Generate examples for `pls` documentation"
-authors = ["Dhruv Bhanushali <dhruv_b@live.com>"]
+authors = [
+	{name = "Dhruv Bhanushali", email = "dhruv_b@live.com"},
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-python-decouple = "^3.8"
+requires-python = "==3.12.*"
+dependencies = [
+	"python-decouple >=3.8, <4",
+]
 
-[tool.poetry.group.dev.dependencies]
-ipython = "^8.14.0"
+[tool.pdm.dev-dependencies]
+dev = [
+	"ipython >=8.22.1, <9",
+]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.pdm]
+distribution = false

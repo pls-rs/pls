@@ -15,6 +15,28 @@ easy to
 This page consists of some configs to get you started. If you have a config that
 you'd like to share with others, [please share](/guides/contribute/) with us.
 
+## Common files
+
+Since <Pls /> comes with a very minimal configuration out-of-the-box, you can
+use this to set up <Pls /> for most common file types.
+
+```yaml
+icons:
+  pdf: "" # nf-seti-pdf
+  image: "" # nf-oct-image
+  audio: "" # nf-seti-audio
+  video: "" # nf-oct-video
+specs:
+  - pattern: \.pdf$
+    icon: pdf
+  - pattern: \.(mp3|wav|aac)$
+    icon: audio
+  - pattern: \.(png|jpg|bmp|webp)$
+    icon: image
+  - pattern: \.(mp4|mov|avi|mkv|webm)$
+    icon: video
+```
+
 ## Rust
 
 <Pls /> being a Rust project, comes with the configuration for Rust projects

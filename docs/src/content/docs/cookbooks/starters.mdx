@@ -43,6 +43,25 @@ specs:
     icon: video
 ```
 
+## Office
+
+If you work with a lot of Microsoft Office apps, you can use this config to have
+pretty and consistent icons for all your work files.
+
+```yaml
+icons:
+  word: "󱎒" # nf-md-microsoft_word
+  excel: "󱎏" # nf-md-microsoft_excel
+  powerpoint: "󱎐" # nf-md-microsoft_powerpoint
+specs:
+  - pattern: \.docx?$
+    icon: word
+  - pattern: \.xlsx?$
+    icon: excel
+  - pattern: \.pptx?$
+    icon: powerpoint
+```
+
 ## Rust
 
 <Pls /> being a Rust project, comes with the configuration for Rust projects

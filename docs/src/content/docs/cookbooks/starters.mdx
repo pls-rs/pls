@@ -26,9 +26,15 @@ icons:
   image: "" # nf-oct-image
   audio: "" # nf-seti-audio
   video: "" # nf-oct-video
+  text: "" # nf-seti-text
+  table: "󰓫" # nf-md-table
 specs:
   - pattern: \.pdf$
     icon: pdf
+  - pattern: \.(txt|rtf)$
+    icon: text
+  - pattern: \.(csv|tsv)$
+    icon: table
   - pattern: \.(mp3|wav|aac)$
     icon: audio
   - pattern: \.(png|jpg|bmp|webp)$
@@ -81,7 +87,10 @@ icons:
   css: "" # nf-seti-css
   sass: "" # nf-seti-sass
   less: "" # nf-seti-less
+  markdown: "" # nf-fa-markdown
 specs:
+  - pattern: \.md$
+    icon: markdown
   - pattern: \.x?html?$
     icon: html
     style: rgb(255,212,59)

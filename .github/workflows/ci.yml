@@ -100,8 +100,6 @@ jobs:
   docs:
     name: Publish docs
     runs-on: ubuntu-latest
-    # Do not run this job on pull requests.
-    if: github.event_name == 'push'
     needs:
       - build
     steps:
@@ -154,9 +152,7 @@ jobs:
         run: just all
 
       - name: Build and publish docs
-        if: |
-          github.event_name == 'push' ||
-          github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'push'
         working-directory: docs/
         run: |
           pnpm build

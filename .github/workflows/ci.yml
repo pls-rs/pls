@@ -129,15 +129,10 @@ jobs:
       - name: Ensure binary is accessible
         run: pls --version
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v4
         with:
-          python-version: 3.11
-
-      - name: Setup Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-in-project: true
+          cache: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2

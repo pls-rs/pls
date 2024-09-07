@@ -4,3 +4,9 @@ __pycache__/
 
 # Environment files
 .env
+
+# Virtual environment
+.venv/
+
+# PDM
+.pdm-python

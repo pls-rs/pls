@@ -15,5 +15,9 @@
     "astro": "^4.15.1",
     "astro-auto-import": "^0.4.2"
   },
+  "engines": {
+    "node": ">= 20.0.0 <21"
+  },
+  "engineStrict": true,
   "packageManager": "pnpm@9.9.0"
 }

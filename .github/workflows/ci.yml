@@ -134,15 +134,15 @@ jobs:
           python-version-file: examples/pyproject.toml
           cache-dependency-path: examples/pdm.lock
 
+      - name: Enable Corepack
+        run: corepack enable pnpm
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
           cache: pnpm
+          node-version-file: docs/package.json
           cache-dependency-path: docs/pnpm-lock.yaml
-
-      - name: Enable Corepack
-        run: corepack enable pnpm
 
       - name: Install all dependencies
         run: just install

@@ -1,38 +1,45 @@
 @font-face {
-  font-family: "JetBrainsMono NF";
-  src: url("../assets/fonts/JetBrainsMonoNerdFont-Regular.ttf")
-    format("truetype");
+  font-family: "JetBrainsMono";
+  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Regular.woff2")
+    format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "JetBrainsMono NF";
-  src: url("../assets/fonts/JetBrainsMonoNerdFont-Italic.ttf")
-    format("truetype");
+  font-family: "JetBrainsMono";
+  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Italic.woff2")
+    format("woff2");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "JetBrainsMono NF";
-  src: url("../assets/fonts/JetBrainsMonoNerdFont-Bold.ttf") format("truetype");
+  font-family: "JetBrainsMono";
+  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Bold.woff2")
+    format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "JetBrainsMono NF";
-  src: url("../assets/fonts/JetBrainsMonoNerdFont-BoldItalic.ttf")
-    format("truetype");
+  font-family: "JetBrainsMono";
+  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-BoldItalic.woff2")
+    format("woff2");
   font-weight: 700;
   font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Symbols";
+  src: url("../assets/fonts/SymbolsNerdFont.ttf") format("truetype");
   font-display: swap;
 }
 
 :root {
-  --sl-font-mono: "JetBrainsMono NF";
+  --sl-font-mono: "JetBrainsMono", "Symbols";
 }

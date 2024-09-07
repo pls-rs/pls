@@ -131,6 +131,8 @@ jobs:
         uses: pdm-project/setup-pdm@v4
         with:
           cache: true
+          python-version-file: examples/pyproject.toml
+          cache-dependency-path: examples/pdm.lock
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2

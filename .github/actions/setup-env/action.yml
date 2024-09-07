@@ -16,9 +16,9 @@ runs:
   using: composite
   steps:
     - name: Setup `just`
-      uses: extractions/setup-just@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+      uses: taiki-e/install-action@v2
+      with:
+        tool: just
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable

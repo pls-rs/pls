@@ -15,6 +15,3 @@ dependencies = [
 dev = [
 	"ipython >=8.22.1, <9",
 ]
-
-[tool.pdm]
-distribution = false

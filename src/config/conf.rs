@@ -72,7 +72,7 @@ impl Default for Conf {
 				"git"          => "󰊢", // nf-md-git
 				"github"       => "", // nf-oct-mark_github
 				"markdown"     => "", // nf-oct-markdown
-				"rust"         => "", // nf-dev-rust
+				"rust"         => "", // nf-seti-rust
 			),
 			specs: vec![
 				// Extensions

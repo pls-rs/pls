@@ -1,8 +1,7 @@
 use crate::args::input::Input;
-use crate::config::Args;
 use crate::enums::DetailField;
 use crate::exc::Exc;
-use crate::models::{Node, OwnerMan};
+use crate::models::{Node, OwnerMan, Pls};
 use crate::traits::Imp;
 use log::debug;
 use std::collections::hash_map::Entry;
@@ -44,13 +43,13 @@ impl DirGroup {
 	pub fn entries(
 		&self,
 		owner_man: &mut OwnerMan,
-		args: &Args,
+		pls: &Pls,
 	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
-		let mut nodes = self.nodes(args)?;
-		if args.collapse {
+		let mut nodes = self.nodes(pls)?;
+		if pls.args.collapse {
 			nodes = Self::make_tree(nodes);
 		}
-		Self::re_sort(&mut nodes, owner_man, args);
+		Self::re_sort(&mut nodes, owner_man, pls);
 
 		let entries = nodes
 			.iter()
@@ -60,7 +59,7 @@ impl DirGroup {
 					&self.input.conf,
 					&self.input.conf.app_const,
 					&self.input.conf.entry_const,
-					args,
+					pls,
 					&[],
 					None,
 				)
@@ -85,12 +84,13 @@ impl DirGroup {
 	///
 	/// If any criteria is not met, the node is not to be rendered and `None` is
 	/// returned.
-	fn node(&self, entry: DirEntry, args: &Args) -> Option<Node> {
+	fn node(&self, entry: DirEntry, pls: &Pls) -> Option<Node> {
 		let name = entry.file_name();
 		debug!("Checking visibility of name {name:?}.");
 		let haystack = name.as_bytes();
 
-		let include = args
+		let include = pls
+			.args
 			.only
 			.as_ref()
 			.map_or(true, |pat| pat.is_match(haystack));
@@ -99,7 +99,8 @@ impl DirGroup {
 			return None;
 		}
 
-		let exclude = args
+		let exclude = pls
+			.args
 			.exclude
 			.as_ref()
 			.map_or(false, |pat| pat.is_match(haystack));
@@ -111,13 +112,13 @@ impl DirGroup {
 		let mut node = Node::new(&entry.path());
 
 		debug!("Checking visibility of typ {:?}.", node.typ);
-		if !args.typs.contains(&node.typ) {
+		if !pls.args.typs.contains(&node.typ) {
 			return None;
 		}
 
 		node.match_specs(&self.input.conf.specs);
 
-		if !node.is_visible(&self.input.conf, args) {
+		if !node.is_visible(&self.input.conf, pls) {
 			return None;
 		}
 
@@ -128,11 +129,11 @@ impl DirGroup {
 	///
 	/// Unlike [`FilesGroup`](crate::args::files_group::FilesGroup), this
 	/// function filters out nodes based on visibility.
-	fn nodes(&self, args: &Args) -> Result<Vec<Node>, Exc> {
+	fn nodes(&self, pls: &Pls) -> Result<Vec<Node>, Exc> {
 		let entries = self.input.path.read_dir().map_err(Exc::Io)?;
 
 		let entries = entries
-			.filter_map(|entry| entry.ok().and_then(|entry| self.node(entry, args)))
+			.filter_map(|entry| entry.ok().and_then(|entry| self.node(entry, pls)))
 			.collect();
 		Ok(entries)
 	}
@@ -146,15 +147,15 @@ impl DirGroup {
 	/// This function iterates over all the sort bases and sorts the given list
 	/// of nodes. It is invoked both from the top-level and from each parent
 	/// node to sort its children.
-	fn re_sort(nodes: &mut [Node], owner_man: &mut OwnerMan, args: &Args) {
+	fn re_sort(nodes: &mut [Node], owner_man: &mut OwnerMan, pls: &Pls) {
 		if nodes.len() <= 1 {
 			return;
 		}
-		args.sort_bases.iter().rev().for_each(|field| {
+		pls.args.sort_bases.iter().rev().for_each(|field| {
 			nodes.sort_by(|a, b| field.compare(a, b, owner_man));
 		});
 		for node in nodes {
-			Self::re_sort(&mut node.children, owner_man, args);
+			Self::re_sort(&mut node.children, owner_man, pls);
 		}
 	}
 

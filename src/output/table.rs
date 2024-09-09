@@ -1,6 +1,7 @@
-use crate::config::{AppConst, Args};
+use crate::config::AppConst;
 use crate::enums::DetailField;
 use crate::fmt::len;
+use crate::models::Pls;
 use std::collections::HashMap;
 use std::iter::once;
 
@@ -22,23 +23,24 @@ impl Table {
 	}
 
 	/// Render the table to STDOUT.
-	pub fn render(&self, app_const: &AppConst, args: &Args) {
-		let max_widths = self.max_widths(app_const, args);
+	pub fn render(&self, app_const: &AppConst, pls: &Pls) {
+		let max_widths = self.max_widths(app_const, pls);
 
-		let iter_basis: Vec<_> = args
+		let iter_basis: Vec<_> = pls
+			.args
 			.details
 			.iter()
 			.enumerate()
 			.map(|(idx, det)| {
 				let mut cell = det.cell();
-				if idx == args.details.len() - 1 {
+				if idx == pls.args.details.len() - 1 {
 					cell.padding = (0, 0); // Remove right padding from the last column.
 				}
 				(max_widths[idx], det, cell)
 			})
 			.collect();
 
-		if args.header {
+		if pls.args.header {
 			for (width, det, cell) in &iter_basis {
 				let name = det.name(app_const);
 				let directives = app_const.table.header_style.clone();
@@ -57,12 +59,13 @@ impl Table {
 
 	/// Get mapping of detail field to the maximum width of the cells in that
 	/// column.
-	fn max_widths(&self, app_const: &AppConst, args: &Args) -> Vec<Option<usize>> {
-		args.details
+	fn max_widths(&self, app_const: &AppConst, pls: &Pls) -> Vec<Option<usize>> {
+		pls.args
+			.details
 			.iter()
 			.enumerate()
 			.map(|(det_idx, det)| {
-				if det_idx == args.details.len() - 1 {
+				if det_idx == pls.args.details.len() - 1 {
 					return None;
 				}
 				let end_lim = if self.entries.is_empty() {
@@ -79,7 +82,7 @@ impl Table {
 				self.entries[0..end_lim]
 					.iter()
 					.filter_map(|entry| entry.get(det).map(len))
-					.chain(once(if args.header {
+					.chain(once(if pls.args.header {
 						len(det.name(app_const))
 					} else {
 						0

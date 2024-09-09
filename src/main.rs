@@ -10,7 +10,8 @@ mod traits;
 mod utils;
 
 use log::debug;
-use models::Pls;
+
+use crate::models::Pls;
 
 /// Create a `Pls` instance and immediately delegate to it.
 ///

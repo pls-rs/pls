@@ -1,11 +1,12 @@
 use crate::args::dir_group::DirGroup;
 use crate::args::files_group::FilesGroup;
 use crate::args::input::Input;
-use crate::config::{Args, Conf, ConfMan};
+use crate::config::{Conf, ConfMan};
 use crate::enums::{DetailField, Typ};
 use crate::exc::Exc;
 use crate::fmt::render;
 use crate::models::OwnerMan;
+use crate::models::Pls;
 use crate::output::{Grid, Table};
 use std::collections::HashMap;
 
@@ -52,12 +53,7 @@ impl Group {
 		groups
 	}
 
-	pub fn render(
-		&self,
-		show_title: bool,
-		owner_man: &mut OwnerMan,
-		args: &Args,
-	) -> Result<(), Exc> {
+	pub fn render(&self, show_title: bool, owner_man: &mut OwnerMan, pls: &Pls) -> Result<(), Exc> {
 		if show_title {
 			if let Self::Dir(group) = self {
 				println!(
@@ -67,14 +63,14 @@ impl Group {
 			}
 		}
 
-		let entries = self.entries(owner_man, args)?;
+		let entries = self.entries(owner_man, pls)?;
 
-		if args.grid {
+		if pls.args.grid {
 			let grid = Grid::new(entries);
-			grid.render(&self.conf().app_const, args);
+			grid.render(&self.conf().app_const, pls);
 		} else {
 			let table = Table::new(entries, matches!(self, Self::Files(_)));
-			table.render(&self.conf().app_const, args);
+			table.render(&self.conf().app_const, pls);
 		}
 
 		Ok(())
@@ -97,11 +93,11 @@ impl Group {
 	pub fn entries(
 		&self,
 		owner_man: &mut OwnerMan,
-		args: &Args,
+		pls: &Pls,
 	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
 		match self {
-			Self::Dir(group) => group.entries(owner_man, args),
-			Self::Files(group) => Ok(group.entries(owner_man, args)),
+			Self::Dir(group) => group.entries(owner_man, pls),
+			Self::Files(group) => Ok(group.entries(owner_man, pls)),
 		}
 	}
 }

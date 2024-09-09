@@ -1,7 +1,7 @@
 use crate::args::input::Input;
-use crate::config::{Args, Conf, ConfMan};
+use crate::config::{Conf, ConfMan};
 use crate::enums::DetailField;
-use crate::models::{Node, OwnerMan};
+use crate::models::{Node, OwnerMan, Pls};
 use crate::utils::paths::common_ancestor;
 use log::debug;
 use std::collections::HashMap;
@@ -57,7 +57,7 @@ impl FilesGroup {
 	pub fn entries(
 		&self,
 		owner_man: &mut OwnerMan,
-		args: &Args,
+		pls: &Pls,
 	) -> Vec<HashMap<DetailField, String>> {
 		self.nodes()
 			.iter()
@@ -67,7 +67,7 @@ impl FilesGroup {
 					conf,
 					&self.parent_conf.app_const,
 					&conf.entry_const,
-					args,
+					pls,
 					&[],
 				)
 			})

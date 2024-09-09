@@ -7,9 +7,9 @@ use crate::models::OwnerMan;
 #[derive(Default)]
 pub struct Pls {
 	/// configuration manager for `.pls.yml` files
-	conf_man: ConfMan,
+	pub conf_man: ConfMan,
 	/// command-line arguments
-	args: Args,
+	pub args: Args,
 }
 
 impl Pls {
@@ -45,7 +45,7 @@ impl Pls {
 
 		groups
 			.iter()
-			.map(|group| group.render(show_title, &mut OwnerMan::default(), &self.args))
+			.map(|group| group.render(show_title, &mut OwnerMan::default(), self))
 			.filter_map(|res| res.err())
 			.for_each(|res| println!("{res}"));
 	}

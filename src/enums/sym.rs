@@ -1,6 +1,6 @@
-use crate::config::{Args, Conf};
+use crate::config::Conf;
 use crate::exc::Exc;
-use crate::models::Node;
+use crate::models::{Node, Pls};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -44,7 +44,7 @@ pub enum SymTarget<'node> {
 
 impl<'node> SymTarget<'node> {
 	/// Print the symlink target.
-	pub fn print(&self, conf: &Conf, args: &Args) -> String {
+	pub fn print(&self, conf: &Conf, pls: &Pls) -> String {
 		let state = self.into();
 		let sym_conf = conf.entry_const.symlink.get(&state).unwrap();
 		let directives = &sym_conf.style;
@@ -53,7 +53,7 @@ impl<'node> SymTarget<'node> {
 
 		match self {
 			SymTarget::Ok(node) => {
-				let path = node.display_name(conf, &conf.app_const, &conf.entry_const, args, &[]);
+				let path = node.display_name(conf, &conf.app_const, &conf.entry_const, pls, &[]);
 				format!(" <{directives}>{sep}</> <{ref_directives}>{path}</>")
 			}
 			SymTarget::Broken(path) | SymTarget::Cyclic(path) => {

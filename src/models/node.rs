@@ -1,6 +1,6 @@
-use crate::config::{AppConst, Args, Conf, EntryConst};
+use crate::config::{AppConst, Conf, EntryConst};
 use crate::enums::{Appearance, Collapse, DetailField, Typ};
-use crate::models::{OwnerMan, Spec};
+use crate::models::{OwnerMan, Pls, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use std::collections::{HashMap, HashSet};
 use std::fmt::Write;
@@ -153,11 +153,11 @@ impl<'pls> Node<'pls> {
 	///
 	/// * the node's type
 	/// * specs associated with the node
-	fn directives(&self, app_const: &AppConst, entry_const: &EntryConst, args: &Args) -> String {
+	fn directives(&self, app_const: &AppConst, entry_const: &EntryConst, pls: &Pls) -> String {
 		let mut directives = String::from(self.typ.directives(entry_const));
 
 		if !self.appearances.contains(&Appearance::Symlink) {
-			let imp_dir = Imp::directives(self, app_const, args);
+			let imp_dir = Imp::directives(self, app_const, pls);
 			if let Some(directive) = imp_dir {
 				directives.push(' ');
 				directives.push_str(&directive);
@@ -215,17 +215,17 @@ impl<'pls> Node<'pls> {
 		conf: &Conf,
 		app_const: &AppConst,
 		entry_const: &EntryConst,
-		args: &Args,
+		pls: &Pls,
 		tree_shapes: &[&str],
 	) -> String {
-		let text_directives = self.directives(app_const, entry_const, args);
+		let text_directives = self.directives(app_const, entry_const, pls);
 		let icon_directives = text_directives.replace("underline", "");
 
 		let mut parts = String::default();
 
 		// Tree shape
 		if self.appearances.contains(&Appearance::TreeChild) {
-			let offset = " ".repeat(if args.align { 3 } else { 2 });
+			let offset = " ".repeat(if pls.args.align { 3 } else { 2 });
 			parts.push_str(&tree_shapes.iter().fold(String::new(), |mut acc, shape| {
 				let _ = write!(acc, "{offset}{shape}"); // `write!`-ing into a `String` can never fail.
 				acc
@@ -233,7 +233,7 @@ impl<'pls> Node<'pls> {
 		}
 
 		// Icon
-		if args.icon && !self.appearances.contains(&Appearance::Symlink) {
+		if pls.args.icon && !self.appearances.contains(&Appearance::Symlink) {
 			parts.push_str(&format!(
 				"<{icon_directives}>{:<1}</> ",
 				self.icon(conf, entry_const),
@@ -242,7 +242,7 @@ impl<'pls> Node<'pls> {
 
 		// Name and suffix
 		parts.push_str(&format!("<{text_directives}>"));
-		if !args.align
+		if !&pls.args.align
 			|| self.appearances.contains(&Appearance::Symlink)
 			|| self.appearances.contains(&Appearance::SoloFile)
 		{
@@ -250,15 +250,15 @@ impl<'pls> Node<'pls> {
 		} else {
 			parts.push_str(&self.aligned_name())
 		}
-		if args.suffix && !self.appearances.contains(&Appearance::Symlink) {
+		if pls.args.suffix && !self.appearances.contains(&Appearance::Symlink) {
 			// Symlink should not have suffix because it should show the path reference without modifications
 			parts.push_str(self.typ.suffix(entry_const))
 		};
 		parts.push_str("</>");
 
-		if args.sym {
+		if pls.args.sym {
 			if let Some(target) = self.target() {
-				parts.push_str(&target.print(conf, args));
+				parts.push_str(&target.print(conf, pls));
 			}
 		}
 
@@ -274,7 +274,7 @@ impl<'pls> Node<'pls> {
 		detail: DetailField,
 		owner_man: &mut OwnerMan,
 		entry_const: &EntryConst,
-		args: &Args,
+		pls: &Pls,
 	) -> String {
 		let val = match detail {
 			// `Detail` trait
@@ -291,7 +291,7 @@ impl<'pls> Node<'pls> {
 			DetailField::Mtime => self.time(detail, entry_const),
 			DetailField::Ctime => self.time(detail, entry_const),
 			DetailField::Atime => self.time(detail, entry_const),
-			DetailField::Size => self.size(entry_const, args),
+			DetailField::Size => self.size(entry_const, pls),
 			DetailField::Blocks => self.blocks(entry_const),
 			// `Typ` enum
 			DetailField::Typ => Some(self.typ.ch(entry_const)),
@@ -309,19 +309,20 @@ impl<'pls> Node<'pls> {
 		conf: &Conf,
 		app_const: &AppConst,
 		entry_const: &EntryConst,
-		args: &Args,
+		pls: &Pls,
 		tree_shape: &[&str],
 	) -> HashMap<DetailField, String> {
-		args.details
+		pls.args
+			.details
 			.iter()
 			.map(|&detail| {
 				if detail == DetailField::Name {
 					(
 						detail,
-						self.display_name(conf, app_const, entry_const, args, tree_shape),
+						self.display_name(conf, app_const, entry_const, pls, tree_shape),
 					)
 				} else {
-					(detail, self.get_value(detail, owner_man, entry_const, args))
+					(detail, self.get_value(detail, owner_man, entry_const, pls))
 				}
 			})
 			.collect()
@@ -338,7 +339,7 @@ impl<'pls> Node<'pls> {
 		conf: &Conf,
 		app_const: &AppConst,
 		entry_const: &EntryConst,
-		args: &Args,
+		pls: &Pls,
 		parent_shapes: &[&str],  // list of shapes inherited from the parent
 		own_shape: Option<&str>, // shape to show just before the current node
 	) -> Vec<HashMap<DetailField, String>> {
@@ -361,7 +362,7 @@ impl<'pls> Node<'pls> {
 			all_shapes.push(more_shape);
 		}
 
-		once(self.row(owner_man, conf, app_const, entry_const, args, &all_shapes))
+		once(self.row(owner_man, conf, app_const, entry_const, pls, &all_shapes))
 			.chain(self.children.iter().enumerate().flat_map(|(idx, child)| {
 				let child_own_shape = if idx == self.children.len() - 1 {
 					&app_const.tree.bend_dash
@@ -374,7 +375,7 @@ impl<'pls> Node<'pls> {
 					conf,
 					app_const,
 					entry_const,
-					args,
+					pls,
 					&child_parent_shapes,
 					Some(child_own_shape),
 				)

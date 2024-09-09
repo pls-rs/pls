@@ -1,14 +1,14 @@
-use crate::config::{AppConst, Args, Conf};
-use crate::models::Node;
+use crate::config::{AppConst, Conf};
+use crate::models::{Node, Pls};
 use log::debug;
 
 pub trait Imp {
 	fn default_imp(&self) -> i8;
-	fn imp_val(&self, args: &Args) -> i8;
+	fn imp_val(&self, pls: &Pls) -> i8;
 
-	fn is_visible(&self, conf: &Conf, args: &Args) -> bool;
+	fn is_visible(&self, conf: &Conf, pls: &Pls) -> bool;
 
-	fn directives(&self, app_const: &AppConst, args: &Args) -> Option<String>;
+	fn directives(&self, app_const: &AppConst, pls: &Pls) -> Option<String>;
 }
 
 impl Imp for Node<'_> {
@@ -30,21 +30,21 @@ impl Imp for Node<'_> {
 	/// This iterates through the specs in reverse, finding the first available
 	/// importance or falling back the the [default](Imp::default_imp). Then it
 	/// subtracts the baseline level from the CLI args.
-	fn imp_val(&self, args: &Args) -> i8 {
+	fn imp_val(&self, pls: &Pls) -> i8 {
 		self.specs
 			.iter()
 			.rev()
 			.find_map(|spec| spec.importance)
 			.unwrap_or(self.default_imp())
-			- args.imp
+			- pls.args.imp
 	}
 
 	/// Determine whether the node should be displayed in the list.
 	///
 	/// Elements below the lowest-defined relative-importance are hidden.
-	fn is_visible(&self, conf: &Conf, args: &Args) -> bool {
+	fn is_visible(&self, conf: &Conf, pls: &Pls) -> bool {
 		debug!("Checking visibility of \"{self}\" based on importance.");
-		let rel_imp = self.imp_val(args);
+		let rel_imp = self.imp_val(pls);
 		let min_val = conf.app_const.min_imp();
 
 		let is_visible = rel_imp >= min_val;
@@ -66,8 +66,8 @@ impl Imp for Node<'_> {
 	/// If the node's importance is above the maximum defined, it will be set to
 	/// the maximum. If it is below the minimum defined, it will already be
 	/// hidden by [`is_visible`](Imp::is_visible).
-	fn directives(&self, app_const: &AppConst, args: &Args) -> Option<String> {
-		let mut rel_imp = self.imp_val(args);
+	fn directives(&self, app_const: &AppConst, pls: &Pls) -> Option<String> {
+		let mut rel_imp = self.imp_val(pls);
 		let max_val = app_const.max_imp();
 		let min_val = app_const.min_imp();
 		debug!("\"{self}\" has relative importance {rel_imp} (min: {min_val}, max: {max_val})");

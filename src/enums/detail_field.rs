@@ -2,17 +2,16 @@ use crate::config::AppConst;
 use crate::output::Cell;
 use crate::utils::vectors::dedup;
 use clap::ValueEnum;
-use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::fmt::Alignment;
 
-lazy_static! {
-	pub static ref STD_FIELDS: Vec<DetailField> =
+thread_local! {
+	static STD_FIELDS: Vec<DetailField> =
 		["nlink", "typ", "perm", "user", "group", "size", "mtime"]
 			.into_iter()
 			.filter_map(|item| DetailField::from_str(item, false).ok())
 			.collect();
-	pub static ref ALL_FIELDS: Vec<DetailField> = DetailField::value_variants()
+	static ALL_FIELDS: Vec<DetailField> = DetailField::value_variants()
 		.iter()
 		.copied()
 		.filter(|variant| variant != &DetailField::None
@@ -98,10 +97,12 @@ impl DetailField {
 		for field in input {
 			match field {
 				DetailField::None => cleaned.clear(),
-				DetailField::Std => cleaned.extend_from_slice(&STD_FIELDS),
+				DetailField::Std => {
+					STD_FIELDS.with(|std_fields| cleaned.extend_from_slice(std_fields))
+				}
 				DetailField::All => {
 					cleaned.clear(); // Reduce sorting and de-duplication burden.
-					cleaned.extend_from_slice(&ALL_FIELDS);
+					ALL_FIELDS.with(|all_fields| cleaned.extend_from_slice(all_fields));
 				}
 				_ => cleaned.push(*field),
 			}

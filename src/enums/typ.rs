@@ -1,15 +1,14 @@
 use crate::config::EntryConst;
 use crate::exc::Exc;
 use clap::ValueEnum;
-use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::fs::FileType;
 #[cfg(unix)]
 use std::os::unix::fs::FileTypeExt;
 use std::path::Path;
 
-lazy_static! {
-	pub static ref ALL_TYP: Vec<Typ> = Typ::value_variants()
+thread_local! {
+	static ALL_TYP: Vec<Typ> = Typ::value_variants()
 		.iter()
 		.copied()
 		.filter(|variant| variant != &Typ::All && variant != &Typ::None)
@@ -87,7 +86,7 @@ impl Typ {
 				Typ::None => cleaned.clear(),
 				Typ::All => {
 					cleaned.clear();
-					cleaned.extend_from_slice(&ALL_TYP);
+					ALL_TYP.with(|all_typ| cleaned.extend_from_slice(all_typ));
 				}
 				_ => cleaned.push(*node_type),
 			}

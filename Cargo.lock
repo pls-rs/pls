@@ -570,7 +570,6 @@ dependencies = [
  "figment",
  "git2",
  "home",
- "lazy_static",
  "log",
  "number_prefix",
  "path-clean",

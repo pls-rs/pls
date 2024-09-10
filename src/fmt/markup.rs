@@ -1,14 +1,7 @@
 use crate::fmt::format::fmt;
-use lazy_static::lazy_static;
-use regex::Regex;
 use std::iter::Peekable;
 use std::str::Chars;
 use unicode_segmentation::UnicodeSegmentation;
-
-lazy_static! {
-	static ref TAG: Regex = Regex::new(r"<[\w\s(),/]*>").unwrap();
-	static ref ANSI: Regex = Regex::new(r"\x1b\[[0-9;]*m").unwrap();
-}
 
 const ESCAPE: char = '\\';
 const TAG_OPEN: char = '<';

@@ -1,9 +1,8 @@
 use colored::{Color, ColoredString, Colorize};
-use lazy_static::lazy_static;
 use regex::Regex;
 
-lazy_static! {
-	static ref TRUE_COLOR: Regex = Regex::new(
+thread_local! {
+	static TRUE_COLOR: Regex = Regex::new(
 		r"(?x)(?-u)^
         rgb\(
             (?P<red>\d{1,3}),\s?
@@ -76,7 +75,8 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 	};
 
 	let mut color: Option<Color> = None;
-	if let Some(caps) = TRUE_COLOR.captures(&directive) {
+	let caps = TRUE_COLOR.with(|true_color| true_color.captures(&directive));
+	if let Some(caps) = caps {
 		// RGB true colors
 		let channels: Vec<_> = vec!["red", "green", "blue"]
 			.into_iter()

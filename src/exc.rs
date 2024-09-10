@@ -4,7 +4,11 @@ use std::fmt::{Display, Formatter, Result as FmtResult};
 pub enum Exc {
 	/// wraps all occurrences of errors in I/O operations
 	Io(std::io::Error),
+	/// wraps all occurrences of errors in SVG operations
+	Svg(resvg::usvg::Error),
 	Conf(figment::Error),
+	/// wraps all other errors
+	Other(String),
 }
 
 impl Display for Exc {
@@ -13,6 +17,8 @@ impl Display for Exc {
 		let err = match self {
 			Exc::Io(err) => err.to_string(),
 			Exc::Conf(err) => err.to_string(),
+			Exc::Svg(err) => err.to_string(),
+			Exc::Other(text) => text.to_string(),
 		};
 		let msg = format!("{attn} {err}");
 		write!(f, "{}", render(msg))

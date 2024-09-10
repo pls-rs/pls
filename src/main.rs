@@ -4,6 +4,7 @@ mod enums;
 mod exc;
 mod ext;
 mod fmt;
+mod gfx;
 mod models;
 mod output;
 mod traits;

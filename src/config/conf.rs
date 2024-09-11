@@ -24,7 +24,7 @@ macro_rules! map_str_str {
 /// Refer to [`Args`](crate::config::Args) for those.
 #[derive(Serialize, Deserialize)]
 pub struct Conf {
-	/// mapping of icon names to actual glyphs from Nerd Fonts
+	/// mapping of icon names to actual glyphs from Nerd Fonts or paths to SVGs
 	pub icons: HashMap<String, String>,
 	/// list of node specs, in ascending order of specificity
 	pub specs: Vec<Spec>,

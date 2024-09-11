@@ -128,8 +128,8 @@ impl Typ {
 	///
 	/// This icon is used as a fallback in cases where no other icon is found
 	/// for the node from matching specs.
-	pub fn icon<'conf>(&self, entry_const: &'conf EntryConst) -> &'conf Option<String> {
-		&entry_const.typ.get(self).unwrap().icon
+	pub fn icons<'conf>(&self, entry_const: &'conf EntryConst) -> &'conf Option<Vec<String>> {
+		&entry_const.typ.get(self).unwrap().icons
 	}
 
 	/// Get the suffix associated with the nodes type.
@@ -206,7 +206,7 @@ mod tests {
                 #[test]
                 fn $name() {
                     let entry_const = EntryConst::default();
-                    assert_eq!($typ.icon(&entry_const), $icon);
+                    assert_eq!($typ.icons(&entry_const), &Some(vec![format!("{}-svg", $icon), String::from($icon)]));
                     assert_eq!($typ.suffix(&entry_const), $suffix);
                 }
             )*
@@ -214,13 +214,13 @@ mod tests {
     }
 
 	make_name_components_test!(
-		test_icon_suffix_for_dir: Typ::Dir => &Some(String::from("dir")), "<dimmed>/</>",
-		test_icon_suffix_for_symlink: Typ::Symlink => &Some(String::from("symlink")), "<dimmed>@</>",
-		test_icon_suffix_for_fifo: Typ::Fifo => &None, "<dimmed>|</>",
-		test_icon_suffix_for_socket: Typ::Socket => &None, "<dimmed>=</>",
-		test_icon_suffix_for_block_device: Typ::BlockDevice => &None, "",
-		test_icon_suffix_for_char_device: Typ::CharDevice => &None, "",
-		test_icon_suffix_for_file: Typ::File => &None, "",
+		test_icon_suffix_for_dir: Typ::Dir => "dir", "<dimmed>/</>",
+		test_icon_suffix_for_symlink: Typ::Symlink => "symlink", "<dimmed>@</>",
+		test_icon_suffix_for_fifo: Typ::Fifo => "fifo", "<dimmed>|</>",
+		test_icon_suffix_for_socket: Typ::Socket => "socket", "<dimmed>=</>",
+		test_icon_suffix_for_block_device: Typ::BlockDevice => "block_device", "",
+		test_icon_suffix_for_char_device: Typ::CharDevice => "char_device", "",
+		test_icon_suffix_for_file: Typ::File => "file", "",
 	);
 
 	macro_rules! make_renderables_test {

@@ -1,5 +1,5 @@
 use crate::config::{AppConst, Conf, EntryConst};
-use crate::enums::{Appearance, Collapse, DetailField, Typ};
+use crate::enums::{Appearance, Collapse, DetailField, Icon, Typ};
 use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use crate::PLS;
@@ -179,21 +179,38 @@ impl<'pls> Node<'pls> {
 	// Name components
 	// ===============
 
-	/// Get the icon associated with the node.
+	/// Get the icons associated with the node, filtered by the
+	/// capabilities of the current terminal.
 	///
 	/// A node can get its icon from two sources:
 	///
 	/// * specs associated with the node
 	/// * the node's type
-	fn icon(&self, conf: &Conf, entry_const: &EntryConst) -> String {
-		self.specs
+	fn icon(&self, conf: &Conf, entry_const: &EntryConst) -> Icon {
+		let icon = self
+			.specs
 			.iter()
 			.rev()
-			.find(|spec| spec.icon.is_some())
-			.and_then(|spec| spec.icon.as_ref())
-			.or_else(|| self.typ.icon(entry_const).as_ref())
-			.and_then(|icon_name| conf.icons.get(icon_name).cloned())
-			.unwrap_or_default()
+			.filter_map(|spec| spec.icons.as_ref())
+			.chain(self.typ.icons(entry_const))
+			.flatten()
+			.find_map(|icon_name| {
+				conf.icons
+					.get(icon_name.as_str())
+					.filter(|icon| !icon.ends_with(".svg") || PLS.supports_gfx)
+			});
+
+		match icon {
+			Some(icon) => {
+				let icon = String::from(icon);
+				if icon.ends_with(".svg") {
+					Icon::Image(icon)
+				} else {
+					Icon::Text(icon)
+				}
+			}
+			None => Icon::Text(String::default()),
+		}
 	}
 
 	// ===========
@@ -219,7 +236,6 @@ impl<'pls> Node<'pls> {
 		tree_shapes: &[&str],
 	) -> String {
 		let text_directives = self.directives(app_const, entry_const);
-		let icon_directives = text_directives.replace("underline", "");
 
 		let mut parts = String::default();
 
@@ -234,10 +250,8 @@ impl<'pls> Node<'pls> {
 
 		// Icon
 		if PLS.args.icon && !self.appearances.contains(&Appearance::Symlink) {
-			parts.push_str(&format!(
-				"<{icon_directives}>{:<1}</> ",
-				self.icon(conf, entry_const),
-			));
+			let icon = self.icon(conf, entry_const);
+			parts.push_str(&icon.render(&text_directives));
 		}
 
 		// Name and suffix

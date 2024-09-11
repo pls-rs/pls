@@ -38,6 +38,7 @@ regex = { version = "1.8.4", default-features = false, features = ["std", "perf"
 resvg = { version = "0.43.0", default-features = false }
 serde = { version = "1.0.164", features = ["derive"] }
 serde_regex = "1.1.0"
+shellexpand = { version = "3.1.0", default-features = false, features = ["base-0"] }
 time = { version = "0.3.22", default-features = false, features = ["std", "alloc", "local-offset", "formatting"] }
 unicode-segmentation = "1.10.1"
 uzers = { version = "0.12.1", default-features = false, features = ["cache"] }

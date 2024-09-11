@@ -42,14 +42,14 @@ impl Default for EntryConst {
 				dir_plur: String::from(""),
 			},
 			typ: [
-				(Typ::Dir, "d", "<dimmed>/</>", Some("dir"), "blue"),
-				(Typ::Symlink, "l", "<dimmed>@</>", Some("symlink"), ""),
-				(Typ::Fifo, "p", "<dimmed>|</>", None, ""),
-				(Typ::Socket, "s", "<dimmed>=</>", None, ""),
-				(Typ::BlockDevice, "b", "", None, ""),
-				(Typ::CharDevice, "c", "", None, ""),
-				(Typ::File, "<dimmed>f</>", "", None, ""),
-				(Typ::Unknown, "<red>?</>", "", None, ""),
+				(Typ::Dir, "d", "<dimmed>/</>", "dir", "blue"),
+				(Typ::Symlink, "l", "<dimmed>@</>", "symlink", ""),
+				(Typ::Fifo, "p", "<dimmed>|</>", "fifo", ""),
+				(Typ::Socket, "s", "<dimmed>=</>", "socket", ""),
+				(Typ::BlockDevice, "b", "", "block_device", ""),
+				(Typ::CharDevice, "c", "", "char_device", ""),
+				(Typ::File, "<dimmed>f</>", "", "file", ""),
+				(Typ::Unknown, "<red>?</>", "", "unknown", ""),
 			]
 			.into_iter()
 			.map(|(k, ch, suffix, icon, style)| {
@@ -58,7 +58,7 @@ impl Default for EntryConst {
 					TypInfo {
 						ch: ch.to_string(),
 						suffix: suffix.to_string(),
-						icon: icon.map(String::from),
+						icons: Some(vec![format!("{}-svg", icon), String::from(icon)]),
 						style: style.to_string(),
 					},
 				)
@@ -167,7 +167,7 @@ pub struct TypInfo {
 	/// the suffix for a node type, placed after the node name
 	pub suffix: String,
 	/// the fallback icon for the node type, used if no other icon is found
-	pub icon: Option<String>, // not all node types need to have an icon
+	pub icons: Option<Vec<String>>, // not all node types need to have an icon
 	/// the style to use for nodes of a particular node type
 	pub style: String, // applies to name, `ch`, `suffix` and `icon`
 }

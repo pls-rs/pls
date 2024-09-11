@@ -11,8 +11,8 @@ pub struct Spec {
 	/// a regex pattern to match against the node's name
 	#[serde(with = "serde_regex")]
 	pub pattern: Regex,
-	/// the name of the icon to use for the node
-	pub icon: Option<String>,
+	/// names of the icon to use for the node
+	pub icons: Option<Vec<String>>,
 	/// styles to apply to the node name and icon
 	pub style: Option<String>,
 	/// the importance level of the node
@@ -33,7 +33,7 @@ impl Spec {
 	pub fn new(pattern: &str, icon: &str) -> Self {
 		Self {
 			pattern: RegexBuilder::new(pattern).unicode(false).build().unwrap(),
-			icon: Some(String::from(icon)),
+			icons: Some(vec![String::from(icon)]),
 			style: None,
 			importance: None,
 			collapse: None,

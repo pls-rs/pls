@@ -10,9 +10,12 @@ mod output;
 mod traits;
 mod utils;
 
-use log::debug;
-
 use crate::models::Pls;
+
+use log::debug;
+use std::sync::LazyLock;
+
+static PLS: LazyLock<Pls> = LazyLock::new(Pls::default);
 
 /// Create a `Pls` instance and immediately delegate to it.
 ///
@@ -21,8 +24,7 @@ fn main() {
 	env_logger::init();
 	debug!("Hello!");
 
-	let mut pls = Pls::default();
-	pls.run();
+	PLS.run();
 
 	debug!("Bye!");
 }

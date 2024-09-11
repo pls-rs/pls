@@ -1,8 +1,8 @@
 use crate::config::AppConst;
 use crate::enums::DetailField;
 use crate::fmt::len;
-use crate::models::Pls;
 use crate::output::Cell;
+use crate::PLS;
 use std::collections::HashMap;
 use std::fmt::Alignment;
 use terminal_size::{terminal_size, Width};
@@ -32,7 +32,7 @@ impl Grid {
 	}
 
 	/// Render the grid to STDOUT.
-	pub fn render(&self, _app_const: &AppConst, pls: &Pls) {
+	pub fn render(&self, _app_const: &AppConst) {
 		let max_width = self.entries.iter().map(len).max();
 		let max_cols = self.columns(max_width);
 
@@ -40,7 +40,7 @@ impl Grid {
 		let rows = (entry_len as f64 / max_cols as f64).ceil() as usize;
 		let cols = (entry_len as f64 / rows as f64).ceil() as usize;
 
-		if pls.args.down {
+		if PLS.args.down {
 			self.print(&self.down(rows), cols, max_width);
 		} else {
 			self.print(&self.entries, cols, max_width);

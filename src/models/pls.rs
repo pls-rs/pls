@@ -21,7 +21,7 @@ impl Pls {
 	/// The primary function of this method is to organise the input list of
 	/// paths into groups and then delegate to each group the job of listing
 	/// their entries and rendering the layout.
-	pub fn run(&mut self) {
+	pub fn run(&self) {
 		let inputs: Vec<_> = self
 			.args
 			.paths
@@ -45,7 +45,7 @@ impl Pls {
 
 		groups
 			.iter()
-			.map(|group| group.render(show_title, &mut OwnerMan::default(), self))
+			.map(|group| group.render(show_title, &mut OwnerMan::default()))
 			.filter_map(|res| res.err())
 			.for_each(|res| println!("{res}"));
 	}

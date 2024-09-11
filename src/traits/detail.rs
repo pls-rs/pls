@@ -1,7 +1,8 @@
 use crate::config::EntryConst;
 use crate::enums::{DetailField, Typ};
 use crate::ext::Ctime;
-use crate::models::{Node, OwnerMan, Perm, Pls};
+use crate::models::{Node, OwnerMan, Perm};
+use crate::PLS;
 use log::warn;
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
@@ -24,7 +25,7 @@ pub trait Detail {
 	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
 	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
 	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
-	fn size(&self, entry_const: &EntryConst, pls: &Pls) -> Option<String>;
+	fn size(&self, entry_const: &EntryConst) -> Option<String>;
 	fn blocks(&self, entry_const: &EntryConst) -> Option<String>;
 	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String>;
 }
@@ -168,9 +169,9 @@ impl Detail for Node<'_> {
 	/// powers of 2^10 or 10^3.
 	///
 	/// This function returns a marked-up string.
-	fn size(&self, entry_const: &EntryConst, pls: &Pls) -> Option<String> {
+	fn size(&self, entry_const: &EntryConst) -> Option<String> {
 		self.size_val()
-			.map(|size| pls.args.unit.size(size, entry_const))
+			.map(|size| PLS.args.unit.size(size, entry_const))
 	}
 
 	/// Get the number of blocks occupied by the file.

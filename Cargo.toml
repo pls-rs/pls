@@ -17,7 +17,7 @@ keywords = ["cli", "terminal", "posix", "ls"]
 categories = ["command-line-utilities"]
 
 edition = "2021"
-rust-version = "1.70.0"
+rust-version = "1.80.0"
 
 [[bin]]
 name = "pls"

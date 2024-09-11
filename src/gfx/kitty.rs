@@ -3,25 +3,10 @@ use base64::prelude::*;
 use log::debug;
 use regex::Regex;
 use std::env;
-use std::ops::Mul;
 use std::sync::LazyLock;
 
 static KITTY_IMAGE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\x1b_G.*?\x1b\\").unwrap());
 const CHUNK_SIZE: usize = 4096;
-
-/// Get the size of the icon in pixels.
-///
-/// The icon size is determined by the width of a cell in the terminal
-/// multiplied by a scaling factor.
-pub fn icon_size() -> u8 {
-	std::env::var("PLS_ICON_SCALE")
-		.ok()
-		.and_then(|string| string.parse().ok())
-		.unwrap_or(1.0f32)
-		.min(2.0) // We only allocate two cells for an icon.
-		.mul(PLS.window.as_ref().unwrap().cell_width() as f32) // Convert to px.
-		.round() as u8
-}
 
 /// Check if the terminal supports Kitty's terminal graphics protocol.
 ///

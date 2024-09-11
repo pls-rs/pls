@@ -4,9 +4,8 @@
 //! the terminal. We use this protocol to show icons beyond the standard
 //! collection present in Nerd Fonts.
 //!
-//! The public interface of the module consists of three functions:
+//! The public interface of the module consists of four functions:
 //!
-//! * [`icon_size`]
 //! * [`is_supported`]
 //! * [`render_image`]
 //! * [`strip_image`]
@@ -15,5 +14,5 @@
 mod kitty;
 mod svg;
 
-pub use kitty::{icon_size, is_supported, render_image, strip_image};
+pub use kitty::{is_supported, render_image, strip_image};
 pub use svg::get_rgba;

@@ -10,9 +10,10 @@ const CHUNK_SIZE: usize = 4096;
 
 /// Check if the terminal supports Kitty's terminal graphics protocol.
 ///
-/// There are ways to detect this support using CSI sequences, but they
-/// are not reliable. Additionally this approach is faster as there is
-/// no need to wait or poll for the terminal's response.
+/// There are ways to detect this support using CSI sequences, but since
+/// only a few terminals support it, checking for those terminals is
+/// easier, and faster as there is no need to wait or poll for the
+/// terminal's response.
 ///
 /// We detect if the user is using Kitty or WezTerm, which currently
 /// are the only two terminals which support Kitty's terminal graphic

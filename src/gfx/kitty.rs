@@ -115,5 +115,8 @@ pub fn strip_image<S>(text: S) -> String
 where
 	S: AsRef<str>,
 {
-	KITTY_IMAGE.replace_all(text.as_ref(), "").to_string()
+	KITTY_IMAGE
+		.replace_all(text.as_ref(), "")
+		.replace("\x1b[2C", "  ")
+		.to_string()
 }

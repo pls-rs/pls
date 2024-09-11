@@ -42,7 +42,7 @@ impl Default for Conf {
 				"pls"          => "", // nf-oct-primitive_dot
 				"missing"      => "", // nf-cod-error
 				// Node types
-				"file"         => "", // nf-fa-file
+				"file"         => "",
 				"dir"          => "", // nf-fa-folder
 				"symlink"      => "󰌹", // nf-md-link-variant
 				"fifo"         => "󰟥", // nf-md-pipe

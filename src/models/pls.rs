@@ -1,15 +1,22 @@
 use crate::args::{Group, Input};
 use crate::config::{Args, ConfMan};
 use crate::fmt::render;
-use crate::models::OwnerMan;
+use crate::models::{OwnerMan, Window};
 
 /// Represents the entire application state.
+///
+/// This struct also holds various globals that are used across the
+/// application.
 #[derive(Default)]
 pub struct Pls {
 	/// configuration manager for `.pls.yml` files
 	pub conf_man: ConfMan,
 	/// command-line arguments
 	pub args: Args,
+	/// whether the terminal supports Kitty's terminal graphics protocol
+	pub supports_gfx: bool,
+	/// the width and height of a terminal cell in pixels
+	pub window: Option<Window>,
 }
 
 impl Pls {

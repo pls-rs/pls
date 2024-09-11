@@ -1,6 +1,27 @@
+use crate::PLS;
 use base64::prelude::*;
 use log::debug;
+use regex::Regex;
 use std::env;
+use std::ops::Mul;
+use std::sync::LazyLock;
+
+static KITTY_IMAGE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\x1b_G.*?\x1b\\").unwrap());
+const CHUNK_SIZE: usize = 4096;
+
+/// Get the size of the icon in pixels.
+///
+/// The icon size is determined by the width of a cell in the terminal
+/// multiplied by a scaling factor.
+pub fn icon_size() -> u8 {
+	std::env::var("PLS_ICON_SCALE")
+		.ok()
+		.and_then(|string| string.parse().ok())
+		.unwrap_or(1.0f32)
+		.min(2.0) // We only allocate two cells for an icon.
+		.mul(PLS.window.as_ref().unwrap().cell_width() as f32) // Convert to px.
+		.round() as u8
+}
 
 /// Check if the terminal supports Kitty's terminal graphics protocol.
 ///
@@ -65,23 +86,48 @@ pub fn is_supported() -> bool {
 ///
 /// * `rgba_data` - the RGBA data to render
 /// * `size` - the size of the image, in pixels
-/// * `width` - the width of the icon cell, in columns
-pub fn render_image(rgba_data: &[u8], size: u8, width: u8) -> String {
-	const CHUNK_SIZE: usize = 4096;
+pub fn render_image(rgba_data: &[u8], size: u8) -> String {
+	let cell_height = PLS.window.as_ref().unwrap().cell_height();
+	let off_y = if cell_height > size {
+		(cell_height - size) / 2
+	} else {
+		0
+	};
 
 	let encoded = BASE64_STANDARD.encode(rgba_data);
 	let mut iter = encoded.chars().peekable();
 
 	let first_chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
-	let mut output = format!("\x1b_Gf=32,t=d,a=T,C=1,m=1,s={size},v={size};{first_chunk}\x1b\\");
+	let mut output = format!(
+		"\x1b_G\
+		f=32,t=d,a=T,C=1,m=1,s={size},v={size},Y={off_y};\
+		{first_chunk}\
+		\x1b\\"
+	);
 
 	while iter.peek().is_some() {
 		let chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
 		output.push_str(&format!("\x1b_Gm=1;{chunk}\x1b\\"));
 	}
+
 	output.push_str("\x1b_Gm=0;\x1b\\");
 
-	output.push_str(&format!("\x1b[{}C", width + 1));
+	output.push_str("\x1b[2C");
 
 	output
+}
+
+/// Strip the image data from the text.
+///
+/// This function removes the all terminal graphics from the string,
+/// leaving only the text content.
+///
+/// # Arguments
+///
+/// * `text` - the text to strip the image data from
+pub fn strip_image<S>(text: S) -> String
+where
+	S: AsRef<str>,
+{
+	KITTY_IMAGE.replace_all(text.as_ref(), "").to_string()
 }

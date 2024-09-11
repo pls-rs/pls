@@ -570,6 +570,7 @@ dependencies = [
  "figment",
  "git2",
  "home",
+ "libc",
  "log",
  "number_prefix",
  "path-clean",

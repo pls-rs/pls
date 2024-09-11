@@ -1,4 +1,5 @@
 use crate::fmt::{len, render};
+use crate::gfx::strip_image;
 use std::fmt::Alignment;
 
 /// Represents one cell in the rendered output.
@@ -45,7 +46,7 @@ impl Cell {
 		S: AsRef<str>,
 	{
 		let text = text.as_ref();
-		let text_len = len(text); // This `len` can understand markup.
+		let text_len = len(strip_image(text)); // This `len` can understand markup.
 
 		let (left, right): (usize, usize) = match width {
 			Some(width) if *width > text_len => {

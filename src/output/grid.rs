@@ -1,11 +1,11 @@
 use crate::config::AppConst;
 use crate::enums::DetailField;
 use crate::fmt::len;
+use crate::gfx::strip_image;
 use crate::output::Cell;
 use crate::PLS;
 use std::collections::HashMap;
 use std::fmt::Alignment;
-use terminal_size::{terminal_size, Width};
 
 /// The grid view renders the node names in a two dimensional layout to minimise
 /// scrolling. It does not support rendering of node metadata.
@@ -33,7 +33,7 @@ impl Grid {
 
 	/// Render the grid to STDOUT.
 	pub fn render(&self, _app_const: &AppConst) {
-		let max_width = self.entries.iter().map(len).max();
+		let max_width = self.entries.iter().map(strip_image).map(len).max();
 		let max_cols = self.columns(max_width);
 
 		let entry_len = self.entries.len();
@@ -96,13 +96,14 @@ impl Grid {
 
 	/// Get the terminal width.
 	///
-	/// If the `PLS_COLUMNS` environment variable is set, the value of that
-	/// variable is used as the terminal width. Otherwise, the terminal width is
-	/// determined using the `terminal_size` crate.
+	/// The terminal width is determined from two sources:
+	///
+	/// * the `PLS_COLUMNS` environment variable, if it is set
+	/// * the result of an ioctl call, if it succeeds
 	fn term_width() -> Option<u16> {
 		std::env::var("PLS_COLUMNS") // development hack
 			.ok()
 			.and_then(|width_str| width_str.parse::<u16>().ok())
-			.or_else(|| terminal_size().map(|(Width(term_width), _)| term_width))
+			.or_else(|| PLS.window.as_ref().map(|win| win.ws_col))
 	}
 }

@@ -10,12 +10,25 @@ mod output;
 mod traits;
 mod utils;
 
+use crate::gfx::is_supported;
 use crate::models::Pls;
+use crate::models::Window;
 
 use log::debug;
 use std::sync::LazyLock;
 
-static PLS: LazyLock<Pls> = LazyLock::new(Pls::default);
+static PLS: LazyLock<Pls> = LazyLock::new(|| {
+	let (supports_gfx, window) = match (is_supported(), Window::try_new()) {
+		(true, Some(window)) => (true, Some(window)),
+		_ => (false, None),
+	};
+
+	Pls {
+		supports_gfx,
+		window,
+		..Pls::default()
+	}
+});
 
 /// Create a `Pls` instance and immediately delegate to it.
 ///

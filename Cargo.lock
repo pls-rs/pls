@@ -578,7 +578,6 @@ dependencies = [
  "resvg",
  "serde",
  "serde_regex",
- "terminal_size",
  "time",
  "unicode-segmentation",
  "uzers",

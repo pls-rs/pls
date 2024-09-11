@@ -1,8 +1,9 @@
 use colored::{Color, ColoredString, Colorize};
 use regex::Regex;
+use std::sync::LazyLock;
 
-thread_local! {
-	static TRUE_COLOR: Regex = Regex::new(
+static TRUE_COLOR: LazyLock<Regex> = LazyLock::new(|| {
+	Regex::new(
 		r"(?x)(?-u)^
         rgb\(
             (?P<red>\d{1,3}),\s?
@@ -11,8 +12,8 @@ thread_local! {
         \)
     $",
 	)
-	.unwrap();
-}
+	.unwrap()
+});
 
 /// Format the given string using the given list of directives.
 ///
@@ -75,7 +76,7 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 	};
 
 	let mut color: Option<Color> = None;
-	let caps = TRUE_COLOR.with(|true_color| true_color.captures(&directive));
+	let caps = TRUE_COLOR.captures(&directive);
 	if let Some(caps) = caps {
 		// RGB true colors
 		let channels: Vec<_> = vec!["red", "green", "blue"]

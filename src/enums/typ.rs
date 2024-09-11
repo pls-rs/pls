@@ -6,14 +6,15 @@ use std::fs::FileType;
 #[cfg(unix)]
 use std::os::unix::fs::FileTypeExt;
 use std::path::Path;
+use std::sync::LazyLock;
 
-thread_local! {
-	static ALL_TYP: Vec<Typ> = Typ::value_variants()
+static ALL_TYP: LazyLock<Vec<Typ>> = LazyLock::new(|| {
+	Typ::value_variants()
 		.iter()
 		.copied()
 		.filter(|variant| variant != &Typ::All && variant != &Typ::None)
-		.collect();
-}
+		.collect()
+});
 
 /// This enum contains different types of nodes that can be found on UNIX-like
 /// operating systems.
@@ -86,7 +87,7 @@ impl Typ {
 				Typ::None => cleaned.clear(),
 				Typ::All => {
 					cleaned.clear();
-					ALL_TYP.with(|all_typ| cleaned.extend_from_slice(all_typ));
+					cleaned.extend_from_slice(&ALL_TYP);
 				}
 				_ => cleaned.push(*node_type),
 			}

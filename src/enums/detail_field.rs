@@ -4,21 +4,25 @@ use crate::utils::vectors::dedup;
 use clap::ValueEnum;
 use serde::{Deserialize, Serialize};
 use std::fmt::Alignment;
+use std::sync::LazyLock;
 
-thread_local! {
-	static STD_FIELDS: Vec<DetailField> =
-		["nlink", "typ", "perm", "user", "group", "size", "mtime"]
-			.into_iter()
-			.filter_map(|item| DetailField::from_str(item, false).ok())
-			.collect();
-	static ALL_FIELDS: Vec<DetailField> = DetailField::value_variants()
+static STD_FIELDS: LazyLock<Vec<DetailField>> = LazyLock::new(|| {
+	["nlink", "typ", "perm", "user", "group", "size", "mtime"]
+		.into_iter()
+		.filter_map(|item| DetailField::from_str(item, false).ok())
+		.collect()
+});
+static ALL_FIELDS: LazyLock<Vec<DetailField>> = LazyLock::new(|| {
+	DetailField::value_variants()
 		.iter()
 		.copied()
-		.filter(|variant| variant != &DetailField::None
-			&& variant != &DetailField::Std
-			&& variant != &DetailField::All)
-		.collect();
-}
+		.filter(|variant| {
+			variant != &DetailField::None
+				&& variant != &DetailField::Std
+				&& variant != &DetailField::All
+		})
+		.collect()
+});
 
 /// This enum contains all the metadata about a node that can be provided by a
 /// UNIX-like operating system.
@@ -97,12 +101,10 @@ impl DetailField {
 		for field in input {
 			match field {
 				DetailField::None => cleaned.clear(),
-				DetailField::Std => {
-					STD_FIELDS.with(|std_fields| cleaned.extend_from_slice(std_fields))
-				}
+				DetailField::Std => cleaned.extend_from_slice(&STD_FIELDS),
 				DetailField::All => {
 					cleaned.clear(); // Reduce sorting and de-duplication burden.
-					ALL_FIELDS.with(|all_fields| cleaned.extend_from_slice(all_fields));
+					cleaned.extend_from_slice(&ALL_FIELDS);
 				}
 				_ => cleaned.push(*field),
 			}

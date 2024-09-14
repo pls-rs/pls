@@ -55,12 +55,12 @@ where
 		match *next_char {
 			ESCAPE => {
 				tokens.next(); // Consume `BACKSLASH`.
-				let then_char = tokens.peek().unwrap();
-				if *then_char == TAG_OPEN {
-					curr.push(TAG_OPEN);
-					tokens.next(); // Consume `TAG_OPEN`.
-				} else {
-					curr.push(ESCAPE);
+				match tokens.peek() {
+					Some(then_char) if *then_char == TAG_OPEN => {
+						curr.push(TAG_OPEN);
+						tokens.next(); // Consume `TAG_OPEN`.
+					}
+					_ => curr.push(ESCAPE),
 				}
 			}
 			TAG_OPEN => {
@@ -189,6 +189,7 @@ mod tests {
 		test_render_ignores_escaped_tags: "\\<bold>\\bold" => "<bold>\\bold",
 		test_render_keeps_backslash_in_text: "some\\ text" => "some\\ text",
 		test_render_keeps_backslash_in_tag: "<bold \\ italic>bold italic</>" => "\x1b[1;3mbold italic\x1b[0m",
+		test_render_keeps_trailing_backslash: "hello\\" => "hello\\",
 
 		// Note that while the function works as expected, this result is not the intended one.
 		test_render_keeps_existing_ansi: "\x1b[34m<dimmed>.</>git\x1b[0m<dimmed>/</>" => "\x1b[34m\x1b[2m.\x1b[0mgit\x1b[0m\x1b[2m/\x1b[0m",

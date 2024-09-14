@@ -40,27 +40,22 @@ pub enum SortField {
 	Size,   // storage space
 	Blocks, // number of blocks
 
-	/// created at
-	///
-	/// Uses OS-normalised timestamp field
-	/// [`created`](std::fs::Metadata::created).
-	Btime,
-	/// changed at
-	///
-	/// Uses Unix-specific extension fields
-	/// [`ctime`](MetadataExt::ctime) and
-	/// [`ctime_nsec`](MetadataExt::ctime_nsec).
-	Ctime,
-	/// modified at
-	///
-	/// Uses OS-normalised timestamp field
-	/// [`modified`](std::fs::Metadata::modified).
-	Mtime,
-	/// accessed at
-	///
-	/// Uses OS-normalised timestamp field
-	/// [`accessed`](std::fs::Metadata::accessed).
-	Atime,
+	// Uses OS-normalised timestamp field
+	// [`created`](std::fs::Metadata::created).
+	Btime, // created at
+
+	// Uses Unix-specific extension fields
+	// [`ctime`](MetadataExt::ctime) and
+	// [`ctime_nsec`](MetadataExt::ctime_nsec).
+	Ctime, // changed at
+
+	// Uses OS-normalised timestamp field
+	// [`modified`](std::fs::Metadata::modified).
+	Mtime, // modified at
+
+	// Uses OS-normalised timestamp field
+	// [`accessed`](std::fs::Metadata::accessed).
+	Atime, // accessed at
 
 	Name,  // node name
 	Cname, // canonical name (name in lower case with leading symbols stripped)

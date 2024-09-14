@@ -4,6 +4,10 @@
 # - the example generation codebase (Python) in `examples/`
 # - the documentation (JavaScript) in `docs/`
 
+default_install_hook_types:
+  - pre-commit
+  - pre-push
+
 repos:
   # Generic
   # =======
@@ -54,6 +58,19 @@ repos:
         # `-D warnings` ensures that the job fails when encountering warnings.
         entry: cargo clippy --all-targets --all-features -- -D warnings
         pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: unit
+        name: unit
+        language: system
+        types:
+          - file
+          - rust
+        entry: cargo test
+        pass_filenames: false
+        stages:
+          - pre-push
 
   # Python
   # ======

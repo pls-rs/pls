@@ -15,13 +15,14 @@ set dotenv-load := false
 # Setup #
 #########
 
+# Install dependencies for sub-projects.
 install:
-    # Cargo doesn't need an install step.
+    # Cargo does not need an install step.
     just docs/install
     just examples/install
 
 # Download pre-commits and install Git hooks.
-pre-commit version="3.3.3":
+pre-commit version="3.8.0":
     curl \
       --output pre-commit.pyz \
       --location \

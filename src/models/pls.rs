@@ -20,6 +20,15 @@ pub struct Pls {
 }
 
 impl Pls {
+	/// Handle the `pls` command and its subcommands.
+	///
+	/// This is the entrypoint of the application that takes over the
+	/// control from `main`.
+	pub fn cmd(&self) {
+		// TODO: Handle subcommands.
+		self.run();
+	}
+
 	/// Run `pls`.
 	///
 	/// This is the entrypoint of the `Pls` class, and once control is passed
@@ -28,7 +37,7 @@ impl Pls {
 	/// The primary function of this method is to organise the input list of
 	/// paths into groups and then delegate to each group the job of listing
 	/// their entries and rendering the layout.
-	pub fn run(&self) {
+	fn run(&self) {
 		let inputs: Vec<_> = self
 			.args
 			.paths

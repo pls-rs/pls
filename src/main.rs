@@ -37,7 +37,7 @@ fn main() {
 	env_logger::init();
 	debug!("Hello!");
 
-	PLS.run();
+	PLS.cmd();
 
 	debug!("Bye!");
 }

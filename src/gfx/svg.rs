@@ -2,10 +2,8 @@ use crate::exc::Exc;
 use log::debug;
 use resvg::tiny_skia::{Pixmap, Transform};
 use resvg::usvg::{Options, Tree};
-use std::collections::hash_map::DefaultHasher;
 use std::env;
 use std::fs::{read_to_string, File};
-use std::hash::{Hash, Hasher};
 use std::io::{Read, Result as IoResult, Write};
 use std::path::Path;
 
@@ -17,14 +15,13 @@ use std::path::Path;
 ///
 /// # Arguments
 ///
+/// * `id` - the unique ID of the image
 /// * `path` - the path to the SVG file
 /// * `size` - the size at which to render the icon
-pub fn get_rgba(path: &Path, size: u8) -> Option<Vec<u8>> {
-	let cache_file = env::var("PLS_CACHE").ok().map(|cache| {
-		Path::new(&cache)
-			.join("icons")
-			.join(compute_hash(path, size))
-	});
+pub fn get_rgba(id: u32, path: &Path, size: u8) -> Option<Vec<u8>> {
+	let cache_file = env::var("PLS_CACHE")
+		.ok()
+		.map(|cache| Path::new(&cache).join("icons").join(id.to_string()));
 
 	if let Some(cache_file) = &cache_file {
 		if let Some(rgba_data) = load_from_cache(cache_file) {
@@ -47,15 +44,6 @@ pub fn get_rgba(path: &Path, size: u8) -> Option<Vec<u8>> {
 	}
 
 	rgba_data
-}
-
-/// Compute the hash for a given path and size pair. This hash acts as the key
-/// for the icon cache.
-fn compute_hash(path: &Path, size: u8) -> String {
-	let mut hasher = DefaultHasher::new();
-	path.hash(&mut hasher);
-	size.hash(&mut hasher);
-	hasher.finish().to_string()
 }
 
 /// Compute the RGBA data for a given SVG file at a given size.

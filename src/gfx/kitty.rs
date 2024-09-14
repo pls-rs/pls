@@ -70,9 +70,11 @@ pub fn is_supported() -> bool {
 ///
 /// # Arguments
 ///
-/// * `rgba_data` - the RGBA data to render
+/// * `id` - the unique ID of the image
+/// * `count` - the number of times this image has appeared so far
 /// * `size` - the size of the image, in pixels
-pub fn render_image(rgba_data: &[u8], size: u8) -> String {
+/// * `rgba_data` - the RGBA data to render
+pub fn render_image(id: u32, count: u8, size: u8, rgba_data: Option<&[u8]>) -> String {
 	let cell_height = PLS.window.as_ref().unwrap().cell_height();
 	let off_y = if cell_height > size {
 		(cell_height - size) / 2
@@ -80,23 +82,37 @@ pub fn render_image(rgba_data: &[u8], size: u8) -> String {
 		0
 	};
 
-	let encoded = BASE64_STANDARD.encode(rgba_data);
-	let mut iter = encoded.chars().peekable();
+	let mut output = String::new();
 
-	let first_chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
-	let mut output = format!(
-		"\x1b_G\
-		f=32,t=d,a=T,C=1,m=1,s={size},v={size},Y={off_y};\
-		{first_chunk}\
-		\x1b\\"
-	);
+	// If data is provided, the image is new, so we transmit it with the
+	// control `a=t`.
+	if let Some(rgba_data) = rgba_data {
+		let encoded = BASE64_STANDARD.encode(rgba_data);
+		let mut iter = encoded.chars().peekable();
 
-	while iter.peek().is_some() {
-		let chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
-		output.push_str(&format!("\x1b_Gm=1;{chunk}\x1b\\"));
+		let first_chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
+		output.push_str(&format!(
+			"\x1b_G\
+			f=32,t=d,a=t,m=1,q=2,i={id},s={size},v={size},Y={off_y};\
+			{first_chunk}\
+			\x1b\\"
+		));
+
+		while iter.peek().is_some() {
+			let chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
+			output.push_str(&format!("\x1b_Gm=1;{chunk}\x1b\\"));
+		}
+
+		output.push_str("\x1b_Gm=0,q=2;\x1b\\");
 	}
 
-	output.push_str("\x1b_Gm=0;\x1b\\");
+	// Once the data is sent, we render the previously transmitted image
+	// with the control `a=p`.
+	output.push_str(&format!(
+		"\x1b_G\
+		a=p,C=1,q=2,i={id},p={count},s={size},v={size},Y={off_y};\
+		\x1b\\"
+	));
 
 	output.push_str("\x1b[2C");
 
@@ -119,4 +135,15 @@ where
 		.replace_all(text.as_ref(), "")
 		.replace("\x1b[2C", "  ")
 		.to_string()
+}
+
+#[cfg(test)]
+mod tests {
+	use super::strip_image;
+
+	#[test]
+	fn test_remove_image_substrings() {
+		let text = "\x1b_Gf=32;AAAA\x1b\\Hello, World!";
+		assert_eq!(strip_image(text), "Hello, World!");
+	}
 }

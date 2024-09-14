@@ -1,6 +1,11 @@
-use crate::gfx::{get_rgba, render_image};
+use crate::gfx::{compute_hash, get_rgba, render_image};
 use crate::PLS;
+use std::collections::HashMap;
 use std::path::PathBuf;
+use std::sync::{LazyLock, Mutex};
+
+static IMAGE_COUNT_MAP: LazyLock<Mutex<HashMap<u32, u8>>> =
+	LazyLock::new(|| Mutex::new(HashMap::new()));
 
 /// This enum contains the two formats of icons supported by `pls`.
 pub enum Icon {
@@ -64,16 +69,28 @@ impl Icon {
 			}
 
 			Icon::Image(path) => {
+				let default = String::from("  ");
+
 				// SVG icons support expanding environment variables in
 				// the path for theming purposes.
-				if let Ok(path) = shellexpand::env(path) {
-					let size = Icon::size();
-					if let Some(rgba_data) = get_rgba(&PathBuf::from(path.as_ref()), size) {
-						return render_image(&rgba_data, size);
-					}
-				}
-				// This would be exactly as if the node had no icon.
-				Icon::Text(String::default()).render(text_directives)
+				let path = match shellexpand::env(path) {
+					Ok(path) => path,
+					Err(_) => return default,
+				};
+
+				let size = Icon::size();
+				let id = compute_hash(&PathBuf::from(path.as_ref()), size);
+
+				let mut image_ids = IMAGE_COUNT_MAP.lock().unwrap();
+				let count = image_ids.entry(id).or_insert(0);
+
+				*count += 1;
+				let rgba_data = if *count == 1 {
+					get_rgba(id, &PathBuf::from(path.as_ref()), size)
+				} else {
+					None
+				};
+				return render_image(id, *count, size, rgba_data.as_deref());
 			}
 		}
 	}

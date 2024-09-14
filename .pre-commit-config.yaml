@@ -13,7 +13,7 @@ repos:
   # =======
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
       - id: check-case-conflict
       - id: check-docstring-first
@@ -77,7 +77,7 @@ repos:
 
   # Runs before Black because fixed code might need to be formatted.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.280
+    rev: v0.6.5
     hooks:
       # Replaces flake8, isort and pyupgrade
       - id: ruff
@@ -86,7 +86,7 @@ repos:
           - --exit-non-zero-on-fix
 
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 24.8.0
     hooks:
       - id: black
 

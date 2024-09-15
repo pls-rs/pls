@@ -1,5 +1,6 @@
 use crate::enums::{DetailField, SortField, Typ, UnitSys};
 use crate::fmt::render;
+use crate::utils::urls::get_osc;
 use clap::Parser;
 use log::warn;
 use regex::bytes::{Regex, RegexBuilder};
@@ -32,12 +33,16 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
     author,
     version,
     about = render("<red bold>`pls`</> is a prettier and powerful `ls` for the pros."),
-	long_about = render([
-		"<red bold>`pls`</> is a prettier and powerful `ls` for the pros.\n",
-		"<bold>Read docs:</> https://pls.cli.rs/",
-		"<bold>Get source:</> https://github.com/pls-rs/pls",
-		"<bold>Sponsor:</> https://github.com/sponsors/dhruvkb"
-	].join("\n")),
+	long_about = render(format!(
+		"<red bold>`pls`</> is a prettier and powerful `ls` for the pros.
+
+<bold>Read docs:</> {}
+<bold>Get source:</> {}
+<bold>Sponsor:</> {}",
+		get_osc("https://pls.cli.rs/", None),
+		get_osc("https://github.com/pls-rs/pls/", None),
+		get_osc("https://github.com/sponsors/dhruvkb/", None),
+	)),
     args_override_self = true,
 )]
 pub struct Args {

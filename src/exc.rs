@@ -7,6 +7,8 @@ pub enum Exc {
 	/// wraps all occurrences of errors in SVG operations
 	Svg(resvg::usvg::Error),
 	Conf(figment::Error),
+	/// wraps exceptions from the `xterm-query` crate
+	Xterm(xterm_query::XQError),
 	/// wraps all other errors
 	Other(String),
 }
@@ -19,6 +21,7 @@ impl Display for Exc {
 			Exc::Conf(err) => err.to_string(),
 			Exc::Svg(err) => err.to_string(),
 			Exc::Other(text) => text.to_string(),
+			Exc::Xterm(err) => err.to_string(),
 		};
 		let msg = format!("{attn} {err}");
 		write!(f, "{}", render(msg))

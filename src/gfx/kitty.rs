@@ -1,8 +1,9 @@
+use crate::exc::Exc;
 use crate::PLS;
 use base64::prelude::*;
+use crossterm::terminal::*;
 use log::debug;
 use regex::Regex;
-use std::env;
 use std::sync::LazyLock;
 
 static KITTY_IMAGE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\x1b_G.*?\x1b\\").unwrap());
@@ -10,42 +11,20 @@ const CHUNK_SIZE: usize = 4096;
 
 /// Check if the terminal supports Kitty's terminal graphics protocol.
 ///
-/// There are ways to detect this support using CSI sequences, but since
-/// only a few terminals support it, checking for those terminals is
-/// easier, and faster as there is no need to wait or poll for the
-/// terminal's response.
-///
-/// We detect if the user is using Kitty or WezTerm, which currently
-/// are the only two terminals which support Kitty's terminal graphic
-/// protocol.
+/// We make a Kitty request and see if the terminal responds with an OK
+/// response within a short timeout. If it does, we can know that the
+/// terminal supports the protocol.
 pub fn is_supported() -> bool {
-	// Detect Kitty by the `TERM` or `TERMINAL` environment variables.
-	// We assume Kitty, regardless of version and config, supports
-	// graphics.
-	for env_var in ["TERM", "TERMINAL"] {
-		if let Ok(env_val) = env::var(env_var) {
-			let env_val = env_val.to_ascii_lowercase();
-			if env_val.contains("kitty") {
-				debug!("Detected Kitty via {}.", env_var);
-				return true;
-			}
-		}
+	if let Ok(res) = query_raw(
+		"\x1b_G\
+		a=q,i=31,s=1,v=1,t=d,f=24;\
+		AAAA\
+		\x1b\\",
+		50,
+	) {
+		debug!("Graphics are supported.");
+		return res.starts_with("\x1b_Gi=31;OK\x1b");
 	}
-
-	// Detect WezTerm with the `TERM_PROGRAM` environment variable and
-	// check the version for graphics support. This does not account for
-	// the fact that Kitty support might be turned off.
-	if let Ok(term_program) = env::var("TERM_PROGRAM") {
-		if term_program == "WezTerm" {
-			if let Ok(version) = env::var("TERM_PROGRAM_VERSION") {
-				if &*version >= "20220105-201556-91a423da" {
-					debug!("Detected Wezterm with graphics support.");
-					return true;
-				}
-			}
-		}
-	}
-
 	debug!("Graphics not supported.");
 	false
 }
@@ -138,6 +117,24 @@ where
 		.replace_all(text.as_ref(), "")
 		.replace("\x1b[2C", "  ")
 		.to_string()
+}
+
+/// Perform the given query in the terminal raw mode.
+///
+/// This function enables the terminal raw mode, performs the query,
+/// records the response and then disables the terminal raw mode. The
+/// response is returned as a string.
+///
+/// # Arguments
+///
+/// * `query` - the query to perform
+/// * `timeout_ms` - the timeout in milliseconds
+fn query_raw(query: &str, timeout_ms: u64) -> Result<String, Exc> {
+	enable_raw_mode().map_err(Exc::Io)?;
+	let res = xterm_query::query(query, timeout_ms).map_err(Exc::Xterm)?;
+	disable_raw_mode().map_err(Exc::Io)?;
+
+	Ok(res)
 }
 
 #[cfg(test)]

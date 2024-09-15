@@ -91,6 +91,9 @@ pub fn render_image(id: u32, count: u8, size: u8, rgba_data: Option<&[u8]>) -> S
 		let mut iter = encoded.chars().peekable();
 
 		let first_chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
+
+		// TODO: By sending fresh data for existing IDs, the images
+		// shown in previous usages of `pls` disappear.
 		output.push_str(&format!(
 			"\x1b_G\
 			f=32,t=d,a=t,m=1,q=2,i={id},s={size},v={size},Y={off_y};\

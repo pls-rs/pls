@@ -1,6 +1,6 @@
 @font-face {
-  font-family: "JetBrainsMono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Regular.woff2")
+  font-family: "Monaspace";
+  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Regular.woff2")
     format("woff2");
   font-weight: 400;
   font-style: normal;
@@ -8,8 +8,8 @@
 }
 
 @font-face {
-  font-family: "JetBrainsMono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Italic.woff2")
+  font-family: "Monaspace";
+  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Italic.woff2")
     format("woff2");
   font-weight: 400;
   font-style: italic;
@@ -17,8 +17,8 @@
 }
 
 @font-face {
-  font-family: "JetBrainsMono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Bold.woff2")
+  font-family: "Monaspace";
+  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Bold.woff2")
     format("woff2");
   font-weight: 700;
   font-style: normal;
@@ -26,8 +26,8 @@
 }
 
 @font-face {
-  font-family: "JetBrainsMono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-BoldItalic.woff2")
+  font-family: "Monaspace";
+  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-BoldItalic.woff2")
     format("woff2");
   font-weight: 700;
   font-style: italic;
@@ -41,5 +41,5 @@
 }
 
 :root {
-  --sl-font-mono: "JetBrainsMono", "Symbols";
+  --sl-font-mono: "Monaspace", "Symbols";
 }

@@ -1,43 +1,43 @@
-/* Solarized color palette */
-:root {
-  --sol-red: #dc322f;
-  --sol-bright-red: #cb4b16;
-  --sol-green: #859900;
-  --sol-yellow: #b58900;
-  --sol-blue: #268bd2;
-  --sol-magenta: #d33682;
-  --sol-bright-magenta: #6c71c4;
-  --sol-cyan: #2aa198;
+/** Catppuccin color palette */
 
-  --sol-base03: #002b36;
-  --sol-base02: #073642;
-  --sol-base00: #657b83;
-  --sol-base0: #839496;
-  --sol-base2: #eee8d5;
-  --sol-base3: #fdf6e3;
+:root {
+  /* Used as brand colors. */
+  --sol-red: #dc322f;
+  --sol-magenta: #d33682;
 }
 
 pre.terminal {
-  --black: var(--sol-base02);
-  --red: var(--sol-red);
-  --bright-red: var(--sol-bright-red);
-  --green: var(--sol-green);
-  --yellow: var(--sol-yellow);
-  --blue: var(--sol-blue);
-  --magenta: var(--sol-magenta);
-  --bright-magenta: var(--sol-bright-magenta);
-  --cyan: var(--sol-cyan);
-  --white: var(--sol-base2);
+  --black: #45475a;
+  --bright-black: #585b70;
+  --red: #f38ba8;
+  --green: #a6e3a1;
+  --yellow: #f9e2af;
+  --blue: #89b4fa;
+  --magenta: #f5c2e7;
+  --cyan: #94e2d5;
+  --white: #bac2de;
+  --bright-white: #a6adc8;
 
-  background-color: var(--sol-base03);
-  color: var(--sol-base0);
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 
   font-family: var(--__sl-font-mono);
 }
 
 :root[data-theme="light"] pre.terminal {
-  background-color: var(--sol-base3);
-  color: var(--sol-base00);
+  --black: #bcc0cc;
+  --red: #d20f39;
+  --green: #40a02b;
+  --yellow: #df8e1d;
+  --blue: #1e66f5;
+  --magenta: #ea76cb;
+  --cyan: #179299;
+  --white: #5c5f77;
+  --bright-black: #acb0be;
+  --bright-white: #6c6f85;
+
+  background-color: #eff1f5;
+  color: #4c4f69;
 }
 
 pre.terminal p {

@@ -16,7 +16,7 @@ easy to grok the output and also makes it look pretty.
 By default <Pls /> will display colors if the terminal supports it and will
 disable colors if the output is being piped to another command.
 
-<Pls /> also respects the `NOCOLOR` and `CLICOLOR_FORCE` environment variables
+<Pls /> also respects the `NO_COLOR` and `CLICOLOR_FORCE` environment variables
 that can be used forcefully disable or enable colors respectively.
 
 :::caution
@@ -29,7 +29,7 @@ underlines etc.
 ### Examples
 
 ```bash
-env NOCOLOR=true pls # or pls | cat
+env NO_COLOR=true pls # or pls | cat
 ```
 
 <ColorsOff />

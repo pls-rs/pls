@@ -6,8 +6,10 @@ use log::debug;
 use regex::Regex;
 use std::sync::LazyLock;
 
-static KITTY_IMAGE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\x1b_G.*?\x1b\\").unwrap());
 const CHUNK_SIZE: usize = 4096;
+
+static KITTY_IMAGE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\x1b_G.*?\x1b\\").unwrap());
+static IMAGE_ID: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"i=(?P<id>\d+)").unwrap());
 
 /// Check if the terminal supports Kitty's terminal graphics protocol.
 ///
@@ -29,20 +31,52 @@ pub fn is_supported() -> bool {
 	false
 }
 
-/// Send the RGBA data to the terminal for immediate rendering.
-///
-/// To achieve this, we must send the following control sequence:
-///
-/// * f = 32 signals that data will be 32-bit RGBA
-/// * t = d signals that data will be within the control sequence
-/// * a = T signals that image should be immediately displayed
-/// * C = 1 signals that cursor should not be moved
-/// * m = 1 if more data follows, 0 if this is the last chunk
-/// * s = size for width (pixels)
-/// * v = size for height (pixels)
+/// Send the RGBA data to the terminal and get an ID for the image.
 ///
 /// The image is sent in chunks of 4096 bytes. The last chunk has the
-/// `m` parameter set to 0.
+/// `m` parameter set to 0. The terminal then assigns our image an ID,
+/// instead of us determining one.
+///
+/// In this stage, we do not show the image (it will be shown in a later
+/// step) so placement controls are not required.
+///
+/// # Arguments
+///
+/// * `hash` - the hash of the image data
+/// * `size` - the size of the image, in pixels
+/// * `rgba_data` - the RGBA data to send
+pub fn send_image(hash: u32, size: u8, rgba_data: &[u8]) -> Result<u32, Exc> {
+	let mut query = String::new();
+
+	let encoded = BASE64_STANDARD.encode(rgba_data);
+	let mut iter = encoded.chars().peekable();
+
+	let first_chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
+	query.push_str(&format!(
+		"\x1b_G\
+		a=t,I={hash},s={size},v={size},t=d,f=32,m=1;\
+		{first_chunk}\
+		\x1b\\"
+	));
+
+	while iter.peek().is_some() {
+		let chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
+		query.push_str(&format!("\x1b_Gm=1;{chunk}\x1b\\"));
+	}
+
+	query.push_str("\x1b_Gm=0;\x1b\\");
+
+	let res = query_raw(&query, 200)?;
+	IMAGE_ID
+		.captures(&res)
+		.map(|cap| cap["id"].parse().unwrap())
+		.ok_or(Exc::Other(String::from("Could not extract image ID.")))
+}
+
+/// Render the image with the given ID to the screen.
+///
+/// In this stage, we do not transmit the image (it has already been
+/// done) so transmission controls are not required.
 ///
 /// The image is rendered in a way that the cursor does not move. Then
 /// we move the cursor by as many cells as the icon width (and a space).
@@ -50,10 +84,9 @@ pub fn is_supported() -> bool {
 /// # Arguments
 ///
 /// * `id` - the unique ID of the image
-/// * `count` - the number of times this image has appeared so far
 /// * `size` - the size of the image, in pixels
-/// * `rgba_data` - the RGBA data to render
-pub fn render_image(id: u32, count: u8, size: u8, rgba_data: Option<&[u8]>) -> String {
+/// * `count` - the number of times this image has appeared so far
+pub fn render_image(id: u32, size: u8, count: u8) -> String {
 	let cell_height = PLS.window.as_ref().unwrap().cell_height();
 	let off_y = if cell_height > size {
 		(cell_height - size) / 2
@@ -61,44 +94,12 @@ pub fn render_image(id: u32, count: u8, size: u8, rgba_data: Option<&[u8]>) -> S
 		0
 	};
 
-	let mut output = String::new();
-
-	// If data is provided, the image is new, so we transmit it with the
-	// control `a=t`.
-	if let Some(rgba_data) = rgba_data {
-		let encoded = BASE64_STANDARD.encode(rgba_data);
-		let mut iter = encoded.chars().peekable();
-
-		let first_chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
-
-		// TODO: By sending fresh data for existing IDs, the images
-		// shown in previous usages of `pls` disappear.
-		output.push_str(&format!(
-			"\x1b_G\
-			f=32,t=d,a=t,m=1,q=2,i={id},s={size},v={size},Y={off_y};\
-			{first_chunk}\
-			\x1b\\"
-		));
-
-		while iter.peek().is_some() {
-			let chunk: String = iter.by_ref().take(CHUNK_SIZE).collect();
-			output.push_str(&format!("\x1b_Gm=1;{chunk}\x1b\\"));
-		}
-
-		output.push_str("\x1b_Gm=0,q=2;\x1b\\");
-	}
-
-	// Once the data is sent, we render the previously transmitted image
-	// with the control `a=p`.
-	output.push_str(&format!(
+	format!(
 		"\x1b_G\
-		a=p,C=1,q=2,i={id},p={count},s={size},v={size},Y={off_y};\
-		\x1b\\"
-	));
-
-	output.push_str("\x1b[2C");
-
-	output
+		a=p,i={id},s={size},v={size},p={count},C=1,Y={off_y},q=2;\
+		\x1b\\\
+		\x1b[2C"
+	)
 }
 
 /// Strip the image data from the text.

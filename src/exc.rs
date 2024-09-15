@@ -1,6 +1,7 @@
 use crate::fmt::render;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
+#[derive(Debug)]
 pub enum Exc {
 	/// wraps all occurrences of errors in I/O operations
 	Io(std::io::Error),

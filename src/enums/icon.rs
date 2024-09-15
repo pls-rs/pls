@@ -1,10 +1,27 @@
-use crate::gfx::{compute_hash, get_rgba, render_image};
+use crate::gfx::{compute_hash, get_rgba, render_image, send_image};
 use crate::PLS;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
 
-static IMAGE_COUNT_MAP: LazyLock<Mutex<HashMap<u32, u8>>> =
+struct ImageData {
+	/// the ID assigned by the terminal to our image
+	///
+	/// This is different from the hash of the image data. Allowing the
+	/// terminal to choose an ID prevents new invocations of `pls` from
+	/// overwriting IDs of images that were displayed by previous
+	/// invocations.
+	id: u32,
+	/// the number of times the image has been displayed
+	///
+	/// This generates new placement IDs for the images. This is
+	/// required specifically because WezTerm has a bug where not
+	/// setting unique placement IDs overwrites placements instead of
+	/// creating new ones.
+	count: u8,
+}
+
+static IMAGE_DATA: LazyLock<Mutex<HashMap<u32, ImageData>>> =
 	LazyLock::new(|| Mutex::new(HashMap::new()));
 
 /// This enum contains the two formats of icons supported by `pls`.
@@ -79,18 +96,26 @@ impl Icon {
 				};
 
 				let size = Icon::size();
-				let id = compute_hash(&PathBuf::from(path.as_ref()), size);
+				let hash = compute_hash(&PathBuf::from(path.as_ref()), size);
 
-				let mut image_ids = IMAGE_COUNT_MAP.lock().unwrap();
-				let count = image_ids.entry(id).or_insert(0);
+				let mut image_data_store = IMAGE_DATA.lock().unwrap();
+				let data = image_data_store
+					.entry(hash)
+					.or_insert_with(|| ImageData { count: 0, id: 0 });
 
-				*count += 1;
-				let rgba_data = if *count == 1 {
-					get_rgba(id, &PathBuf::from(path.as_ref()), size)
-				} else {
-					None
-				};
-				return render_image(id, *count, size, rgba_data.as_deref());
+				data.count += 1;
+				if data.count == 1 {
+					// If the image is appearing for the first time in
+					// this session, we send it to the terminal and get
+					// an ID assigned to it.
+					match get_rgba(hash, &PathBuf::from(path.as_ref()), size) {
+						Some(rgba_data) => {
+							data.id = send_image(hash, size, &rgba_data).unwrap();
+						}
+						None => return default,
+					}
+				}
+				render_image(data.id, size, data.count)
 			}
 		}
 	}

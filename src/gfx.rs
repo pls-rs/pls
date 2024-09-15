@@ -9,6 +9,7 @@
 //! * [`compute_hash`]
 //! * [`is_supported`]
 //! * [`render_image`]
+//! * [`send_image`]
 //! * [`strip_image`]
 //! * [`get_rgba`]
 
@@ -17,5 +18,5 @@ mod kitty;
 mod svg;
 
 pub use hash::compute_hash;
-pub use kitty::{is_supported, render_image, strip_image};
+pub use kitty::{is_supported, render_image, send_image, strip_image};
 pub use svg::get_rgba;

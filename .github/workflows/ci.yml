@@ -151,6 +151,12 @@ jobs:
         working-directory: examples/
         run: just all
 
+      - name: Upload examples
+        uses: actions/upload-artifact@v4
+        with:
+          name: examples
+          path: docs/src/examples
+
       - name: Build and publish docs
         if: github.event_name == 'push'
         working-directory: docs/

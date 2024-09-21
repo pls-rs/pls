@@ -4,6 +4,7 @@ use base64::prelude::*;
 use crossterm::terminal::*;
 use log::debug;
 use regex::Regex;
+use std::env;
 use std::sync::LazyLock;
 
 const CHUNK_SIZE: usize = 4096;
@@ -13,20 +14,36 @@ static IMAGE_ID: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"i=(?P<id>\d+)")
 
 /// Check if the terminal supports Kitty's terminal graphics protocol.
 ///
-/// We make a Kitty request and see if the terminal responds with an OK
-/// response within a short timeout. If it does, we can know that the
-/// terminal supports the protocol.
+/// Since Kitty support is restricted to a handful of terminals, all of
+/// which can be easily and reliably detected, we use that to determine
+/// if the terminal supports graphics.
+///
+/// Additionally, testing for Kitty support using a CSI sequence is
+/// unreliable and breaks down in some cases like the macOS Terminal or
+/// `to-html`.
 pub fn is_supported() -> bool {
-	if let Ok(res) = query_raw(
-		"\x1b_G\
-		a=q,i=31,s=1,v=1,t=d,f=24;\
-		AAAA\
-		\x1b\\",
-		50,
-	) {
-		debug!("Graphics are supported.");
-		return res.starts_with("\x1b_Gi=31;OK\x1b");
+	// Detect Kitty by the `TERM` or `TERMINAL` environment variables.
+	for env_var in ["TERM", "TERMINAL"] {
+		if let Ok(env_val) = env::var(env_var) {
+			let env_val = env_val.to_ascii_lowercase();
+			if env_val.contains("kitty") {
+				debug!("Detected Kitty terminal.");
+				return true;
+			}
+		}
 	}
+
+	// Detect WezTerm and Ghostty by the `TERM_PROGRAM` environment variable.
+	if let Ok(term_program) = env::var("TERM_PROGRAM") {
+		if term_program == "WezTerm" {
+			debug!("Detected WezTerm terminal.");
+			return true;
+		} else if term_program == "ghostty" {
+			debug!("Detected Ghostty terminal.");
+			return true;
+		}
+	}
+
 	debug!("Graphics not supported.");
 	false
 }

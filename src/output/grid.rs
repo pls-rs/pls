@@ -37,6 +37,11 @@ impl Grid {
 		let max_cols = self.columns(max_width);
 
 		let entry_len = self.entries.len();
+		if entry_len == 0 {
+			// Nothing to render, so we exit.
+			return;
+		}
+
 		let rows = (entry_len as f64 / max_cols as f64).ceil() as usize;
 		let cols = (entry_len as f64 / rows as f64).ceil() as usize;
 

@@ -33,7 +33,7 @@ impl Grid {
 
 	/// Render the grid to STDOUT.
 	pub fn render(&self, _app_const: &AppConst) {
-		let max_width = self.entries.iter().map(strip_image).map(len).max();
+		let mut max_width = self.entries.iter().map(strip_image).map(len).max();
 		let max_cols = self.columns(max_width);
 
 		let entry_len = self.entries.len();
@@ -45,7 +45,12 @@ impl Grid {
 		let rows = (entry_len as f64 / max_cols as f64).ceil() as usize;
 		let cols = (entry_len as f64 / rows as f64).ceil() as usize;
 
-		if PLS.args.down {
+		if cols == 1 {
+			// If there is only one column, we don't need to equalise width.
+			max_width = None;
+		}
+
+		if cols > 1 && PLS.args.down {
 			self.print(&self.down(rows), cols, max_width);
 		} else {
 			self.print(&self.entries, cols, max_width);

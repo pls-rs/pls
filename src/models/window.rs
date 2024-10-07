@@ -19,7 +19,7 @@ impl Window {
 		let mut win = Self::default();
 		#[allow(clippy::useless_conversion)]
 		let r = unsafe { ioctl(STDOUT_FILENO, TIOCGWINSZ.into(), &mut win) };
-		if r == 0 && win.ws_xpixel > win.ws_col && win.ws_ypixel > win.ws_row {
+		if r == 0 && win.ws_row > 0 && win.ws_col > 0 {
 			return Some(win);
 		}
 		warn!("Could not determine cell dimensions.");

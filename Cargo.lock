@@ -590,7 +590,7 @@ checksum = "d231b230927b5e4ad203db57bbcbee2802f6bce620b1e4a9024a07d94e2907ec"
 
 [[package]]
 name = "pls"
-version = "0.0.1-beta.8"
+version = "0.0.1-beta.9"
 dependencies = [
  "base64",
  "clap",

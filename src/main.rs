@@ -18,8 +18,11 @@ use log::debug;
 use std::sync::LazyLock;
 
 static PLS: LazyLock<Pls> = LazyLock::new(|| {
-	let supports_gfx = is_supported();
 	let window = Window::try_new();
+	let supports_gfx = match &window {
+		Some(win) if win.ws_xpixel > 0 && win.ws_ypixel > 0 => is_supported(),
+		_ => false,
+	};
 
 	Pls {
 		supports_gfx,

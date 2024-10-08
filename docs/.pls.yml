@@ -3,18 +3,23 @@ icons:
   typescript: "󰛦" # nf-md-language_typescript
 specs:
   - pattern: \.ts$
-    icon: typescript
+    icons:
+      - typescript
     style: rgb(49,120,198)
   - pattern: \.m?js$
-    icon: javascript
+    icons:
+      - javascript
     style: rgb(247,223,30)
   - pattern: \.astro$
-    icon: rocket
+    icons:
+      - rocket
     style: rgb(255,93,1)
   - pattern: ^package-lock\.json$
-    icon: package
+    icons:
+      - package
   - pattern: ^pnpm-lock.yaml$
-    icon: lock
+    icons:
+      - lock
     importance: -1
     collapse:
       name: package.json

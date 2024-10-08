@@ -30,17 +30,23 @@ icons:
   table: "󰓫" # nf-md-table
 specs:
   - pattern: \.pdf$
-    icon: pdf
+    icons:
+      - pdf
   - pattern: \.(txt|rtf)$
-    icon: text
+    icons:
+      - text
   - pattern: \.(csv|tsv)$
-    icon: table
+    icons:
+      - table
   - pattern: \.(mp3|wav|aac)$
-    icon: audio
+    icons:
+      - audio
   - pattern: \.(png|jpg|bmp|webp)$
-    icon: image
+    icons:
+      - image
   - pattern: \.(mp4|mov|avi|mkv|webm)$
-    icon: video
+    icons:
+      - video
 ```
 
 ## Office
@@ -55,11 +61,14 @@ icons:
   powerpoint: "󱎐" # nf-md-microsoft_powerpoint
 specs:
   - pattern: \.docx?$
-    icon: word
+    icons:
+      - word
   - pattern: \.xlsx?$
-    icon: excel
+    icons:
+      - excel
   - pattern: \.pptx?$
-    icon: powerpoint
+    icons:
+      - powerpoint
 ```
 
 ## Rust
@@ -77,19 +86,24 @@ icons:
   python: "" # nf-seti-python
 specs:
   - pattern: \.py$
-    icon: python
+    icons:
+      - python
     style: rgb(255,212,59)
   - pattern: requirements.*\.txt$
-    icon: lock
+    icons:
+      - lock
   - pattern: ^(pyproject\.toml|Pipfile)$
-    icon: package
+    icons:
+      - package
   - pattern: ^(poetry|pdm)\.lock$
-    icon: lock
+    icons:
+      - lock
     importance: -1
     collapse:
       name: pyproject.toml
   - pattern: ^Pipfile.lock$
-    icon: lock
+    icons:
+      - lock
     importance: -1
     collapse:
       name: Pipfile
@@ -109,18 +123,23 @@ icons:
   markdown: "" # nf-fa-markdown
 specs:
   - pattern: \.md$
-    icon: markdown
+    icons:
+      - markdown
   - pattern: \.x?html?$
-    icon: html
+    icons:
+      - html
     style: rgb(255,212,59)
   - pattern: \.s[ac]ss$
-    icon: sass
+    icons:
+      - sass
     style: rgb(255,212,59)
   - pattern: \.less$
-    icon: less
+    icons:
+      - less
     style: rgb(255,212,59)
   - pattern: \.css$
-    icon: css
+    icons:
+      - css
     style: rgb(79,192,141)
     collapse:
       ext: scss
@@ -141,23 +160,29 @@ icons:
   react: "" # nf-seti-react
 specs:
   - pattern: \.ts$
-    icon: typescript
+    icons:
+      - typescript
     style: rgb(49,120,198)
   - pattern: \.(c|m)?js$
-    icon: javascript
+    icons:
+      - javascript
     style: rgb(247,223,30)
     collapse:
       ext: ts
   - pattern: \.vue$
-    icon: vue
+    icons:
+      - vue
     style: rgb(79,192,141)
   - pattern: \.(j|t)sx$
-    icon: react
+    icons:
+      - react
     style: rgb(97,218,251)
   - pattern: ^package-lock\.json$
-    icon: package
+    icons:
+      - package
   - pattern: ^(pnpm-lock.yaml|package-lock.json)$
-    icon: lock
+    icons:
+      - lock
     importance: -1
     collapse:
       name: package.json

@@ -7,7 +7,8 @@ app_const:
     bend_dash: "<blue>+--</> "
 specs:
   - pattern: ^\.?\w{1}$
-    icon: file
+    icons:
+      - file
   - pattern: b
     collapse:
       name: a

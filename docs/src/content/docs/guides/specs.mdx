@@ -28,12 +28,16 @@ A spec consists of four components, of which only the first is mandatory.
   This is a regex pattern that will be compared against the node name. If the
   node matches this regex, this spec will be associated with the node.
 
-- **icon:** `String`
+- **icons:** `String[]`
 
-  This is the name, and not the actual glyph, of the [icon](/features/icons) to
-  use for nodes matching this spec. When specs cascade, the last defined icon
-  definition is used. If no specs match a node, the default icon for the node
-  type is used.
+  This is a list of names, and not the actual glyphs, of the
+  [icon](/features/icons) to use for nodes matching this spec. When specs
+  cascade, the last defined icon definition is used. If no specs match a node,
+  the default icon for the node type is used.
+
+  One spec may define multiple icons. This is useful to specify an SVG icon with
+  a Nerd Font fallback. When a terminal doesn't support SVGs, the SVG icons are
+  skipped over and the Nerd Font fallback is rendered instead.
 
 - **style:** `String`
 

@@ -4,20 +4,25 @@ icons:
   typescript: "󰛦" # nf-md-language_typescript
 specs:
   - pattern: \.ts$
-    icon: typescript
+    icons:
+      - typescript
     style: rgb(49,120,198)
   - pattern: \.js$
-    icon: javascript
+    icons:
+      - javascript
     style: rgb(247,223,30)
     importance: -1
     collapse:
       ext: ts
   - pattern: prettier
-    icon: broom
+    icons:
+      - broom
   - pattern: ^package\.json$
-    icon: package
+    icons:
+      - package
   - pattern: ^pnpm-lock\.yaml$
-    icon: lock
+    icons:
+      - lock
     importance: -1
     collapse:
       name: package.json

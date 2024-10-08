@@ -10,4 +10,5 @@ entry_const:
 specs:
   - pattern: ^a$
     style: blue
-    icon: file
+    icons:
+      - file

@@ -108,12 +108,14 @@ list of node specs, in ascending order of specificity
     ```yaml
     specs:
       - pattern: ^(pnpm-lock.yaml|package-lock.json)$
-        icon: lock
+        icons:
+         - lock
         importance: -1
         collapse:
           name: package.json
       - pattern: \.(c|m)?js$
-        icon: javascript
+        icons:
+          - javascript
         style: rgb(247,223,30)
         collapse:
           ext: ts
@@ -197,12 +199,14 @@ constants that determine the appearance and styling of each entry
           dir:
             ch: <bold cyan>d</>
             suffix: <dimmed>/</>
-            icon: dir
+            icons:
+              - dir
             style: blue
           symlink:
             ch: <magenta>l</>
             suffix: <dimmed>@</>
-            icon: symlink
+            icons:
+              - symlink
           char_device:
             ch: <blue bg:green>b</>
           block_device:

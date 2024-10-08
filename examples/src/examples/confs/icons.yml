@@ -5,6 +5,8 @@ icons:
 entry_const:
   typ:
     fifo:
-      icon: fifo # Enable and use the built-in glyph for FIFO pipes.
+      icons:
+        - fifo # Enable and use the built-in glyph for FIFO pipes.
     socket:
-      icon: sock # Enable and use a custom icon for sockets.
+      icons:
+        - sock # Enable and use a custom icon for sockets.

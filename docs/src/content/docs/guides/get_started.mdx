@@ -40,6 +40,7 @@ These are the different ways you can install <Pls /> on your machine.
 :::note
 
 We are working on adding <Pls /> to more package managers like `apt` and `dnf`.
+If you add <Pls /> to a package manager or repository, please let us know!
 
 :::
 
@@ -54,6 +55,36 @@ brew install pls-rs/pls/pls
 ```
 
 This command will fetch and install the latest release of <Pls /> from GitHub.
+
+### Nix
+
+<Pls /> is also available as a [Nix
+package](https://search.nixos.org/packages?show=pls). You can install it using
+`nix-env`, add it to your NixOS configuration or just try it using `nix-shell`.
+
+To permanently add <Pls /> to NixOS, update your config, usually located at
+`/etc/nixos/configuration.nix`.
+
+```nix
+environment.systemPackages = [
+  pkgs.pls
+];
+```
+
+:::note
+
+Thanks to [TomaSajt](https://github.com/TomaSajt) for creating this package and
+to
+[all its maintainers](https://github.com/NixOS/nixpkgs/commits/master/pkgs/by-name/pl/pls/package.nix).
+
+:::
+
+:::caution
+
+Since `nixpkgs` is a massive centralised repository, <Pls /> obtained from there
+might be out of date.
+
+:::
 
 ### Build from source
 

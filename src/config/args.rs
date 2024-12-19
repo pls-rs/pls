@@ -61,7 +61,12 @@ pub struct Args {
 	pub details: Vec<DetailField>,
 
 	/// show headers above columnar data
-	#[clap(help_heading = "Detail view", short = 'H', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Detail view",
+		short = 'H',
+		long,
+		default_value = "true"
+	)]
 	pub header: bool,
 
 	/// the type of units to use for the node sizes
@@ -75,31 +80,46 @@ pub struct Args {
 	pub unit: UnitSys,
 
 	/// display node names in multiple columns
-	#[clap(help_heading = "Grid view", short, long, default_value = "false", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Grid view", short, long, default_value = "false")]
 	pub grid: bool,
 
 	/// display node names column-first
-	#[clap(help_heading = "Grid view", short = 'D', long, default_value = "false", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Grid view", short = 'D', long, default_value = "false")]
 	pub down: bool,
 
 	/// display icons next to node names
-	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Presentation", short, long, default_value = "true")]
 	pub icon: bool,
 
 	/// display node type suffixes after the node name
-	#[clap(help_heading = "Presentation", short = 'S', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Presentation",
+		short = 'S',
+		long,
+		default_value = "true"
+	)]
 	pub suffix: bool,
 
 	/// show symlink targets
-	#[clap(help_heading = "Presentation", short = 'l', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Presentation",
+		short = 'l',
+		long,
+		default_value = "true"
+	)]
 	pub sym: bool,
 
 	/// show dependent nodes as children of their principal nodes
-	#[clap(help_heading = "Presentation", short = 'c', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Presentation",
+		short = 'c',
+		long,
+		default_value = "true"
+	)]
 	pub collapse: bool,
 
 	/// align items accounting for leading dots
-	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Presentation", short, long, default_value = "true")]
 	pub align: bool,
 
 	/// the set of node types to include in the output
@@ -232,10 +252,10 @@ mod tests {
     }
 
 	make_warning_test!(
-		test_details_multi_col: ["pls", "--det", "ino", "--grid", "true"] => "Detailed view disabled grid view.",
-		test_multi_col_and_header: ["pls", "--grid", "true", "--header", "true"] => "Grid view disabled column headers.",
-		test_multi_col_and_sym: ["pls", "--grid", "true", "--sym", "true"] => "Grid view disabled symlink targets.",
-		test_multi_col_and_col: ["pls", "--grid", "true", "--collapse", "true"] => "Grid view disabled collapsing.",
+		test_details_multi_col: ["pls", "--det", "ino", "--grid"] => "Detailed view disabled grid view.",
+		test_multi_col_and_header: ["pls", "--grid", "--header"] => "Grid view disabled column headers.",
+		test_multi_col_and_sym: ["pls", "--grid", "--sym"] => "Grid view disabled symlink targets.",
+		test_multi_col_and_col: ["pls", "--grid", "--collapse"] => "Grid view disabled collapsing.",
 	);
 
 	macro_rules! make_clean_test {
@@ -252,24 +272,24 @@ mod tests {
     }
 
 	make_clean_test!(
-		test_details_beats_multi_col: ["pls", "--det", "ino", "--grid", "true"] => grid, false,
+		test_details_beats_multi_col: ["pls", "--det", "ino", "--grid"] => grid, false,
 
 		// Symlink target is only shown in detailed view.
 		test_default_sym: ["pls"] => sym, true,
 		test_default_sym_when_detailed: ["pls", "--det", "ino"] => sym, true,
-		test_default_sym_when_multi_col: ["pls", "--grid", "true"] => sym, false,
-		test_multi_col_beats_sym: ["pls", "--grid", "true", "--sym", "true"] => sym, false,
+		test_default_sym_when_multi_col: ["pls", "--grid"] => sym, false,
+		test_multi_col_beats_sym: ["pls", "--grid", "--sym"] => sym, false,
 
 		// Collapsing is only performed in detailed view.
 		test_default_col: ["pls"] => collapse, true,
 		test_default_col_when_detailed: ["pls", "--det", "ino"] => collapse, true,
-		test_default_col_when_multi_col: ["pls", "--grid", "true"] => collapse, false,
-		test_multi_col_beats_col: ["pls", "--grid", "true", "--collapse", "true"] => collapse, false,
+		test_default_col_when_multi_col: ["pls", "--grid"] => collapse, false,
+		test_multi_col_beats_col: ["pls", "--grid", "--collapse"] => collapse, false,
 
 		// Header is only shown when detailed view is enabled and there is at least one detail field.
 		test_default_header: ["pls"] => header, false,
 		test_default_header_when_detailed: ["pls", "--det", "ino"] => header, true,
-		test_default_header_when_multi_col: ["pls", "--grid", "true"] => header, false,
-		test_multi_col_beats_header: ["pls", "--grid", "true", "--header", "true"] => header, false,
+		test_default_header_when_multi_col: ["pls", "--grid"] => header, false,
+		test_multi_col_beats_header: ["pls", "--grid", "--header"] => header, false,
 	);
 }

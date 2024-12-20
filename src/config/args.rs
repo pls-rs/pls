@@ -69,6 +69,14 @@ pub struct Args {
 	)]
 	pub header: bool,
 
+	/// don't show headers above columnar data
+	#[clap(
+		help_heading = "Detail view",
+		long = "no-header",
+		default_value = "false"
+	)]
+	pub no_header: bool,
+
 	/// the type of units to use for the node sizes
 	#[clap(
 		help_heading = "Detail view",
@@ -83,13 +91,25 @@ pub struct Args {
 	#[clap(help_heading = "Grid view", short, long, default_value = "false")]
 	pub grid: bool,
 
+	/// don't display node names in multiple columns
+	#[clap(help_heading = "Grid view", long = "no-grid", default_value = "false")]
+	pub no_grid: bool,
+
 	/// display node names column-first
 	#[clap(help_heading = "Grid view", short = 'D', long, default_value = "false")]
 	pub down: bool,
 
 	/// display icons next to node names
 	#[clap(help_heading = "Presentation", short, long, default_value = "true")]
-	pub icon: bool,
+	pub icons: bool,
+
+	/// don't display icons next to node names
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-icons",
+		default_value = "false"
+	)]
+	pub no_icons: bool,
 
 	/// display node type suffixes after the node name
 	#[clap(
@@ -100,6 +120,14 @@ pub struct Args {
 	)]
 	pub suffix: bool,
 
+	/// don't display node type suffixes after the node name
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-suffix",
+		default_value = "false"
+	)]
+	pub no_suffix: bool,
+
 	/// show symlink targets
 	#[clap(
 		help_heading = "Presentation",
@@ -108,6 +136,14 @@ pub struct Args {
 		default_value = "true"
 	)]
 	pub sym: bool,
+
+	/// don't show symlink targets
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-sym",
+		default_value = "false"
+	)]
+	pub no_sym: bool,
 
 	/// show dependent nodes as children of their principal nodes
 	#[clap(
@@ -118,9 +154,25 @@ pub struct Args {
 	)]
 	pub collapse: bool,
 
+	/// don't show dependent nodes as children of their principal nodes
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-collapse",
+		default_value = "false"
+	)]
+	pub no_collapse: bool,
+
 	/// align items accounting for leading dots
 	#[clap(help_heading = "Presentation", short, long, default_value = "true")]
 	pub align: bool,
+
+	/// don't align items accounting for leading dots
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-align",
+		default_value = "false"
+	)]
+	pub no_align: bool,
 
 	/// the set of node types to include in the output
 	#[clap(
@@ -221,6 +273,50 @@ impl Args {
 			self.collapse = false;
 		}
 
+		// negated flags
+		if self.no_header {
+			if self.header {
+				warnings.push("Header disabled by no-header flag.");
+			}
+			self.header = false;
+		}
+		if self.no_grid {
+			if self.grid {
+				warnings.push("Grid view disabled by no-grid flag.");
+			}
+			self.grid = false;
+		}
+		if self.no_icons {
+			if self.icons {
+				warnings.push("Icons disabled by no-icons flag.");
+			}
+			self.icons = false;
+		}
+		if self.no_suffix {
+			if self.suffix {
+				warnings.push("Suffixes disabled by no-suffix flag.");
+			}
+			self.suffix = false;
+		}
+		if self.no_sym {
+			if self.sym {
+				warnings.push("Symlink targets disabled by no-sym flag.");
+			}
+			self.sym = false;
+		}
+		if self.no_collapse {
+			if self.collapse {
+				warnings.push("Collapsing disabled by no-collapse flag.");
+			}
+			self.collapse = false;
+		}
+		if self.no_align {
+			if self.align {
+				warnings.push("Alignment disabled by no-align flag.");
+			}
+			self.align = false;
+		}
+
 		warnings
 	}
 
@@ -291,5 +387,23 @@ mod tests {
 		test_default_header_when_detailed: ["pls", "--det", "ino"] => header, true,
 		test_default_header_when_multi_col: ["pls", "--grid"] => header, false,
 		test_multi_col_beats_header: ["pls", "--grid", "--header"] => header, false,
+
+		// negated flags
+		test_no_header: ["pls", "--no-header"] => header, false,
+		test_no_grid: ["pls", "--no-grid"] => grid, false,
+		test_no_icon: ["pls", "--no-icons"] => icons, false,
+		test_no_suffix: ["pls", "--no-suffix"] => suffix, false,
+		test_no_sym: ["pls", "--no-sym"] => sym, false,
+		test_no_collapse: ["pls", "--no-collapse"] => collapse, false,
+		test_no_align: ["pls", "--no-align"] => align, false,
+
+		// negated flags overriding defaults
+		test_no_header_overrides_default: ["pls", "--header", "--no-header"] => header, false,
+		test_no_grid_overrides_default: ["pls", "--grid", "--no-grid"] => grid, false,
+		test_no_icon_overrides_default: ["pls", "--icons", "--no-icons"] => icons, false,
+		test_no_suffix_overrides_default: ["pls", "--suffix", "--no-suffix"] => suffix, false,
+		test_no_sym_overrides_default: ["pls", "--sym", "--no-sym"] => sym, false,
+		test_no_collapse_overrides_default: ["pls", "--collapse", "--no-collapse"] => collapse, false,
+		test_no_align_overrides_default: ["pls", "--align", "--no-align"] => align, false,
 	);
 }

@@ -11,8 +11,8 @@
     "fmt": "prettier --ignore-path .gitignore --ignore-path .prettierignore --write ."
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.28.2",
-    "astro": "^4.15.8",
+    "@astrojs/starlight": "^0.30.6",
+    "astro": "^5.1.5",
     "astro-auto-import": "^0.4.2"
   },
   "engines": {

@@ -1,20 +1,47 @@
 ---
-import Pls from "@/components/Pls.astro";
-import Stat from "@/components/Stat.astro";
+import type { Props } from '@astrojs/starlight/props'
+
+import EditLink from '@astrojs/starlight/components/EditLink.astro';
+import Pagination from '@astrojs/starlight/components/Pagination.astro'
 ---
 
-<footer class="footer">
-  <p>
-    <Pls /> is free and open-source software. If you find it useful, please
-    <a href="/guides/contribute/">contribute</a>.
-  </p>
-
-  <Stat />
+<footer class="sl-flex">
+  <div class="meta sl-flex">
+    <a
+      href="https://creativecommons.org/licenses/by/4.0/"
+      target="_blank"
+      rel="noopener">
+      <span>CC BY 4.0 International</span>
+    </a>
+    <EditLink {...Astro.props} />
+  </div>
+  <Pagination {...Astro.props} />
 </footer>
 
 <style>
-footer.footer {
-  padding-block-start: 5rem;
-  text-align: center;
-}
+  /* Copied from the `Footer` component. */
+  footer {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .meta {
+    gap: 0.75rem 3rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+  .meta > :global(p:only-child) {
+    margin-inline-start: auto;
+  }
+
+  /* Copied from the `EditLink` component. */
+  a {
+    text-decoration: none;
+    color: var(--sl-color-gray-3);
+  }
+  a:hover {
+    color: var(--sl-color-white);
+  }
 </style>

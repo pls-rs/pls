@@ -101,6 +101,10 @@ export default defineConfig({
         "./src/styles/terminal.css",
         "./src/styles/typography.css",
       ],
+      components: {
+        Footer: "./src/components/Footer.astro",
+        SocialIcons: "./src/components/SocialIcons.astro",
+      },
       editLink: {
         baseUrl: "https://github.com/pls-rs/pls/edit/main/docs/",
       },

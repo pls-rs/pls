@@ -14,6 +14,9 @@ export default defineConfig({
         light: "./src/assets/logo_light.svg",
         dark: "./src/assets/logo_dark.svg",
       },
+      expressiveCode: {
+        themes: ["catppuccin-mocha", "catppuccin-latte"],
+      },
       social: {
         github: "https://github.com/pls-rs/pls",
       },

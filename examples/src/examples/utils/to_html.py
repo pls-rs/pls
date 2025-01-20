@@ -50,12 +50,14 @@ def _cleanup_html(html: str) -> str:
     :return: the cleaned up HTML to use in the docs
     """
 
+    empty_span = '<span style="opacity:0;">&nbsp;</span>'
     lines = [
-        _substitutions(line) if line else '<span style="opacity:0;">&nbsp;</span>'
+        _substitutions(line) if line else empty_span
         for line in html.split("\n")
         if "<span class='shell'>" not in line
     ]
-    lines[1] = f"​{lines[1]}"
+    if lines[-1] == empty_span:
+        lines.pop()
     return "\n".join(lines)
 
 

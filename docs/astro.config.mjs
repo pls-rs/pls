@@ -4,6 +4,9 @@ import autoImport from "astro-auto-import";
 
 // https://astro.build/config
 export default defineConfig({
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [
     starlight({
       title: "pls",

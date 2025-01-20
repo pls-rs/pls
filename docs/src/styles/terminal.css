@@ -49,5 +49,5 @@ pre.terminal p {
 
 div.expressive-code + pre.terminal {
   margin-top: 0;
-  border-top-width: 0;
+  border-width: 1px 0 0 0;
 }

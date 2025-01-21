@@ -111,12 +111,8 @@ export default defineConfig({
     }),
     autoImport({
       imports: [
-        "@/components/Dhruv.astro",
-        "@/components/Footer.astro",
-        "@/components/Icon.astro",
         "@/components/Pls.astro",
         "@/components/Stars.astro",
-        "@/components/Stat.astro",
         "@/components/Version.astro",
         "@/components/DocBlock.astro",
       ],

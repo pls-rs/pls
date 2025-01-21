@@ -109,6 +109,8 @@ export default defineConfig({
         baseUrl: "https://github.com/pls-rs/pls/edit/main/docs/",
       },
     }),
+    // This causes a warning but it's harmless.
+    // Bug: https://github.com/delucis/astro-auto-import/issues/46
     autoImport({
       imports: [
         "@/components/Pls.astro",

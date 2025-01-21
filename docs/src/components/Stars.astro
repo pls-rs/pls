@@ -1,7 +1,7 @@
 ---
-import { Icon } from '@astrojs/starlight/components'
+import { Icon } from "@astrojs/starlight/components";
 
-const { owner, repo } = Astro.props
+const { owner, repo } = Astro.props;
 ---
 
 <a
@@ -36,36 +36,36 @@ const { owner, repo } = Astro.props
 <script>
   class GhStars extends HTMLElement {
     constructor() {
-      super()
+      super();
 
       const approximate = (count: number) => {
         if (count >= 1000) {
           // Show numbers over 1000 as x.yk. So 1234 becomes 1.2k.
-          const mag = Math.trunc(count / 100) / 10
-          return `${mag}k+`
+          const mag = Math.trunc(count / 100) / 10;
+          return `${mag}k+`;
         } else {
           // Show numbers below 1000 as xy0+. So 789 becomes 780.
-          const mag = Math.trunc(count / 10) * 10
-          return `${mag}+`
+          const mag = Math.trunc(count / 10) * 10;
+          return `${mag}+`;
         }
-      }
+      };
 
-      const { owner, repo } = this.dataset
+      const { owner, repo } = this.dataset;
       fetch(`https://api.github.com/repos/${owner}/${repo}`)
         .then((res) => {
           if (res.ok) {
-            return res.json()
+            return res.json();
           } else {
-            throw new Error('Network response was not OK.')
+            throw new Error("Network response was not OK.");
           }
         })
         .then((data) => {
-          const elem = this.querySelector('#star-count')
-          if (elem) elem.textContent = approximate(data.stargazers_count)
+          const elem = this.querySelector("#star-count");
+          if (elem) elem.textContent = approximate(data.stargazers_count);
         })
-        .catch((err) => void err)
+        .catch((err) => void err);
     }
   }
 
-  customElements.define('gh-stars', GhStars)
+  customElements.define("gh-stars", GhStars);
 </script>

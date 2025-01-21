@@ -1,25 +1,30 @@
-<!-- TODO: Get the latest version from GitHub. -->
-<pls-version><span id="version">0.0.0</span></pls-version>
+---
+const { owner, repo } = Astro.props;
+---
+
+<gh-version data-owner={owner} data-repo={repo}><span id="version">x.y.z</span></gh-version>
 
 <script>
-  class PlsVersion extends HTMLElement {
+  class GhVersion extends HTMLElement {
     constructor() {
       super();
 
-      const owner = "dhruvkb";
-      const repo = "pls";
+      const { owner, repo } = this.dataset;
       fetch(`https://api.github.com/repos/${owner}/${repo}/releases`)
-        .then(res => {
+        .then((res) => {
           if (res.ok) {
             return res.json();
           } else {
-            throw new Error("Failed to fetch latest version.");
+            throw new Error("Network response was not OK.");
           }
-        }).then(data => {
-          this.querySelector("#version").textContent = data[0].name.replace(/^v/, "");
         })
+        .then((data) => {
+          const elem = this.querySelector("#version")
+          if (elem) elem.textContent = data[0].name.replace(/^v/, "");
+        })
+        .catch((err) => void err);
     }
   }
 
-  customElements.define('pls-version', PlsVersion);
+  customElements.define("gh-version", GhVersion);
 </script>

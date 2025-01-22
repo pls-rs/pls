@@ -6,7 +6,8 @@
 <a href="https://pls.cli.rs/"><img src="https://img.shields.io/badge/docs-pls.cli.rs-blue" alt="Documentation"/></a>
 <a href="https://pls.cli.rs/guides/get_started"><img src="https://img.shields.io/github/v/tag/pls-rs/pls?label=rel" alt="Release"/></a>
 
-`pls` is a prettier and powerful `ls(1)` for the pros. The "p" stands for
+[`pls`](https://pls.cli.rs/) is a prettier and powerful `ls(1)` for the pros.
+The "p" stands for
 
 - **pretty**: `pls` output is cleaner, friendlier and more colorful.
 - **powerful**: `pls` provides more features than the competition.

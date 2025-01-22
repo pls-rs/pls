@@ -21,7 +21,7 @@ const { owner = "pls-rs", repo = "pls" } = Astro.props;
           }
         })
         .then((data) => {
-          const elem = this.querySelector("#version")
+          const elem = this.querySelector("#version");
           if (elem) elem.textContent = data[0].name.replace(/^v/, "");
         })
         .catch((err) => void err);

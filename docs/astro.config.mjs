@@ -10,6 +10,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "pls",
+      favicon: "/favicon.ico",
       logo: {
         light: "./src/assets/logo_light.svg",
         dark: "./src/assets/logo_dark.svg",

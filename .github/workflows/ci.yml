@@ -41,6 +41,7 @@ jobs:
   unit:
     name: Run unit test
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
@@ -64,6 +65,7 @@ jobs:
       - lint
       - unit
     strategy:
+      fail-fast: false
       matrix:
         build:
           - linux

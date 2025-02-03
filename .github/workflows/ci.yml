@@ -146,7 +146,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           cache: pnpm
-          node-version-file: docs/package.json
+          node-version-file: .nvmrc
           cache-dependency-path: docs/pnpm-lock.yaml
 
       - name: Install all dependencies

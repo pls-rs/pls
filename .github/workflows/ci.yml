@@ -58,6 +58,9 @@ jobs:
 
       - name: Run unit test
         run: just test
+        env:
+          TERM: xterm-256color
+          COLORTERM: truecolor
 
   build:
     name: Build release

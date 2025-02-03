@@ -248,8 +248,8 @@ impl<'pls> Node<'pls> {
 			}));
 		}
 
-		// Icon
-		if PLS.args.icon && !self.appearances.contains(&Appearance::Symlink) {
+		// Icons
+		if PLS.args.icons && !self.appearances.contains(&Appearance::Symlink) {
 			let icon = self.icon(conf, entry_const);
 			parts.push_str(&icon.render(&text_directives));
 		}

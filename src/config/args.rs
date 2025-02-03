@@ -61,8 +61,21 @@ pub struct Args {
 	pub details: Vec<DetailField>,
 
 	/// show headers above columnar data
-	#[clap(help_heading = "Detail view", short = 'H', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Detail view",
+		short = 'H',
+		long,
+		default_value = "true"
+	)]
 	pub header: bool,
+
+	/// don't show headers above columnar data
+	#[clap(
+		help_heading = "Detail view",
+		long = "no-header",
+		default_value = "false"
+	)]
+	pub no_header: bool,
 
 	/// the type of units to use for the node sizes
 	#[clap(
@@ -75,32 +88,91 @@ pub struct Args {
 	pub unit: UnitSys,
 
 	/// display node names in multiple columns
-	#[clap(help_heading = "Grid view", short, long, default_value = "false", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Grid view", short, long, default_value = "false")]
 	pub grid: bool,
 
+	/// don't display node names in multiple columns
+	#[clap(help_heading = "Grid view", long = "no-grid", default_value = "false")]
+	pub no_grid: bool,
+
 	/// display node names column-first
-	#[clap(help_heading = "Grid view", short = 'D', long, default_value = "false", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Grid view", short = 'D', long, default_value = "false")]
 	pub down: bool,
 
 	/// display icons next to node names
-	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
-	pub icon: bool,
+	#[clap(help_heading = "Presentation", short, long, default_value = "true")]
+	pub icons: bool,
+
+	/// don't display icons next to node names
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-icons",
+		default_value = "false"
+	)]
+	pub no_icons: bool,
 
 	/// display node type suffixes after the node name
-	#[clap(help_heading = "Presentation", short = 'S', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Presentation",
+		short = 'S',
+		long,
+		default_value = "true"
+	)]
 	pub suffix: bool,
 
+	/// don't display node type suffixes after the node name
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-suffix",
+		default_value = "false"
+	)]
+	pub no_suffix: bool,
+
 	/// show symlink targets
-	#[clap(help_heading = "Presentation", short = 'l', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Presentation",
+		short = 'l',
+		long,
+		default_value = "true"
+	)]
 	pub sym: bool,
 
+	/// don't show symlink targets
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-sym",
+		default_value = "false"
+	)]
+	pub no_sym: bool,
+
 	/// show dependent nodes as children of their principal nodes
-	#[clap(help_heading = "Presentation", short = 'c', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(
+		help_heading = "Presentation",
+		short = 'c',
+		long,
+		default_value = "true"
+	)]
 	pub collapse: bool,
 
+	/// don't show dependent nodes as children of their principal nodes
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-collapse",
+		default_value = "false"
+	)]
+	pub no_collapse: bool,
+
 	/// align items accounting for leading dots
-	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
+	#[clap(help_heading = "Presentation", short, long, default_value = "true")]
 	pub align: bool,
+
+	/// don't align items accounting for leading dots
+	#[clap(
+		help_heading = "Presentation",
+		long = "no-align",
+		default_value = "false"
+	)]
+	pub no_align: bool,
 
 	/// the set of node types to include in the output
 	#[clap(
@@ -201,6 +273,50 @@ impl Args {
 			self.collapse = false;
 		}
 
+		// negated flags
+		if self.no_header {
+			if self.header {
+				warnings.push("Header disabled by no-header flag.");
+			}
+			self.header = false;
+		}
+		if self.no_grid {
+			if self.grid {
+				warnings.push("Grid view disabled by no-grid flag.");
+			}
+			self.grid = false;
+		}
+		if self.no_icons {
+			if self.icons {
+				warnings.push("Icons disabled by no-icons flag.");
+			}
+			self.icons = false;
+		}
+		if self.no_suffix {
+			if self.suffix {
+				warnings.push("Suffixes disabled by no-suffix flag.");
+			}
+			self.suffix = false;
+		}
+		if self.no_sym {
+			if self.sym {
+				warnings.push("Symlink targets disabled by no-sym flag.");
+			}
+			self.sym = false;
+		}
+		if self.no_collapse {
+			if self.collapse {
+				warnings.push("Collapsing disabled by no-collapse flag.");
+			}
+			self.collapse = false;
+		}
+		if self.no_align {
+			if self.align {
+				warnings.push("Alignment disabled by no-align flag.");
+			}
+			self.align = false;
+		}
+
 		warnings
 	}
 
@@ -232,10 +348,10 @@ mod tests {
     }
 
 	make_warning_test!(
-		test_details_multi_col: ["pls", "--det", "ino", "--grid", "true"] => "Detailed view disabled grid view.",
-		test_multi_col_and_header: ["pls", "--grid", "true", "--header", "true"] => "Grid view disabled column headers.",
-		test_multi_col_and_sym: ["pls", "--grid", "true", "--sym", "true"] => "Grid view disabled symlink targets.",
-		test_multi_col_and_col: ["pls", "--grid", "true", "--collapse", "true"] => "Grid view disabled collapsing.",
+		test_details_multi_col: ["pls", "--det", "ino", "--grid"] => "Detailed view disabled grid view.",
+		test_multi_col_and_header: ["pls", "--grid", "--header"] => "Grid view disabled column headers.",
+		test_multi_col_and_sym: ["pls", "--grid", "--sym"] => "Grid view disabled symlink targets.",
+		test_multi_col_and_col: ["pls", "--grid", "--collapse"] => "Grid view disabled collapsing.",
 	);
 
 	macro_rules! make_clean_test {
@@ -252,24 +368,42 @@ mod tests {
     }
 
 	make_clean_test!(
-		test_details_beats_multi_col: ["pls", "--det", "ino", "--grid", "true"] => grid, false,
+		test_details_beats_multi_col: ["pls", "--det", "ino", "--grid"] => grid, false,
 
 		// Symlink target is only shown in detailed view.
 		test_default_sym: ["pls"] => sym, true,
 		test_default_sym_when_detailed: ["pls", "--det", "ino"] => sym, true,
-		test_default_sym_when_multi_col: ["pls", "--grid", "true"] => sym, false,
-		test_multi_col_beats_sym: ["pls", "--grid", "true", "--sym", "true"] => sym, false,
+		test_default_sym_when_multi_col: ["pls", "--grid"] => sym, false,
+		test_multi_col_beats_sym: ["pls", "--grid", "--sym"] => sym, false,
 
 		// Collapsing is only performed in detailed view.
 		test_default_col: ["pls"] => collapse, true,
 		test_default_col_when_detailed: ["pls", "--det", "ino"] => collapse, true,
-		test_default_col_when_multi_col: ["pls", "--grid", "true"] => collapse, false,
-		test_multi_col_beats_col: ["pls", "--grid", "true", "--collapse", "true"] => collapse, false,
+		test_default_col_when_multi_col: ["pls", "--grid"] => collapse, false,
+		test_multi_col_beats_col: ["pls", "--grid", "--collapse"] => collapse, false,
 
 		// Header is only shown when detailed view is enabled and there is at least one detail field.
 		test_default_header: ["pls"] => header, false,
 		test_default_header_when_detailed: ["pls", "--det", "ino"] => header, true,
-		test_default_header_when_multi_col: ["pls", "--grid", "true"] => header, false,
-		test_multi_col_beats_header: ["pls", "--grid", "true", "--header", "true"] => header, false,
+		test_default_header_when_multi_col: ["pls", "--grid"] => header, false,
+		test_multi_col_beats_header: ["pls", "--grid", "--header"] => header, false,
+
+		// negated flags
+		test_no_header: ["pls", "--no-header"] => header, false,
+		test_no_grid: ["pls", "--no-grid"] => grid, false,
+		test_no_icon: ["pls", "--no-icons"] => icons, false,
+		test_no_suffix: ["pls", "--no-suffix"] => suffix, false,
+		test_no_sym: ["pls", "--no-sym"] => sym, false,
+		test_no_collapse: ["pls", "--no-collapse"] => collapse, false,
+		test_no_align: ["pls", "--no-align"] => align, false,
+
+		// negated flags overriding defaults
+		test_no_header_overrides_default: ["pls", "--header", "--no-header"] => header, false,
+		test_no_grid_overrides_default: ["pls", "--grid", "--no-grid"] => grid, false,
+		test_no_icon_overrides_default: ["pls", "--icons", "--no-icons"] => icons, false,
+		test_no_suffix_overrides_default: ["pls", "--suffix", "--no-suffix"] => suffix, false,
+		test_no_sym_overrides_default: ["pls", "--sym", "--no-sym"] => sym, false,
+		test_no_collapse_overrides_default: ["pls", "--collapse", "--no-collapse"] => collapse, false,
+		test_no_align_overrides_default: ["pls", "--align", "--no-align"] => align, false,
 	);
 }

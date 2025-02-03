@@ -107,6 +107,7 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 #[cfg(test)]
 mod tests {
 	use super::fmt;
+	use figment::Jail;
 
 	macro_rules! make_test {
 		( $($name:ident: $styles:expr => $prefix:expr, $suffix:expr,)* ) => {
@@ -131,16 +132,38 @@ mod tests {
 		test_fmt_applies_bright_text_color: &["bright_blue"] => "\x1b[94m", "\x1b[0m",
 		test_fmt_ignores_invalid_text_color: &["invalid"] => "", "",
 
-		test_fmt_applies_rgb_text_color: &["rgb(77,77,77)"] => "\x1b[38;2;77;77;77m", "\x1b[0m",
-		test_fmt_ignores_out_of_bounds_rgb_text_color: &["rgb(256,256,256)"] => "", "",
-
 		test_fmt_applies_regular_background_color: &["bg:blue"] => "\x1b[44m", "\x1b[0m",
 		test_fmt_applies_bright_background_color: &["bg:bright_blue"] => "\x1b[104m", "\x1b[0m",
 		test_fmt_ignores_invalid_background_color: &["bg:invalid"] => "", "",
 
-		test_fmt_applies_rgb_background_color: &["bg:rgb(77,77,77)"] => "\x1b[48;2;77;77;77m", "\x1b[0m",
-		test_fmt_ignores_out_of_bounds_rgb_background_color: &["bg:rgb(256,256,256)"] => "", "",
-
 		test_fmt_handles_clear_directive: &["bold", "italic", "clear"] => "", "", // no prefix, no suffix
+	);
+
+	macro_rules! make_env_test {
+		( $($name:ident: $colorterm: expr, $styles:expr => $prefix:expr, $suffix:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
+					colored::control::set_override(true); // needed when running tests in CLion
+					Jail::expect_with(|jail| {
+						jail.set_env("COLORTERM", $colorterm);
+						let text = fmt("Hello, World!", $styles);
+						assert_eq!(text, format!("{}{}{}", $prefix, "Hello, World!", $suffix));
+						Ok(())
+					})
+				}
+			)*
+		};
+	}
+
+	make_env_test!(
+		test_fmt_applies_rgb_text_color_truecolor: "truecolor", &["rgb(77,77,77)"] => "\x1b[38;2;77;77;77m", "\x1b[0m",
+		test_fmt_applies_rgb_text_color_ansi: "ansi", &["rgb(77,77,77)"] => "\x1b[90m", "\x1b[0m",
+		test_fmt_applies_rgb_background_color_truecolor: "truecolor", &["bg:rgb(77,77,77)"] => "\x1b[48;2;77;77;77m", "\x1b[0m",
+		test_fmt_applies_rgb_background_color_ansi: "ansi", &["bg:rgb(77,77,77)"] => "\x1b[100m", "\x1b[0m",
+		test_fmt_ignores_out_of_bounds_rgb_text_color_truecolor: "truecolor", &["rgb(256,256,256)"] => "", "",
+		test_fmt_ignores_out_of_bounds_rgb_text_color_ansi: "ansi", &["rgb(256,256,256)"] => "", "",
+		test_fmt_ignores_out_of_bounds_rgb_background_color_truecolor: "truecolor", &["bg:rgb(256,256,256)"] => "", "",
+		test_fmt_ignores_out_of_bounds_rgb_background_color_ansi: "ansi", &["bg:rgb(256,256,256)"] => "", "",
 	);
 }

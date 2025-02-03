@@ -7,6 +7,9 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  markdown: {
+    smartypants: false, // https://daringfireball.net/projects/smartypants/
+  },
   integrations: [
     starlight({
       title: "pls",

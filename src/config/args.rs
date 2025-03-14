@@ -32,9 +32,9 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
 #[command(
     author,
     version,
-    about = render("<red bold>`pls`</> is a prettier and powerful `ls` for the pros."),
+    about = render("<red bold>pls</> is a prettier and powerful ls(1) for the pros."),
 	long_about = render(format!(
-		"<red bold>`pls`</> is a prettier and powerful `ls` for the pros.
+		"<red bold>pls</> is a prettier and powerful ls(1) for the pros.
 
 <bold>Read docs:</> {}
 <bold>Get source:</> {}

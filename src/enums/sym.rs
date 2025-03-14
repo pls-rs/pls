@@ -42,7 +42,7 @@ pub enum SymTarget<'node> {
 	Error(Exc),           // Target cannot be determined.
 }
 
-impl<'node> SymTarget<'node> {
+impl SymTarget<'_> {
 	/// Print the symlink target.
 	pub fn print(&self, conf: &Conf) -> String {
 		let state = self.into();

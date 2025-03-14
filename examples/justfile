@@ -12,7 +12,7 @@ set fallback
 # Install Python dependencies.
 install:
     pdm install
-    [ -x "$(command -v to-html)" ] || cargo install --git https://github.com/Aloso/to-html --branch main
+    [ -x "$(command -v to-html)" ] || cargo install --git https://github.com/Aloso/to-html --branch main to-html
 
 ###########
 # Recipes #

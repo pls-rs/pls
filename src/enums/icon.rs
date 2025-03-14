@@ -54,8 +54,8 @@ impl Icon {
 			.unwrap_or(1.0f32)
 			.min(2.0); // We only allocate two cells for an icon.
 
-		return (scale * PLS.window.as_ref().unwrap().cell_width() as f32) // Convert to px.s
-			.round() as u8;
+		(scale * PLS.window.as_ref().unwrap().cell_width() as f32) // Convert to px.s
+			.round() as u8
 	}
 
 	/// Get the output of the icon using the appropriate method:

@@ -1,11 +1,5 @@
 ---
-let {
-  title,
-  fqTitle,
-  required,
-  type,
-  subfieldsType,
-} = Astro.props;
+let { title, fqTitle, required, type, subfieldsType } = Astro.props;
 ---
 
 <div class="doc-block">
@@ -13,29 +7,41 @@ let {
     <strong class="title">
       <code class="not-content">
         <slot name="heading">
-          <span id={fqTitle || title}>{ title }</span>
+          <span id={fqTitle || title}>{title}</span>
         </slot>
       </code>
     </strong>
     {required && <span class="required">*</span>}
-    <code class="type">{ type }</code>
+    <code class="type">{type}</code>
   </div>
 
-  <slot></slot>
+  <slot />
 
-  {Astro.slots.has('subfields') && (
-    <details>
-      <summary>Properties of <code>{ subfieldsType || type }</code></summary>
-      <div><slot name="subfields"></slot></div>
-    </details>
-  )}
+  {
+    Astro.slots.has("subfields") && (
+      <details>
+        <summary>
+          Properties of <code>{subfieldsType || type}</code>
+        </summary>
+        <div>
+          <slot name="subfields" />
+        </div>
+      </details>
+    )
+  }
 
-  {Astro.slots.has('examples') && (
-    <details>
-      <summary>Examples of <code>{ title }</code></summary>
-      <div><slot name="examples"></slot></div>
-    </details>
-  )}
+  {
+    Astro.slots.has("examples") && (
+      <details>
+        <summary>
+          Examples of <code>{title}</code>
+        </summary>
+        <div>
+          <slot name="examples" />
+        </div>
+      </details>
+    )
+  }
 </div>
 
 <style is:global>

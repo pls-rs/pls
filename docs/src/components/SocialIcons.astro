@@ -1,0 +1,13 @@
+---
+import type { Props } from "@astrojs/starlight/props";
+
+import Default from "@astrojs/starlight/components/SocialIcons.astro";
+
+import Stars from "@/components/Stars.astro";
+---
+
+<Default {...Astro.props}><slot /></Default>
+<Stars
+  owner="pls-rs"
+  repo="pls"
+/>

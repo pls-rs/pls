@@ -102,7 +102,7 @@ impl DirGroup {
 			.args
 			.exclude
 			.as_ref()
-			.map_or(false, |pat| pat.is_match(haystack));
+			.is_some_and(|pat| pat.is_match(haystack));
 		if exclude {
 			debug!("Name {name:?} matched `--exclude`.");
 			return None;

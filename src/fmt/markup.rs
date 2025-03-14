@@ -19,7 +19,7 @@ where
 	F: Fn(char) -> bool,
 {
 	let mut selected = String::new();
-	while tokens.peek().map_or(false, |ch| predicate(*ch)) {
+	while tokens.peek().is_some_and(|ch| predicate(*ch)) {
 		selected.push(tokens.next().unwrap());
 	}
 	selected

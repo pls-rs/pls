@@ -1,23 +1,19 @@
 {
-  "name": "pls_docs",
+  "name": "docs",
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "dev": "astro dev --host",
+    "check": "astro check",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "astro preview --host --port 4322",
     "astro": "astro",
     "fmt": "prettier --ignore-path .gitignore --ignore-path .prettierignore --write ."
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.28.2",
-    "astro": "^4.15.8",
+    "@astrojs/starlight": "^0.30.6",
+    "astro": "^5.1.5",
     "astro-auto-import": "^0.4.2"
   },
-  "engines": {
-    "node": ">= 20.0.0 <21"
-  },
-  "engineStrict": true,
-  "packageManager": "pnpm@9.9.0"
+  "packageManager": "pnpm@9.15.5"
 }

@@ -1,17 +1,44 @@
 ---
+import { Icon } from "@astrojs/starlight/components";
+
 const { owner, repo } = Astro.props;
 ---
 
-<pls-stars data-owner={owner} data-repo={repo}>
-  <span id="star-count">many</span>
-</pls-stars>
+<a
+  href={`https://github.com/${owner}/${repo}`}
+  class="sl-flex stars not-content">
+  <Icon name="star" />
+  <gh-stars
+    data-owner={owner}
+    data-repo={repo}>
+    <span id="star-count">many</span>
+  </gh-stars>
+</a>
+
+<style>
+  .stars {
+    align-items: center;
+    gap: 0.25rem;
+    text-decoration: none;
+  }
+
+  /* Copied from the `SocialIcons` component. */
+  a {
+    color: var(--sl-color-text-accent);
+    padding: 0.5em;
+    margin: -0.5em;
+  }
+  a:hover {
+    opacity: 0.66;
+  }
+</style>
 
 <script>
-  class PlsStars extends HTMLElement {
+  class GhStars extends HTMLElement {
     constructor() {
       super();
 
-      const approximate = (count) => {
+      const approximate = (count: number) => {
         if (count >= 1000) {
           // Show numbers over 1000 as x.yk. So 1234 becomes 1.2k.
           const mag = Math.trunc(count / 100) / 10;
@@ -21,22 +48,24 @@ const { owner, repo } = Astro.props;
           const mag = Math.trunc(count / 10) * 10;
           return `${mag}+`;
         }
-      }
+      };
 
-      const {owner, repo} = this.dataset;
+      const { owner, repo } = this.dataset;
       fetch(`https://api.github.com/repos/${owner}/${repo}`)
-        .then(res => {
+        .then((res) => {
           if (res.ok) {
             return res.json();
           } else {
-            throw new Error('Network response was not OK.');
+            throw new Error("Network response was not OK.");
           }
         })
-        .then(data => {
-          this.querySelector('#star-count').textContent = approximate(data.stargazers_count);
-        }).catch(() => {});
+        .then((data) => {
+          const elem = this.querySelector("#star-count");
+          if (elem) elem.textContent = approximate(data.stargazers_count);
+        })
+        .catch((err) => void err);
     }
   }
 
-  customElements.define('pls-stars', PlsStars)
+  customElements.define("gh-stars", GhStars);
 </script>

@@ -149,10 +149,10 @@ where
 /// * `timeout_ms` - the timeout in milliseconds
 fn query_raw(query: &str, timeout_ms: u64) -> Result<String, Exc> {
 	enable_raw_mode().map_err(Exc::Io)?;
-	let res = xterm_query::query(query, timeout_ms).map_err(Exc::Xterm)?;
+	let res = xterm_query::query_osc(query, timeout_ms).map_err(Exc::Xterm);
 	disable_raw_mode().map_err(Exc::Io)?;
 
-	Ok(res)
+	res
 }
 
 #[cfg(test)]

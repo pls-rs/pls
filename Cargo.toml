@@ -43,7 +43,7 @@ shellexpand = { version = "3.1.0", default-features = false, features = ["base-0
 time = { version = "0.3.22", default-features = false, features = ["std", "alloc", "local-offset", "formatting"] }
 unicode-segmentation = "1.10.1"
 uzers = { version = "0.12.1", default-features = false, features = ["cache"] }
-xterm-query = "0.4.1"
+xterm-query = "0.5.2"
 
 [profile.release]
 # Reference: https://github.com/johnthagen/min-sized-rust

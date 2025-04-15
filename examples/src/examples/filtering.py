@@ -17,10 +17,10 @@ def name_filter():
             ["a.rs", "b.rs", "c.rs", "a.jpg", "b.jpg", "c.jpeg"],
         )
     ) as bench:
-        write_out("--only='(a|c)'", r"--exclude='\.jpe?g'", bench=bench, dest_name="on")
+        write_out("--only=(a|c)", r"--exclude=\.jpe?g", bench=bench, dest_name="on")
         write_out(bench=bench, dest_name="off")
         write_out(
-            r"--exclude='\.jpe?g'",
+            r"--exclude=\.jpe?g",
             "a.jpg",
             cwd=bench,
             include_bench=False,

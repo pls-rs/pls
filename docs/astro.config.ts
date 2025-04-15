@@ -21,9 +21,13 @@ export default defineConfig({
       expressiveCode: {
         themes: ["catppuccin-mocha", "catppuccin-latte"],
       },
-      social: {
-        github: "https://github.com/pls-rs/pls",
-      },
+      social: [
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/pls-rs/pls",
+        },
+      ],
       sidebar: [
         {
           label: "About",
@@ -124,7 +128,4 @@ export default defineConfig({
       ],
     }),
   ],
-  markdown: {
-    smartypants: false, // SmartyPants converts '--' into en-dash, breaking alignment.
-  },
 });

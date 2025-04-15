@@ -2,7 +2,7 @@ import inspect
 import shutil
 from pathlib import Path
 
-from examples.utils.to_html import run_to_html
+from examples.utils.pls import run_pls
 from examples.utils.io import write_content
 
 
@@ -31,7 +31,7 @@ def write_out(
     args = list(args)
     if bench and include_bench:
         args.append(str(bench.absolute()))
-    content = run_to_html(args, **kwargs)
+    content = run_pls(args, **kwargs)
 
     out_file = f"{func_name}/{dest_name}.mdx"
     print(f"Writing MDX to '{out_file}'.")

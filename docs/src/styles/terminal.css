@@ -47,7 +47,9 @@ pre.terminal p {
   overflow-x: auto;
 }
 
-div.expressive-code + pre.terminal {
+/* Join output code block into its preceding command block */
+div.expressive-code:has(figure.is-terminal)
+  + div.expressive-code:not(:has(figure.is-terminal)) {
   margin-top: 0;
-  border-width: 1px 0 0 0;
+  border-top: 1px solid var(--sl-color-gray-4);
 }

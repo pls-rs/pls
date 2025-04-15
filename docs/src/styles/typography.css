@@ -3,7 +3,7 @@ span.math {
   font-style: italic;
 }
 
-figcaption.header:has(span.sr-only) ~ pre .ec-line .code::before {
+pre[data-language="bash"] .ec-line .code::before {
   content: "$ ";
   opacity: 0.5;
 }

@@ -2,6 +2,9 @@
 .vscode
 .idea
 
+# Node.js modules
+node_modules
+
 # Build artifacts
 target
 

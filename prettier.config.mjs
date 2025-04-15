@@ -19,4 +19,5 @@ export default {
     },
   ],
   proseWrap: "always",
+  plugins: ["prettier-plugin-astro"],
 };

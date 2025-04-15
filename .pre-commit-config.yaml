@@ -87,7 +87,21 @@ repos:
   # JavaScript
   # ==========
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
+  - repo: local
     hooks:
       - id: prettier
+        name: prettier
+        "types": [text]
+        language: system
+        pass_filenames: true
+        # Set log-level to error to prevent prettier printing every single file it checks
+        # when running pre-commit with --all-files
+        entry: pnpm exec prettier --write --ignore-unknown --log-level error
+
+      - id: eslint
+        name: eslint
+        files: (frontend|automations|packages/js).*?\.(js|ts|mjs|vue|json5?)$
+        "types": [file] # ESLint only accepts [javascript] by default.
+        language: system
+        pass_filenames: false
+        entry: pnpm exec eslint --max-warnings=0 --no-warn-ignored --fix

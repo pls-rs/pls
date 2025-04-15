@@ -1,26 +1,26 @@
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import globals from 'globals'
+import globals from "globals";
 
-import { includeIgnoreFile } from '@eslint/compat'
+import { includeIgnoreFile } from "@eslint/compat";
 
-import js from '@eslint/js'
-import ts from 'typescript-eslint'
-import astro from 'eslint-plugin-astro'
+import js from "@eslint/js";
+import ts from "typescript-eslint";
+import astro from "eslint-plugin-astro";
 
-const __filename = fileURLToPath(import.meta.url)
-const srcDir = path.dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const srcDir = path.dirname(__filename);
 
-const gitignorePath = path.resolve(srcDir, '.gitignore')
+const gitignorePath = path.resolve(srcDir, ".gitignore");
 
 export default [
   includeIgnoreFile(gitignorePath),
 
   {
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+      ecmaVersion: "latest",
+      sourceType: "module",
       globals: {
         ...globals.node,
         ...globals.browser,
@@ -28,8 +28,8 @@ export default [
     },
 
     rules: {
-      'import/prefer-default-export': 'off',
-      '@typescript-eslint/consistent-type-imports': 'error',
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/consistent-type-imports": "error",
     },
   },
 
@@ -40,9 +40,9 @@ export default [
 
   // Type definitions
   {
-    files: ['**/*.d.ts'],
+    files: ["**/*.d.ts"],
     rules: {
-      '@typescript-eslint/triple-slash-reference': 'off',
+      "@typescript-eslint/triple-slash-reference": "off",
     },
   },
-]
+];

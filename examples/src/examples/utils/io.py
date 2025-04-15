@@ -14,9 +14,6 @@ def write_content(dest_path: str, content: str):
     :param content: the content to write inside the file
     """
 
-    if not content.endswith("\n"):
-        content += "\n"
-
     dest_path = DOCS_EXAMPLES / dest_path
     if not dest_path.parent.exists():
         dest_path.parent.mkdir(mode=0o755, parents=True)

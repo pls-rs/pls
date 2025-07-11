@@ -232,7 +232,7 @@ impl Detail for Node<'_> {
 		let mut status_opts = git2::StatusOptions::new();
 		status_opts.include_untracked(true);
 		status_opts.include_ignored(true);
-		status_opts.recurse_untracked_dirs(false);
+		status_opts.recurse_untracked_dirs(true);
 
 		let statuses = match repo.statuses(Some(&mut status_opts)) {
 			Ok(statuses) => statuses,
@@ -246,7 +246,8 @@ impl Detail for Node<'_> {
 			// For directories, check if the directory itself has status or if it contains modified files
 			let mut has_changes = false;
 			let mut directory_status = None;
-			let mut is_ignored = false;
+			let mut all_ignored = true;
+			let mut has_files = false;
 
 			for entry in statuses.iter() {
 				if let Some(path) = entry.path() {
@@ -258,11 +259,12 @@ impl Detail for Node<'_> {
 					}
 					// Check if this is a file inside the directory
 					else if path.starts_with(&format!("{}/", relative_path_str)) {
-						// Check if this file is ignored - if so, the directory might be ignored too
-						if entry.status().contains(Status::IGNORED) {
-							is_ignored = true;
-						}
+						has_files = true;
 						has_changes = true;
+						// If any file in the directory is NOT ignored, the directory is mixed
+						if !entry.status().contains(Status::IGNORED) {
+							all_ignored = false;
+						}
 						// Don't break here - we want to check for directory status too
 					}
 				}
@@ -273,8 +275,8 @@ impl Detail for Node<'_> {
 				let git_status = self.format_git_status(status);
 				return Some(git_status);
 			}
-			// If the directory contains changes but all files in it are ignored, show as ignored
-			else if has_changes && is_ignored {
+			// If the directory contains files and ALL of them are ignored, show as ignored
+			else if has_files && all_ignored {
 				return Some(format!("<red>!!</>"));
 			}
 			// If the directory contains changes but isn't tracked itself, show dirty

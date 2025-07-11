@@ -15,3 +15,12 @@ report.html
 
 # pre-commit executable
 pre-commit.pyz
+ignored_file
+test_mixed/ignored.txt
+test_ignored/
+
+# Test scenarios
+test_scenarios/fully_ignored/
+test_scenarios/partially_ignored/ignored.txt
+test_scenarios/nested_ignored/sub1/
+*.log

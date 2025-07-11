@@ -3,6 +3,7 @@ use crate::enums::{DetailField, Typ};
 use crate::ext::Ctime;
 use crate::models::{Node, OwnerMan, Perm};
 use crate::PLS;
+use git2::{Repository, Status};
 use log::warn;
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
@@ -28,6 +29,7 @@ pub trait Detail {
 	fn size(&self, entry_const: &EntryConst) -> Option<String>;
 	fn blocks(&self, entry_const: &EntryConst) -> Option<String>;
 	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String>;
+	fn git(&self, entry_const: &EntryConst) -> Option<String>;
 }
 
 impl Detail for Node<'_> {
@@ -202,5 +204,70 @@ impl Detail for Node<'_> {
 			.unwrap();
 			dt.format(&format).unwrap()
 		})
+	}
+
+	/// Get the git status of the file.
+	///
+	/// This function returns a marked-up string.
+	fn git(&self, entry_const: &EntryConst) -> Option<String> {
+		// Convert to absolute path first
+		let absolute_path = match self.path.canonicalize() {
+			Ok(path) => path,
+			Err(_) => return Some("  ".to_string()),
+		};
+
+		// Try to find the git repository from the node's path
+		let repo = match Repository::discover(&absolute_path) {
+			Ok(repo) => repo,
+			Err(_) => return Some("  ".to_string()), // Not in a git repo
+		};
+
+		// Get the relative path from the repository root
+		let repo_path = repo.workdir()?;
+		let relative_path = match absolute_path.strip_prefix(repo_path) {
+			Ok(path) => path,
+			Err(_) => return Some("  ".to_string()),
+		};
+
+		// Get the status of the file
+		let mut status_opts = git2::StatusOptions::new();
+		status_opts.include_untracked(true);
+		status_opts.include_ignored(false);
+		status_opts.recurse_untracked_dirs(false);
+
+		let statuses = match repo.statuses(Some(&mut status_opts)) {
+			Ok(statuses) => statuses,
+			Err(_) => return Some("  ".to_string()),
+		};
+
+		// Find the status for this specific file
+		let relative_path_str = relative_path.to_string_lossy();
+		for entry in statuses.iter() {
+			if let Some(path) = entry.path() {
+				if path == relative_path_str {
+					let status = entry.status();
+					let git_status = match status {
+						s if s.contains(Status::INDEX_NEW) => "A ",
+						s if s.contains(Status::INDEX_MODIFIED) => "M ",
+						s if s.contains(Status::INDEX_DELETED) => "D ",
+						s if s.contains(Status::INDEX_RENAMED) => "R ",
+						s if s.contains(Status::INDEX_TYPECHANGE) => "T ",
+						s if s.contains(Status::WT_NEW) => "??",
+						s if s.contains(Status::WT_MODIFIED) => " M",
+						s if s.contains(Status::WT_DELETED) => " D",
+						s if s.contains(Status::WT_RENAMED) => " R",
+						s if s.contains(Status::WT_TYPECHANGE) => " T",
+						s if s.contains(Status::IGNORED) => "!!",
+						s if s.contains(Status::CONFLICTED) => "UU",
+						_ => "  ",
+					};
+					let directives = &entry_const.git_style;
+					return Some(format!("<{directives}>{git_status}</>"));
+				}
+			}
+		}
+
+		// File not found in status, assume it's unmodified
+		Some("  ".to_string())
 	}
 }

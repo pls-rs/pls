@@ -306,6 +306,7 @@ impl<'pls> Node<'pls> {
 			DetailField::Atime => self.time(detail, entry_const),
 			DetailField::Size => self.size(entry_const),
 			DetailField::Blocks => self.blocks(entry_const),
+			DetailField::Git => self.git(entry_const),
 			// `Typ` enum
 			DetailField::Typ => Some(self.typ.ch(entry_const)),
 			_ => Some(String::default()),

@@ -206,7 +206,7 @@ impl Detail for Node<'_> {
 		})
 	}
 
-	/// Get the git status of the file.
+	/// Get the git status of the file or directory.
 	///
 	/// This function returns a marked-up string.
 	fn git(&self, entry_const: &EntryConst) -> Option<String> {
@@ -229,7 +229,7 @@ impl Detail for Node<'_> {
 			Err(_) => return Some("  ".to_string()),
 		};
 
-		// Get the status of the file
+		// Get the status of all files
 		let mut status_opts = git2::StatusOptions::new();
 		status_opts.include_untracked(true);
 		status_opts.include_ignored(false);
@@ -240,29 +240,85 @@ impl Detail for Node<'_> {
 			Err(_) => return Some("  ".to_string()),
 		};
 
-		// Find the status for this specific file
 		let relative_path_str = relative_path.to_string_lossy();
-		for entry in statuses.iter() {
-			if let Some(path) = entry.path() {
-				if path == relative_path_str {
-					let status = entry.status();
-					let git_status = match status {
-						s if s.contains(Status::INDEX_NEW) => "A ",
-						s if s.contains(Status::INDEX_MODIFIED) => "M ",
-						s if s.contains(Status::INDEX_DELETED) => "D ",
-						s if s.contains(Status::INDEX_RENAMED) => "R ",
-						s if s.contains(Status::INDEX_TYPECHANGE) => "T ",
-						s if s.contains(Status::WT_NEW) => "??",
-						s if s.contains(Status::WT_MODIFIED) => " M",
-						s if s.contains(Status::WT_DELETED) => " D",
-						s if s.contains(Status::WT_RENAMED) => " R",
-						s if s.contains(Status::WT_TYPECHANGE) => " T",
-						s if s.contains(Status::IGNORED) => "!!",
-						s if s.contains(Status::CONFLICTED) => "UU",
-						_ => "  ",
-					};
-					let directives = &entry_const.git_style;
-					return Some(format!("<{directives}>{git_status}</>"));
+		
+		// Check if this is a directory
+		if self.typ == crate::enums::Typ::Dir {
+			// For directories, check if the directory itself has status or if it contains modified files
+			let mut has_changes = false;
+			let mut directory_status = None;
+			
+			for entry in statuses.iter() {
+				if let Some(path) = entry.path() {
+					// Check if this is the directory itself
+					if path == relative_path_str {
+						directory_status = Some(entry.status());
+						has_changes = true;
+						break;
+					}
+					// Check if this is a file inside the directory
+					else if path.starts_with(&format!("{}/", relative_path_str)) {
+						has_changes = true;
+						// Don't break here - we want to check for directory status too
+					}
+				}
+			}
+			
+			// If the directory itself has a status, use that
+			if let Some(status) = directory_status {
+				let git_status = match status {
+					s if s.contains(Status::INDEX_NEW) => "A ",
+					s if s.contains(Status::INDEX_MODIFIED) => "M ",
+					s if s.contains(Status::INDEX_DELETED) => "D ",
+					s if s.contains(Status::INDEX_RENAMED) => "R ",
+					s if s.contains(Status::INDEX_TYPECHANGE) => "T ",
+					s if s.contains(Status::WT_NEW) => "??",
+					s if s.contains(Status::WT_MODIFIED) => " M",
+					s if s.contains(Status::WT_DELETED) => " D",
+					s if s.contains(Status::WT_RENAMED) => " R",
+					s if s.contains(Status::WT_TYPECHANGE) => " T",
+					s if s.contains(Status::IGNORED) => "!!",
+					s if s.contains(Status::CONFLICTED) => "UU",
+					_ => "  ",
+				};
+				let directives = &entry_const.git_style;
+				return Some(format!("<{directives}>{git_status}</>"));
+			}
+			// If the directory contains changes but isn't tracked itself, show modified
+			else if has_changes {
+				let directives = &entry_const.git_style;
+				return Some(format!("<{directives}> M</>"));
+			}
+			// Directory is clean
+			else {
+				return Some("  ".to_string());
+			}
+		}
+		// Handle files (existing logic)
+		else {
+			// Find the status for this specific file
+			for entry in statuses.iter() {
+				if let Some(path) = entry.path() {
+					if path == relative_path_str {
+						let status = entry.status();
+						let git_status = match status {
+							s if s.contains(Status::INDEX_NEW) => "A ",
+							s if s.contains(Status::INDEX_MODIFIED) => "M ",
+							s if s.contains(Status::INDEX_DELETED) => "D ",
+							s if s.contains(Status::INDEX_RENAMED) => "R ",
+							s if s.contains(Status::INDEX_TYPECHANGE) => "T ",
+							s if s.contains(Status::WT_NEW) => "??",
+							s if s.contains(Status::WT_MODIFIED) => " M",
+							s if s.contains(Status::WT_DELETED) => " D",
+							s if s.contains(Status::WT_RENAMED) => " R",
+							s if s.contains(Status::WT_TYPECHANGE) => " T",
+							s if s.contains(Status::IGNORED) => "!!",
+							s if s.contains(Status::CONFLICTED) => "UU",
+							_ => "  ",
+						};
+						let directives = &entry_const.git_style;
+						return Some(format!("<{directives}>{git_status}</>"));
+					}
 				}
 			}
 		}

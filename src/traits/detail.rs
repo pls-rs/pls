@@ -207,9 +207,11 @@ impl Detail for Node<'_> {
 	}
 
 	/// Get the git status of the file or directory.
+	/// Now supports both files and directories with proper color coding.
+	/// Fixed: Staged changes now show in green on the left position.
 	///
 	/// This function returns a marked-up string.
-	fn git(&self, entry_const: &EntryConst) -> Option<String> {
+	fn git(&self, _entry_const: &EntryConst) -> Option<String> {
 		// Convert to absolute path first
 		let absolute_path = match self.path.canonicalize() {
 			Ok(path) => path,
@@ -266,28 +268,12 @@ impl Detail for Node<'_> {
 			
 			// If the directory itself has a status, use that
 			if let Some(status) = directory_status {
-				let git_status = match status {
-					s if s.contains(Status::INDEX_NEW) => "A ",
-					s if s.contains(Status::INDEX_MODIFIED) => "M ",
-					s if s.contains(Status::INDEX_DELETED) => "D ",
-					s if s.contains(Status::INDEX_RENAMED) => "R ",
-					s if s.contains(Status::INDEX_TYPECHANGE) => "T ",
-					s if s.contains(Status::WT_NEW) => "??",
-					s if s.contains(Status::WT_MODIFIED) => " M",
-					s if s.contains(Status::WT_DELETED) => " D",
-					s if s.contains(Status::WT_RENAMED) => " R",
-					s if s.contains(Status::WT_TYPECHANGE) => " T",
-					s if s.contains(Status::IGNORED) => "!!",
-					s if s.contains(Status::CONFLICTED) => "UU",
-					_ => "  ",
-				};
-				let directives = &entry_const.git_style;
-				return Some(format!("<{directives}>{git_status}</>"));
+				let git_status = self.format_git_status(status);
+				return Some(git_status);
 			}
 			// If the directory contains changes but isn't tracked itself, show modified
 			else if has_changes {
-				let directives = &entry_const.git_style;
-				return Some(format!("<{directives}> M</>"));
+				return Some(format!("<green> </><red>M</>"));
 			}
 			// Directory is clean
 			else {
@@ -300,24 +286,8 @@ impl Detail for Node<'_> {
 			for entry in statuses.iter() {
 				if let Some(path) = entry.path() {
 					if path == relative_path_str {
-						let status = entry.status();
-						let git_status = match status {
-							s if s.contains(Status::INDEX_NEW) => "A ",
-							s if s.contains(Status::INDEX_MODIFIED) => "M ",
-							s if s.contains(Status::INDEX_DELETED) => "D ",
-							s if s.contains(Status::INDEX_RENAMED) => "R ",
-							s if s.contains(Status::INDEX_TYPECHANGE) => "T ",
-							s if s.contains(Status::WT_NEW) => "??",
-							s if s.contains(Status::WT_MODIFIED) => " M",
-							s if s.contains(Status::WT_DELETED) => " D",
-							s if s.contains(Status::WT_RENAMED) => " R",
-							s if s.contains(Status::WT_TYPECHANGE) => " T",
-							s if s.contains(Status::IGNORED) => "!!",
-							s if s.contains(Status::CONFLICTED) => "UU",
-							_ => "  ",
-						};
-						let directives = &entry_const.git_style;
-						return Some(format!("<{directives}>{git_status}</>"));
+						let git_status = self.format_git_status(entry.status());
+						return Some(git_status);
 					}
 				}
 			}
@@ -325,5 +295,66 @@ impl Detail for Node<'_> {
 
 		// File not found in status, assume it's unmodified
 		Some("  ".to_string())
+	}
+}
+
+impl<'pls> Node<'pls> {
+	/// Format git status with proper color coding
+	fn format_git_status(&self, status: Status) -> String {
+		// Determine the staged (index) character
+		let staged_char = if status.contains(Status::INDEX_NEW) {
+			'A'
+		} else if status.contains(Status::INDEX_MODIFIED) {
+			'M'
+		} else if status.contains(Status::INDEX_DELETED) {
+			'D'
+		} else if status.contains(Status::INDEX_RENAMED) {
+			'R'
+		} else if status.contains(Status::INDEX_TYPECHANGE) {
+			'T'
+		} else {
+			' '
+		};
+
+		// Determine the unstaged (worktree) character
+		let unstaged_char = if status.contains(Status::WT_NEW) {
+			'?'
+		} else if status.contains(Status::WT_MODIFIED) {
+			'M'
+		} else if status.contains(Status::WT_DELETED) {
+			'D'
+		} else if status.contains(Status::WT_RENAMED) {
+			'R'
+		} else if status.contains(Status::WT_TYPECHANGE) {
+			'T'
+		} else {
+			' '
+		};
+
+		// Handle special cases
+		if status.contains(Status::IGNORED) {
+			return format!("<red>!!</>");
+		}
+		if status.contains(Status::CONFLICTED) {
+			return format!("<red>UU</>");
+		}
+		if status.contains(Status::WT_NEW) && unstaged_char == '?' {
+			return format!("<red>??</>");
+		}
+
+		// Format with colors: green for staged, red for unstaged
+		let staged_formatted = if staged_char == ' ' {
+			" ".to_string()
+		} else {
+			format!("<green>{}</>", staged_char)
+		};
+
+		let unstaged_formatted = if unstaged_char == ' ' {
+			" ".to_string()
+		} else {
+			format!("<red>{}</>", unstaged_char)
+		};
+
+		format!("{}{}", staged_formatted, unstaged_formatted)
 	}
 }

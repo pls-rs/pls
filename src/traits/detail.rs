@@ -246,6 +246,7 @@ impl Detail for Node<'_> {
 			// For directories, check if the directory itself has status or if it contains modified files
 			let mut has_changes = false;
 			let mut directory_status = None;
+			let mut is_ignored = false;
 
 			for entry in statuses.iter() {
 				if let Some(path) = entry.path() {
@@ -257,6 +258,10 @@ impl Detail for Node<'_> {
 					}
 					// Check if this is a file inside the directory
 					else if path.starts_with(&format!("{}/", relative_path_str)) {
+						// Check if this file is ignored - if so, the directory might be ignored too
+						if entry.status().contains(Status::IGNORED) {
+							is_ignored = true;
+						}
 						has_changes = true;
 						// Don't break here - we want to check for directory status too
 					}
@@ -267,6 +272,10 @@ impl Detail for Node<'_> {
 			if let Some(status) = directory_status {
 				let git_status = self.format_git_status(status);
 				return Some(git_status);
+			}
+			// If the directory contains changes but all files in it are ignored, show as ignored
+			else if has_changes && is_ignored {
+				return Some(format!("<red>!!</>"));
 			}
 			// If the directory contains changes but isn't tracked itself, show dirty
 			else if has_changes {

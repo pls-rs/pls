@@ -231,7 +231,7 @@ impl Detail for Node<'_> {
 		// Get the status of all files
 		let mut status_opts = git2::StatusOptions::new();
 		status_opts.include_untracked(true);
-		status_opts.include_ignored(false);
+		status_opts.include_ignored(true);
 		status_opts.recurse_untracked_dirs(false);
 
 		let statuses = match repo.statuses(Some(&mut status_opts)) {

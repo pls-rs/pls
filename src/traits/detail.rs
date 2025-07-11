@@ -207,9 +207,6 @@ impl Detail for Node<'_> {
 	}
 
 	/// Get the git status of the file or directory.
-	/// Now supports both files and directories with proper color coding.
-	/// Fixed: Staged changes now show in green on the left position.
-	///
 	/// This function returns a marked-up string.
 	fn git(&self, _entry_const: &EntryConst) -> Option<String> {
 		// Convert to absolute path first
@@ -243,13 +240,13 @@ impl Detail for Node<'_> {
 		};
 
 		let relative_path_str = relative_path.to_string_lossy();
-		
+
 		// Check if this is a directory
 		if self.typ == crate::enums::Typ::Dir {
 			// For directories, check if the directory itself has status or if it contains modified files
 			let mut has_changes = false;
 			let mut directory_status = None;
-			
+
 			for entry in statuses.iter() {
 				if let Some(path) = entry.path() {
 					// Check if this is the directory itself
@@ -265,15 +262,15 @@ impl Detail for Node<'_> {
 					}
 				}
 			}
-			
+
 			// If the directory itself has a status, use that
 			if let Some(status) = directory_status {
 				let git_status = self.format_git_status(status);
 				return Some(git_status);
 			}
-			// If the directory contains changes but isn't tracked itself, show modified
+			// If the directory contains changes but isn't tracked itself, show dirty
 			else if has_changes {
-				return Some(format!("<green> </><red>M</>"));
+				return Some(format!("<red> *</>"));
 			}
 			// Directory is clean
 			else {

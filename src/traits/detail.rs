@@ -228,6 +228,28 @@ impl Detail for Node<'_> {
 			Err(_) => return Some("  ".to_string()),
 		};
 
+		// Check if this is a directory and if it's ignored - do this BEFORE getting git status
+		if self.typ == crate::enums::Typ::Dir {
+			// First check if the directory itself is ignored by .gitignore patterns
+			if repo.is_path_ignored(&absolute_path).unwrap_or(false) {
+				return Some(format!("<red>!!</>"));
+			}
+			
+			// Fallback: Check git status for the directory itself to see if it's ignored
+			let mut status_opts = git2::StatusOptions::new();
+			status_opts.include_ignored(true);
+			if let Ok(statuses) = repo.statuses(Some(&mut status_opts)) {
+				let relative_path_str = relative_path.to_string_lossy();
+				for entry in statuses.iter() {
+					if let Some(path) = entry.path() {
+						if path == relative_path_str && entry.status().contains(Status::IGNORED) {
+							return Some(format!("<red>!!</>"));
+						}
+					}
+				}
+			}
+		}
+
 		// Get the status of all files
 		let mut status_opts = git2::StatusOptions::new();
 		status_opts.include_untracked(true);
@@ -241,7 +263,7 @@ impl Detail for Node<'_> {
 
 		let relative_path_str = relative_path.to_string_lossy();
 
-		// Check if this is a directory
+		// Check if this is a directory (we've already handled ignored directories above)
 		if self.typ == crate::enums::Typ::Dir {
 			// For directories, check if the directory itself has status or if it contains modified files
 			let mut has_non_ignored_changes = false;
@@ -252,10 +274,6 @@ impl Detail for Node<'_> {
 					// Check if this is the directory itself
 					if path == relative_path_str {
 						directory_status = Some(entry.status());
-						// If directory itself is directly ignored, that's our status
-						if entry.status().contains(Status::IGNORED) {
-							return Some(format!("<red>!!</>"));
-						}
 						// Only count non-ignored status as changes for * determination
 						if !entry.status().contains(Status::IGNORED) {
 							has_non_ignored_changes = true;
@@ -272,7 +290,7 @@ impl Detail for Node<'_> {
 				}
 			}
 
-			// If the directory itself has a status (and we haven't already returned), use that
+			// If the directory itself has a status, use that
 			if let Some(status) = directory_status {
 				let git_status = self.format_git_status(status);
 				return Some(git_status);

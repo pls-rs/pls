@@ -244,43 +244,41 @@ impl Detail for Node<'_> {
 		// Check if this is a directory
 		if self.typ == crate::enums::Typ::Dir {
 			// For directories, check if the directory itself has status or if it contains modified files
-			let mut has_changes = false;
+			let mut has_non_ignored_changes = false;
 			let mut directory_status = None;
-			let mut all_ignored = true;
-			let mut has_files = false;
 
 			for entry in statuses.iter() {
 				if let Some(path) = entry.path() {
 					// Check if this is the directory itself
 					if path == relative_path_str {
 						directory_status = Some(entry.status());
-						has_changes = true;
+						// If directory itself is directly ignored, that's our status
+						if entry.status().contains(Status::IGNORED) {
+							return Some(format!("<red>!!</>"));
+						}
+						// Only count non-ignored status as changes for * determination
+						if !entry.status().contains(Status::IGNORED) {
+							has_non_ignored_changes = true;
+						}
 						break;
 					}
 					// Check if this is a file inside the directory
 					else if path.starts_with(&format!("{}/", relative_path_str)) {
-						has_files = true;
-						has_changes = true;
-						// If any file in the directory is NOT ignored, the directory is mixed
+						// Only count non-ignored files as changes for * determination
 						if !entry.status().contains(Status::IGNORED) {
-							all_ignored = false;
+							has_non_ignored_changes = true;
 						}
-						// Don't break here - we want to check for directory status too
 					}
 				}
 			}
 
-			// If the directory itself has a status, use that
+			// If the directory itself has a status (and we haven't already returned), use that
 			if let Some(status) = directory_status {
 				let git_status = self.format_git_status(status);
 				return Some(git_status);
 			}
-			// If the directory contains files and ALL of them are ignored, show as ignored
-			else if has_files && all_ignored {
-				return Some(format!("<red>!!</>"));
-			}
-			// If the directory contains changes but isn't tracked itself, show dirty
-			else if has_changes {
+			// If the directory contains non-ignored changes, show as mixed/dirty
+			else if has_non_ignored_changes {
 				return Some(format!("<red> *</>"));
 			}
 			// Directory is clean

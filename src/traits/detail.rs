@@ -228,97 +228,79 @@ impl Detail for Node<'_> {
 			Err(_) => return Some("  ".to_string()),
 		};
 
-		// Check if this is a directory and if it's ignored - do this BEFORE getting git status
-		if self.typ == crate::enums::Typ::Dir {
-			// First check if the directory itself is ignored by .gitignore patterns
-			if repo.is_path_ignored(&absolute_path).unwrap_or(false) {
-				return Some(format!("<red>!!</>"));
-			}
-			
-			// Fallback: Check git status for the directory itself to see if it's ignored
-			let mut status_opts = git2::StatusOptions::new();
-			status_opts.include_ignored(true);
-			if let Ok(statuses) = repo.statuses(Some(&mut status_opts)) {
-				let relative_path_str = relative_path.to_string_lossy();
-				for entry in statuses.iter() {
-					if let Some(path) = entry.path() {
-						if path == relative_path_str && entry.status().contains(Status::IGNORED) {
-							return Some(format!("<red>!!</>"));
-						}
-					}
-				}
-			}
-		}
-
-		// Get the status of all files
-		let mut status_opts = git2::StatusOptions::new();
-		status_opts.include_untracked(true);
-		status_opts.include_ignored(true);
-		status_opts.recurse_untracked_dirs(true);
-
-		let statuses = match repo.statuses(Some(&mut status_opts)) {
-			Ok(statuses) => statuses,
-			Err(_) => return Some("  ".to_string()),
-		};
-
 		let relative_path_str = relative_path.to_string_lossy();
 
-		// Check if this is a directory (we've already handled ignored directories above)
-		if self.typ == crate::enums::Typ::Dir {
-			// For directories, check if the directory itself has status or if it contains modified files
-			let mut has_non_ignored_changes = false;
-			let mut directory_status = None;
-
-			for entry in statuses.iter() {
-				if let Some(path) = entry.path() {
-					// Check if this is the directory itself
-					if path == relative_path_str {
-						directory_status = Some(entry.status());
-						// Only count non-ignored status as changes for * determination
-						if !entry.status().contains(Status::IGNORED) {
-							has_non_ignored_changes = true;
-						}
-						break;
-					}
-					// Check if this is a file inside the directory
-					else if path.starts_with(&format!("{}/", relative_path_str)) {
-						// Only count non-ignored files as changes for * determination
-						if !entry.status().contains(Status::IGNORED) {
-							has_non_ignored_changes = true;
-						}
-					}
-				}
-			}
-
-			// If the directory itself has a status, use that
-			if let Some(status) = directory_status {
-				let git_status = self.format_git_status(status);
-				return Some(git_status);
-			}
-			// If the directory contains non-ignored changes, show as mixed/dirty
-			else if has_non_ignored_changes {
-				return Some(format!("<red> *</>"));
-			}
-			// Directory is clean
-			else {
-				return Some("  ".to_string());
-			}
-		}
-		// Handle files (existing logic)
-		else {
-			// Find the status for this specific file
-			for entry in statuses.iter() {
-				if let Some(path) = entry.path() {
-					if path == relative_path_str {
-						let git_status = self.format_git_status(entry.status());
-						return Some(git_status);
-					}
-				}
-			}
+		// Quick check if path is ignored using git's ignore rules
+		if repo.is_path_ignored(&absolute_path).unwrap_or(false) {
+			return Some(format!("<red>!!</>"));
 		}
 
-		// File not found in status, assume it's unmodified
-		Some("  ".to_string())
+		// For files, get status efficiently using path-specific query
+		if self.typ != crate::enums::Typ::Dir {
+			// Use git2's status_file method for single file - much faster than repo.statuses()
+			match repo.status_file(relative_path) {
+				Ok(status) => {
+					if status.is_empty() {
+						Some("  ".to_string())
+					} else {
+						Some(self.format_git_status(status))
+					}
+				}
+				Err(_) => Some("  ".to_string()),
+			}
+		} else {
+			// For directories, use optimized directory status check
+			// First check if the directory itself has a status
+			match repo.status_file(relative_path) {
+				Ok(status) if !status.is_empty() => {
+					return Some(self.format_git_status(status));
+				}
+				_ => {}
+			}
+
+			// If directory itself has no status, check if it contains any modified files
+			// Use a more targeted approach with pathspec to limit scope
+			let mut status_opts = git2::StatusOptions::new();
+			status_opts.include_untracked(true);
+			status_opts.include_ignored(false); // Skip ignored files for performance
+			status_opts.recurse_untracked_dirs(false); // Don't recurse deeply
+
+			// Limit the status check to just this directory and immediate children
+			let pathspec = if relative_path_str.is_empty() {
+				"*".to_string()
+			} else {
+				format!("{}/*", relative_path_str)
+			};
+			status_opts.pathspec(pathspec);
+
+			match repo.statuses(Some(&mut status_opts)) {
+				Ok(statuses) => {
+					// Check if any files in this directory have changes
+					let has_changes = statuses.iter().any(|entry| {
+						if let Some(path) = entry.path() {
+							// Check if this file is directly in our directory (not subdirectories)
+							if relative_path_str.is_empty() {
+								// Root directory - check if file is in root
+								!path.contains('/')
+							} else {
+								// Check if file is directly in this directory
+								path.starts_with(&format!("{}/", relative_path_str)) &&
+								!path[relative_path_str.len() + 1..].contains('/')
+							}
+						} else {
+							false
+						}
+					});
+
+					if has_changes {
+						Some(format!("<red> *</>"))
+					} else {
+						Some("  ".to_string())
+					}
+				}
+				Err(_) => Some("  ".to_string()),
+			}
+		}
 	}
 }
 

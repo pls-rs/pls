@@ -57,10 +57,10 @@ impl GitStatusCache {
 			if let Some(status) = repo_cache.get(&relative_path) {
 				Some(status.clone())
 			} else {
-				// File is not in git status output, check if it's in unpushed commits
+				// File is not in git status output, check if it's in unpushed commits (committed but not pushed)
 				if let Some(unpushed_files) = self.unpushed_cache.get(&repo_root) {
 					if unpushed_files.contains(&relative_path) {
-						Some(format!("<yellow>↑ </>"))
+						Some("<yellow>↑ </>".to_string())
 					} else {
 						Some("  ".to_string())
 					}
@@ -112,8 +112,11 @@ impl GitStatusCache {
 			}
 		}
 
-		// Also handle directories that contain modified files
-		// For each file, mark its parent directories as having changes
+		// Populate the unpushed commits cache first
+		self.populate_unpushed_cache(repo_root);
+
+		// Handle directories that contain modified files
+		// For each file, mark its parent directories appropriately
 		let file_paths: Vec<String> = status_map.keys().cloned().collect();
 		for file_path in file_paths {
 			let path = Path::new(&file_path);
@@ -122,9 +125,35 @@ impl GitStatusCache {
 			while let Some(dir) = current_dir {
 				let dir_str = dir.to_string_lossy().to_string();
 				if !dir_str.is_empty() && !status_map.contains_key(&dir_str) {
-					status_map.insert(dir_str, format!("<red> *</>"));
+					status_map.insert(dir_str, "<red> *</>".to_string());
 				}
 				current_dir = dir.parent();
+			}
+		}
+
+		// Handle directories that contain unpushed files (committed but not pushed)
+		// For each unpushed file, mark its parent directories with yellow up arrow if they don't already have a status
+		if let Some(unpushed_files) = self.unpushed_cache.get(repo_root) {
+			for file_path in unpushed_files {
+				let path = Path::new(file_path);
+				let mut current_dir = path.parent();
+
+				while let Some(dir) = current_dir {
+					let dir_str = dir.to_string_lossy().to_string();
+					if !dir_str.is_empty() && !status_map.contains_key(&dir_str) {
+						// Check if this directory has any uncommitted files by looking at status_map
+						let has_uncommitted = status_map.keys().any(|key| {
+							let key_path = Path::new(key);
+							key_path.starts_with(&dir_str) && status_map.get(key).map(|s| s.contains("*")).unwrap_or(false)
+						});
+						
+						// If directory doesn't have uncommitted files, show yellow up arrow for unpushed
+						if !has_uncommitted {
+							status_map.insert(dir_str, "<yellow>↑ </>".to_string());
+						}
+					}
+					current_dir = dir.parent();
+				}
 			}
 		}
 
@@ -142,12 +171,48 @@ impl GitStatusCache {
 		let upstream_check = Command::new("git")
 			.arg("rev-parse")
 			.arg("--abbrev-ref")
-			.arg("@{u}")
+			.arg("@{upstream}")
 			.current_dir(repo_root)
 			.output();
 
 		if upstream_check.is_err() || !upstream_check.as_ref().unwrap().status.success() {
-			// No upstream branch, so no unpushed commits to track
+			// No upstream branch, check if there are any commits ahead of origin/main or origin/master
+			let origins = ["origin/main", "origin/master"];
+			for origin in &origins {
+				let check_origin = Command::new("git")
+					.arg("rev-parse")
+					.arg("--verify")
+					.arg(origin)
+					.current_dir(repo_root)
+					.output();
+
+				if check_origin.is_ok() && check_origin.unwrap().status.success() {
+					// Found this origin branch, check for unpushed commits
+					if let Ok(output) = Command::new("git")
+						.arg("log")
+						.arg(format!("{}..HEAD", origin))
+						.arg("--name-only")
+						.arg("--pretty=format:")
+						.current_dir(repo_root)
+						.output()
+					{
+						if output.status.success() {
+							let log_output = String::from_utf8_lossy(&output.stdout);
+							for line in log_output.lines() {
+								let line = line.trim();
+								if !line.is_empty() {
+									unpushed_files.push(line.to_string());
+								}
+							}
+						}
+					}
+					break;
+				}
+			}
+
+			// Remove duplicates and store
+			unpushed_files.sort();
+			unpushed_files.dedup();
 			self.unpushed_cache
 				.insert(repo_root.to_path_buf(), unpushed_files);
 			return;
@@ -156,7 +221,7 @@ impl GitStatusCache {
 		// Get the list of commits that are ahead of the upstream
 		let output = match Command::new("git")
 			.arg("log")
-			.arg("@{u}..HEAD")
+			.arg("@{upstream}..HEAD")
 			.arg("--name-only")
 			.arg("--pretty=format:")
 			.current_dir(repo_root)
@@ -207,13 +272,13 @@ impl GitStatusCache {
 
 		// Handle special cases
 		if status_chars == "!!" {
-			return format!("<red>!!</>");
+			return "<red>!!</>".to_string();
 		}
 		if status_chars == "UU" {
-			return format!("<red>UU</>");
+			return "<red>UU</>".to_string();
 		}
 		if status_chars == "??" {
-			return format!("<red>??</>");
+			return "<red>??</>".to_string();
 		}
 
 		// Format with colors: green for staged, red for unstaged

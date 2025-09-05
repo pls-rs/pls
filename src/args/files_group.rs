@@ -1,7 +1,7 @@
 use crate::args::input::Input;
 use crate::config::{Conf, ConfMan};
 use crate::enums::DetailField;
-use crate::models::{Node, OwnerMan};
+use crate::models::{GitMan, Node, OwnerMan};
 use crate::utils::paths::common_ancestor;
 use log::debug;
 use std::collections::HashMap;
@@ -54,7 +54,7 @@ impl FilesGroup {
 	/// Since individual nodes are not nested, the function uses each node's
 	/// [`Node::row`] instead of the flattened output of each node's
 	/// [`Node::entries`].
-	pub fn entries(&self, owner_man: &mut OwnerMan) -> Vec<HashMap<DetailField, String>> {
+	pub fn entries(&self, owner_man: &mut OwnerMan, git_man: &mut GitMan) -> Vec<HashMap<DetailField, String>> {
 		self.nodes()
 			.iter()
 			.map(|(node, conf)| {
@@ -64,6 +64,7 @@ impl FilesGroup {
 					&self.parent_conf.app_const,
 					&conf.entry_const,
 					&[],
+					git_man,
 				)
 			})
 			.collect()
@@ -79,7 +80,7 @@ impl FilesGroup {
 	/// does not filter out nodes based on their visibility. This is because the
 	/// files in this group have been explicitly provided by the user and should
 	/// be rendered regardless of their visibility.
-	fn nodes(&self) -> Vec<(Node, &Conf)> {
+	fn nodes(&self) -> Vec<(Node<'_>, &Conf)> {
 		self.inputs
 			.iter()
 			.map(|input| {

@@ -1,7 +1,7 @@
 use crate::args::input::Input;
 use crate::enums::DetailField;
 use crate::exc::Exc;
-use crate::models::{Node, OwnerMan};
+use crate::models::{GitMan, Node, OwnerMan};
 use crate::traits::Imp;
 use crate::PLS;
 use log::debug;
@@ -44,6 +44,7 @@ impl DirGroup {
 	pub fn entries(
 		&self,
 		owner_man: &mut OwnerMan,
+		git_man: &mut GitMan,
 	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
 		let mut nodes = self.nodes()?;
 		if PLS.args.collapse {
@@ -61,6 +62,7 @@ impl DirGroup {
 					&self.input.conf.entry_const,
 					&[],
 					None,
+					git_man,
 				)
 			})
 			.collect();
@@ -83,7 +85,7 @@ impl DirGroup {
 	///
 	/// If any criteria is not met, the node is not to be rendered and `None` is
 	/// returned.
-	fn node(&self, entry: DirEntry) -> Option<Node> {
+	fn node(&self, entry: DirEntry) -> Option<Node<'_>> {
 		let name = entry.file_name();
 		debug!("Checking visibility of name {name:?}.");
 		let haystack = name.as_bytes();
@@ -128,7 +130,7 @@ impl DirGroup {
 	///
 	/// Unlike [`FilesGroup`](crate::args::files_group::FilesGroup), this
 	/// function filters out nodes based on visibility.
-	fn nodes(&self) -> Result<Vec<Node>, Exc> {
+	fn nodes(&self) -> Result<Vec<Node<'_>>, Exc> {
 		let entries = self.input.path.read_dir().map_err(Exc::Io)?;
 
 		let entries = entries

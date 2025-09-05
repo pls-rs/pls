@@ -4,6 +4,7 @@ mod enums;
 mod exc;
 mod ext;
 mod fmt;
+mod git_cache;
 mod gfx;
 mod models;
 mod output;

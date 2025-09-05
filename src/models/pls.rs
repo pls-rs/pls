@@ -1,7 +1,7 @@
 use crate::args::{Group, Input};
 use crate::config::{Args, ConfMan};
 use crate::fmt::render;
-use crate::models::{OwnerMan, Window};
+use crate::models::{GitMan, OwnerMan, Window};
 
 /// Represents the entire application state.
 ///
@@ -61,7 +61,7 @@ impl Pls {
 
 		groups
 			.iter()
-			.map(|group| group.render(show_title, &mut OwnerMan::default()))
+			.map(|group| group.render(show_title, &mut OwnerMan::default(), &mut GitMan::default()))
 			.filter_map(|res| res.err())
 			.for_each(|res| println!("{res}"));
 	}

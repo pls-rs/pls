@@ -26,6 +26,8 @@ pub struct EntryConst {
 	pub blocks_style: String,
 	/// mapping of timestamp fields to the human-readable format
 	pub timestamp_formats: HashMap<DetailField, String>,
+	/// style for git status
+	pub git_style: String,
 	/// mapping of symlink state to more symlink state info (including style)
 	pub symlink: HashMap<SymState, SymlinkInfo>,
 }
@@ -114,6 +116,7 @@ impl Default for EntryConst {
 				)
 			})
 			.collect(),
+			git_style: String::from("cyan"),
 			symlink: [
 				(SymState::Ok, "󰁔", "magenta", ""), // nf-md-arrow_right
 				(SymState::Broken, "󱞣", "red", "strikethrough"), // nf-md-arrow_down_right

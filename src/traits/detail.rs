@@ -1,8 +1,9 @@
 use crate::config::EntryConst;
 use crate::enums::{DetailField, Typ};
 use crate::ext::Ctime;
-use crate::models::{Node, OwnerMan, Perm};
+use crate::models::{GitMan, Node, OwnerMan, Perm};
 use crate::PLS;
+
 use log::warn;
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
@@ -28,6 +29,8 @@ pub trait Detail {
 	fn size(&self, entry_const: &EntryConst) -> Option<String>;
 	fn blocks(&self, entry_const: &EntryConst) -> Option<String>;
 	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String>;
+
+	fn git(&self, git_man: &mut GitMan, entry_const: &EntryConst) -> Option<String>;
 }
 
 impl Detail for Node<'_> {
@@ -203,4 +206,12 @@ impl Detail for Node<'_> {
 			dt.format(&format).unwrap()
 		})
 	}
+
+	/// Get the git status of the file or directory.
+	/// This function returns a marked-up string.
+	fn git(&self, git_man: &mut GitMan, _entry_const: &EntryConst) -> Option<String> {
+		git_man.get_status(&self.path)
+	}
 }
+
+

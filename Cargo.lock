@@ -744,6 +744,7 @@ dependencies = [
  "figment",
  "git2",
  "home",
+ "lazy_static",
  "libc",
  "log",
  "number_prefix",

@@ -5,7 +5,7 @@ use crate::config::{Conf, ConfMan};
 use crate::enums::{DetailField, Typ};
 use crate::exc::Exc;
 use crate::fmt::render;
-use crate::models::OwnerMan;
+use crate::models::{GitMan, OwnerMan};
 use crate::output::{Grid, Table};
 use crate::PLS;
 use std::collections::HashMap;
@@ -53,7 +53,7 @@ impl Group {
 		groups
 	}
 
-	pub fn render(&self, show_title: bool, owner_man: &mut OwnerMan) -> Result<(), Exc> {
+	pub fn render(&self, show_title: bool, owner_man: &mut OwnerMan, git_man: &mut GitMan) -> Result<(), Exc> {
 		if show_title {
 			if let Self::Dir(group) = self {
 				println!(
@@ -63,7 +63,7 @@ impl Group {
 			}
 		}
 
-		let entries = self.entries(owner_man)?;
+		let entries = self.entries(owner_man, git_man)?;
 
 		if PLS.args.grid {
 			let grid = Grid::new(entries);
@@ -93,10 +93,11 @@ impl Group {
 	pub fn entries(
 		&self,
 		owner_man: &mut OwnerMan,
+		git_man: &mut GitMan,
 	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
 		match self {
-			Self::Dir(group) => group.entries(owner_man),
-			Self::Files(group) => Ok(group.entries(owner_man)),
+			Self::Dir(group) => group.entries(owner_man, git_man),
+			Self::Files(group) => Ok(group.entries(owner_man, git_man)),
 		}
 	}
 }

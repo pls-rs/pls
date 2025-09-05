@@ -1,9 +1,9 @@
 use crate::config::EntryConst;
 use crate::enums::{DetailField, Typ};
 use crate::ext::Ctime;
-use crate::models::{Node, OwnerMan, Perm};
+use crate::models::{GitMan, Node, OwnerMan, Perm};
 use crate::PLS;
-use git2::{Repository, Status};
+
 use log::warn;
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
@@ -29,7 +29,8 @@ pub trait Detail {
 	fn size(&self, entry_const: &EntryConst) -> Option<String>;
 	fn blocks(&self, entry_const: &EntryConst) -> Option<String>;
 	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String>;
-	fn git(&self, entry_const: &EntryConst) -> Option<String>;
+
+	fn git(&self, git_man: &mut GitMan, entry_const: &EntryConst) -> Option<String>;
 }
 
 impl Detail for Node<'_> {
@@ -208,159 +209,9 @@ impl Detail for Node<'_> {
 
 	/// Get the git status of the file or directory.
 	/// This function returns a marked-up string.
-	fn git(&self, _entry_const: &EntryConst) -> Option<String> {
-		// Convert to absolute path first
-		let absolute_path = match self.path.canonicalize() {
-			Ok(path) => path,
-			Err(_) => return Some("  ".to_string()),
-		};
-
-		// Try to find the git repository from the node's path
-		let repo = match Repository::discover(&absolute_path) {
-			Ok(repo) => repo,
-			Err(_) => return Some("  ".to_string()), // Not in a git repo
-		};
-
-		// Get the relative path from the repository root
-		let repo_path = repo.workdir()?;
-		let relative_path = match absolute_path.strip_prefix(repo_path) {
-			Ok(path) => path,
-			Err(_) => return Some("  ".to_string()),
-		};
-
-		let relative_path_str = relative_path.to_string_lossy();
-
-		// Quick check if path is ignored using git's ignore rules
-		if repo.is_path_ignored(&absolute_path).unwrap_or(false) {
-			return Some(format!("<red>!!</>"));
-		}
-
-		// For files, get status efficiently using path-specific query
-		if self.typ != crate::enums::Typ::Dir {
-			// Use git2's status_file method for single file - much faster than repo.statuses()
-			match repo.status_file(relative_path) {
-				Ok(status) => {
-					if status.is_empty() {
-						Some("  ".to_string())
-					} else {
-						Some(self.format_git_status(status))
-					}
-				}
-				Err(_) => Some("  ".to_string()),
-			}
-		} else {
-			// For directories, use optimized directory status check
-			// First check if the directory itself has a status
-			match repo.status_file(relative_path) {
-				Ok(status) if !status.is_empty() => {
-					return Some(self.format_git_status(status));
-				}
-				_ => {}
-			}
-
-			// If directory itself has no status, check if it contains any modified files
-			// Use a more targeted approach with pathspec to limit scope
-			let mut status_opts = git2::StatusOptions::new();
-			status_opts.include_untracked(true);
-			status_opts.include_ignored(false); // Skip ignored files for performance
-			status_opts.recurse_untracked_dirs(false); // Don't recurse deeply
-
-			// Limit the status check to just this directory and immediate children
-			let pathspec = if relative_path_str.is_empty() {
-				"*".to_string()
-			} else {
-				format!("{}/*", relative_path_str)
-			};
-			status_opts.pathspec(pathspec);
-
-			match repo.statuses(Some(&mut status_opts)) {
-				Ok(statuses) => {
-					// Check if any files in this directory have changes
-					let has_changes = statuses.iter().any(|entry| {
-						if let Some(path) = entry.path() {
-							// Check if this file is directly in our directory (not subdirectories)
-							if relative_path_str.is_empty() {
-								// Root directory - check if file is in root
-								!path.contains('/')
-							} else {
-								// Check if file is directly in this directory
-								path.starts_with(&format!("{}/", relative_path_str)) &&
-								!path[relative_path_str.len() + 1..].contains('/')
-							}
-						} else {
-							false
-						}
-					});
-
-					if has_changes {
-						Some(format!("<red> *</>"))
-					} else {
-						Some("  ".to_string())
-					}
-				}
-				Err(_) => Some("  ".to_string()),
-			}
-		}
+	fn git(&self, git_man: &mut GitMan, _entry_const: &EntryConst) -> Option<String> {
+		git_man.get_status(&self.path)
 	}
 }
 
-impl<'pls> Node<'pls> {
-	/// Format git status with proper color coding
-	fn format_git_status(&self, status: Status) -> String {
-		// Determine the staged (index) character
-		let staged_char = if status.contains(Status::INDEX_NEW) {
-			'A'
-		} else if status.contains(Status::INDEX_MODIFIED) {
-			'M'
-		} else if status.contains(Status::INDEX_DELETED) {
-			'D'
-		} else if status.contains(Status::INDEX_RENAMED) {
-			'R'
-		} else if status.contains(Status::INDEX_TYPECHANGE) {
-			'T'
-		} else {
-			' '
-		};
 
-		// Determine the unstaged (worktree) character
-		let unstaged_char = if status.contains(Status::WT_NEW) {
-			'?'
-		} else if status.contains(Status::WT_MODIFIED) {
-			'M'
-		} else if status.contains(Status::WT_DELETED) {
-			'D'
-		} else if status.contains(Status::WT_RENAMED) {
-			'R'
-		} else if status.contains(Status::WT_TYPECHANGE) {
-			'T'
-		} else {
-			' '
-		};
-
-		// Handle special cases
-		if status.contains(Status::IGNORED) {
-			return format!("<red>!!</>");
-		}
-		if status.contains(Status::CONFLICTED) {
-			return format!("<red>UU</>");
-		}
-		if status.contains(Status::WT_NEW) && unstaged_char == '?' {
-			return format!("<red>??</>");
-		}
-
-		// Format with colors: green for staged, red for unstaged
-		let staged_formatted = if staged_char == ' ' {
-			" ".to_string()
-		} else {
-			format!("<green>{}</>", staged_char)
-		};
-
-		let unstaged_formatted = if unstaged_char == ' ' {
-			" ".to_string()
-		} else {
-			format!("<red>{}</>", unstaged_char)
-		};
-
-		format!("{}{}", staged_formatted, unstaged_formatted)
-	}
-}

@@ -1,7 +1,7 @@
 use crate::args::input::Input;
 use crate::enums::DetailField;
 use crate::exc::Exc;
-use crate::models::{Node, OwnerMan};
+use crate::models::{GitMan, Node, OwnerMan};
 use crate::traits::Imp;
 use crate::PLS;
 use log::debug;
@@ -44,6 +44,7 @@ impl DirGroup {
 	pub fn entries(
 		&self,
 		owner_man: &mut OwnerMan,
+		git_man: &mut GitMan,
 	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
 		let mut nodes = self.nodes()?;
 		if PLS.args.collapse {
@@ -61,6 +62,7 @@ impl DirGroup {
 					&self.input.conf.entry_const,
 					&[],
 					None,
+					git_man,
 				)
 			})
 			.collect();

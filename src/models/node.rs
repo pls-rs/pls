@@ -1,6 +1,6 @@
 use crate::config::{AppConst, Conf, EntryConst};
 use crate::enums::{Appearance, Collapse, DetailField, Icon, Typ};
-use crate::models::{OwnerMan, Spec};
+use crate::models::{GitMan, OwnerMan, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use crate::PLS;
 use std::collections::{HashMap, HashSet};
@@ -287,6 +287,7 @@ impl<'pls> Node<'pls> {
 		&self,
 		detail: DetailField,
 		owner_man: &mut OwnerMan,
+		git_man: &mut GitMan,
 		entry_const: &EntryConst,
 	) -> String {
 		let val = match detail {
@@ -306,7 +307,7 @@ impl<'pls> Node<'pls> {
 			DetailField::Atime => self.time(detail, entry_const),
 			DetailField::Size => self.size(entry_const),
 			DetailField::Blocks => self.blocks(entry_const),
-			DetailField::Git => self.git(entry_const),
+			DetailField::Git => self.git(git_man, entry_const),
 			// `Typ` enum
 			DetailField::Typ => Some(self.typ.ch(entry_const)),
 			_ => Some(String::default()),
@@ -324,6 +325,7 @@ impl<'pls> Node<'pls> {
 		app_const: &AppConst,
 		entry_const: &EntryConst,
 		tree_shape: &[&str],
+		git_man: &mut GitMan,
 	) -> HashMap<DetailField, String> {
 		PLS.args
 			.details
@@ -335,7 +337,7 @@ impl<'pls> Node<'pls> {
 						self.display_name(conf, app_const, entry_const, tree_shape),
 					)
 				} else {
-					(detail, self.get_value(detail, owner_man, entry_const))
+					(detail, self.get_value(detail, owner_man, git_man, entry_const))
 				}
 			})
 			.collect()
@@ -354,6 +356,7 @@ impl<'pls> Node<'pls> {
 		entry_const: &EntryConst,
 		parent_shapes: &[&str],  // list of shapes inherited from the parent
 		own_shape: Option<&str>, // shape to show just before the current node
+		git_man: &mut GitMan,
 	) -> Vec<HashMap<DetailField, String>> {
 		// list of parent shapes to pass to the children
 		let mut child_parent_shapes = parent_shapes.to_vec();
@@ -374,7 +377,7 @@ impl<'pls> Node<'pls> {
 			all_shapes.push(more_shape);
 		}
 
-		once(self.row(owner_man, conf, app_const, entry_const, &all_shapes))
+		once(self.row(owner_man, conf, app_const, entry_const, &all_shapes, git_man))
 			.chain(self.children.iter().enumerate().flat_map(|(idx, child)| {
 				let child_own_shape = if idx == self.children.len() - 1 {
 					&app_const.tree.bend_dash
@@ -389,6 +392,7 @@ impl<'pls> Node<'pls> {
 					entry_const,
 					&child_parent_shapes,
 					Some(child_own_shape),
+					git_man,
 				)
 			}))
 			.collect()

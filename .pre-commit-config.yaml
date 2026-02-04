@@ -12,25 +12,26 @@ repos:
   # Generic
   # =======
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+  - repo: builtin
     hooks:
-      - id: check-case-conflict
-      - id: check-docstring-first
-      - id: check-executables-have-shebangs
-      - id: check-json
-      - id: check-shebang-scripts-are-executable
-      - id: check-symlinks
-      - id: check-toml
-      - id: check-yaml
-      - id: end-of-file-fixer
-      - id: forbid-submodules
-      - id: mixed-line-ending
-        args:
-          - --fix=auto
       - id: trailing-whitespace
         args:
           - --markdown-linebreak-ext=md
+          - --markdown-linebreak-ext=mdx
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: check-json
+      - id: check-json5
+      - id: check-toml
+      - id: check-yaml
+      - id: check-xml
+      - id: mixed-line-ending
+      - id: check-symlinks
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
 
   # Rust
   # ====

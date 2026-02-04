@@ -4,7 +4,7 @@ use crate::models::Node;
 use std::fs;
 
 pub trait Sym {
-	fn target(&self) -> Option<SymTarget>;
+	fn target(&self) -> Option<SymTarget<'_>>;
 }
 
 impl Sym for Node<'_> {
@@ -12,7 +12,7 @@ impl Sym for Node<'_> {
 	///
 	/// If the node is not a symlink, the target is `None`. If the node is a
 	/// symlink, the target is a variant of [`SymTarget`], wrapped in `Some`.
-	fn target(&self) -> Option<SymTarget> {
+	fn target(&self) -> Option<SymTarget<'_>> {
 		if self.typ != Typ::Symlink {
 			return None;
 		}

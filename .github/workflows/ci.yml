@@ -25,17 +25,9 @@ jobs:
           rust_cache_key: cargo
           rust_components: clippy, rustfmt
 
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pre-commit
-          key:
-            ${{ runner.os }}-pre-commit-${{
-            hashFiles('**/.pre-commit-config.yaml') }}
-
       - name: Run lint
         run: |
-          just pre-commit
+          just get-prek
           just lint
 
   unit:

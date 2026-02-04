@@ -21,17 +21,18 @@ install:
     just docs/install
     just examples/install
 
-# Download pre-commits and install Git hooks.
-pre-commit version="3.8.0":
-    curl \
-      --output pre-commit.pyz \
-      --location \
-      "https://github.com/pre-commit/pre-commit/releases/download/v{{ version }}/pre-commit-{{ version }}.pyz"
-    python3 pre-commit.pyz install
+########
+# Lint #
+########
 
-# Run pre-commit to lint and format files.
+# Install `prek`, if it does not already exist.
+get-prek:
+    [ -x "$(command -v prek)" ] || cargo install prek
+    prek install
+
+# Run `prek` to lint and format files.
 lint hook="" *files="":
-    python3 pre-commit.pyz run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
+    prek run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
 
 ###########
 # Recipes #
@@ -70,7 +71,7 @@ cross target:
 ###########
 
 alias i := install
-alias p := pre-commit
+
 alias l := lint
 
 alias r := run

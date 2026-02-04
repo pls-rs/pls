@@ -53,7 +53,7 @@ fn compute_rgba(path: &Path, size: u8) -> Result<Vec<u8>, Exc> {
 
 	// Create a default options struct with the target dimensions
 	let opt = Options::default();
-	let rtree = Tree::from_str(&svg_data, &opt).map_err(Exc::Svg)?;
+	let rtree = Tree::from_str(&svg_data, &opt).map_err(|e| Exc::Svg(Box::new(e)))?;
 
 	// Create a pixmap with the desired dimensions
 	let mut pixmap =

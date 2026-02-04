@@ -6,10 +6,11 @@ pub enum Exc {
 	/// wraps all occurrences of errors in I/O operations
 	Io(std::io::Error),
 	/// wraps all occurrences of errors in SVG operations
-	Svg(resvg::usvg::Error),
-	Conf(figment::Error),
+	Svg(Box<resvg::usvg::Error>),
+	/// wraps all occurrences of errors in configuration loading
+	Conf(Box<figment::Error>),
 	/// wraps exceptions from the `xterm-query` crate
-	Xterm(xterm_query::XQError),
+	Xterm(Box<xterm_query::XQError>),
 	/// wraps all other errors
 	Other(String),
 }

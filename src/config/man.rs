@@ -108,6 +108,6 @@ impl ConfMan {
 			}
 		}
 
-		fig.extract().map_err(Exc::Conf)
+		fig.extract().map_err(|e| Exc::Conf(Box::new(e)))
 	}
 }

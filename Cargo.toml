@@ -24,25 +24,25 @@ name = "pls"
 
 [dependencies]
 base64 = "0.22.1"
-clap = { version = "4.3.11", features = ["derive", "wrap_help"] }
-colored = "2.0.0"
-crossterm = { version = "0.28.1", default-features = false }
-env_logger = { version = "0.11.5", default-features = false }
-figment = { version = "0.10.10", features = ["yaml", "test"] }
+clap = { version = "4.5.57", features = ["derive", "wrap_help"] }
+colored = "3.1.1"
+crossterm = { version = "0.29.0", default-features = false }
+env_logger = { version = "0.11.8", default-features = false }
+figment = { version = "0.10.19", features = ["yaml", "test"] }
 git2 = { version = "0.20.4", default-features = false }
-home = "0.5.5"
-libc = "0.2.158"
-log = { version = "0.4.19", features = ["release_max_level_off"] }
+home = "0.5.12"
+libc = "0.2.180"
+log = { version = "0.4.29", features = ["release_max_level_off"] }
 number_prefix = "0.4.0"
 path-clean = "1.0.1"
-regex = { version = "1.8.4", default-features = false, features = ["std", "perf"] }
-resvg = { version = "0.43.0", default-features = false }
-serde = { version = "1.0.164", features = ["derive"] }
+regex = { version = "1.12.3", default-features = false, features = ["std", "perf"] }
+resvg = { version = "0.46.0", default-features = false }
+serde = { version = "1.0.228", features = ["derive"] }
 serde_regex = "1.1.0"
-shellexpand = { version = "3.1.0", default-features = false, features = ["base-0"] }
-time = { version = "0.3.22", default-features = false, features = ["std", "alloc", "local-offset", "formatting"] }
-unicode-segmentation = "1.10.1"
-uzers = { version = "0.12.1", default-features = false, features = ["cache"] }
+shellexpand = { version = "3.1.1", default-features = false, features = ["base-0"] }
+time = { version = "0.3.46", default-features = false, features = ["std", "alloc", "local-offset", "formatting"] }
+unicode-segmentation = "1.12.0"
+uzers = { version = "0.12.2", default-features = false, features = ["cache"] }
 xterm-query = "0.5.2"
 
 [profile.release]

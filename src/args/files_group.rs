@@ -79,7 +79,7 @@ impl FilesGroup {
 	/// does not filter out nodes based on their visibility. This is because the
 	/// files in this group have been explicitly provided by the user and should
 	/// be rendered regardless of their visibility.
-	fn nodes(&self) -> Vec<(Node, &Conf)> {
+	fn nodes(&self) -> Vec<(Node<'_>, &Conf)> {
 		self.inputs
 			.iter()
 			.map(|input| {

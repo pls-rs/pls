@@ -1,0 +1,14 @@
+[vars]
+bin = "bin/pls"
+
+[tools]
+rust = "latest"
+
+[tasks.build]
+description = "Build for production"
+run = """
+#!/bin/bash
+cargo build --release
+mkdir -p "$(dirname {{vars.bin}})"
+cp target/release/pls {{vars.bin}}
+"""

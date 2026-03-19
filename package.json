@@ -10,7 +10,7 @@
     "format:check": "prettier --check .",
     "checks": "pnpm lint && pnpm format:check"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.32.1",
   "devDependencies": {
     "@eslint/compat": "^1.4.1",
     "@eslint/js": "^9.39.2",

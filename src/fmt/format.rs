@@ -143,6 +143,7 @@ mod tests {
 		( $($name:ident: $colorterm: expr, $styles:expr => $prefix:expr, $suffix:expr,)* ) => {
 			$(
 				#[test]
+				#[allow(clippy::result_large_err)]
 				fn $name() {
 					colored::control::set_override(true); // needed when running tests in CLion
 					Jail::expect_with(|jail| {

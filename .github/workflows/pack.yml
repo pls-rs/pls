@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: code
 
       - name: Checkout tap
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: pls-rs/homebrew-pls
           path: tap

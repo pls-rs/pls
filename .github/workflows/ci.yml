@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup env
         uses: ./.github/actions/setup-env
@@ -41,7 +41,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup env
         uses: ./.github/actions/setup-env
@@ -72,7 +72,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup env
         uses: ./.github/actions/setup-env
@@ -86,7 +86,7 @@ jobs:
           just cross ${{ matrix.target }}
 
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pls-${{ matrix.target }}
           path: target/${{ matrix.target }}/release/pls
@@ -98,7 +98,7 @@ jobs:
       - build
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup env
         uses: ./.github/actions/setup-env
@@ -106,7 +106,7 @@ jobs:
           rust_cache_key: docs
 
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: pls-x86_64-unknown-linux-musl
           path: /tmp/pls

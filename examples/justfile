@@ -11,7 +11,7 @@ set fallback
 
 # Install Python dependencies.
 install:
-    pdm install
+    uv sync --locked --dev
 
 ###########
 # Recipes #
@@ -23,7 +23,7 @@ env:
 
 # Generate the specified examples file.
 gen file:
-    pdm run src/examples/{{ file }}.py
+    uv run python -m examples.{{ file }}
 
 # Regenerate all examples.
 all:
@@ -39,4 +39,4 @@ all:
 
 # Create a Python shell.
 shell:
-    pdm run ipython
+    uv run ipython

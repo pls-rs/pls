@@ -78,7 +78,7 @@ baked-in.
 
 ## Python
 
-If you build Python projects using Pipenv, Poetry or PDM, this config is for
+If you build Python projects using Pipenv, Poetry, PDM or uv, this config is for
 you.
 
 ```yaml
@@ -95,7 +95,7 @@ specs:
   - pattern: ^(pyproject\.toml|Pipfile)$
     icons:
       - package
-  - pattern: ^(poetry|pdm)\.lock$
+  - pattern: ^(poetry|pdm|uv)\.lock$
     icons:
       - lock
     importance: -1

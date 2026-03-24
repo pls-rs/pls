@@ -8,6 +8,4 @@ __pycache__/
 # Virtual environment
 .venv/
 
-# PDM
-.pdm-python
 *.egg-info/

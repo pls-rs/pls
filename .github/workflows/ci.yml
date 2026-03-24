@@ -121,12 +121,12 @@ jobs:
       - name: Ensure binary is accessible
         run: pls --version
 
-      - name: Setup PDM
-        uses: pdm-project/setup-pdm@v4
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
         with:
-          cache: true
-          python-version-file: examples/pyproject.toml
-          cache-dependency-path: examples/pdm.lock
+          enable-cache: true
+          working-directory: examples
+          cache-dependency-glob: examples/uv.lock
 
       - name: Generate examples
         working-directory: examples/

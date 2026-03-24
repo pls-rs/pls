@@ -15,3 +15,6 @@ report.html
 
 # pre-commit executable
 pre-commit.pyz
+
+# AI
+.claude

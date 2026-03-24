@@ -8,7 +8,7 @@ specs:
   - pattern: ^pyproject\.toml$
     icons:
       - package
-  - pattern: ^pdm\.lock$
+  - pattern: ^uv\.lock$
     icons:
       - lock
     importance: -1

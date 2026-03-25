@@ -126,7 +126,7 @@ jobs:
         with:
           enable-cache: true
           working-directory: examples
-          cache-dependency-glob: examples/uv.lock
+          cache-dependency-glob: uv.lock
 
       - name: Generate examples
         working-directory: examples/

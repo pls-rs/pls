@@ -80,16 +80,35 @@ jobs:
           rust_cache_key: cross
           rust_target: ${{ matrix.target }}
 
-      - name: Build release
+      - name: Build release (Linux)
+        if: matrix.build == 'linux'
         run: |
           just get-cross
           just cross ${{ matrix.target }}
 
-      - name: Upload binary artifact
+      - name: Build release (macOS universal)
+        if: matrix.build == 'macos'
+        run: |
+          rustup target add aarch64-apple-darwin
+          cargo build --release --target x86_64-apple-darwin
+          cargo build --release --target aarch64-apple-darwin
+          lipo -create -output target/pls \
+            target/x86_64-apple-darwin/release/pls \
+            target/aarch64-apple-darwin/release/pls
+
+      - name: Upload binary artifact (Linux)
+        if: matrix.build == 'linux'
         uses: actions/upload-artifact@v7
         with:
           name: pls-${{ matrix.target }}
           path: target/${{ matrix.target }}/release/pls
+
+      - name: Upload binary artifact (macOS)
+        if: matrix.build == 'macos'
+        uses: actions/upload-artifact@v7
+        with:
+          name: pls-universal-apple-darwin
+          path: target/pls
 
   docs:
     name: Build docs

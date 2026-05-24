@@ -66,9 +66,11 @@ jobs:
           - build: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
+            suffix: x86_64-unknown-linux-musl
           - build: macos
             os: macos-latest
-            target: x86_64-apple-darwin
+            target: x86_64-apple-darwin,aarch64-apple-darwin
+            suffix: universal-apple-darwin
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -85,11 +87,16 @@ jobs:
           just get-cross
           just cross ${{ matrix.target }}
 
+      - name: Lipo binaries (macOS only)
+        if: matrix.build == 'macos'
+        run: |
+          just lipo ${{ matrix.suffix }} ${{ matrix.target }}
+
       - name: Upload binary artifact
         uses: actions/upload-artifact@v7
         with:
-          name: pls-${{ matrix.target }}
-          path: target/${{ matrix.target }}/release/pls
+          name: pls-${{ matrix.suffix }}
+          path: target/${{ matrix.suffix }}/release/pls
 
   docs:
     name: Build docs

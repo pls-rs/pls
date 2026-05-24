@@ -48,7 +48,7 @@ debug *args:
 
 # Run tests.
 test *args:
-    cargo test {{ args }}
+    cargo nextest run {{ args }}
 
 ###########
 # Release #

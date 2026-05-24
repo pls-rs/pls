@@ -47,6 +47,7 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
+          install_tools: just,nextest
           rust_cache_key: cargo
 
       - name: Run unit test

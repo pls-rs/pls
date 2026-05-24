@@ -2,6 +2,9 @@ name: pls/setup-env
 description: Setup environment for CI + CD jobs
 
 inputs:
+  install_tools:
+    description: The names of the tools to install
+    default: just
   rust_cache_key:
     description: The key to use to identify the Rust toolchain cache
     default: cargo
@@ -18,7 +21,7 @@ runs:
     - name: Setup `just`
       uses: taiki-e/install-action@v2
       with:
-        tool: just
+        tool: ${{ inputs.install_tools }}
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable

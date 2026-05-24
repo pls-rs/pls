@@ -22,6 +22,7 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
+          install_tools: just,prek
           rust_cache_key: cargo
           rust_components: clippy, rustfmt
 
@@ -79,12 +80,12 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
+          install_tools: just,cross
           rust_cache_key: cross
           rust_target: ${{ matrix.target }}
 
       - name: Build release
         run: |
-          just get-cross
           just cross ${{ matrix.target }}
 
       - name: Lipo binaries (macOS only)

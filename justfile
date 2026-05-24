@@ -62,9 +62,27 @@ release:
 get-cross:
     [ -x "$(command -v cross)" ] || cargo install cross
 
-# Build a release binary for the given target with `cross`.
-cross target:
-    cross build --release --verbose --target {{ target }}
+# Build a release binary for the given targets with `cross`.
+cross targets:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    IFS=',' read -ra items <<< "{{ targets }}"
+    for target in "${items[@]}"; do
+        cross build --release --verbose --target "$target"
+    done
+
+# Combine the given binaries into a universal binary.
+lipo output inputs:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    IFS=',' read -ra items <<< "{{ inputs }}"
+    paths=()
+    for target in "${items[@]}"; do
+        paths+=("target/$target/release/pls")
+    done
+    out_path="target/{{ output }}/release/pls"
+    mkdir -p "$(dirname "$out_path")"
+    lipo -create -output "$out_path" "${paths[@]}"
 
 ###########
 # Aliases #

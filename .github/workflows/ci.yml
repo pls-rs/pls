@@ -61,9 +61,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build:
-          - linux
-          - macos
         include:
           - build: linux
             os: ubuntu-latest
@@ -86,8 +83,11 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           install_tools: just,cross
-          rust_cache_key: cross
+          rust_cache_key: cross-${{ matrix.suffix }}
           rust_target: ${{ matrix.target }}
+
+      - name: Purge cross cache
+        run: cargo clean
 
       - name: Build release
         run: |

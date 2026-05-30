@@ -86,9 +86,6 @@ jobs:
           rust_cache_key: cross-${{ matrix.suffix }}
           rust_target: ${{ matrix.target }}
 
-      - name: Purge cross cache
-        run: cargo clean
-
       - name: Build release
         run: |
           just cross ${{ matrix.target }}

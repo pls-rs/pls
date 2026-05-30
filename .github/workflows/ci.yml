@@ -32,13 +32,15 @@ jobs:
           just lint
 
   unit:
-    name: Run unit test
+    name: Run unit test (${{ matrix.name }})
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
+        include:
+          - name: Linux
+            os: ubuntu-latest
+          - name: macOS
+            os: macos-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -54,22 +56,26 @@ jobs:
         run: just test
 
   build:
-    name: Build release
+    name: Build release (${{ matrix.name }})
     needs:
       - lint
       - unit
     strategy:
       fail-fast: false
       matrix:
-        build:
-          - linux
-          - macos
         include:
-          - build: linux
+          - name: Linux x86_64
+            build: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
             suffix: x86_64-unknown-linux-musl
-          - build: macos
+          - name: Linux ARM64
+            build: linux
+            os: ubuntu-latest
+            target: aarch64-unknown-linux-musl
+            suffix: aarch64-unknown-linux-musl
+          - name: macOS universal
+            build: macos
             os: macos-latest
             target: x86_64-apple-darwin,aarch64-apple-darwin
             suffix: universal-apple-darwin
@@ -82,7 +88,7 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           install_tools: just,cross
-          rust_cache_key: cross
+          rust_cache_key: cross-${{ matrix.suffix }}
           rust_target: ${{ matrix.target }}
 
       - name: Build release

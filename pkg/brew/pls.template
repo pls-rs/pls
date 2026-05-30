@@ -10,8 +10,13 @@ class Pls < Formula
     url "{{ MAC_URL }}"
     sha256 "{{ MAC_SHA }}"
   elsif OS.linux?
-    url "{{ LINUX_URL }}"
-    sha256 "{{ LINUX_SHA }}"
+    if Hardware::CPU.arm?
+      url "{{ LINUX_ARM_URL }}"
+      sha256 "{{ LINUX_ARM_SHA }}"
+    else
+      url "{{ LINUX_X86_URL }}"
+      sha256 "{{ LINUX_X86_SHA }}"
+    end
   end
 
   depends_on "libgit2"

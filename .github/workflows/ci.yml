@@ -32,13 +32,15 @@ jobs:
           just lint
 
   unit:
-    name: Run unit test
+    name: Run unit test (${{ matrix.name }})
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
+        include:
+          - name: Linux
+            os: ubuntu-latest
+          - name: macOS
+            os: macos-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository

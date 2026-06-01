@@ -94,8 +94,8 @@ impl AppConst {
 			.map(|(k, v)| (*k, v.to_string()))
 			.collect();
 
-		self.imp_styles = self.imp_map.clone().into_iter().collect();
-		self.imp_styles.sort_by_cached_key(|entry| entry.0);
+		self.imp_styles = self.imp_map.iter().map(|(k, v)| (*k, v.clone())).collect();
+		self.imp_styles.sort_by_key(|entry| entry.0);
 	}
 
 	/// Get the lowest configured importance level, i.e. zeroth index in `imp`.

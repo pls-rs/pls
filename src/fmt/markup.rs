@@ -1,9 +1,69 @@
 use crate::fmt::format::fmt;
+use crate::gfx::strip_image;
+use std::cell::RefCell;
+use std::collections::HashMap;
 use unicode_segmentation::UnicodeSegmentation;
 
 const ESCAPE: u8 = b'\\';
 const TAG_OPEN: u8 = b'<';
 const TAG_CLOSE: u8 = b'>';
+
+thread_local! {
+	/// Per-thread cache of the ANSI prefix/suffix for a set of formatting
+	/// directives.
+	///
+	/// The set of distinct directive combinations is tiny (it is drawn from the
+	/// config vocabulary), so memoising the affixes lets the hot path avoid
+	/// rebuilding a `ColoredString` for every styled run while still producing
+	/// byte-identical output to the underlying `colored` crate.
+	static AFFIX_CACHE: RefCell<HashMap<String, (String, String)>> = RefCell::new(HashMap::new());
+}
+
+/// A sentinel that cannot appear in user text, used to recover the prefix and
+/// suffix that `colored` wraps around a styled run.
+const AFFIX_SENTINEL: &str = "\u{1}";
+
+/// Compute the ANSI prefix and suffix that `colored` applies for `directives`.
+///
+/// `colored` always wraps text as `{prefix}{text}{suffix}` with the affixes
+/// independent of the text itself, so rendering a sentinel and splitting on it
+/// recovers them exactly.
+fn compute_affixes(directives: &[&str]) -> (String, String) {
+	let rendered = fmt(AFFIX_SENTINEL, directives);
+	match rendered.split_once(AFFIX_SENTINEL) {
+		Some((prefix, suffix)) => (prefix.to_string(), suffix.to_string()),
+		None => (String::new(), String::new()),
+	}
+}
+
+/// Append `text` to `out`, wrapped in the ANSI affixes for `directives`.
+fn write_run(out: &mut String, directives: &[&str], text: &str) {
+	if directives.is_empty() {
+		out.push_str(text);
+		return;
+	}
+	AFFIX_CACHE.with(|cache| {
+		let mut cache = cache.borrow_mut();
+		let (prefix, suffix) = cache
+			.entry(directives.join("\u{1f}"))
+			.or_insert_with(|| compute_affixes(directives));
+		out.push_str(prefix);
+		out.push_str(text);
+		out.push_str(suffix);
+	});
+}
+
+/// Count the display width (in graphemes) of a styled run, excluding any
+/// embedded terminal-graphics escape sequences.
+fn run_width(text: &str) -> usize {
+	// Terminal-graphics escapes always begin with the ESC byte, so when none is
+	// present the (relatively costly) image strip can be skipped entirely.
+	if text.as_bytes().contains(&0x1b) {
+		strip_image(text).graphemes(true).count()
+	} else {
+		text.graphemes(true).count()
+	}
+}
 
 /// Reduce the textual parts of a markup string.
 ///
@@ -86,22 +146,55 @@ where
 /// # Arguments
 ///
 /// * `markup` - the marked-up string to be rendered
-#[allow(clippy::needless_borrows_for_generic_args)]
 pub fn render<S>(markup: S) -> String
 where
 	S: AsRef<str>,
 {
-	reduce_markup(markup.as_ref(), String::default(), |stack, curr, acc| {
-		let mut acc = acc;
-		if !curr.is_empty() {
-			let directives: Vec<&str> = stack.iter().flatten().copied().collect();
-			if !directives.contains(&"hidden") {
-				acc.push_str(&fmt(&curr, &directives));
+	reduce_markup(
+		markup.as_ref(),
+		String::default(),
+		|stack, curr, mut acc| {
+			if !curr.is_empty() {
+				let directives: Vec<&str> = stack.iter().flatten().copied().collect();
+				if !directives.contains(&"hidden") {
+					write_run(&mut acc, &directives, curr);
+				}
+				curr.clear();
 			}
-			curr.clear();
-		}
-		acc
-	})
+			acc
+		},
+	)
+}
+
+/// Render the given markup string into ANSI escape codes and measure its
+/// rendered width in a single pass.
+///
+/// This is equivalent to calling [`render`] and [`len`] separately but parses
+/// the markup only once, which matters because every rendered cell needs both
+/// its ANSI form (to print) and its display width (to align columns).
+///
+/// # Arguments
+///
+/// * `markup` - the marked-up string to be rendered and measured
+pub fn render_and_measure<S>(markup: S) -> (String, usize)
+where
+	S: AsRef<str>,
+{
+	reduce_markup(
+		markup.as_ref(),
+		(String::new(), 0_usize),
+		|stack, curr, (mut text, mut width)| {
+			if !curr.is_empty() {
+				let directives: Vec<&str> = stack.iter().flatten().copied().collect();
+				if !directives.contains(&"hidden") {
+					width += run_width(curr);
+					write_run(&mut text, &directives, curr);
+				}
+				curr.clear();
+			}
+			(text, width)
+		},
+	)
 }
 
 /// Get the true length of a markup string.

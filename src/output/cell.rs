@@ -1,5 +1,6 @@
 use crate::fmt::{len, render};
 use crate::gfx::strip_image;
+use crate::output::Rendered;
 use std::fmt::Alignment;
 
 /// Represents one cell in the rendered output.
@@ -30,24 +31,10 @@ impl Cell {
 		Self { alignment, padding }
 	}
 
-	/// Return the content of the cell, padded to the given width and aligned
-	/// as per the cell's alignment directive.
-	///
-	/// This function calls render to ensure that markup in the cell contents
-	/// is rendered into ANSI escape sequences.
-	///
-	/// # Arguments
-	///
-	/// * `text` - the text to print in the cell
-	/// * `width` - the width that the cell should span
-	/// * `directives` - styles to apply to the entire cell, including padding
-	pub fn print<S>(&self, text: S, width: &Option<usize>, directives: Option<&str>) -> String
-	where
-		S: AsRef<str>,
-	{
-		let text = text.as_ref();
-		let text_len = len(strip_image(text)); // This `len` can understand markup.
-
+	/// Compute the left and right padding strings needed to span a cell of the
+	/// given rendered `text_len` to `width`, honouring the cell's alignment and
+	/// fixed padding.
+	fn padding(&self, text_len: usize, width: &Option<usize>) -> (String, String) {
 		let (left, right): (usize, usize) = match width {
 			Some(width) if *width > text_len => {
 				let pad = width - text_len;
@@ -59,10 +46,52 @@ impl Cell {
 			}
 			_ => (0, 0),
 		};
-		let (left, right) = (
+		(
 			" ".repeat(left + self.padding.0),
 			" ".repeat(right + self.padding.1),
-		);
+		)
+	}
+
+	/// Return a pre-rendered cell, padded to the given width and aligned as per
+	/// the cell's alignment directive.
+	///
+	/// The cell's markup has already been converted to ANSI escape codes and its
+	/// width measured (see [`Rendered`]), so this hot path performs no markup
+	/// parsing — it only prepends and appends padding spaces.
+	///
+	/// # Arguments
+	///
+	/// * `cell` - the pre-rendered cell content and its display width
+	/// * `width` - the width that the cell should span
+	pub fn print(&self, cell: &Rendered, width: &Option<usize>) -> String {
+		let (left, right) = self.padding(cell.width, width);
+		format!("{left}{}{right}", cell.text)
+	}
+
+	/// Return a cell rendered from markup, padded to the given width and aligned
+	/// as per the cell's alignment directive.
+	///
+	/// Unlike [`print`](Self::print) this still parses markup, so it is reserved
+	/// for the rare cells (such as table headers) that are produced as markup
+	/// at print time rather than pre-rendered per row.
+	///
+	/// # Arguments
+	///
+	/// * `text` - the marked-up text to render into the cell
+	/// * `width` - the width that the cell should span
+	/// * `directives` - styles to apply to the entire cell, including padding
+	pub fn print_markup<S>(
+		&self,
+		text: S,
+		width: &Option<usize>,
+		directives: Option<&str>,
+	) -> String
+	where
+		S: AsRef<str>,
+	{
+		let text = text.as_ref();
+		let text_len = len(strip_image(text)); // This `len` can understand markup.
+		let (left, right) = self.padding(text_len, width);
 
 		let mut content = format!("{left}{text}{right}");
 
@@ -88,7 +117,7 @@ mod tests {
 				#[test]
 				fn $name() {
 					let cell = Cell { padding: ($left, $right), ..Cell::default() };
-					assert_eq!(cell.print($text, &None, None), $expected);
+					assert_eq!(cell.print_markup($text, &None, None), $expected);
 				}
 			)*
 		};
@@ -107,7 +136,7 @@ mod tests {
 				fn $name() {
 					colored::control::set_override(true); // needed when running tests in CLion
 					let cell = Cell{ alignment: $alignment, ..Cell::default() };
-					assert_eq!(cell.print($text, &$width, None), $expected);
+					assert_eq!(cell.print_markup($text, &$width, None), $expected);
 				}
 			)*
 		};

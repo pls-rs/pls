@@ -4,7 +4,6 @@ use crate::fmt::len;
 use crate::gfx::strip_image;
 use crate::output::Cell;
 use crate::PLS;
-use std::collections::HashMap;
 use std::fmt::Alignment;
 use std::io::{BufWriter, Write};
 
@@ -23,11 +22,21 @@ pub struct Grid {
 
 impl Grid {
 	/// Create a new instance of `Grid`, taking ownership of the given entries.
-	pub fn new(entries: Vec<HashMap<DetailField, String>>) -> Self {
+	pub fn new(entries: Vec<Vec<String>>) -> Self {
+		// The grid renders only the name column; find its position in the
+		// configured detail fields and pull that value out of each row.
+		let name_idx = PLS
+			.args
+			.details
+			.iter()
+			.position(|det| *det == DetailField::Name);
 		Self {
 			entries: entries
 				.into_iter()
-				.map(|mut entry| entry.remove(&DetailField::Name).unwrap_or_default())
+				.map(|mut entry| match name_idx {
+					Some(idx) if idx < entry.len() => entry.swap_remove(idx),
+					_ => String::default(),
+				})
 				.collect(),
 		}
 	}

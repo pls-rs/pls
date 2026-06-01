@@ -4,6 +4,7 @@ use base64::prelude::*;
 use crossterm::terminal::*;
 use log::debug;
 use regex::Regex;
+use std::borrow::Cow;
 use std::env;
 use std::sync::LazyLock;
 
@@ -127,14 +128,15 @@ pub fn render_image(id: u32, size: u8, count: u8) -> String {
 /// # Arguments
 ///
 /// * `text` - the text to strip the image data from
-pub fn strip_image<S>(text: S) -> String
-where
-	S: AsRef<str>,
-{
-	KITTY_IMAGE
-		.replace_all(text.as_ref(), "")
-		.replace("\x1b[2C", "  ")
-		.to_string()
+pub fn strip_image(text: &str) -> Cow<'_, str> {
+	// `replace_all` borrows the input unchanged when there is no image, so the
+	// common (image-free) case allocates nothing.
+	let stripped = KITTY_IMAGE.replace_all(text, "");
+	if stripped.contains("\x1b[2C") {
+		Cow::Owned(stripped.replace("\x1b[2C", "  "))
+	} else {
+		stripped
+	}
 }
 
 /// Perform the given query in the terminal raw mode.
@@ -162,6 +164,6 @@ mod tests {
 	#[test]
 	fn test_remove_image_substrings() {
 		let text = "\x1b_Gf=32;AAAA\x1b\\Hello, World!";
-		assert_eq!(strip_image(text), "Hello, World!");
+		assert_eq!(strip_image(text).as_ref(), "Hello, World!");
 	}
 }

@@ -76,21 +76,27 @@ impl OwnerMan {
 	}
 
 	/// Get the [`Owner`] instance of the user corresponding to the given UID.
-	pub fn user(&mut self, uid: u32) -> Owner {
-		self.users.get(&uid).cloned().unwrap_or_else(|| {
+	///
+	/// The result is cached and returned by reference, so the common rendering
+	/// path does not clone the owner (and its name) once per node.
+	pub fn user(&mut self, uid: u32) -> &Owner {
+		if !self.users.contains_key(&uid) {
 			let user = self.lookup_user(uid);
-			self.users.insert(uid, user.clone());
-			user
-		})
+			self.users.insert(uid, user);
+		}
+		&self.users[&uid]
 	}
 
 	/// Get the [`Owner`] instance of the group corresponding to the given GID.
-	pub fn group(&mut self, gid: u32) -> Owner {
-		self.groups.get(&gid).cloned().unwrap_or_else(|| {
+	///
+	/// The result is cached and returned by reference, so the common rendering
+	/// path does not clone the owner (and its name) once per node.
+	pub fn group(&mut self, gid: u32) -> &Owner {
+		if !self.groups.contains_key(&gid) {
 			let group = self.lookup_group(gid);
-			self.groups.insert(gid, group.clone());
-			group
-		})
+			self.groups.insert(gid, group);
+		}
+		&self.groups[&gid]
 	}
 }
 

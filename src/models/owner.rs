@@ -58,7 +58,7 @@ impl OwnerMan {
 				entity: Entity::Group,
 				id: gid,
 				name: Some(group.name().to_string_lossy().into()),
-				is_curr: self.curr_user.clone().is_some_and(|user| {
+				is_curr: self.curr_user.as_ref().is_some_and(|user| {
 					group
 						.members()
 						.iter()

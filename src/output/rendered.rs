@@ -1,4 +1,5 @@
 use crate::fmt::render_and_measure;
+use rayon::prelude::*;
 
 /// A cell whose markup has already been converted to ANSI escape codes, paired
 /// with its rendered display width.
@@ -26,9 +27,11 @@ impl Rendered {
 /// Render and measure every cell of every row.
 ///
 /// This is the single point at which a group's markup rows are converted into
-/// printable, pre-measured cells.
+/// printable, pre-measured cells. Rendering a cell is pure, independent string
+/// work, so the rows are rendered in parallel across the global thread pool;
+/// `collect` preserves the original row order.
 pub fn render_rows(rows: Vec<Vec<String>>) -> Vec<Vec<Rendered>> {
-	rows.into_iter()
+	rows.into_par_iter()
 		.map(|row| row.into_iter().map(|cell| Rendered::new(&cell)).collect())
 		.collect()
 }

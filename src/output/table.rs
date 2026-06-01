@@ -2,7 +2,7 @@ use crate::config::AppConst;
 use crate::fmt::len;
 use crate::output::{render_rows, Rendered};
 use crate::PLS;
-use std::io::{BufWriter, Write};
+use std::io::{self, BufWriter, Write};
 use std::iter::once;
 
 /// The detailed renders node names, and optionally, chosen node metadata in
@@ -45,28 +45,32 @@ impl Table {
 			.collect();
 
 		// Buffer the whole table behind a single stdout lock so that each cell
-		// does not incur its own lock acquisition and write syscall.
+		// does not incur its own lock acquisition and write syscall. Writing
+		// stops at the first error (e.g. a closed pipe) instead of doing the
+		// remaining formatting work for output that nobody will read.
 		let mut out = BufWriter::new(std::io::stdout().lock());
-
-		if PLS.args.header {
-			let header_style = app_const.table.header_style.as_str();
-			for (width, det, cell) in &iter_basis {
-				let name = det.name(app_const);
-				let _ = write!(
-					out,
-					"{}",
-					cell.print_markup(name, width, Some(header_style))
-				);
+		let _: io::Result<()> = (|| {
+			if PLS.args.header {
+				let header_style = app_const.table.header_style.as_str();
+				for (width, det, cell) in &iter_basis {
+					let name = det.name(app_const);
+					write!(
+						out,
+						"{}",
+						cell.print_markup(name, width, Some(header_style))
+					)?;
+				}
+				writeln!(out)?;
 			}
-			let _ = writeln!(out);
-		}
 
-		for entry in &self.entries {
-			for ((width, _det, cell), value) in iter_basis.iter().zip(entry) {
-				let _ = write!(out, "{}", cell.print(value, width));
+			for entry in &self.entries {
+				for ((width, _det, cell), value) in iter_basis.iter().zip(entry) {
+					write!(out, "{}", cell.print(value, width))?;
+				}
+				writeln!(out)?;
 			}
-			let _ = writeln!(out);
-		}
+			Ok(())
+		})();
 	}
 
 	/// Get mapping of detail field to the maximum width of the cells in that

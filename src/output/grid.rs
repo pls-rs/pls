@@ -4,7 +4,7 @@ use crate::output::{Cell, Rendered};
 use crate::PLS;
 use rayon::prelude::*;
 use std::fmt::Alignment;
-use std::io::{BufWriter, Write};
+use std::io::{self, BufWriter, Write};
 
 /// The grid view renders the node names in a two dimensional layout to minimise
 /// scrolling. It does not support rendering of node metadata.
@@ -80,16 +80,20 @@ impl Grid {
 		let end_cell = Cell::new(Alignment::Left, (0, 0));
 
 		// Buffer the whole grid behind a single stdout lock so that each cell
-		// does not incur its own lock acquisition and write syscall.
+		// does not incur its own lock acquisition and write syscall. Writing
+		// stops at the first error (e.g. a closed pipe) instead of formatting
+		// the remaining cells for output that nobody will read.
 		let mut out = BufWriter::new(std::io::stdout().lock());
-		for (idx, cell_content) in entries.iter().enumerate() {
-			if idx % cols == cols - 1 || idx == entry_len - 1 {
-				let _ = writeln!(out, "{}", end_cell.print(cell_content, &max_width));
-			} else {
-				let _ = write!(out, "{}", cell.print(cell_content, &max_width));
+		let _: io::Result<()> = (|| {
+			for (idx, cell_content) in entries.iter().enumerate() {
+				if idx % cols == cols - 1 || idx == entry_len - 1 {
+					writeln!(out, "{}", end_cell.print(cell_content, &max_width))?;
+				} else {
+					write!(out, "{}", cell.print(cell_content, &max_width))?;
+				}
 			}
-		}
-		let _ = out.flush();
+			out.flush()
+		})();
 	}
 
 	/// Shuffle the entries to enable printing down instead of across.

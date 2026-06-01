@@ -222,7 +222,7 @@ where
 
 #[cfg(test)]
 mod tests {
-	use super::{len, render};
+	use super::{len, render, render_and_measure};
 
 	macro_rules! make_render_test {
         ( $($name:ident: $markup:expr => $rendered:expr,)* ) => {
@@ -286,5 +286,30 @@ mod tests {
 
 		test_len_ignores_tags: "<bold>bold</>" => 4,
 		test_len_drops_hidden_text: "<blue>blue<hidden>hidden</></>" => 4,
+	);
+
+	macro_rules! make_render_and_measure_test {
+		( $($name:ident: $markup:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
+					colored::control::set_override(true); // needed when running tests in CLion
+					// The single-pass helper must stay equivalent to calling
+					// `render` and `len` separately.
+					assert_eq!(render_and_measure($markup), (render($markup), len($markup)));
+				}
+			)*
+		};
+	}
+
+	make_render_and_measure_test!(
+		test_render_and_measure_matches_plain: "plain text",
+		test_render_and_measure_matches_single_style: "<bold>bold</>",
+		test_render_and_measure_matches_multiple_styles: "<bold italic>bold italic</>",
+		test_render_and_measure_matches_nested_tags: "<blue><italic>blue italic</> blue</>",
+		test_render_and_measure_matches_trailing_text: "<bold>bold</> trailing",
+		test_render_and_measure_matches_hidden_text: "<blue>blue<hidden>hidden</></>",
+		test_render_and_measure_matches_escaped_tags: "\\<bold>\\bold",
+		test_render_and_measure_matches_unicode: "<bold>मैं</> 🤦🏽‍♂️",
 	);
 }

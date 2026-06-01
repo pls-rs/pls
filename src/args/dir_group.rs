@@ -195,8 +195,8 @@ impl DirGroup {
 
 		let mut roots = vec![];
 		let mut child_map: HashMap<String, Vec<Node>> = HashMap::new();
-		nodes.into_iter().for_each(|node| {
-			if let Some(collapse) = node.collapse_name.clone() {
+		nodes.into_iter().for_each(|mut node| {
+			if let Some(collapse) = node.collapse_name.take() {
 				match child_map.entry(collapse) {
 					Entry::Occupied(mut entry) => {
 						let children = entry.get_mut();

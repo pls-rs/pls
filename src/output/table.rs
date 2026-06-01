@@ -3,6 +3,7 @@ use crate::enums::DetailField;
 use crate::fmt::len;
 use crate::PLS;
 use std::collections::HashMap;
+use std::io::{BufWriter, Write};
 use std::iter::once;
 
 /// The detailed renders node names, and optionally, chosen node metadata in
@@ -40,20 +41,24 @@ impl Table {
 			})
 			.collect();
 
+		// Buffer the whole table behind a single stdout lock so that each cell
+		// does not incur its own lock acquisition and write syscall.
+		let mut out = BufWriter::new(std::io::stdout().lock());
+
 		if PLS.args.header {
+			let header_style = app_const.table.header_style.as_str();
 			for (width, det, cell) in &iter_basis {
 				let name = det.name(app_const);
-				let directives = app_const.table.header_style.as_str();
-				print!("{}", &cell.print(name, width, Some(directives)));
+				let _ = write!(out, "{}", cell.print(name, width, Some(header_style)));
 			}
-			println!();
+			let _ = writeln!(out);
 		}
 
 		for entry in &self.entries {
 			for (width, det, cell) in &iter_basis {
-				print!("{}", &cell.print(entry.get(det).unwrap(), width, None));
+				let _ = write!(out, "{}", cell.print(entry.get(det).unwrap(), width, None));
 			}
-			println!();
+			let _ = writeln!(out);
 		}
 	}
 

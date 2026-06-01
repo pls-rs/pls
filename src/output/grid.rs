@@ -2,6 +2,7 @@ use crate::config::AppConst;
 use crate::enums::DetailField;
 use crate::output::{Cell, Rendered};
 use crate::PLS;
+use rayon::prelude::*;
 use std::fmt::Alignment;
 use std::io::{BufWriter, Write};
 
@@ -31,7 +32,7 @@ impl Grid {
 			.position(|det| *det == DetailField::Name);
 		Self {
 			entries: entries
-				.into_iter()
+				.into_par_iter()
 				.map(|mut entry| match name_idx {
 					Some(idx) if idx < entry.len() => entry.swap_remove(idx),
 					_ => String::default(),

@@ -5,6 +5,7 @@ use crate::models::{Node, OwnerMan, Owners};
 use crate::traits::Imp;
 use crate::PLS;
 use log::debug;
+use rayon::prelude::*;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::fs::DirEntry;
@@ -47,19 +48,26 @@ impl DirGroup {
 			nodes = Self::make_tree(nodes);
 		}
 
-		// Owners are looked up through an immutable, shareable view rather than
-		// the mutable manager. When any owner column or owner-based sort is in
-		// play, resolve every owner up front and then hand out that view.
+		// Owners are the only per-node datum that cannot be resolved on a
+		// rendering thread (the user/group cache is `!Sync`). When any owner
+		// column or owner-based sort is in play, resolve every owner up front —
+		// after prefetching metadata in parallel so the resolution itself does
+		// not stat serially — and then hand out an immutable, shareable view.
 		if owners_needed() {
+			Self::prefetch_meta(&nodes);
 			Self::resolve_owners(&nodes, owner_man);
 		}
 		let owners = owner_man.owners();
 
 		Self::re_sort(&mut nodes, owners);
 
+		// Building a node's rows is independent, read-only work, so the
+		// top-level nodes are rendered in parallel; `collect` into an ordered
+		// `Vec` preserves the sorted order, and each subtree keeps its rows
+		// contiguous because a node owns the flattened rows of its descendants.
 		let entries = nodes
-			.iter()
-			.flat_map(|node| {
+			.par_iter()
+			.flat_map_iter(|node| {
 				node.entries(
 					owners,
 					&self.input.conf,
@@ -164,10 +172,24 @@ impl DirGroup {
 		}
 	}
 
+	/// Fetch and cache the metadata of every node in the given forest in
+	/// parallel.
+	///
+	/// Metadata is otherwise fetched lazily and serially; doing it up front in
+	/// parallel turns a sequence of blocking `stat` calls into concurrent ones
+	/// and ensures later owner resolution reads cached metadata.
+	fn prefetch_meta(nodes: &[Node]) {
+		nodes.par_iter().for_each(|node| {
+			node.meta_ok();
+			Self::prefetch_meta(&node.children);
+		});
+	}
+
 	/// Resolve the owning user and group of every node in the given forest.
 	///
-	/// This populates the [`OwnerMan`] cache up front so that rendering can look
-	/// owners up through an immutable [`Owners`] view without touching the cache.
+	/// This populates the (`!Sync`) [`OwnerMan`] cache serially so that the
+	/// parallel render can look owners up through an immutable [`Owners`] view
+	/// without touching the cache.
 	fn resolve_owners(nodes: &[Node], owner_man: &mut OwnerMan) {
 		for node in nodes {
 			if let Some(meta) = node.meta_ok() {

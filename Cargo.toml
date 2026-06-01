@@ -35,6 +35,7 @@ libc = "0.2.180"
 log = { version = "0.4.29", features = ["release_max_level_off"] }
 number_prefix = "0.4.0"
 path-clean = "1.0.1"
+rayon = "1.11.0"
 regex = { version = "1.12.3", default-features = false, features = ["std", "perf"] }
 resvg = { version = "0.46.0", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }

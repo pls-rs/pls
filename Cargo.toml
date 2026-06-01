@@ -52,6 +52,12 @@ panic = "abort"
 lto = true
 strip = true
 
+# Release-like profile that keeps symbols/debuginfo for profiling with samply.
+[profile.profiling]
+inherits = "release"
+strip = false
+debug = true
+
 [package.metadata.release]
 sign-commit = true
 sign-tag = true

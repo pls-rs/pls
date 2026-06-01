@@ -1,8 +1,6 @@
 use crate::config::AppConst;
-use crate::enums::DetailField;
 use crate::fmt::len;
 use crate::PLS;
-use std::collections::HashMap;
 use std::io::{BufWriter, Write};
 use std::iter::once;
 
@@ -13,13 +11,13 @@ use std::iter::once;
 /// the [grid view](crate::output::Grid).
 #[derive(Default)]
 pub struct Table {
-	pub entries: Vec<HashMap<DetailField, String>>,
+	pub entries: Vec<Vec<String>>,
 	pub is_solo: bool,
 }
 
 impl Table {
 	/// Create a new instance of `Table`, taking ownership of the given entries.
-	pub fn new(entries: Vec<HashMap<DetailField, String>>, is_solo: bool) -> Self {
+	pub fn new(entries: Vec<Vec<String>>, is_solo: bool) -> Self {
 		Self { entries, is_solo }
 	}
 
@@ -55,8 +53,8 @@ impl Table {
 		}
 
 		for entry in &self.entries {
-			for (width, det, cell) in &iter_basis {
-				let _ = write!(out, "{}", cell.print(entry.get(det).unwrap(), width, None));
+			for ((width, _det, cell), value) in iter_basis.iter().zip(entry) {
+				let _ = write!(out, "{}", cell.print(value, width, None));
 			}
 			let _ = writeln!(out);
 		}
@@ -86,7 +84,7 @@ impl Table {
 				};
 				self.entries[0..end_lim]
 					.iter()
-					.filter_map(|entry| entry.get(det).map(len))
+					.filter_map(|entry| entry.get(det_idx).map(len))
 					.chain(once(if PLS.args.header {
 						len(det.name(app_const))
 					} else {

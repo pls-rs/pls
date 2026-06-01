@@ -2,13 +2,12 @@ use crate::args::dir_group::DirGroup;
 use crate::args::files_group::FilesGroup;
 use crate::args::input::Input;
 use crate::config::{Conf, ConfMan};
-use crate::enums::{DetailField, Typ};
+use crate::enums::Typ;
 use crate::exc::Exc;
 use crate::fmt::render;
 use crate::models::OwnerMan;
 use crate::output::{Grid, Table};
 use crate::PLS;
-use std::collections::HashMap;
 
 // ======
 // Models
@@ -90,10 +89,7 @@ impl Group {
 
 	/// Convert this group into a vector of entries that can be passed into the
 	/// layout to be rendered.
-	pub fn entries(
-		&self,
-		owner_man: &mut OwnerMan,
-	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
+	pub fn entries(&self, owner_man: &mut OwnerMan) -> Result<Vec<Vec<String>>, Exc> {
 		match self {
 			Self::Dir(group) => group.entries(owner_man),
 			Self::Files(group) => Ok(group.entries(owner_man)),

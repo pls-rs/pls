@@ -1,8 +1,10 @@
+use crate::args::dir_group::owners_needed;
 use crate::args::input::Input;
 use crate::config::{Conf, ConfMan};
 use crate::models::{Node, OwnerMan};
 use crate::utils::paths::common_ancestor;
 use log::debug;
+use std::os::unix::fs::MetadataExt;
 use std::path::PathBuf;
 
 // ======
@@ -53,11 +55,25 @@ impl FilesGroup {
 	/// [`Node::row`] instead of the flattened output of each node's
 	/// [`Node::entries`].
 	pub fn entries(&self, owner_man: &mut OwnerMan) -> Vec<Vec<String>> {
-		self.nodes()
+		let nodes = self.nodes();
+
+		// Resolve owners up front so rows can be built through an immutable
+		// owner view (see [`DirGroup::entries`]).
+		if owners_needed() {
+			for (node, _) in &nodes {
+				if let Some(meta) = node.meta_ok() {
+					owner_man.user(meta.uid());
+					owner_man.group(meta.gid());
+				}
+			}
+		}
+		let owners = owner_man.owners();
+
+		nodes
 			.iter()
 			.map(|(node, conf)| {
 				node.row(
-					owner_man,
+					owners,
 					conf,
 					&self.parent_conf.app_const,
 					&conf.entry_const,

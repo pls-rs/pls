@@ -1,6 +1,6 @@
 use crate::config::{AppConst, Conf, EntryConst};
 use crate::enums::{Appearance, Collapse, DetailField, Icon, Typ};
-use crate::models::{OwnerMan, Spec};
+use crate::models::{Owners, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use crate::PLS;
 use std::cell::OnceCell;
@@ -349,12 +349,7 @@ impl<'pls> Node<'pls> {
 	// Printer entry
 	// =============
 
-	fn get_value(
-		&self,
-		detail: DetailField,
-		owner_man: &mut OwnerMan,
-		entry_const: &EntryConst,
-	) -> String {
+	fn get_value(&self, detail: DetailField, owners: Owners, entry_const: &EntryConst) -> String {
 		let val = match detail {
 			// `Detail` trait
 			DetailField::Dev => self.dev(entry_const),
@@ -362,10 +357,10 @@ impl<'pls> Node<'pls> {
 			DetailField::Nlink => self.nlink(entry_const),
 			DetailField::Perm => self.perm(entry_const),
 			DetailField::Oct => self.oct(entry_const),
-			DetailField::User => self.user(owner_man, entry_const),
-			DetailField::Uid => self.uid(owner_man, entry_const),
-			DetailField::Group => self.group(owner_man, entry_const),
-			DetailField::Gid => self.gid(owner_man, entry_const),
+			DetailField::User => self.user(owners, entry_const),
+			DetailField::Uid => self.uid(owners, entry_const),
+			DetailField::Group => self.group(owners, entry_const),
+			DetailField::Gid => self.gid(owners, entry_const),
 			DetailField::Btime => self.time(detail, entry_const),
 			DetailField::Mtime => self.time(detail, entry_const),
 			DetailField::Ctime => self.time(detail, entry_const),
@@ -386,7 +381,7 @@ impl<'pls> Node<'pls> {
 	/// index into the row by position instead of hashing a `DetailField` key.
 	pub fn row(
 		&self,
-		owner_man: &mut OwnerMan,
+		owners: Owners,
 		conf: &Conf,
 		app_const: &AppConst,
 		entry_const: &EntryConst,
@@ -399,7 +394,7 @@ impl<'pls> Node<'pls> {
 				if detail == DetailField::Name {
 					self.display_name(conf, app_const, entry_const, tree_shape)
 				} else {
-					self.get_value(detail, owner_man, entry_const)
+					self.get_value(detail, owners, entry_const)
 				}
 			})
 			.collect()
@@ -413,7 +408,7 @@ impl<'pls> Node<'pls> {
 	#[allow(clippy::too_many_arguments)]
 	pub fn entries(
 		&self,
-		owner_man: &mut OwnerMan,
+		owners: Owners,
 		conf: &Conf,
 		app_const: &AppConst,
 		entry_const: &EntryConst,
@@ -439,7 +434,7 @@ impl<'pls> Node<'pls> {
 			all_shapes.push(more_shape);
 		}
 
-		once(self.row(owner_man, conf, app_const, entry_const, &all_shapes))
+		once(self.row(owners, conf, app_const, entry_const, &all_shapes))
 			.chain(self.children.iter().enumerate().flat_map(|(idx, child)| {
 				let child_own_shape = if idx == self.children.len() - 1 {
 					&app_const.tree.bend_dash
@@ -448,7 +443,7 @@ impl<'pls> Node<'pls> {
 				};
 
 				child.entries(
-					owner_man,
+					owners,
 					conf,
 					app_const,
 					entry_const,

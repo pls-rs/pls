@@ -43,7 +43,7 @@ impl Table {
 		if PLS.args.header {
 			for (width, det, cell) in &iter_basis {
 				let name = det.name(app_const);
-				let directives = app_const.table.header_style.clone();
+				let directives = app_const.table.header_style.as_str();
 				print!("{}", &cell.print(name, width, Some(directives)));
 			}
 			println!();

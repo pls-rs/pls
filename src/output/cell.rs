@@ -41,7 +41,7 @@ impl Cell {
 	/// * `text` - the text to print in the cell
 	/// * `width` - the width that the cell should span
 	/// * `directives` - styles to apply to the entire cell, including padding
-	pub fn print<S>(&self, text: S, width: &Option<usize>, directives: Option<String>) -> String
+	pub fn print<S>(&self, text: S, width: &Option<usize>, directives: Option<&str>) -> String
 	where
 		S: AsRef<str>,
 	{
@@ -68,7 +68,7 @@ impl Cell {
 
 		if let Some(directives) = directives {
 			content.insert_str(0, "<>");
-			content.insert_str(1, &directives);
+			content.insert_str(1, directives);
 			content.push_str("</>");
 		}
 

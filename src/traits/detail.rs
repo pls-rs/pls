@@ -98,9 +98,8 @@ impl Detail for Node<'_> {
 	/// This function returns a marked-up string.
 	fn dev(&self, entry_const: &EntryConst) -> Option<String> {
 		self.meta_ok().map(|meta| {
-			let dev = meta.dev().to_string();
 			let directives = &entry_const.dev_style;
-			format!("<{directives}>{dev}</>")
+			format!("<{directives}>{}</>", meta.dev())
 		})
 	}
 
@@ -109,9 +108,8 @@ impl Detail for Node<'_> {
 	/// This function returns a marked-up string.
 	fn ino(&self, entry_const: &EntryConst) -> Option<String> {
 		self.meta_ok().map(|meta| {
-			let ino = meta.ino().to_string();
 			let directives = &entry_const.ino_style;
-			format!("<{directives}>{ino}</>")
+			format!("<{directives}>{}</>", meta.ino())
 		})
 	}
 

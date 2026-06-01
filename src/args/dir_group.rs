@@ -1,6 +1,7 @@
 use crate::args::input::Input;
+use crate::enums::{DetailField, SortField};
 use crate::exc::Exc;
-use crate::models::{Node, OwnerMan};
+use crate::models::{Node, OwnerMan, Owners};
 use crate::traits::Imp;
 use crate::PLS;
 use log::debug;
@@ -45,13 +46,22 @@ impl DirGroup {
 		if PLS.args.collapse {
 			nodes = Self::make_tree(nodes);
 		}
-		Self::re_sort(&mut nodes, owner_man);
+
+		// Owners are looked up through an immutable, shareable view rather than
+		// the mutable manager. When any owner column or owner-based sort is in
+		// play, resolve every owner up front and then hand out that view.
+		if owners_needed() {
+			Self::resolve_owners(&nodes, owner_man);
+		}
+		let owners = owner_man.owners();
+
+		Self::re_sort(&mut nodes, owners);
 
 		let entries = nodes
 			.iter()
 			.flat_map(|node| {
 				node.entries(
-					owner_man,
+					owners,
 					&self.input.conf,
 					&self.input.conf.app_const,
 					&self.input.conf.entry_const,
@@ -142,15 +152,30 @@ impl DirGroup {
 	/// This function iterates over all the sort bases and sorts the given list
 	/// of nodes. It is invoked both from the top-level and from each parent
 	/// node to sort its children.
-	fn re_sort(nodes: &mut [Node], owner_man: &mut OwnerMan) {
+	fn re_sort(nodes: &mut [Node], owners: Owners) {
 		if nodes.len() <= 1 {
 			return;
 		}
 		PLS.args.sort_bases.iter().rev().for_each(|field| {
-			nodes.sort_by(|a, b| field.compare(a, b, owner_man));
+			nodes.sort_by(|a, b| field.compare(a, b, owners));
 		});
 		for node in nodes {
-			Self::re_sort(&mut node.children, owner_man);
+			Self::re_sort(&mut node.children, owners);
+		}
+	}
+
+	/// Resolve the owning user and group of every node in the given forest.
+	///
+	/// This populates the [`OwnerMan`] cache up front so that rendering can look
+	/// owners up through an immutable [`Owners`] view without touching the cache.
+	fn resolve_owners(nodes: &[Node], owner_man: &mut OwnerMan) {
+		for node in nodes {
+			if let Some(meta) = node.meta_ok() {
+				use std::os::unix::fs::MetadataExt;
+				owner_man.user(meta.uid());
+				owner_man.group(meta.gid());
+			}
+			Self::resolve_owners(&node.children, owner_man);
 		}
 	}
 
@@ -219,4 +244,25 @@ impl DirGroup {
 		roots.extend(child_map.into_values().flatten());
 		roots
 	}
+}
+
+/// Whether the current invocation needs owner information resolved.
+///
+/// Owner resolution is only worth its (serial) cost when an owner column is
+/// displayed or the nodes are sorted by owner; other views never consult the
+/// owner cache.
+pub(crate) fn owners_needed() -> bool {
+	use DetailField::{Gid, Group, Uid, User};
+	use SortField::{
+		Group as GroupSort, Group_ as GroupSortRev, User as UserSort, User_ as UserSortRev,
+	};
+	PLS.args
+		.details
+		.iter()
+		.any(|field| matches!(field, User | Uid | Group | Gid))
+		|| PLS
+			.args
+			.sort_bases
+			.iter()
+			.any(|field| matches!(field, UserSort | UserSortRev | GroupSort | GroupSortRev))
 }

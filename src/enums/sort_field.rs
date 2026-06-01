@@ -1,5 +1,5 @@
 use crate::enums::DetailField;
-use crate::models::{Node, OwnerMan};
+use crate::models::{Node, Owners};
 use crate::traits::{Detail, Name};
 use clap::ValueEnum;
 use serde::{Deserialize, Serialize};
@@ -144,11 +144,11 @@ impl SortField {
 	///
 	/// This function handles reverse sort fields, the fields suffixed with '_',
 	/// by using the natural sort field's logic and then inverting it.
-	pub fn compare(&self, a: &Node, b: &Node, owner_man: &mut OwnerMan) -> Ordering {
+	pub fn compare(&self, a: &Node, b: &Node, owners: Owners) -> Ordering {
 		let (basis, is_reverse) = self.simplify();
 
 		let ord = basis
-			.compare_no_meta(a, b, owner_man)
+			.compare_no_meta(a, b, owners)
 			.or_else(|| basis.compare_meta(a, b))
 			.or_else(|| basis.compare_time(a, b))
 			.unwrap_or(Ordering::Equal);
@@ -206,15 +206,15 @@ impl SortField {
 	///
 	/// This function can perform comparisons based on fields that do not need
 	/// metadata at all, or account for the `meta` field being `Err`.
-	fn compare_no_meta(&self, a: &Node, b: &Node, owner_man: &mut OwnerMan) -> Option<Ordering> {
+	fn compare_no_meta(&self, a: &Node, b: &Node, owners: Owners) -> Option<Ordering> {
 		let ord = match self {
 			SortField::Name => a.name.cmp(&b.name),
 			SortField::Cname => a.cname().cmp(b.cname()),
 			SortField::Ext => a.ext().cmp(b.ext()),
 			SortField::Typ => a.typ.cmp(&b.typ),
 			SortField::Cat => a.typ.cat().cmp(&b.typ.cat()),
-			SortField::User => a.user_val(owner_man).cmp(&b.user_val(owner_man)),
-			SortField::Group => a.group_val(owner_man).cmp(&b.group_val(owner_man)),
+			SortField::User => a.user_val(owners).cmp(&b.user_val(owners)),
+			SortField::Group => a.group_val(owners).cmp(&b.group_val(owners)),
 			_ => return None,
 		};
 		Some(ord)

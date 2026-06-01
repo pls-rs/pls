@@ -1,7 +1,7 @@
 use crate::config::EntryConst;
 use crate::enums::{DetailField, Typ};
 use crate::ext::Ctime;
-use crate::models::{Node, OwnerMan, Perm};
+use crate::models::{Node, Owners, Perm};
 use crate::PLS;
 use log::warn;
 #[cfg(unix)]
@@ -27,18 +27,18 @@ pub trait Detail {
 	fn size_val(&self) -> Option<u64>;
 	fn blocks_val(&self) -> Option<u64>;
 	fn time_val(&self, field: DetailField) -> Option<SystemTime>;
-	fn user_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
-	fn group_val(&self, owner_man: &mut OwnerMan) -> Option<String>;
+	fn user_val(&self, owners: Owners) -> Option<String>;
+	fn group_val(&self, owners: Owners) -> Option<String>;
 
 	fn dev(&self, entry_const: &EntryConst) -> Option<String>;
 	fn ino(&self, entry_const: &EntryConst) -> Option<String>;
 	fn nlink(&self, entry_const: &EntryConst) -> Option<String>;
 	fn perm(&self, entry_const: &EntryConst) -> Option<String>;
 	fn oct(&self, entry_const: &EntryConst) -> Option<String>;
-	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
-	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
-	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
-	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String>;
+	fn user(&self, owners: Owners, entry_const: &EntryConst) -> Option<String>;
+	fn uid(&self, owners: Owners, entry_const: &EntryConst) -> Option<String>;
+	fn group(&self, owners: Owners, entry_const: &EntryConst) -> Option<String>;
+	fn gid(&self, owners: Owners, entry_const: &EntryConst) -> Option<String>;
 	fn size(&self, entry_const: &EntryConst) -> Option<String>;
 	fn blocks(&self, entry_const: &EntryConst) -> Option<String>;
 	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String>;
@@ -78,15 +78,17 @@ impl Detail for Node<'_> {
 	}
 
 	/// Get the name of the user that owns this node, if known.
-	fn user_val(&self, owner_man: &mut OwnerMan) -> Option<String> {
+	fn user_val(&self, owners: Owners) -> Option<String> {
 		self.meta_ok()
-			.and_then(|meta| owner_man.user(meta.uid()).name.clone())
+			.and_then(|meta| owners.user(meta.uid()))
+			.and_then(|owner| owner.name.clone())
 	}
 
 	/// Get the name of the group that owns this node, if known.
-	fn group_val(&self, owner_man: &mut OwnerMan) -> Option<String> {
+	fn group_val(&self, owners: Owners) -> Option<String> {
 		self.meta_ok()
-			.and_then(|meta| owner_man.group(meta.gid()).name.clone())
+			.and_then(|meta| owners.group(meta.gid()))
+			.and_then(|owner| owner.name.clone())
 	}
 
 	// ===========
@@ -145,36 +147,40 @@ impl Detail for Node<'_> {
 	/// the owner is the current user.
 	///
 	/// This function returns a marked-up string.
-	fn user(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+	fn user(&self, owners: Owners, entry_const: &EntryConst) -> Option<String> {
 		self.meta_ok()
-			.map(|meta| owner_man.user(meta.uid()).name(entry_const))
+			.and_then(|meta| owners.user(meta.uid()))
+			.map(|owner| owner.name(entry_const))
 	}
 
 	/// Get the UID of the user that owns this node. The UID is highlighted if
 	/// the owner is the current user.
 	///
 	/// This function returns a marked-up string.
-	fn uid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+	fn uid(&self, owners: Owners, entry_const: &EntryConst) -> Option<String> {
 		self.meta_ok()
-			.map(|meta| owner_man.user(meta.uid()).id(entry_const))
+			.and_then(|meta| owners.user(meta.uid()))
+			.map(|owner| owner.id(entry_const))
 	}
 
 	/// Get the name of the group that owns this node. The name is highlighted
 	/// if the current user belongs to this group.
 	///
 	/// This function returns a marked-up string.
-	fn group(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+	fn group(&self, owners: Owners, entry_const: &EntryConst) -> Option<String> {
 		self.meta_ok()
-			.map(|meta| owner_man.group(meta.gid()).name(entry_const))
+			.and_then(|meta| owners.group(meta.gid()))
+			.map(|owner| owner.name(entry_const))
 	}
 
 	/// Get the GID of the group that owns this node. The GID is highlighted
 	/// if the current user belongs to this group.
 	///
 	/// This function returns a marked-up string.
-	fn gid(&self, owner_man: &mut OwnerMan, entry_const: &EntryConst) -> Option<String> {
+	fn gid(&self, owners: Owners, entry_const: &EntryConst) -> Option<String> {
 		self.meta_ok()
-			.map(|meta| owner_man.group(meta.gid()).id(entry_const))
+			.and_then(|meta| owners.group(meta.gid()))
+			.map(|owner| owner.id(entry_const))
 	}
 
 	/// Get the size of the file in bytes, optionally with higher units in

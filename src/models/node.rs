@@ -3,7 +3,6 @@ use crate::enums::{Appearance, Collapse, DetailField, Icon, Typ};
 use crate::models::{Owners, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use crate::PLS;
-use std::cell::OnceCell;
 use std::collections::HashSet;
 use std::fmt::Write;
 use std::fmt::{Display, Formatter, Result as FmtResult};
@@ -11,6 +10,7 @@ use std::fs::{DirEntry, Metadata};
 use std::io::Result as IoResult;
 use std::iter::once;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 
 pub struct Node<'pls> {
 	/// the name of the node on the file system, determined from the path and
@@ -23,7 +23,7 @@ pub struct Node<'pls> {
 	pub path: PathBuf,
 	/// the node's metadata, fetched lazily on first access via [`Node::meta_ok`]
 	/// so that views which do not need it (e.g. the grid) never pay for a stat
-	meta: OnceCell<IoResult<Metadata>>,
+	meta: OnceLock<IoResult<Metadata>>,
 	pub typ: Typ, // `Typ::Unknown` if the type could not be determined
 
 	pub appearances: HashSet<Appearance>,
@@ -34,9 +34,9 @@ pub struct Node<'pls> {
 	pub children: Vec<Node<'pls>>,
 
 	/// cached canonical name, computed once for sorting (see [`Name::cname`])
-	pub(crate) cname_cache: OnceCell<String>,
+	pub(crate) cname_cache: OnceLock<String>,
 	/// cached extension, computed once for sorting (see [`Name::ext`])
-	pub(crate) ext_cache: OnceCell<String>,
+	pub(crate) ext_cache: OnceLock<String>,
 }
 
 impl<'pls> Node<'pls> {
@@ -60,7 +60,7 @@ impl<'pls> Node<'pls> {
 			.as_ref()
 			.map(|meta| meta.file_type().into())
 			.unwrap_or(Typ::Unknown);
-		let meta = OnceCell::new();
+		let meta = OnceLock::new();
 		let _ = meta.set(meta_res);
 
 		Self::assemble(name, path, meta, typ)
@@ -77,11 +77,11 @@ impl<'pls> Node<'pls> {
 		let path = entry.path();
 		let typ = entry.file_type().map(Typ::from).unwrap_or(Typ::Unknown);
 
-		Self::assemble(name, path, OnceCell::new(), typ)
+		Self::assemble(name, path, OnceLock::new(), typ)
 	}
 
 	/// Assemble a `Node` from its already-derived core fields.
-	fn assemble(name: String, path: PathBuf, meta: OnceCell<IoResult<Metadata>>, typ: Typ) -> Self {
+	fn assemble(name: String, path: PathBuf, meta: OnceLock<IoResult<Metadata>>, typ: Typ) -> Self {
 		let display_name = name.clone();
 		Self {
 			name,
@@ -93,8 +93,8 @@ impl<'pls> Node<'pls> {
 			specs: vec![],
 			collapse_name: None,
 			children: vec![],
-			cname_cache: OnceCell::new(),
-			ext_cache: OnceCell::new(),
+			cname_cache: OnceLock::new(),
+			ext_cache: OnceLock::new(),
 		}
 	}
 

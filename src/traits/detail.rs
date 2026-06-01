@@ -8,7 +8,7 @@ use log::warn;
 use std::os::unix::fs::MetadataExt;
 use std::sync::LazyLock;
 use std::time::SystemTime;
-use time::{format_description, OffsetDateTime, UtcOffset};
+use time::{OffsetDateTime, UtcOffset};
 
 /// The current local UTC offset, resolved once for the lifetime of the process.
 ///
@@ -200,16 +200,13 @@ impl Detail for Node<'_> {
 	///
 	/// This function returns a marked-up string.
 	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String> {
-		self.time_val(field).map(|time| {
+		self.time_val(field).and_then(|time| {
 			let mut dt: OffsetDateTime = time.into();
 			if let Some(offset) = *LOCAL_OFFSET {
 				dt = dt.to_offset(offset);
 			}
-			let format = format_description::parse_borrowed::<2>(
-				entry_const.timestamp_formats.get(&field).unwrap(),
-			)
-			.unwrap();
-			dt.format(&format).unwrap()
+			let format = entry_const.timestamp_format(field)?;
+			dt.format(format).ok()
 		})
 	}
 }

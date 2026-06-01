@@ -1,5 +1,6 @@
 use colored::{Color, ColoredString, Colorize};
 use regex::Regex;
+use std::borrow::Cow;
 use std::sync::LazyLock;
 
 static TRUE_COLOR: LazyLock<Regex> = LazyLock::new(|| {
@@ -60,9 +61,15 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 	};
 
 	let is_bg = directive.starts_with("bg:");
-	let directive = directive.replace("bg:", "").replace("bright_", "bright ");
+	// Only allocate a new string when there is actually something to rewrite;
+	// the vast majority of directives (plain styles and colours) need neither.
+	let directive: Cow<str> = if is_bg || directive.contains("bright_") {
+		Cow::Owned(directive.replace("bg:", "").replace("bright_", "bright "))
+	} else {
+		Cow::Borrowed(directive)
+	};
 
-	let string = match directive.as_str() {
+	let string = match directive.as_ref() {
 		"clear" => return string.clear(), // no style
 		"blink" => return string.blink(),
 		"bold" => return string.bold(),
@@ -76,7 +83,7 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 	};
 
 	let mut color: Option<Color> = None;
-	let caps = TRUE_COLOR.captures(&directive);
+	let caps = TRUE_COLOR.captures(directive.as_ref());
 	if let Some(caps) = caps {
 		// RGB true colors
 		let channels: Vec<_> = vec!["red", "green", "blue"]

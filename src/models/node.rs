@@ -32,6 +32,11 @@ pub struct Node<'pls> {
 
 	pub collapse_name: Option<String>,
 	pub children: Vec<Node<'pls>>,
+
+	/// cached canonical name, computed once for sorting (see [`Name::cname`])
+	pub(crate) cname_cache: OnceCell<String>,
+	/// cached extension, computed once for sorting (see [`Name::ext`])
+	pub(crate) ext_cache: OnceCell<String>,
 }
 
 impl<'pls> Node<'pls> {
@@ -88,6 +93,8 @@ impl<'pls> Node<'pls> {
 			specs: vec![],
 			collapse_name: None,
 			children: vec![],
+			cname_cache: OnceCell::new(),
+			ext_cache: OnceCell::new(),
 		}
 	}
 

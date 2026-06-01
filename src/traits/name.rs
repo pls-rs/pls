@@ -2,9 +2,9 @@ use crate::models::Node;
 use std::path::PathBuf;
 
 pub trait Name {
-	fn ext(&self) -> String;
+	fn ext(&self) -> &str;
 	fn stem(&self) -> String;
-	fn cname(&self) -> String;
+	fn cname(&self) -> &str;
 
 	fn aligned_name(&self) -> String;
 }
@@ -16,13 +16,16 @@ impl Name for Node<'_> {
 
 	/// Get the extension for a node.
 	///
-	/// Returns a blank string if the node does not have an extension.
-	fn ext(&self) -> String {
-		self.path
-			.extension()
-			.unwrap_or_default()
-			.to_string_lossy()
-			.to_string()
+	/// Returns a blank string if the node does not have an extension. The value
+	/// is computed once and cached, as it is used for sorting.
+	fn ext(&self) -> &str {
+		self.ext_cache.get_or_init(|| {
+			self.path
+				.extension()
+				.unwrap_or_default()
+				.to_string_lossy()
+				.to_string()
+		})
 	}
 
 	/// Get the name for the node, without the extension, if any.
@@ -39,12 +42,15 @@ impl Name for Node<'_> {
 	/// Get the canonical name for the node.
 	///
 	/// The canonical name is the name of the node, stripped of leading symbols
-	/// and normalised to lowercase.
-	fn cname(&self) -> String {
-		self.name
-			.to_lowercase()
-			.trim_start_matches(|c: char| !c.is_alphanumeric())
-			.to_string()
+	/// and normalised to lowercase. The value is computed once and cached, as it
+	/// is used for sorting.
+	fn cname(&self) -> &str {
+		self.cname_cache.get_or_init(|| {
+			self.name
+				.to_lowercase()
+				.trim_start_matches(|c: char| !c.is_alphanumeric())
+				.to_string()
+		})
 	}
 
 	// ===============

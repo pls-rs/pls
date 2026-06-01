@@ -209,8 +209,8 @@ impl SortField {
 	fn compare_no_meta(&self, a: &Node, b: &Node, owner_man: &mut OwnerMan) -> Option<Ordering> {
 		let ord = match self {
 			SortField::Name => a.name.cmp(&b.name),
-			SortField::Cname => a.cname().cmp(&b.cname()),
-			SortField::Ext => a.ext().cmp(&b.ext()),
+			SortField::Cname => a.cname().cmp(b.cname()),
+			SortField::Ext => a.ext().cmp(b.ext()),
 			SortField::Typ => a.typ.cmp(&b.typ),
 			SortField::Cat => a.typ.cat().cmp(&b.typ.cat()),
 			SortField::User => a.user_val(owner_man).cmp(&b.user_val(owner_man)),

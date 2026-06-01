@@ -1,29 +1,9 @@
 use crate::fmt::format::fmt;
-use std::iter::Peekable;
-use std::str::Chars;
 use unicode_segmentation::UnicodeSegmentation;
 
-const ESCAPE: char = '\\';
-const TAG_OPEN: char = '<';
-const TAG_CLOSE: char = '>';
-
-/// Given a peekable iterable of characters, get a string comprised of all
-/// characters that satisfy the given condition.
-///
-/// # Arguments
-///
-/// * `tokens` - the peekable iterator of characters to consume from
-/// * `predicate` - the condition each character must satisfy to be consumed
-fn select_while<F>(tokens: &mut Peekable<Chars>, predicate: F) -> String
-where
-	F: Fn(char) -> bool,
-{
-	let mut selected = String::new();
-	while tokens.peek().is_some_and(|ch| predicate(*ch)) {
-		selected.push(tokens.next().unwrap());
-	}
-	selected
-}
+const ESCAPE: u8 = b'\\';
+const TAG_OPEN: u8 = b'<';
+const TAG_CLOSE: u8 = b'>';
 
 /// Reduce the textual parts of a markup string.
 ///
@@ -40,45 +20,56 @@ where
 /// * `markup` - the marked-up string to be reduced
 /// * `init` - the initial value of the accumulator
 /// * `reducer` - the function that works on the aforementioned data
-fn reduce_markup<S, T, F>(markup: S, init: T, reducer: F) -> T
+fn reduce_markup<'a, T, F>(markup: &'a str, init: T, reducer: F) -> T
 where
-	S: AsRef<str>,
-	F: Fn(&Vec<Vec<String>>, &mut String, T) -> T,
+	F: Fn(&[Vec<&'a str>], &mut String, T) -> T,
 {
-	let mut stack: Vec<Vec<String>> = Vec::new(); // the list of currently active tags
+	let mut stack: Vec<Vec<&'a str>> = Vec::new(); // the list of currently active tags
 	let mut curr: String = String::default(); // the current continuous text block
 
 	let mut acc = init; // initialise the accumulator
 
-	let mut tokens = markup.as_ref().chars().peekable();
-	while let Some(next_char) = tokens.peek() {
-		match *next_char {
+	// The delimiters (`<`, `>`, `\`) are all ASCII, so they never appear inside
+	// a multi-byte UTF-8 sequence. This lets us scan and slice on byte offsets
+	// and borrow tag tokens directly from the input instead of allocating.
+	let bytes = markup.as_bytes();
+	let mut i = 0;
+	while i < bytes.len() {
+		match bytes[i] {
 			ESCAPE => {
-				tokens.next(); // Consume `BACKSLASH`.
-				match tokens.peek() {
-					Some(then_char) if *then_char == TAG_OPEN => {
-						curr.push(TAG_OPEN);
-						tokens.next(); // Consume `TAG_OPEN`.
-					}
-					_ => curr.push(ESCAPE),
+				i += 1; // Consume `BACKSLASH`.
+				if bytes.get(i) == Some(&TAG_OPEN) {
+					curr.push(TAG_OPEN as char);
+					i += 1; // Consume `TAG_OPEN`.
+				} else {
+					curr.push(ESCAPE as char);
 				}
 			}
 			TAG_OPEN => {
 				// Handle the current run of continuous text.
 				acc = reducer(&stack, &mut curr, acc);
 
-				tokens.next(); // Consume `TAG_OPEN`.
-				let tag = select_while(&mut tokens, |c| c != TAG_CLOSE);
+				i += 1; // Consume `TAG_OPEN`.
+				let start = i;
+				while i < bytes.len() && bytes[i] != TAG_CLOSE {
+					i += 1;
+				}
+				let tag = &markup[start..i];
 				if tag == "/" {
 					stack.pop();
 				} else {
-					stack.push(tag.split(' ').map(String::from).collect());
+					stack.push(tag.split(' ').collect());
 				}
-				tokens.next(); // Consume `TAG_CLOSE`.
+				if i < bytes.len() {
+					i += 1; // Consume `TAG_CLOSE`.
+				}
 			}
 			_ => {
-				let text = select_while(&mut tokens, |c| c != TAG_OPEN && c != ESCAPE);
-				curr.push_str(&text);
+				let start = i;
+				while i < bytes.len() && bytes[i] != TAG_OPEN && bytes[i] != ESCAPE {
+					i += 1;
+				}
+				curr.push_str(&markup[start..i]);
 			}
 		}
 	}
@@ -100,11 +91,11 @@ pub fn render<S>(markup: S) -> String
 where
 	S: AsRef<str>,
 {
-	reduce_markup(markup, String::default(), |stack, curr, acc| {
+	reduce_markup(markup.as_ref(), String::default(), |stack, curr, acc| {
 		let mut acc = acc;
 		if !curr.is_empty() {
-			let directives: Vec<_> = stack.iter().flatten().collect();
-			if !directives.iter().any(|tag| tag.as_str() == "hidden") {
+			let directives: Vec<&str> = stack.iter().flatten().copied().collect();
+			if !directives.contains(&"hidden") {
 				acc.push_str(&fmt(&curr, &directives));
 			}
 			curr.clear();
@@ -125,8 +116,8 @@ pub fn len<S>(markup: S) -> usize
 where
 	S: AsRef<str>,
 {
-	reduce_markup(markup, 0, |stack, curr, acc| {
-		let count = if curr.is_empty() || stack.iter().flatten().any(|tag| tag == "hidden") {
+	reduce_markup(markup.as_ref(), 0, |stack, curr, acc| {
+		let count = if curr.is_empty() || stack.iter().flatten().any(|tag| *tag == "hidden") {
 			0
 		} else {
 			curr.graphemes(true).count()
@@ -138,26 +129,7 @@ where
 
 #[cfg(test)]
 mod tests {
-	use super::{len, render, select_while};
-
-	macro_rules! make_select_while_test {
-        ( $($name:ident: $predicate:expr => $selected:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-					colored::control::set_override(true); // needed when running tests in CLion
-                    let mut tokens = "Hello, World!".chars().peekable();
-                    let selected = select_while(&mut tokens, $predicate);
-                    assert_eq!(selected, $selected);
-                }
-            )*
-        };
-    }
-
-	make_select_while_test!(
-		test_select_selects_part_of_string: |c| c != ',' => "Hello",
-		test_select_consumes_till_end_of_string: |c| c != '?' => "Hello, World!",
-	);
+	use super::{len, render};
 
 	macro_rules! make_render_test {
         ( $($name:ident: $markup:expr => $rendered:expr,)* ) => {

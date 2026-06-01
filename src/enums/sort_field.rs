@@ -175,11 +175,30 @@ impl SortField {
 	/// * the basis for the field, the natural order field corresponding to this
 	/// * whether the field is reversed from the natural order
 	fn simplify(&self) -> (Self, bool) {
-		let name = self.to_string();
-		if name.ends_with('_') {
-			(name.trim_end_matches('_').into(), true)
-		} else {
-			(*self, false)
+		use SortField::*;
+		// Map each reverse-order field (suffixed with '_') to its natural-order
+		// basis without allocating, which matters as this runs on every pairwise
+		// comparison during sorting. The `Self::from` calls cover the two cases
+		// whose names do not simply drop the trailing underscore.
+		match self {
+			Inode_ => (Self::from("inode"), true),
+			Nlinks_ => (Self::from("nlinks"), true),
+			Typ_ => (Typ, true),
+			Cat_ => (Cat, true),
+			User_ => (User, true),
+			Uid_ => (Uid, true),
+			Group_ => (Group, true),
+			Gid_ => (Gid, true),
+			Size_ => (Size, true),
+			Blocks_ => (Blocks, true),
+			Btime_ => (Btime, true),
+			Ctime_ => (Ctime, true),
+			Mtime_ => (Mtime, true),
+			Atime_ => (Atime, true),
+			Name_ => (Name, true),
+			Cname_ => (Cname, true),
+			Ext_ => (Ext, true),
+			other => (*other, false),
 		}
 	}
 

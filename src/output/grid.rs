@@ -6,6 +6,7 @@ use crate::output::Cell;
 use crate::PLS;
 use std::collections::HashMap;
 use std::fmt::Alignment;
+use std::io::{BufWriter, Write};
 
 /// The grid view renders the node names in a two dimensional layout to minimise
 /// scrolling. It does not support rendering of node metadata.
@@ -69,11 +70,15 @@ impl Grid {
 
 		let cell = Cell::new(Alignment::Left, (0, 2));
 		let end_cell = Cell::new(Alignment::Left, (0, 0));
+
+		// Buffer the whole grid behind a single stdout lock so that each cell
+		// does not incur its own lock acquisition and write syscall.
+		let mut out = BufWriter::new(std::io::stdout().lock());
 		for (idx, text) in entries.iter().enumerate() {
 			if idx % cols == cols - 1 || idx == entry_len - 1 {
-				println!("{}", &end_cell.print(text, &max_width, None));
+				let _ = writeln!(out, "{}", end_cell.print(text, &max_width, None));
 			} else {
-				print!("{}", &cell.print(text, &max_width, None));
+				let _ = write!(out, "{}", cell.print(text, &max_width, None));
 			}
 		}
 	}

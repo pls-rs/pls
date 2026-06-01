@@ -4,7 +4,7 @@ use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use crate::PLS;
 use std::cell::OnceCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::fmt::Write;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::{DirEntry, Metadata};
@@ -379,9 +379,11 @@ impl<'pls> Node<'pls> {
 		val.unwrap_or_default()
 	}
 
-	/// Get a mapping of detail fields to their values.
+	/// Get the values of the chosen detail fields, in their configured order.
 	///
-	/// This information is used to render the table row for a node.
+	/// The values are returned positionally, aligned with
+	/// [`PLS.args.details`](crate::config::Args::details), which lets the layout
+	/// index into the row by position instead of hashing a `DetailField` key.
 	pub fn row(
 		&self,
 		owner_man: &mut OwnerMan,
@@ -389,26 +391,24 @@ impl<'pls> Node<'pls> {
 		app_const: &AppConst,
 		entry_const: &EntryConst,
 		tree_shape: &[&str],
-	) -> HashMap<DetailField, String> {
+	) -> Vec<String> {
 		PLS.args
 			.details
 			.iter()
 			.map(|&detail| {
 				if detail == DetailField::Name {
-					(
-						detail,
-						self.display_name(conf, app_const, entry_const, tree_shape),
-					)
+					self.display_name(conf, app_const, entry_const, tree_shape)
 				} else {
-					(detail, self.get_value(detail, owner_man, entry_const))
+					self.get_value(detail, owner_man, entry_const)
 				}
 			})
 			.collect()
 	}
 
-	/// Get a vector of mapping of detail fields to their values.
+	/// Get a vector of rows, one per node in this subtree.
 	///
-	/// Each entry in the vector is a row that can be used to render a table.
+	/// Each row is a positional list of detail-field values that can be used to
+	/// render a table.
 	///
 	#[allow(clippy::too_many_arguments)]
 	pub fn entries(
@@ -419,7 +419,7 @@ impl<'pls> Node<'pls> {
 		entry_const: &EntryConst,
 		parent_shapes: &[&str],  // list of shapes inherited from the parent
 		own_shape: Option<&str>, // shape to show just before the current node
-	) -> Vec<HashMap<DetailField, String>> {
+	) -> Vec<Vec<String>> {
 		// list of parent shapes to pass to the children
 		let mut child_parent_shapes = parent_shapes.to_vec();
 

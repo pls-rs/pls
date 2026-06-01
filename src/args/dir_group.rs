@@ -1,5 +1,4 @@
 use crate::args::input::Input;
-use crate::enums::DetailField;
 use crate::exc::Exc;
 use crate::models::{Node, OwnerMan};
 use crate::traits::Imp;
@@ -41,10 +40,7 @@ impl DirGroup {
 	///
 	/// Since nodes can be nested, the function uses the flattened output of
 	/// each node's [`Node::entries`].
-	pub fn entries(
-		&self,
-		owner_man: &mut OwnerMan,
-	) -> Result<Vec<HashMap<DetailField, String>>, Exc> {
+	pub fn entries(&self, owner_man: &mut OwnerMan) -> Result<Vec<Vec<String>>, Exc> {
 		let mut nodes = self.nodes()?;
 		if PLS.args.collapse {
 			nodes = Self::make_tree(nodes);

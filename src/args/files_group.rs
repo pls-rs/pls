@@ -1,10 +1,8 @@
 use crate::args::input::Input;
 use crate::config::{Conf, ConfMan};
-use crate::enums::DetailField;
 use crate::models::{Node, OwnerMan};
 use crate::utils::paths::common_ancestor;
 use log::debug;
-use std::collections::HashMap;
 use std::path::PathBuf;
 
 // ======
@@ -54,7 +52,7 @@ impl FilesGroup {
 	/// Since individual nodes are not nested, the function uses each node's
 	/// [`Node::row`] instead of the flattened output of each node's
 	/// [`Node::entries`].
-	pub fn entries(&self, owner_man: &mut OwnerMan) -> Vec<HashMap<DetailField, String>> {
+	pub fn entries(&self, owner_man: &mut OwnerMan) -> Vec<Vec<String>> {
 		self.nodes()
 			.iter()
 			.map(|(node, conf)| {

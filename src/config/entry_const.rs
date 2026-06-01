@@ -1,4 +1,5 @@
 use crate::enums::{DetailField, Oct, Sym, SymState, Typ};
+use log::warn;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::OnceLock;
@@ -50,11 +51,15 @@ impl EntryConst {
 			.get_or_init(|| {
 				self.timestamp_formats
 					.iter()
-					.filter_map(|(&field, fmt)| {
-						format_description::parse_owned::<2>(fmt)
-							.ok()
-							.map(|parsed| (field, parsed))
-					})
+					.filter_map(
+						|(&field, fmt)| match format_description::parse_owned::<2>(fmt) {
+							Ok(parsed) => Some((field, parsed)),
+							Err(err) => {
+								warn!("Could not parse timestamp format for {field:?}: {err}");
+								None
+							}
+						},
+					)
 					.collect()
 			})
 			.get(&field)

@@ -104,7 +104,7 @@ where
 		let mut acc = acc;
 		if !curr.is_empty() {
 			let directives: Vec<_> = stack.iter().flatten().collect();
-			if !directives.contains(&&String::from("hidden")) {
+			if !directives.iter().any(|tag| tag.as_str() == "hidden") {
 				acc.push_str(&fmt(&curr, &directives));
 			}
 			curr.clear();

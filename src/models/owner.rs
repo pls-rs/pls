@@ -98,6 +98,42 @@ impl OwnerMan {
 		}
 		&self.groups[&gid]
 	}
+
+	/// Get an immutable, shareable view over the already-resolved owners.
+	///
+	/// [`OwnerMan`] holds a `!Sync` user/group cache, so it cannot be shared
+	/// across threads. Once every owner a render needs has been resolved (see
+	/// [`Self::user`] and [`Self::group`]), this borrows just the resolved maps,
+	/// which *are* `Sync`, so the per-node rendering can run in parallel.
+	pub fn owners(&self) -> Owners<'_> {
+		Owners {
+			users: &self.users,
+			groups: &self.groups,
+		}
+	}
+}
+
+/// An immutable, thread-shareable view over resolved [`Owner`] instances.
+///
+/// Unlike [`OwnerMan`], this performs no lookups of its own — every owner must
+/// already have been resolved — which keeps it free of the `!Sync` user/group
+/// cache and therefore safe to share across rendering threads.
+#[derive(Clone, Copy)]
+pub struct Owners<'om> {
+	users: &'om HashMap<u32, Owner>,
+	groups: &'om HashMap<u32, Owner>,
+}
+
+impl Owners<'_> {
+	/// Get the resolved user [`Owner`] for the given UID, if it was resolved.
+	pub fn user(&self, uid: u32) -> Option<&Owner> {
+		self.users.get(&uid)
+	}
+
+	/// Get the resolved group [`Owner`] for the given GID, if it was resolved.
+	pub fn group(&self, gid: u32) -> Option<&Owner> {
+		self.groups.get(&gid)
+	}
 }
 
 /// Represents the owner of a node, be it a user or a group.

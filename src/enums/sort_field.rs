@@ -178,11 +178,11 @@ impl SortField {
 		use SortField::*;
 		// Map each reverse-order field (suffixed with '_') to its natural-order
 		// basis without allocating, which matters as this runs on every pairwise
-		// comparison during sorting. The `Self::from` calls cover the two cases
-		// whose names do not simply drop the trailing underscore.
+		// comparison during sorting. `Inode_` and `Nlinks_` are named differently
+		// from their natural counterparts, so they are mapped explicitly.
 		match self {
-			Inode_ => (Self::from("inode"), true),
-			Nlinks_ => (Self::from("nlinks"), true),
+			Inode_ => (Ino, true),
+			Nlinks_ => (Nlink, true),
 			Typ_ => (Typ, true),
 			Cat_ => (Cat, true),
 			User_ => (User, true),

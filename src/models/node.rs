@@ -3,10 +3,11 @@ use crate::enums::{Appearance, Collapse, DetailField, Icon, Typ};
 use crate::models::{OwnerMan, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
 use crate::PLS;
+use std::cell::OnceCell;
 use std::collections::{HashMap, HashSet};
 use std::fmt::Write;
 use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::fs::Metadata;
+use std::fs::{DirEntry, Metadata};
 use std::io::Result as IoResult;
 use std::iter::once;
 use std::path::{Path, PathBuf};
@@ -20,8 +21,10 @@ pub struct Node<'pls> {
 	pub display_name: String,
 
 	pub path: PathBuf,
-	meta: IoResult<Metadata>,
-	pub typ: Typ, // `Typ::Unknown` if `meta` is `Err`
+	/// the node's metadata, fetched lazily on first access via [`Node::meta_ok`]
+	/// so that views which do not need it (e.g. the grid) never pay for a stat
+	meta: OnceCell<IoResult<Metadata>>,
+	pub typ: Typ, // `Typ::Unknown` if the type could not be determined
 
 	pub appearances: HashSet<Appearance>,
 
@@ -42,12 +45,39 @@ impl<'pls> Node<'pls> {
 			.unwrap_or_default()
 			.to_string_lossy()
 			.to_string();
-		let display_name = name.clone();
-
 		let path = path.to_owned();
-		let meta = path.symlink_metadata();
-		let typ = path.as_path().try_into().unwrap_or(Typ::Unknown);
 
+		// There is no directory entry to read `d_type` from here, so a stat is
+		// unavoidable to determine the type. Perform it once and seed the cache
+		// so that later metadata access does not stat the path a second time.
+		let meta_res = path.symlink_metadata();
+		let typ = meta_res
+			.as_ref()
+			.map(|meta| meta.file_type().into())
+			.unwrap_or(Typ::Unknown);
+		let meta = OnceCell::new();
+		let _ = meta.set(meta_res);
+
+		Self::assemble(name, path, meta, typ)
+	}
+
+	/// Create a `Node` from a directory entry.
+	///
+	/// The entry's type is read from the `d_type` returned inline by the
+	/// directory read, avoiding a `stat` syscall on filesystems that provide it.
+	/// Metadata is left unfetched and is loaded lazily only if a detail field
+	/// needs it.
+	pub fn from_entry(entry: &DirEntry) -> Self {
+		let name = entry.file_name().to_string_lossy().to_string();
+		let path = entry.path();
+		let typ = entry.file_type().map(Typ::from).unwrap_or(Typ::Unknown);
+
+		Self::assemble(name, path, OnceCell::new(), typ)
+	}
+
+	/// Assemble a `Node` from its already-derived core fields.
+	fn assemble(name: String, path: PathBuf, meta: OnceCell<IoResult<Metadata>>, typ: Typ) -> Self {
+		let display_name = name.clone();
 		Self {
 			name,
 			display_name,
@@ -109,8 +139,14 @@ impl<'pls> Node<'pls> {
 	// =======
 
 	/// Get the metadata of the node if it was successfully retrieved.
+	///
+	/// The metadata is fetched on first access and cached, so views that never
+	/// call this (such as the grid) avoid the `stat` syscall entirely.
 	pub fn meta_ok(&self) -> Option<&Metadata> {
-		self.meta.as_ref().ok()
+		self.meta
+			.get_or_init(|| self.path.symlink_metadata())
+			.as_ref()
+			.ok()
 	}
 
 	// =========

@@ -108,7 +108,7 @@ impl DirGroup {
 			return None;
 		}
 
-		let mut node = Node::new(&entry.path());
+		let mut node = Node::from_entry(&entry);
 
 		debug!("Checking visibility of typ {:?}.", node.typ);
 		if !PLS.args.typs.contains(&node.typ) {

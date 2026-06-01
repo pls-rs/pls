@@ -6,8 +6,22 @@ use crate::PLS;
 use log::warn;
 #[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
+use std::sync::LazyLock;
 use std::time::SystemTime;
 use time::{format_description, OffsetDateTime, UtcOffset};
+
+/// The current local UTC offset, resolved once for the lifetime of the process.
+///
+/// Determining the offset involves a syscall, so caching it avoids repeating
+/// that work for every timestamp of every node.
+static LOCAL_OFFSET: LazyLock<Option<UtcOffset>> =
+	LazyLock::new(|| match UtcOffset::current_local_offset() {
+		Ok(offset) => Some(offset),
+		Err(_) => {
+			warn!("Could not determine UTC offset");
+			None
+		}
+	});
 
 pub trait Detail {
 	fn size_val(&self) -> Option<u64>;
@@ -190,11 +204,8 @@ impl Detail for Node<'_> {
 	fn time(&self, field: DetailField, entry_const: &EntryConst) -> Option<String> {
 		self.time_val(field).map(|time| {
 			let mut dt: OffsetDateTime = time.into();
-			match UtcOffset::current_local_offset() {
-				Ok(offset) => dt = dt.to_offset(offset),
-				Err(_) => {
-					warn!("Could not determine UTC offset")
-				}
+			if let Some(offset) = *LOCAL_OFFSET {
+				dt = dt.to_offset(offset);
 			}
 			let format = format_description::parse_borrowed::<2>(
 				entry_const.timestamp_formats.get(&field).unwrap(),

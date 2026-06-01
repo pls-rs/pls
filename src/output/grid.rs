@@ -43,7 +43,7 @@ impl Grid {
 
 	/// Render the grid to STDOUT.
 	pub fn render(&self, _app_const: &AppConst) {
-		let mut max_width = self.entries.iter().map(strip_image).map(len).max();
+		let mut max_width = self.entries.iter().map(|e| strip_image(e)).map(len).max();
 		let max_cols = self.columns(max_width);
 
 		let entry_len = self.entries.len();

@@ -1,6 +1,8 @@
 use crate::enums::{DetailField, Oct, Sym, SymState, Typ};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::OnceLock;
+use time::format_description::{self, OwnedFormatItem};
 
 #[derive(Serialize, Deserialize)]
 pub struct EntryConst {
@@ -28,6 +30,35 @@ pub struct EntryConst {
 	pub timestamp_formats: HashMap<DetailField, String>,
 	/// mapping of symlink state to more symlink state info (including style)
 	pub symlink: HashMap<SymState, SymlinkInfo>,
+
+	/// lazily-parsed counterpart of [`timestamp_formats`](Self::timestamp_formats)
+	///
+	/// Parsing a format description is relatively expensive, so each format is
+	/// parsed at most once for the lifetime of the config rather than once per
+	/// node per timestamp column.
+	#[serde(skip)]
+	timestamp_formats_parsed: OnceLock<HashMap<DetailField, OwnedFormatItem>>,
+}
+
+impl EntryConst {
+	/// Get the parsed format description for the given timestamp field.
+	///
+	/// The full set of formats is parsed once on first access and cached, so
+	/// subsequent timestamps reuse the already-parsed format.
+	pub fn timestamp_format(&self, field: DetailField) -> Option<&OwnedFormatItem> {
+		self.timestamp_formats_parsed
+			.get_or_init(|| {
+				self.timestamp_formats
+					.iter()
+					.filter_map(|(&field, fmt)| {
+						format_description::parse_owned::<2>(fmt)
+							.ok()
+							.map(|parsed| (field, parsed))
+					})
+					.collect()
+			})
+			.get(&field)
+	}
 }
 
 impl Default for EntryConst {
@@ -132,6 +163,7 @@ impl Default for EntryConst {
 				)
 			})
 			.collect(),
+			timestamp_formats_parsed: OnceLock::new(),
 		}
 	}
 }

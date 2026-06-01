@@ -1,8 +1,6 @@
 use crate::config::AppConst;
 use crate::enums::DetailField;
-use crate::fmt::len;
-use crate::gfx::strip_image;
-use crate::output::Cell;
+use crate::output::{Cell, Rendered};
 use crate::PLS;
 use std::fmt::Alignment;
 use std::io::{BufWriter, Write};
@@ -17,11 +15,12 @@ use std::io::{BufWriter, Write};
 /// the number of lines has been minimised, it minimises the column count by
 /// making each column take the maximum number of rows.
 pub struct Grid {
-	pub entries: Vec<String>,
+	pub entries: Vec<Rendered>,
 }
 
 impl Grid {
-	/// Create a new instance of `Grid`, taking ownership of the given entries.
+	/// Create a new instance of `Grid`, rendering and measuring the name column
+	/// of the given entries up front.
 	pub fn new(entries: Vec<Vec<String>>) -> Self {
 		// The grid renders only the name column; find its position in the
 		// configured detail fields and pull that value out of each row.
@@ -37,13 +36,14 @@ impl Grid {
 					Some(idx) if idx < entry.len() => entry.swap_remove(idx),
 					_ => String::default(),
 				})
+				.map(|markup| Rendered::new(&markup))
 				.collect(),
 		}
 	}
 
 	/// Render the grid to STDOUT.
 	pub fn render(&self, _app_const: &AppConst) {
-		let mut max_width = self.entries.iter().map(|e| strip_image(e)).map(len).max();
+		let mut max_width = self.entries.iter().map(|e| e.width).max();
 		let max_cols = self.columns(max_width);
 
 		let entry_len = self.entries.len();
@@ -63,7 +63,8 @@ impl Grid {
 		if cols > 1 && PLS.args.down {
 			self.print(&self.down(rows), cols, max_width);
 		} else {
-			self.print(&self.entries, cols, max_width);
+			let entries: Vec<&Rendered> = self.entries.iter().collect();
+			self.print(&entries, cols, max_width);
 		};
 	}
 
@@ -71,10 +72,7 @@ impl Grid {
 	///
 	/// This prints the entries in the specified number of columns, each cell
 	/// padded to span the given max-width.
-	fn print<S>(&self, entries: &[S], cols: usize, max_width: Option<usize>)
-	where
-		S: AsRef<str>,
-	{
+	fn print(&self, entries: &[&Rendered], cols: usize, max_width: Option<usize>) {
 		let entry_len = self.entries.len();
 
 		let cell = Cell::new(Alignment::Left, (0, 2));
@@ -83,13 +81,14 @@ impl Grid {
 		// Buffer the whole grid behind a single stdout lock so that each cell
 		// does not incur its own lock acquisition and write syscall.
 		let mut out = BufWriter::new(std::io::stdout().lock());
-		for (idx, text) in entries.iter().enumerate() {
+		for (idx, cell_content) in entries.iter().enumerate() {
 			if idx % cols == cols - 1 || idx == entry_len - 1 {
-				let _ = writeln!(out, "{}", end_cell.print(text, &max_width, None));
+				let _ = writeln!(out, "{}", end_cell.print(cell_content, &max_width));
 			} else {
-				let _ = write!(out, "{}", cell.print(text, &max_width, None));
+				let _ = write!(out, "{}", cell.print(cell_content, &max_width));
 			}
 		}
+		let _ = out.flush();
 	}
 
 	/// Shuffle the entries to enable printing down instead of across.
@@ -97,7 +96,7 @@ impl Grid {
 	/// Since terminals can only print row-by-row, we split the entries into
 	/// columns and then pick one cell per column, going in cycles till all
 	/// cells are exhausted.
-	fn down(&self, rows: usize) -> Vec<&String> {
+	fn down(&self, rows: usize) -> Vec<&Rendered> {
 		let chunks: Vec<_> = self.entries.chunks(rows).collect();
 		(0..rows)
 			.flat_map(|row_idx| chunks.iter().filter_map(move |chunk| chunk.get(row_idx)))

@@ -1,5 +1,6 @@
 use crate::config::AppConst;
 use crate::fmt::len;
+use crate::output::{render_rows, Rendered};
 use crate::PLS;
 use std::io::{BufWriter, Write};
 use std::iter::once;
@@ -11,14 +12,18 @@ use std::iter::once;
 /// the [grid view](crate::output::Grid).
 #[derive(Default)]
 pub struct Table {
-	pub entries: Vec<Vec<String>>,
+	pub entries: Vec<Vec<Rendered>>,
 	pub is_solo: bool,
 }
 
 impl Table {
-	/// Create a new instance of `Table`, taking ownership of the given entries.
+	/// Create a new instance of `Table`, rendering and measuring the given
+	/// markup entries up front so the layout never re-parses markup.
 	pub fn new(entries: Vec<Vec<String>>, is_solo: bool) -> Self {
-		Self { entries, is_solo }
+		Self {
+			entries: render_rows(entries),
+			is_solo,
+		}
 	}
 
 	/// Render the table to STDOUT.
@@ -47,14 +52,18 @@ impl Table {
 			let header_style = app_const.table.header_style.as_str();
 			for (width, det, cell) in &iter_basis {
 				let name = det.name(app_const);
-				let _ = write!(out, "{}", cell.print(name, width, Some(header_style)));
+				let _ = write!(
+					out,
+					"{}",
+					cell.print_markup(name, width, Some(header_style))
+				);
 			}
 			let _ = writeln!(out);
 		}
 
 		for entry in &self.entries {
 			for ((width, _det, cell), value) in iter_basis.iter().zip(entry) {
-				let _ = write!(out, "{}", cell.print(value, width, None));
+				let _ = write!(out, "{}", cell.print(value, width));
 			}
 			let _ = writeln!(out);
 		}
@@ -84,7 +93,7 @@ impl Table {
 				};
 				self.entries[0..end_lim]
 					.iter()
-					.filter_map(|entry| entry.get(det_idx).map(len))
+					.filter_map(|entry| entry.get(det_idx).map(|cell| cell.width))
 					.chain(once(if PLS.args.header {
 						len(det.name(app_const))
 					} else {

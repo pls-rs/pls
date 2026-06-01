@@ -18,4 +18,4 @@
 mod format;
 mod markup;
 
-pub use markup::{len, render};
+pub use markup::{len, render, render_and_measure};

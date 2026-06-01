@@ -80,13 +80,13 @@ impl Detail for Node<'_> {
 	/// Get the name of the user that owns this node, if known.
 	fn user_val(&self, owner_man: &mut OwnerMan) -> Option<String> {
 		self.meta_ok()
-			.and_then(|meta| owner_man.user(meta.uid()).name)
+			.and_then(|meta| owner_man.user(meta.uid()).name.clone())
 	}
 
 	/// Get the name of the group that owns this node, if known.
 	fn group_val(&self, owner_man: &mut OwnerMan) -> Option<String> {
 		self.meta_ok()
-			.and_then(|meta| owner_man.group(meta.gid()).name)
+			.and_then(|meta| owner_man.group(meta.gid()).name.clone())
 	}
 
 	// ===========

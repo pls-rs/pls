@@ -35,9 +35,7 @@ jobs:
           setup_node: "true"
 
       - name: Run lint
-        run: |
-          just get-prek
-          just lint
+        run: just lint
 
   unit:
     name: Run unit test (${{ matrix.name }})

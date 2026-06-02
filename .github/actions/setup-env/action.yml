@@ -5,15 +5,21 @@ inputs:
   install_tools:
     description: The names of the tools to install
     default: just
+  setup_rust:
+    description: Whether to install the Rust toolchain and cache
+    default: "true"
   rust_cache_key:
     description: The key to use to identify the Rust toolchain cache
     default: cargo
   rust_components:
     description: dtolnay/rust-toolchain#components
     required: false
-  rust_target:
-    description: dtolnay/rust-toolchain#target
+  rust_targets:
+    description: dtolnay/rust-toolchain#targets
     required: false
+  setup_node:
+    description: Whether to set up Node.js and install dependencies
+    default: "false"
 
 runs:
   using: composite
@@ -24,28 +30,25 @@ runs:
         tool: ${{ inputs.install_tools }}
 
     - name: Install Rust toolchain
+      if: inputs.setup_rust == 'true'
       uses: dtolnay/rust-toolchain@stable
       with:
         components: ${{ inputs.rust_components }}
-        target: ${{ inputs.rust_target }}
+        targets: ${{ inputs.rust_targets }}
 
-    - uses: actions/cache@v5
+    - name: Cache Rust toolchain and build artifacts
+      if: inputs.setup_rust == 'true'
+      uses: Swatinem/rust-cache@v2
       with:
-        path: |
-          ~/.cargo/bin/
-          ~/.cargo/registry/index/
-          ~/.cargo/registry/cache/
-          ~/.cargo/git/db/
-          target/
-        key:
-          ${{ runner.os }}-${{ inputs.rust_cache_key }}-${{
-          hashFiles('**/Cargo.lock') }}
+        key: ${{ inputs.rust_cache_key }}
 
     - name: Enable Corepack
+      if: inputs.setup_node == 'true'
       shell: bash
       run: corepack enable pnpm
 
     - name: Setup Node.js
+      if: inputs.setup_node == 'true'
       uses: actions/setup-node@v6
       with:
         cache: pnpm
@@ -54,5 +57,6 @@ runs:
         COREPACK_INTEGRITY_KEYS: '{"npm":[{"expires":"2025-01-29T00:00:00.000Z","keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","keytype":"ecdsa-sha2-nistp256","scheme":"ecdsa-sha2-nistp256","key":"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg=="},{"expires":null,"keyid":"SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U","keytype":"ecdsa-sha2-nistp256","scheme":"ecdsa-sha2-nistp256","key":"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEY6Ya7W++7aUPzvMTrezH6Ycx3c+HOKYCcNGybJZSCJq/fd7Qa8uuAKtdIkUQtQiEKERhAmE5lMMJhP8OkDOa2g=="}]}'
 
     - name: Install Node.js dependencies
+      if: inputs.setup_node == 'true'
       shell: bash
       run: pnpm install

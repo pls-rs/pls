@@ -9,7 +9,7 @@ pub trait Imp {
 
 	fn is_visible(&self, conf: &Conf) -> bool;
 
-	fn directives(&self, app_const: &AppConst) -> Option<String>;
+	fn directives<'a>(&self, app_const: &'a AppConst) -> Option<&'a str>;
 }
 
 impl Imp for Node<'_> {
@@ -67,13 +67,13 @@ impl Imp for Node<'_> {
 	/// If the node's importance is above the maximum defined, it will be set to
 	/// the maximum. If it is below the minimum defined, it will already be
 	/// hidden by [`is_visible`](Imp::is_visible).
-	fn directives(&self, app_const: &AppConst) -> Option<String> {
+	fn directives<'a>(&self, app_const: &'a AppConst) -> Option<&'a str> {
 		let mut rel_imp = self.imp_val();
 		let max_val = app_const.max_imp();
 		let min_val = app_const.min_imp();
 		debug!("\"{self}\" has relative importance {rel_imp} (min: {min_val}, max: {max_val})");
 
 		rel_imp = rel_imp.clamp(min_val, max_val);
-		app_const.imp_map.get(&rel_imp).cloned()
+		app_const.imp_map.get(&rel_imp).map(String::as_str)
 	}
 }

@@ -62,7 +62,7 @@ impl Name for Node<'_> {
 	/// If the node name starts with a dot, the dot is dimmed. If not, the name
 	/// is left-padded with a space to line up the alphabetic characters.
 	fn aligned_name(&self) -> String {
-		let path = PathBuf::from(&self.display_name);
+		let path = PathBuf::from(self.disp_name());
 		if let Some(name) = path.file_name() {
 			let name = name.to_string_lossy();
 
@@ -77,6 +77,6 @@ impl Name for Node<'_> {
 				return parent.join(aligned_name).to_string_lossy().to_string();
 			}
 		}
-		self.display_name.clone()
+		self.disp_name().to_string()
 	}
 }

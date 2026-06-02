@@ -84,7 +84,14 @@ def collapse():
     with fs(
         (
             "collapse",
-            ["a", "b", "c", ".d", "e"],
+            [
+                "pyproject.toml",
+                "uv.lock",
+                "scripts.ts",
+                "scripts.min.js",
+                "style.scss",
+                "style.css",
+            ],
         )
     ) as bench:
         copy_write_conf(bench)

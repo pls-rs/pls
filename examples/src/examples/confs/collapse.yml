@@ -6,18 +6,12 @@ app_const:
     tee_dash: "<green>+--</> "
     bend_dash: "<blue>+--</> "
 specs:
-  - pattern: ^\.?\w{1}$
-    icons:
-      - file
-  - pattern: b
+  - pattern: (?<base>.+)\.min\.js$
     collapse:
-      name: a
-  - pattern: c
+      sub: $base.ts
+  - pattern: \.css$
     collapse:
-      name: b
-  - pattern: \.d
+      ext: scss
+  - pattern: uv.lock
     collapse:
-      name: b
-  - pattern: e
-    collapse:
-      name: a
+      name: pyproject.toml

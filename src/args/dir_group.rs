@@ -6,7 +6,6 @@ use crate::traits::Imp;
 use crate::PLS;
 use log::debug;
 use rayon::prelude::*;
-use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::fs::DirEntry;
 use std::os::unix::ffi::OsStrExt;
@@ -240,16 +239,7 @@ impl DirGroup {
 		let mut child_map: HashMap<String, Vec<Node>> = HashMap::new();
 		nodes.into_iter().for_each(|mut node| {
 			if let Some(collapse) = node.collapse_name.take() {
-				match child_map.entry(collapse) {
-					Entry::Occupied(mut entry) => {
-						let children = entry.get_mut();
-						children.push(node);
-					}
-					Entry::Vacant(entry) => {
-						let children = vec![node];
-						entry.insert(children);
-					}
-				};
+				child_map.entry(collapse).or_default().push(node);
 			} else {
 				roots.push(node);
 			}

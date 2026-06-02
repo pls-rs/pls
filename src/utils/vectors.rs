@@ -4,22 +4,24 @@
 //!
 //! * [`dedup`]
 
-use std::collections::{HashSet, VecDeque};
+use indexmap::IndexSet;
+use std::hash::Hash;
 
 /// Deduplicate a vector, by preserving the last appearance of a value.
+///
+/// The values are moved into an [`IndexSet`], which both deduplicates and
+/// remembers insertion order, so it doubles as the output buffer and the
+/// "seen" set. Inserting in reverse means the first insertion of each value is
+/// its last appearance in the input; reversing again restores the original
+/// order. This needs no `Clone` bound and never copies a value.
 ///
 /// # Arguments
 ///
 /// * `vec` - the vector to deduplicate
-pub fn dedup<T: std::hash::Hash + Eq + Clone>(vec: Vec<T>) -> Vec<T> {
-	let mut dedup = VecDeque::new();
-
-	let mut set = HashSet::new();
+pub fn dedup<T: Hash + Eq>(vec: Vec<T>) -> Vec<T> {
+	let mut set: IndexSet<T> = IndexSet::with_capacity(vec.len());
 	for item in vec.into_iter().rev() {
-		if set.insert(item.clone()) {
-			dedup.push_front(item);
-		}
+		set.insert(item);
 	}
-
-	dedup.into()
+	set.into_iter().rev().collect()
 }

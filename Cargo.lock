@@ -779,6 +779,7 @@ dependencies = [
  "figment",
  "git2",
  "home",
+ "indexmap",
  "libc",
  "log",
  "number_prefix",

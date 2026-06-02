@@ -74,8 +74,8 @@ list of node specs, in ascending order of specificity
       the rule for determining the parent node, if any, for this node
 
       <div slot="subfields">
-        `Collapse` is an enum type so exactly one of `name` or `ext` should be
-        specified.
+        `Collapse` is an enum type so exactly one of `name`, `ext` or `sub`
+        should be specified.
 
         <DocBlock title="name" type="str">
           the exact name of the parent file; Name-based collapsing matches this
@@ -86,6 +86,13 @@ list of node specs, in ascending order of specificity
           the extension of the parent file; Extension-based collapsing matches
           this node with another having the same base name and the given
           extension.
+        </DocBlock>
+
+        <DocBlock title="sub" type="str">
+          a replacement template for the parent's name; Substitution-based
+          collapsing builds the name by expanding the template against the
+          capture groups of the spec's own `pattern`. Both `$name`/`${name}`
+          and numbered `$1` references are supported.
         </DocBlock>
       </div>
 
@@ -98,6 +105,11 @@ list of node specs, in ascending order of specificity
         ```yaml
         collapse:
           ext: ts # matches file with same base name and `.ts` extension
+        ```
+
+        ```yaml
+        collapse:
+          sub: $base.js # with pattern `^(?<base>.+)\.min\.js$`, collapses `app.min.js` into `app.js`
         ```
       </div>
     </DocBlock>

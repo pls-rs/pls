@@ -130,18 +130,41 @@ impl<'pls> Node<'pls> {
 	///
 	/// If the collapse uses a name, use that name.
 	/// If the collapse uses an ext, use this node's stem with that ext.
+	/// If the collapse uses a sub, expand the replacement template against the
+	/// capture groups of the matching spec's own pattern.
 	pub fn find_collapse(&mut self) {
 		self.collapse_name = self
 			.specs
 			.iter()
 			.rev()
-			.filter_map(|spec| spec.collapse.as_ref())
-			.next()
-			.map(|collapse| match collapse {
+			.find_map(|spec| spec.collapse.as_ref().map(|collapse| (*spec, collapse)))
+			.map(|(spec, collapse)| match collapse {
 				Collapse::Name(name) => name.clone(),
 				Collapse::Ext(ext) if ext.is_empty() => self.stem(),
 				Collapse::Ext(ext) => format!("{}.{}", self.stem(), ext),
+				Collapse::Sub(repl) => self.expand_collapse_sub(spec, repl),
 			});
+	}
+
+	/// Build a collapse name by expanding the replacement template `repl`
+	/// against the capture groups of `spec`'s pattern, evaluated over this
+	/// node's name.
+	///
+	/// The pattern is known to match the name (it was selected in
+	/// [`Node::match_specs`]), so the capture call is performed only for the
+	/// single spec that carries the substitution rule.
+	fn expand_collapse_sub(&self, spec: &Spec, repl: &str) -> String {
+		let name = self.name.as_bytes();
+		match spec.pattern.captures(name) {
+			Some(captures) => {
+				let mut dst = Vec::with_capacity(name.len());
+				captures.expand(repl.as_bytes(), &mut dst);
+				String::from_utf8_lossy(&dst).into_owned()
+			}
+			// Unreachable in practice, but fall back to the unchanged name
+			// rather than panicking should the pattern fail to capture.
+			None => self.name.clone(),
+		}
 	}
 
 	// ===========
@@ -397,5 +420,42 @@ impl<'pls> Node<'pls> {
 impl Display for Node<'_> {
 	fn fmt(&self, f: &mut Formatter) -> FmtResult {
 		write!(f, "{}", self.name)
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use crate::models::Spec;
+
+	/// Build a node for the given name, match it against the specs and resolve
+	/// its collapse target.
+	fn collapse_name_for(name: &str, specs: &[Spec]) -> Option<String> {
+		let mut node = Node::new(Path::new(name));
+		node.match_specs(specs);
+		node.find_collapse();
+		node.collapse_name
+	}
+
+	#[test]
+	fn sub_collapse_expands_capture_groups_into_parent_name() {
+		let specs = vec![Spec::new(r"^(?<base>.+)\.min\.js$", "javascript")
+			.collapse(Collapse::Sub(String::from("$base.js")))];
+
+		assert_eq!(
+			collapse_name_for("app.min.js", &specs),
+			Some(String::from("app.js"))
+		);
+	}
+
+	#[test]
+	fn sub_collapse_supports_numbered_capture_groups() {
+		let specs =
+			vec![Spec::new(r"^(.+)\.(\d+)$", "file").collapse(Collapse::Sub(String::from("$1")))];
+
+		assert_eq!(
+			collapse_name_for("server.log.1", &specs),
+			Some(String::from("server.log"))
+		);
 	}
 }

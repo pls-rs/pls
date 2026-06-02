@@ -55,7 +55,7 @@ A spec consists of four components, of which only the first is mandatory.
 ### Collapse
 
 The goal of collapsing is to indicate that a node is a derivative of another
-adjacent node. Collapsing can be performed in two ways.
+adjacent node. Collapsing can be performed in three ways.
 
 - **name**
 
@@ -67,6 +67,15 @@ adjacent node. Collapsing can be performed in two ways.
   In this case, every node with a specific extension is collapsed into another
   node with the same stem but different extension. For example, `index.js` and
   `lib.js` collapse into `index.ts` and `lib.ts` respectively.
+
+- **sub**
+
+  In this case, the parent's name is built by expanding a replacement template
+  against the capture groups of the spec's own `pattern`. This handles cases
+  that `name` and `ext` cannot, such as transformations in the middle of a name.
+  For example, a pattern of `^(?<base>.+)\.min\.js$` with a substitution of
+  `$base.js` collapses `app.min.js` into `app.js`. Both `$name`/`${name}` and
+  numbered `$1` references are supported.
 
 ## Configuration
 

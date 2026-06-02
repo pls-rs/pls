@@ -71,6 +71,15 @@ cross targets:
         cross build --release --verbose --target "$target"
     done
 
+# Build a release binary for the given targets with `cargo` (no `cross`).
+build-targets targets:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    IFS=',' read -ra items <<< "{{ targets }}"
+    for target in "${items[@]}"; do
+        cargo build --release --target "$target"
+    done
+
 # Combine the given binaries into a universal binary.
 lipo output inputs:
     #!/usr/bin/env bash

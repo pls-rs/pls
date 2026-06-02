@@ -31,6 +31,7 @@ env_logger = { version = "0.11.8", default-features = false }
 figment = { version = "0.10.19", features = ["yaml", "test"] }
 git2 = { version = "0.20.4", default-features = false }
 home = "0.5.12"
+indexmap = "2.13.0"
 libc = "0.2.180"
 log = { version = "0.4.29", features = ["release_max_level_off"] }
 number_prefix = "0.4.0"

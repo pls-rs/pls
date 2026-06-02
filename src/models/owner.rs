@@ -40,63 +40,63 @@ impl Default for OwnerMan {
 }
 
 impl OwnerMan {
-	fn lookup_user(&mut self, uid: u32) -> Owner {
-		Owner {
-			entity: Entity::User,
-			id: uid,
-			name: self
-				.cache
-				.get_user_by_uid(uid)
-				.map(|user| user.name().to_string_lossy().into()),
-			is_curr: uid == self.curr_uid,
-		}
-	}
-
-	fn lookup_group(&mut self, gid: u32) -> Owner {
-		if let Some(group) = self.cache.get_group_by_gid(gid) {
-			Owner {
-				entity: Entity::Group,
-				id: gid,
-				name: Some(group.name().to_string_lossy().into()),
-				is_curr: self.curr_user.as_ref().is_some_and(|user| {
-					group
-						.members()
-						.iter()
-						.any(|username| username == user.name())
-				}),
-			}
-		} else {
-			Owner {
-				entity: Entity::Group,
-				id: gid,
-				name: None,
-				is_curr: false,
-			}
-		}
-	}
-
 	/// Get the [`Owner`] instance of the user corresponding to the given UID.
 	///
 	/// The result is cached and returned by reference, so the common rendering
-	/// path does not clone the owner (and its name) once per node.
+	/// path does not clone the owner (and its name) once per node. Destructuring
+	/// `self` lets the `or_insert_with` closure borrow only the cache and current
+	/// UID, leaving `users` free for the `entry` call (a single hash lookup).
 	pub fn user(&mut self, uid: u32) -> &Owner {
-		if !self.users.contains_key(&uid) {
-			let user = self.lookup_user(uid);
-			self.users.insert(uid, user);
-		}
-		&self.users[&uid]
+		let Self {
+			cache,
+			curr_uid,
+			users,
+			..
+		} = self;
+		users.entry(uid).or_insert_with(|| Owner {
+			entity: Entity::User,
+			id: uid,
+			name: cache
+				.get_user_by_uid(uid)
+				.map(|user| user.name().to_string_lossy().into()),
+			is_curr: uid == *curr_uid,
+		})
 	}
 
 	/// Get the [`Owner`] instance of the group corresponding to the given GID.
 	///
 	/// The result is cached and returned by reference, so the common rendering
-	/// path does not clone the owner (and its name) once per node.
+	/// path does not clone the owner (and its name) once per node. As in
+	/// [`Self::user`], destructuring keeps the `entry` borrow disjoint from the
+	/// cache and current-user borrows the closure needs.
 	pub fn group(&mut self, gid: u32) -> &Owner {
-		if !self.groups.contains_key(&gid) {
-			let group = self.lookup_group(gid);
-			self.groups.insert(gid, group);
-		}
-		&self.groups[&gid]
+		let Self {
+			cache,
+			curr_user,
+			groups,
+			..
+		} = self;
+		groups
+			.entry(gid)
+			.or_insert_with(|| match cache.get_group_by_gid(gid) {
+				Some(group) => Owner {
+					entity: Entity::Group,
+					id: gid,
+					name: Some(group.name().to_string_lossy().into()),
+					is_curr: curr_user.as_ref().is_some_and(|user| {
+						group
+							.members()
+							.iter()
+							.any(|username| username == user.name())
+					}),
+				},
+				None => Owner {
+					entity: Entity::Group,
+					id: gid,
+					name: None,
+					is_curr: false,
+				},
+			})
 	}
 
 	/// Get an immutable, shareable view over the already-resolved owners.
@@ -146,7 +146,7 @@ pub struct Owner {
 }
 
 impl Owner {
-	fn format(&self, text: &String, constants: &EntryConst) -> String {
+	fn format(&self, text: &str, constants: &EntryConst) -> String {
 		let directives = match (&self.entity, self.is_curr) {
 			(Entity::User, true) => &constants.user_styles.curr,
 			(Entity::User, false) => &constants.user_styles.other,

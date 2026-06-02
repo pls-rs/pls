@@ -16,9 +16,8 @@ pub struct Node<'pls> {
 	/// the name of the node on the file system, determined from the path and
 	/// lossily converted into a string
 	pub name: String,
-	/// the name of the node to show to the user, equal to the `name` unless
-	/// overridden by an appearance mode
-	pub display_name: String,
+	/// an override for the name shown to the user, set by an appearance mode
+	pub override_name: Option<String>,
 
 	pub path: PathBuf,
 	/// the node's metadata, fetched lazily on first access via [`Node::meta_ok`]
@@ -82,10 +81,9 @@ impl<'pls> Node<'pls> {
 
 	/// Assemble a `Node` from its already-derived core fields.
 	fn assemble(name: String, path: PathBuf, meta: OnceLock<IoResult<Metadata>>, typ: Typ) -> Self {
-		let display_name = name.clone();
 		Self {
 			name,
-			display_name,
+			override_name: None,
 			path,
 			meta,
 			typ,
@@ -108,7 +106,7 @@ impl<'pls> Node<'pls> {
 	/// the name hardcoded. It should be used to change the name to something
 	/// different from the name derived from the path.
 	pub fn solo_file(mut self, name: String) -> Self {
-		self.display_name = name;
+		self.override_name = Some(name);
 		self.appearances.insert(Appearance::SoloFile);
 		self
 	}
@@ -119,7 +117,7 @@ impl<'pls> Node<'pls> {
 	/// the name hardcoded. It should be used to change the name to something
 	/// different from the name derived from the path.
 	pub fn symlink(mut self, name: String) -> Self {
-		self.display_name = name;
+		self.override_name = Some(name);
 		self.appearances.insert(Appearance::Symlink);
 		self
 	}
@@ -154,6 +152,14 @@ impl<'pls> Node<'pls> {
 			.get_or_init(|| self.path.symlink_metadata())
 			.as_ref()
 			.ok()
+	}
+
+	/// Get the name to show to the user.
+	///
+	/// This is the appearance-mode override if one was set or the node's name
+	/// borrowed without allocating.
+	pub fn disp_name(&self) -> &str {
+		self.override_name.as_deref().unwrap_or(&self.name)
 	}
 
 	// =========
@@ -227,7 +233,7 @@ impl<'pls> Node<'pls> {
 			let imp_dir = Imp::directives(self, app_const);
 			if let Some(directive) = imp_dir {
 				directives.push(' ');
-				directives.push_str(&directive);
+				directives.push_str(directive);
 			}
 		}
 
@@ -326,7 +332,7 @@ impl<'pls> Node<'pls> {
 			|| self.appearances.contains(&Appearance::Symlink)
 			|| self.appearances.contains(&Appearance::SoloFile)
 		{
-			parts.push_str(&self.display_name)
+			parts.push_str(self.disp_name())
 		} else {
 			parts.push_str(&self.aligned_name())
 		}

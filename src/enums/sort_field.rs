@@ -62,10 +62,10 @@ pub enum SortField {
 	Ext,   // file extension
 
 	// Reversed sort by the field
-	#[clap(name = "inode_")]
-	Inode_,
-	#[clap(name = "nlinks_")]
-	Nlinks_,
+	#[clap(name = "ino_")]
+	Ino_,
+	#[clap(name = "nlink_")]
+	Nlink_,
 	#[clap(name = "typ_")]
 	Typ_,
 	#[clap(name = "cat_")]
@@ -178,11 +178,10 @@ impl SortField {
 		use SortField::*;
 		// Map each reverse-order field (suffixed with '_') to its natural-order
 		// basis without allocating, which matters as this runs on every pairwise
-		// comparison during sorting. `Inode_` and `Nlinks_` are named differently
-		// from their natural counterparts, so they are mapped explicitly.
+		// comparison during sorting.
 		match self {
-			Inode_ => (Ino, true),
-			Nlinks_ => (Nlink, true),
+			Ino_ => (Ino, true),
+			Nlink_ => (Nlink, true),
 			Typ_ => (Typ, true),
 			Cat_ => (Cat, true),
 			User_ => (User, true),
@@ -266,6 +265,33 @@ impl SortField {
 #[cfg(test)]
 mod tests {
 	use super::SortField;
+	use clap::ValueEnum;
+
+	/// `simplify` must map every reverse-order base to the natural-order base
+	/// that shares its name (sans the trailing `_`) and report it as reversed,
+	/// while leaving natural-order bases untouched. This would have caught the
+	/// `inode_`/`nlinks_` mismatch that previously resolved to no basis at all.
+	#[test]
+	fn test_simplify_inverts_reverse_bases() {
+		for variant in SortField::value_variants() {
+			let name = variant.to_string();
+			let (basis, is_reverse) = variant.simplify();
+			match name.strip_suffix('_') {
+				Some(base) => {
+					assert!(is_reverse, "`{name}` should simplify to a reversed basis");
+					assert_eq!(
+						basis.to_string(),
+						base,
+						"`{name}` should simplify to basis `{base}`",
+					);
+				}
+				None => {
+					assert!(!is_reverse, "`{name}` should not be reversed");
+					assert_eq!(basis, *variant, "`{name}` should simplify to itself");
+				}
+			}
+		}
+	}
 
 	macro_rules! make_clean_test {
 		( $($name:ident: $input:expr => $expected:expr,)* ) => {

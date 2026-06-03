@@ -62,6 +62,8 @@ pub enum SortField {
 	Ext,   // file extension
 
 	// Reversed sort by the field
+	#[clap(name = "dev_")]
+	Dev_,
 	#[clap(name = "ino_")]
 	Ino_,
 	#[clap(name = "nlink_")]
@@ -180,6 +182,7 @@ impl SortField {
 		// basis without allocating, which matters as this runs on every pairwise
 		// comparison during sorting.
 		match self {
+			Dev_ => (Dev, true),
 			Ino_ => (Ino, true),
 			Nlink_ => (Nlink, true),
 			Typ_ => (Typ, true),
@@ -266,6 +269,51 @@ impl SortField {
 mod tests {
 	use super::SortField;
 	use clap::ValueEnum;
+	use std::collections::HashSet;
+
+	/// Every natural-order base (all variants except the `none` shorthand) must
+	/// have a reverse-order counterpart named exactly `<base>_`, and every
+	/// reverse-order base must have a matching natural-order base. This guards
+	/// against the ascending and descending names drifting apart, e.g. an `ino`
+	/// base paired with an `inode_` reverse.
+	#[test]
+	fn test_each_base_has_matching_reverse() {
+		let names: Vec<String> = SortField::value_variants()
+			.iter()
+			.map(|variant| variant.to_string())
+			.collect();
+
+		let naturals: HashSet<&str> = names
+			.iter()
+			.map(String::as_str)
+			.filter(|name| *name != "none" && !name.ends_with('_'))
+			.collect();
+		let reverses: HashSet<&str> = names
+			.iter()
+			.map(String::as_str)
+			.filter(|name| name.ends_with('_'))
+			.collect();
+
+		for natural in &naturals {
+			let expected = format!("{natural}_");
+			assert!(
+				reverses.contains(expected.as_str()),
+				"natural sort base `{natural}` has no reverse base `{expected}`",
+			);
+		}
+		for reverse in &reverses {
+			let base = reverse.strip_suffix('_').unwrap();
+			assert!(
+				naturals.contains(base),
+				"reverse sort base `{reverse}` has no natural base `{base}`",
+			);
+		}
+		assert_eq!(
+			naturals.len(),
+			reverses.len(),
+			"every natural base should have exactly one reverse base",
+		);
+	}
 
 	/// `simplify` must map every reverse-order base to the natural-order base
 	/// that shares its name (sans the trailing `_`) and report it as reversed,

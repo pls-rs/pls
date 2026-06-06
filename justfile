@@ -1,6 +1,5 @@
 set dotenv-load := false
 
-# Show all available recipes
 # Show all available recipes, also recurses inside nested justfiles.
 @_default:
     just --list --unsorted

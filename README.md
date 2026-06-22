@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/pls-rs/.github/main/profile/readme_assets/logo.png" height="40" width="40" align="left"> pls
+# <img src="https://github.com/pls-rs/.github/raw/main/profile/readme_assets/logo.png" alt="" align="left" width="40" height="40"> pls
 
 <a href="https://github.com/pls-rs/pls/blob/main/LICENSE"><img src="https://img.shields.io/github/license/pls-rs/pls?logo=gnu" alt="GPL-3.0"/></a>
 <a href="https://pypi.org/project/pls/"><img src="https://img.shields.io/badge/platforms-macOS,_Linux-blue" alt="Platforms"/></a>

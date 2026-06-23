@@ -19,6 +19,15 @@ categories = ["command-line-utilities"]
 edition = "2021"
 rust-version = "1.80.0"
 
+# Assuming `cargo-binstall` is present globally, all these packages will install
+# using pre-built binaries and the process will be quite fast.
+[package.metadata.bin]
+prek = { version = "0.4.5" }
+cargo-nextest = { version = "0.9.138", locked = true }
+cargo-bloat = { version = "0.12.1" }
+cargo-release = { version = "1.1.2" }
+cross = { version = "0.2.5" }
+
 [[bin]]
 name = "pls"
 

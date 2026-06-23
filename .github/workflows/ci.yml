@@ -28,7 +28,6 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
-          install_tools: just,prek
           rust_cache_key: cargo
           rust_components: clippy, rustfmt
           # `prettier` and `eslint` prek hooks run via `pnpm exec`.
@@ -55,7 +54,6 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
-          install_tools: just,nextest
           rust_cache_key: cargo
 
       - name: Run unit test
@@ -75,19 +73,16 @@ jobs:
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
             suffix: x86_64-unknown-linux-musl
-            tools: just,cross
           - name: Linux ARM64
             build: linux
             os: ubuntu-latest
             target: aarch64-unknown-linux-musl
             suffix: aarch64-unknown-linux-musl
-            tools: just,cross
           - name: macOS universal
             build: macos
             os: macos-latest
             target: x86_64-apple-darwin,aarch64-apple-darwin
             suffix: universal-apple-darwin
-            tools: just
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -96,7 +91,6 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
-          install_tools: ${{ matrix.tools }}
           rust_cache_key: build-${{ matrix.suffix }}
           rust_targets: ${{ matrix.target }}
 
@@ -135,7 +129,6 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
-          install_tools: just
           setup_rust: "false"
           setup_node: "true"
 

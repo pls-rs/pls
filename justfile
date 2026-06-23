@@ -17,6 +17,7 @@ set dotenv-load := false
 # Install dependencies for sub-projects.
 install:
     # Cargo does not need an install step.
+    cargo bin --install
     just docs/install
     just examples/install
 
@@ -24,14 +25,9 @@ install:
 # Lint #
 ########
 
-# Install `prek`, if it does not already exist.
-get-prek:
-    [ -x "$(command -v prek)" ] || cargo install prek
-    prek install
-
 # Run `prek` to lint and format files.
 lint hook="" *files="":
-    prek run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
+    cargo bin prek run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
 
 ###########
 # Recipes #
@@ -57,17 +53,13 @@ test *args:
 release:
     cargo build --release
 
-# Install `cross`, if it does not already exist.
-get-cross:
-    [ -x "$(command -v cross)" ] || cargo install cross
-
 # Build a release binary for the given targets with `cross`.
 cross targets:
     #!/usr/bin/env bash
     set -euo pipefail
     IFS=',' read -ra items <<< "{{ targets }}"
     for target in "${items[@]}"; do
-        cross build --release --verbose --target "$target"
+        cargo bin cross build --release --verbose --target "$target"
     done
 
 # Build a release binary for the given targets with `cargo` (no `cross`).

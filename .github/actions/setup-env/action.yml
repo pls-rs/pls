@@ -2,9 +2,6 @@ name: pls/setup-env
 description: Setup environment for CI + CD jobs
 
 inputs:
-  install_tools:
-    description: The names of the tools to install
-    default: just
   setup_rust:
     description: Whether to install the Rust toolchain and cache
     default: "true"
@@ -24,10 +21,10 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Setup `just`
+    - name: Install `just`
       uses: taiki-e/install-action@v2
       with:
-        tool: ${{ inputs.install_tools }}
+        tool: just
 
     - name: Install Rust toolchain
       if: inputs.setup_rust == 'true'
@@ -36,11 +33,20 @@ runs:
         components: ${{ inputs.rust_components }}
         targets: ${{ inputs.rust_targets }}
 
+    # `cargo bin` (cargo-run-bin) runs the tools pinned in `Cargo.toml`;
+    # `cargo-binstall` makes their installs fetch prebuilt binaries.
+    - name: Install `cargo bin`
+      if: inputs.setup_rust == 'true'
+      uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-binstall,cargo-run-bin
+
     - name: Cache Rust toolchain and build artifacts
       if: inputs.setup_rust == 'true'
       uses: Swatinem/rust-cache@v2
       with:
         key: ${{ inputs.rust_cache_key }}
+        cache-directories: .bin
 
     - name: Enable Corepack
       if: inputs.setup_node == 'true'

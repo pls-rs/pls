@@ -5,6 +5,9 @@
 # Node.js modules
 node_modules
 
+# Rust binaries
+.bin/
+
 # Build artifacts
 target
 

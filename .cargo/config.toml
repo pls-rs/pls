@@ -1,0 +1,4 @@
+[alias]
+bloat = ["bin", "cargo-bloat"]
+nextest = ["bin", "cargo-nextest"]
+release = ["bin", "cargo-release"]

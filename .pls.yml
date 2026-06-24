@@ -4,25 +4,31 @@ icons:
   rocket: "" # nf-oct-rocket
 specs:
   - pattern: ^docs$
-    icon: book
+    icons:
+      - book
   - pattern: ^examples$
-    icon: egg
+    icons:
+      - egg
   - pattern: ^.idea$
     importance: -2
   - pattern: ^src$
     style: bold
     importance: 1
   - pattern: ^target$
-    icon: rocket
+    icons:
+      - rocket
   - pattern: ^(justfile|README.md)$
     style: green bold
     importance: 2
   - pattern: ^\.editorconfig$
-    icon: editorconfig
+    icons:
+      - editorconfig
   - pattern: ^(pre-commit\.pyz|\.pre-commit-config\.yaml)$
-    icon: broom
+    icons:
+      - broom
   - pattern: ^(.prettierignore|prettier.config.mjs)$
-    icon: broom
+    icons:
+      - broom
 entry_const:
   typ:
     dir:

@@ -28,6 +28,14 @@ cargo-bloat = { version = "0.12.1" }
 cargo-release = { version = "1.1.2" }
 cross = { version = "0.2.5" }
 
+[package.metadata.release]
+sign-commit = true
+sign-tag = true
+publish = false
+push = false
+pre-release-commit-message = "Release {{version}}"
+tag-message = "Release {{crate_name}} version {{version}}"
+
 [[bin]]
 name = "pls"
 
@@ -73,11 +81,3 @@ strip = true
 inherits = "release"
 strip = false
 debug = true
-
-[package.metadata.release]
-sign-commit = true
-sign-tag = true
-publish = false
-push = false
-pre-release-commit-message = "Release {{version}}"
-tag-message = "Release {{crate_name}} version {{version}}"

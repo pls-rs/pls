@@ -26,7 +26,7 @@ jobs:
       - name: Update tap
         working-directory: code
         run: |
-          ./pkg/brew/update_formula.sh "pkg/brew/pls.template" "$GITHUB_WORKSPACE/tap/Formula/pls.rb"
+          ./pkg/brew/update_formula.sh "pkg/brew/pls.template.rb" "$GITHUB_WORKSPACE/tap/Formula/pls.rb"
 
       - name: Commit and push changes
         working-directory: tap

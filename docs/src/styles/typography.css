@@ -1,9 +1,9 @@
 span.math {
-  font-family: serif;
-  font-style: italic;
+	font-family: serif;
+	font-style: italic;
 }
 
 pre[data-language="bash"] .ec-line .code::before {
-  content: "$ ";
-  opacity: 0.5;
+	content: "$ ";
+	opacity: 0.5;
 }

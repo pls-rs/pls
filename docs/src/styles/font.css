@@ -1,45 +1,45 @@
 @font-face {
-  font-family: "Monaspace";
-  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Regular.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+	font-family: "Monaspace";
+	src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Regular.woff2")
+		format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-  font-family: "Monaspace";
-  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Italic.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
+	font-family: "Monaspace";
+	src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Italic.woff2")
+		format("woff2");
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
 }
 
 @font-face {
-  font-family: "Monaspace";
-  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Bold.woff2")
-    format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
+	font-family: "Monaspace";
+	src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-Bold.woff2")
+		format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-  font-family: "Monaspace";
-  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-BoldItalic.woff2")
-    format("woff2");
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
+	font-family: "Monaspace";
+	src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.101/fonts/webfonts/MonaspaceNeon-BoldItalic.woff2")
+		format("woff2");
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
 }
 
 @font-face {
-  font-family: "Symbols";
-  src: url("../assets/fonts/SymbolsNerdFont.ttf") format("truetype");
-  font-display: swap;
+	font-family: "Symbols";
+	src: url("../assets/fonts/SymbolsNerdFont.ttf") format("truetype");
+	font-display: swap;
 }
 
 :root {
-  --sl-font-mono: "Monaspace", "Symbols";
+	--sl-font-mono: "Monaspace", "Symbols";
 }

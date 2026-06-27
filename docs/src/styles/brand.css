@@ -1,25 +1,25 @@
 :root {
-  --cp-red: #f38ba8;
+	--cp-red: #f38ba8;
 
-  --color-brand: var(--cp-red);
+	--color-brand: var(--cp-red);
 
-  --sl-color-accent-high: var(--sl-color-red-high);
-  --sl-color-accent: var(--sl-color-red);
-  --sl-color-accent-low: var(--sl-color-red-low);
+	--sl-color-accent-high: var(--sl-color-red-high);
+	--sl-color-accent: var(--sl-color-red);
+	--sl-color-accent-low: var(--sl-color-red-low);
 }
 
 :root[data-theme="light"] {
-  --cp-red: #d20f39;
+	--cp-red: #d20f39;
 
-  --sl-color-accent-high: var(--sl-color-red-high);
-  --sl-color-accent: var(--sl-color-red);
-  --sl-color-accent-low: var(--sl-color-red-low);
+	--sl-color-accent-high: var(--sl-color-red-high);
+	--sl-color-accent: var(--sl-color-red);
+	--sl-color-accent-low: var(--sl-color-red-low);
 }
 
 h1[data-page-title],
 a.site-title,
 code.pls {
-  font-family: var(--__sl-font-mono);
-  font-weight: bold;
-  color: var(--color-brand);
+	font-family: var(--__sl-font-mono);
+	font-weight: bold;
+	color: var(--color-brand);
 }

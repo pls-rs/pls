@@ -6,42 +6,42 @@ import Pagination from "@astrojs/starlight/components/Pagination.astro";
 ---
 
 <footer class="sl-flex">
-  <div class="meta sl-flex">
-    <a
-      href="https://creativecommons.org/licenses/by/4.0/"
-      target="_blank"
-      rel="noopener">
-      <span>CC BY 4.0 International</span>
-    </a>
-    <EditLink {...Astro.props} />
-  </div>
-  <Pagination {...Astro.props} />
+	<div class="meta sl-flex">
+		<a
+			href="https://creativecommons.org/licenses/by/4.0/"
+			target="_blank"
+			rel="noopener">
+			<span>CC BY 4.0 International</span>
+		</a>
+		<EditLink {...Astro.props} />
+	</div>
+	<Pagination {...Astro.props} />
 </footer>
 
 <style>
-  /* Copied from the `Footer` component. */
-  footer {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  .meta {
-    gap: 0.75rem 3rem;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-top: 3rem;
-    font-size: var(--sl-text-sm);
-    color: var(--sl-color-gray-3);
-  }
-  .meta > :global(p:only-child) {
-    margin-inline-start: auto;
-  }
+	/* Copied from the `Footer` component. */
+	footer {
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+	.meta {
+		gap: 0.75rem 3rem;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		margin-top: 3rem;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+	.meta > :global(p:only-child) {
+		margin-inline-start: auto;
+	}
 
-  /* Copied from the `EditLink` component. */
-  a {
-    text-decoration: none;
-    color: var(--sl-color-gray-3);
-  }
-  a:hover {
-    color: var(--sl-color-white);
-  }
+	/* Copied from the `EditLink` component. */
+	a {
+		text-decoration: none;
+		color: var(--sl-color-gray-3);
+	}
+	a:hover {
+		color: var(--sl-color-white);
+	}
 </style>

@@ -2,13 +2,13 @@ set dotenv-load := false
 
 # Show all available recipes, also recurses inside nested justfiles.
 @_default:
-    just --list --unsorted
+	just --list --unsorted
     printf "\nExamples:\n"
     printf   "=========\n"
-    just examples/
+	just examples/
     printf "\nDocs:\n"
     printf   "=====\n"
-    just docs/
+	just docs/
 
 #########
 # Setup #
@@ -16,10 +16,10 @@ set dotenv-load := false
 
 # Install dependencies for sub-projects.
 install:
-    # Cargo does not need an install step.
-    cargo bin --install
-    just docs/install
-    just examples/install
+	# Cargo does not need an install step.
+	cargo bin --install
+	just docs/install
+	just examples/install
 
 ########
 # Lint #
@@ -27,7 +27,7 @@ install:
 
 # Run `prek` to lint and format files.
 lint hook="" *files="":
-    cargo bin prek run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
+	cargo bin prek run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
 
 ###########
 # Recipes #
@@ -35,15 +35,15 @@ lint hook="" *files="":
 
 # Run the program.
 run *args:
-    cargo run -- {{ args }}
+	cargo run -- {{ args }}
 
 # Run the program with debug logging.
 debug *args:
-    env RUST_LOG=debug just run {{ args }}
+	env RUST_LOG=debug just run {{ args }}
 
 # Run tests.
 test *args:
-    cargo nextest run {{ args }}
+	cargo nextest run {{ args }}
 
 ###########
 # Release #
@@ -51,38 +51,38 @@ test *args:
 
 # Build the release binary.
 release:
-    cargo build --release
+	cargo build --release
 
 # Build a release binary for the given targets with `cross`.
 cross targets:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    IFS=',' read -ra items <<< "{{ targets }}"
-    for target in "${items[@]}"; do
-        cargo bin cross build --release --verbose --target "$target"
-    done
+	#!/usr/bin/env bash
+	set -euo pipefail
+	IFS=',' read -ra items <<< "{{ targets }}"
+	for target in "${items[@]}"; do
+		cargo bin cross build --release --verbose --target "$target"
+	done
 
 # Build a release binary for the given targets with `cargo` (no `cross`).
 build-targets targets:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    IFS=',' read -ra items <<< "{{ targets }}"
-    for target in "${items[@]}"; do
-        cargo build --release --target "$target"
-    done
+	#!/usr/bin/env bash
+	set -euo pipefail
+	IFS=',' read -ra items <<< "{{ targets }}"
+	for target in "${items[@]}"; do
+		cargo build --release --target "$target"
+	done
 
 # Combine the given binaries into a universal binary.
 lipo output inputs:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    IFS=',' read -ra items <<< "{{ inputs }}"
-    paths=()
-    for target in "${items[@]}"; do
-        paths+=("target/$target/release/pls")
-    done
-    out_path="target/{{ output }}/release/pls"
-    mkdir -p "$(dirname "$out_path")"
-    lipo -create -output "$out_path" "${paths[@]}"
+	#!/usr/bin/env bash
+	set -euo pipefail
+	IFS=',' read -ra items <<< "{{ inputs }}"
+	paths=()
+	for target in "${items[@]}"; do
+		paths+=("target/$target/release/pls")
+	done
+	out_path="target/{{ output }}/release/pls"
+	mkdir -p "$(dirname "$out_path")"
+	lipo -create -output "$out_path" "${paths[@]}"
 
 ###########
 # Aliases #

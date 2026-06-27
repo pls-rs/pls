@@ -1,7 +1,6 @@
 ---
 title: Detail view
-description:
-  pls can show a lot of metadata about each file in a tabular layout when the
+description: pls can show a lot of metadata about each file in a tabular layout when the
   detail view has been activated.
 ---
 
@@ -12,9 +11,8 @@ import { Content as DetailViewAll } from "@/examples/detail_view/all.mdx";
 import { Content as DetailViewConf } from "@/examples/detail_view/conf.mdx";
 import { Content as DetailViewConfd } from "@/examples/detail_view/confd.mdx";
 
-<Pls /> can stat the nodes to derive more information, called metadata, about
-them, which it can then present in a tabular format. This is called the detail
-view.
+<Pls /> can stat the nodes to derive more information, called metadata, about them, which it can
+then present in a tabular format. This is called the detail view.
 
 ## Arguments
 
@@ -144,8 +142,8 @@ are peculiar cases. The opposite scenario is more common.
 
 #### `typ` - Node type character
 
-<Pls /> allows you to completely change the type character to whatever makes you
-think of the node's type.
+<Pls /> allows you to completely change the type character to whatever makes you think of the node's
+type.
 
 | Type         | Character                         |
 | ------------ | --------------------------------- |
@@ -184,9 +182,8 @@ individually.
 
 #### `user`/`uid` - Owner user name/UID
 
-<Pls /> styles the name or UID of the user that owns the node differently based
-on whether the user is the current user or not. These styles apply identically
-to the user name and the UID.
+<Pls /> styles the name or UID of the user that owns the node differently based on whether the user
+is the current user or not. These styles apply identically to the user name and the UID.
 
 | User    | Style                           |
 | ------- | ------------------------------- |
@@ -195,9 +192,9 @@ to the user name and the UID.
 
 #### `group`/`gid` - Owner group name/GID
 
-<Pls /> styles the name or GID of the group that owns the node differently based
-on whether the current user belongs to the group or not. These styles apply
-identically to the group name and the GID.
+<Pls /> styles the name or GID of the group that owns the node differently based on whether the
+current user belongs to the group or not. These styles apply identically to the group name and the
+GID.
 
 | Group   | Style                            |
 | ------- | -------------------------------- |
@@ -206,9 +203,9 @@ identically to the group name and the GID.
 
 #### `size` - Storage space
 
-<Pls /> shows the size of the node in human readable format by default, while
-allowing the user to choose between three unit systems. See
-[units](/features/units/) for more information about unit systems.
+<Pls /> shows the size of the node in human readable format by default, while allowing the user to
+choose between three unit systems. See [units](/features/units/) for more information about unit
+systems.
 
 You can style the three components of a size value independently. Ideally, you
 want to emphasise magnitude and prefix and de-emphasise the base (which is
@@ -222,9 +219,8 @@ always "B" for bytes).
 
 #### `blocks` - Storage blocks
 
-<Pls /> shows the total number of physical blocks of size 512 bytes actually
-allocated on the disk for the node. This can be more than what the actual size
-on disk indicates if the node has "holes".
+<Pls /> shows the total number of physical blocks of size 512 bytes actually allocated on the disk
+for the node. This can be more than what the actual size on disk indicates if the node has "holes".
 
 :::note
 
@@ -239,8 +235,8 @@ not style this field by default, because a style would not add any meaning.
 
 #### `btime`/`ctime`/`mtime`/`atime` - Timestamps
 
-<Pls /> can display the four common timestamps of a file. <Pls /> allows you to
-choose the exact format in which you prefer the timestamps to be.
+<Pls /> can display the four common timestamps of a file. <Pls /> allows you to choose the exact
+format in which you prefer the timestamps to be.
 
 | Timestamp   | Format                                |
 | ----------- | ------------------------------------- |

@@ -28,11 +28,11 @@ LINUX_ARM_SHA=$(shasum -a 256 /tmp/linux_arm_asset | awk '{ print $1 }')
 echo "SHA256 for Linux aarch64 asset is $LINUX_ARM_SHA."
 
 sed -e "s|{{ VERSION }}|$VERSION|g" \
-    -e "s|{{ MAC_URL }}|$MAC_URL|g" \
-    -e "s|{{ MAC_SHA }}|$MAC_SHA|g" \
-    -e "s|{{ LINUX_X86_URL }}|$LINUX_X86_URL|g" \
-    -e "s|{{ LINUX_X86_SHA }}|$LINUX_X86_SHA|g" \
-    -e "s|{{ LINUX_ARM_URL }}|$LINUX_ARM_URL|g" \
-    -e "s|{{ LINUX_ARM_SHA }}|$LINUX_ARM_SHA|g" "$1" > "$2"
+	-e "s|{{ MAC_URL }}|$MAC_URL|g" \
+	-e "s|{{ MAC_SHA }}|$MAC_SHA|g" \
+	-e "s|{{ LINUX_X86_URL }}|$LINUX_X86_URL|g" \
+	-e "s|{{ LINUX_X86_SHA }}|$LINUX_X86_SHA|g" \
+	-e "s|{{ LINUX_ARM_URL }}|$LINUX_ARM_URL|g" \
+	-e "s|{{ LINUX_ARM_SHA }}|$LINUX_ARM_SHA|g" "$1" > "$2"
 
 echo "Formula written!"

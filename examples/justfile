@@ -3,7 +3,7 @@ set fallback
 
 # Show all available recipes.
 @_default:
-    just --list --unsorted
+	just --list --unsorted
 
 #########
 # Setup #
@@ -11,7 +11,7 @@ set fallback
 
 # Install Python dependencies.
 install:
-    uv sync --locked --dev
+	uv sync --locked --dev
 
 ###########
 # Recipes #
@@ -19,24 +19,24 @@ install:
 
 # Create the `.env` file from the template file
 env:
-    cp .env.template .env
+	cp .env.template .env
 
 # Generate the specified examples file.
 gen file:
-    uv run python -m examples.{{ file }}
+	uv run python -m examples.{{ file }}
 
 # Regenerate all examples.
 all:
-    just gen hero
-    just gen specs
-    just gen detail_view
-    just gen grid_view
-    just gen presentation
-    just gen filtering
-    just gen sorting
-    just gen colors
-    just gen paths
+	just gen hero
+	just gen specs
+	just gen detail_view
+	just gen grid_view
+	just gen presentation
+	just gen filtering
+	just gen sorting
+	just gen colors
+	just gen paths
 
 # Create a Python shell.
 shell:
-    uv run ipython
+	uv run ipython

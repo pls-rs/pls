@@ -11,8 +11,8 @@ import { Content as UnitsNone } from "@/examples/units/none.mdx";
 <Pls /> can show the sizes of files in three unit systems.
 
 - binary, which uses higher powers of 2 such as 2<sup>10</sup> as kibi (Ki),
-  2<sup>20</sup> as mibi (Mi) etc.
-- decimal, which users higher powers of 10 such as 10<sup>3</sup> as kilo (k),
+  2<sup>20</sup> as mebi (Mi) etc.
+- decimal, which uses higher powers of 10 such as 10<sup>3</sup> as kilo (k),
   10<sup>6</sup> as mega (M) etc.
 - none, which lists the exact number of bytes (B) as is.
 
@@ -24,26 +24,26 @@ unit system by default.
 :::caution
 
 This flag has no effect unless the [detail view](/features/detail_view/)
-contains the `size` field with `--det=size`/`-D=size`.
+contains the `size` field with `--det=size`/`-d=size`.
 
 :::
 
 ### Examples
 
 ```bash
-pls --det=size # or --unit=binary or --u=binary
+pls --det=size # or --unit=binary or -u=binary
 ```
 
 <UnitsBinary />
 
 ```bash
-pls --det=size --unit=decimal # or --u=decimal
+pls --det=size --unit=decimal # or -u=decimal
 ```
 
 <UnitsDecimal />
 
 ```bash
-pls --det=size --unit=none # or --u=binary
+pls --det=size --unit=none # or -u=none
 ```
 
 <UnitsNone />

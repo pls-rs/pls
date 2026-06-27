@@ -158,14 +158,17 @@ type.
 
 #### `perm` - Symbolic permissions
 
-This field can by styled by specifying `entry_const.perm_style`. <Pls /> allows
+This field can be styled by specifying `entry_const.perm_styles`. <Pls /> allows
 individual customisation of each of the permission characters for read (`r`),
 write (`w`), execute (`x`), special (`s`/`S`/`t`/`T`) and none (`-`).
 
-| Bit | Style | | ------- | entry_const | | Read |
-`entry_const.perm_styles.read` | | Write | `entry_const.perm_styles.write` | |
-Execute | `entry_const.perm_styles.execute` | | Special |
-`entry_const.perm_styles.special` | | None | `entry_const.perm_styles.none` |
+| Bit     | Style                             |
+| ------- | --------------------------------- |
+| Read    | `entry_const.perm_styles.read`    |
+| Write   | `entry_const.perm_styles.write`   |
+| Execute | `entry_const.perm_styles.execute` |
+| Special | `entry_const.perm_styles.special` |
+| None    | `entry_const.perm_styles.none`    |
 
 #### `oct` - Octal permissions
 

@@ -194,8 +194,8 @@ constants that determine the appearance and styling of each entry
         <DocBlock title="suffix" type="str">
           the suffix for a node type, placed after the node name
         </DocBlock>
-        <DocBlock title="icon" fqTitle="typ__icon" type="str">
-          the fallback icon for the node type, used if no other icon is found;
+        <DocBlock title="icons" fqTitle="typ__icons" type="seq<str>">
+          the fallback icons for the node type, used if no other icon is found;
           Not all node types need to have an icon.
         </DocBlock>
         <DocBlock title="style" fqTitle="typ__style" type="str">
@@ -219,9 +219,9 @@ constants that determine the appearance and styling of each entry
             icons:
               - symlink
           char_device:
-            ch: <blue bg:green>b</>
+            ch: <blue bg:green>c</>
           block_device:
-            ch: <blue bg:yellow>c</>
+            ch: <blue bg:yellow>b</>
         ```
       </div>
     </DocBlock>

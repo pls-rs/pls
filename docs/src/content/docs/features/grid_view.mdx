@@ -1,16 +1,14 @@
 ---
 title: Grid view
-pls:
-  pls can display node names in two dimensions by showing multiple nodes per row
+description: pls can display node names in two dimensions by showing multiple nodes per row
   reducing vertical space when the grid view has been activated.
 ---
 
 import { Content as GridViewOff } from "@/examples/grid_view/off.mdx";
 import { Content as GridViewOn } from "@/examples/grid_view/on.mdx";
 
-<Pls /> can reduce the amount of vertical space taken by the output, thus
-reducing the amount of strolling required, by placing the node names in a grid
-instead of a column.
+<Pls /> can reduce the amount of vertical space taken by the output, thus reducing the amount of
+scrolling required, by placing the node names in a grid instead of a column.
 
 ## Arguments
 
@@ -33,7 +31,7 @@ Otherwise, you may disable the detail view using `--det=none`/`-d=none`.
 :::caution
 
 Note that the grid view is also incompatible with
-[symlink tracing](/features/symlink/) (which can take large amounts of
+[symlink tracing](/features/symlinks/) (which can take large amounts of
 horizontal space). In case of conflict, the grid view will be used and symlink
 tracing will be turned off.
 

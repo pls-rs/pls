@@ -116,7 +116,7 @@ mod tests {
 			$(
 				#[test]
 				fn $name() {
-                    let entry_const = EntryConst::default();
+					let entry_const = EntryConst::default();
 					let perm: Perm = $mode.into();
 					assert_eq!(perm.sym(&entry_const), String::from($expected_sym));
 					assert_eq!(perm.oct(&entry_const), String::from($expected_oct));

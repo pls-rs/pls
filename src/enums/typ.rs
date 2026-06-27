@@ -171,12 +171,12 @@ mod tests {
 
 	macro_rules! make_clean_test {
 		( $($name:ident: $input:expr => $expected:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-                    assert_eq!(Typ::clean($input), $expected);
-                }
-            )*
+			$(
+				#[test]
+				fn $name() {
+					assert_eq!(Typ::clean($input), $expected);
+				}
+			)*
 		};
 	}
 
@@ -201,17 +201,17 @@ mod tests {
 	);
 
 	macro_rules! make_name_components_test {
-        ( $($name:ident: $typ:expr => $icon:expr, $suffix:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-                    let entry_const = EntryConst::default();
-                    assert_eq!($typ.icons(&entry_const), &Some(vec![format!("{}-svg", $icon), String::from($icon)]));
-                    assert_eq!($typ.suffix(&entry_const), $suffix);
-                }
-            )*
-        };
-    }
+		( $($name:ident: $typ:expr => $icon:expr, $suffix:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
+					let entry_const = EntryConst::default();
+					assert_eq!($typ.icons(&entry_const), &Some(vec![format!("{}-svg", $icon), String::from($icon)]));
+					assert_eq!($typ.suffix(&entry_const), $suffix);
+				}
+			)*
+		};
+	}
 
 	make_name_components_test!(
 		test_icon_suffix_for_dir: Typ::Dir => "dir", "<dimmed>/</>",
@@ -224,16 +224,16 @@ mod tests {
 	);
 
 	macro_rules! make_renderables_test {
-        ( $($name:ident: $typ:expr => $ch:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-                    let entry_const = EntryConst::default();
-                    assert_eq!($typ.ch(&entry_const), $ch);
-                }
-            )*
-        };
-    }
+		( $($name:ident: $typ:expr => $ch:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
+					let entry_const = EntryConst::default();
+					assert_eq!($typ.ch(&entry_const), $ch);
+				}
+			)*
+		};
+	}
 
 	make_renderables_test!(
 		test_ch_for_dir: Typ::Dir => "<blue>d</>",

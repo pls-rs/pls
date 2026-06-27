@@ -168,12 +168,12 @@ mod tests {
 
 	macro_rules! make_clean_test {
 		( $($name:ident: $input:expr => $expected:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-                    assert_eq!(DetailField::clean($input), $expected);
-                }
-            )*
+			$(
+				#[test]
+				fn $name() {
+					assert_eq!(DetailField::clean($input), $expected);
+				}
+			)*
 		};
 	}
 

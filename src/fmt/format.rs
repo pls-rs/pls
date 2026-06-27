@@ -6,12 +6,12 @@ use std::sync::LazyLock;
 static TRUE_COLOR: LazyLock<Regex> = LazyLock::new(|| {
 	Regex::new(
 		r"(?x)(?-u)^
-        rgb\(
-            (?P<red>\d{1,3}),\s?
-            (?P<green>\d{1,3}),\s?
-            (?P<blue>\d{1,3})
-        \)
-    $",
+		rgb\(
+			(?P<red>\d{1,3}),\s?
+			(?P<green>\d{1,3}),\s?
+			(?P<blue>\d{1,3})
+		\)
+	$",
 	)
 	.unwrap()
 });

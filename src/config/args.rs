@@ -30,9 +30,9 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
 /// is not represented here. Refer to [`Conf`](crate::config::Conf) for those.
 #[derive(Parser, Debug)]
 #[command(
-    author,
-    version,
-    about = render("<red bold>pls</> is a prettier and powerful ls(1) for the pros."),
+	author,
+	version,
+	about = render("<red bold>pls</> is a prettier and powerful ls(1) for the pros."),
 	long_about = render(format!(
 		"<red bold>pls</> is a prettier and powerful ls(1) for the pros.
 
@@ -43,7 +43,7 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
 		get_osc("https://github.com/pls-rs/pls/", None),
 		get_osc("https://github.com/sponsors/dhruvkb/", None),
 	)),
-    args_override_self = true,
+	args_override_self = true,
 )]
 pub struct Args {
 	/// the paths to list, each of which may be a file or directory
@@ -109,7 +109,7 @@ pub struct Args {
 		long = "typ",
 		default_value = "all",
 		value_enum,
-        value_names = ["TYPES"],
+		value_names = ["TYPES"],
 	)]
 	pub typs: Vec<Typ>,
 
@@ -219,17 +219,17 @@ mod tests {
 	use super::Args;
 
 	macro_rules! make_warning_test {
-        ($($name:ident: $argv:expr => $msg:expr,)*) => {
-            $(
-                #[test]
-                fn $name() {
-                    let mut args = Args::raw($argv);
-                    let warnings = args.clean();
-                    assert!(warnings.contains(&$msg));
-                }
-            )*
-        }
-    }
+		($($name:ident: $argv:expr => $msg:expr,)*) => {
+			$(
+				#[test]
+				fn $name() {
+					let mut args = Args::raw($argv);
+					let warnings = args.clean();
+					assert!(warnings.contains(&$msg));
+				}
+			)*
+		}
+	}
 
 	make_warning_test!(
 		test_details_multi_col: ["pls", "--det", "ino", "--grid", "true"] => "Detailed view disabled grid view.",
@@ -239,17 +239,17 @@ mod tests {
 	);
 
 	macro_rules! make_clean_test {
-        ($($name:ident: $argv:expr => $key:ident, $val:expr,)*) => {
-            $(
-                #[test]
-                fn $name() {
-                    let mut args = Args::raw($argv);
-                    args.clean();
-                    assert_eq!(args.$key, $val);
-                }
-            )*
-        }
-    }
+		($($name:ident: $argv:expr => $key:ident, $val:expr,)*) => {
+			$(
+				#[test]
+				fn $name() {
+					let mut args = Args::raw($argv);
+					args.clean();
+					assert_eq!(args.$key, $val);
+				}
+			)*
+		}
+	}
 
 	make_clean_test!(
 		test_details_beats_multi_col: ["pls", "--det", "ino", "--grid", "true"] => grid, false,

@@ -68,20 +68,20 @@ mod tests {
 	use std::path::{Path, PathBuf};
 
 	macro_rules! make_common_ancestor_test {
-        ( $($name:ident: $paths:expr => $parent:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-                    let paths: Vec<&str> = $paths;
-                    let path_bufs: Vec<_> = paths.iter().map(Path::new).collect();
-                    let parent = common_ancestor(&path_bufs);
+		( $($name:ident: $paths:expr => $parent:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
+					let paths: Vec<&str> = $paths;
+					let path_bufs: Vec<_> = paths.iter().map(Path::new).collect();
+					let parent = common_ancestor(&path_bufs);
 
-                    let expected = ($parent as Option<&str>).map(PathBuf::from);
-                    assert_eq!(parent, expected);
-                }
-            )*
-        };
-    }
+					let expected = ($parent as Option<&str>).map(PathBuf::from);
+					assert_eq!(parent, expected);
+				}
+			)*
+		};
+	}
 
 	make_common_ancestor_test!(
 		test_zero_paths: vec![] => None,

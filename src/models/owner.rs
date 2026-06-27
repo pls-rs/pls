@@ -185,23 +185,23 @@ mod tests {
 	use crate::enums::Entity;
 
 	macro_rules! make_renderables_test {
-        ( $($name:ident: $entity:expr, $raw_id:expr, $raw_name:expr, $is_curr:expr => $fmt_id:expr, $fmt_name:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-                    let entry_const = EntryConst::default();
-                    let owner = Owner {
-                        entity: $entity,
-                        id: $raw_id,
-                        name: $raw_name,
-                        is_curr: $is_curr,
-                    };
-                    assert_eq!(owner.id(&entry_const), $fmt_id);
-                    assert_eq!(owner.name(&entry_const), $fmt_name);
-                }
-            )*
-        };
-    }
+		( $($name:ident: $entity:expr, $raw_id:expr, $raw_name:expr, $is_curr:expr => $fmt_id:expr, $fmt_name:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
+					let entry_const = EntryConst::default();
+					let owner = Owner {
+						entity: $entity,
+						id: $raw_id,
+						name: $raw_name,
+						is_curr: $is_curr,
+					};
+					assert_eq!(owner.id(&entry_const), $fmt_id);
+					assert_eq!(owner.name(&entry_const), $fmt_name);
+				}
+			)*
+		};
+	}
 
 	make_renderables_test!(
 		test_current_user: Entity::User, 420, Some(String::from("user")), true => "<blue bold>420</>", "<blue bold>user</>",

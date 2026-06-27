@@ -225,17 +225,17 @@ mod tests {
 	use super::{len, render, render_and_measure};
 
 	macro_rules! make_render_test {
-        ( $($name:ident: $markup:expr => $rendered:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
+		( $($name:ident: $markup:expr => $rendered:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
 					colored::control::set_override(true); // needed when running tests in CLion
-                    let rendered = render($markup);
-                    assert_eq!(rendered, $rendered);
-                }
-            )*
-        };
-    }
+					let rendered = render($markup);
+					assert_eq!(rendered, $rendered);
+				}
+			)*
+		};
+	}
 
 	make_render_test!(
 		test_render_formats_single_style: "<bold>bold</>" => "\x1b[1mbold\x1b[0m",
@@ -266,8 +266,8 @@ mod tests {
 				#[test]
 				fn $name() {
 					colored::control::set_override(true); // needed when running tests in CLion
-                    let length = len($markup);
-                    assert_eq!(length, $length);
+					let length = len($markup);
+					assert_eq!(length, $length);
 				}
 			)*
 		}

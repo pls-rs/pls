@@ -145,7 +145,7 @@ impl Default for EntryConst {
 					k,
 					format!(
 						"<bold {v}>[year]-[month repr:short]-[day]</> \
-						 [hour repr:12]:[minute][period case:lower]"
+						[hour repr:12]:[minute][period case:lower]"
 					),
 				)
 			})

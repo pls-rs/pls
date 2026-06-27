@@ -126,34 +126,34 @@ mod tests {
 	use std::collections::HashMap;
 
 	macro_rules! make_massage_imps_test {
-        ( $($name:ident: $imp:expr => $exp_imp:expr,)* ) => {
-            $(
-                #[test]
-                fn $name() {
-                    let imp_styles: Vec<(i8, String)> = $imp
-                        .into_iter()
-                        .map(|(k, v): (i8, &str)| (k, v.to_string()))
-                        .collect();
-                    let exp_imp: Vec<(i8, String)> = $exp_imp
-                        .into_iter()
-                        .map(|(k, v): (i8, &str)| (k, v.to_string()))
-                        .collect();
-                    let exp_imp_map: HashMap<i8, String> = $exp_imp
-                        .into_iter()
-                        .map(|(k, v): (i8, &str)| (k, v.to_string()))
-                        .collect();
+		( $($name:ident: $imp:expr => $exp_imp:expr,)* ) => {
+			$(
+				#[test]
+				fn $name() {
+					let imp_styles: Vec<(i8, String)> = $imp
+						.into_iter()
+						.map(|(k, v): (i8, &str)| (k, v.to_string()))
+						.collect();
+					let exp_imp: Vec<(i8, String)> = $exp_imp
+						.into_iter()
+						.map(|(k, v): (i8, &str)| (k, v.to_string()))
+						.collect();
+					let exp_imp_map: HashMap<i8, String> = $exp_imp
+						.into_iter()
+						.map(|(k, v): (i8, &str)| (k, v.to_string()))
+						.collect();
 
-                    let mut app_const = AppConst {
-                        imp_styles,
-                        ..AppConst::default()
-                    };
-                    app_const.massage_imps();
-                    assert_eq!(app_const.imp_styles, exp_imp);
-                    assert_eq!(app_const.imp_map, exp_imp_map);
-                }
-            )*
-        }
-    }
+					let mut app_const = AppConst {
+						imp_styles,
+						..AppConst::default()
+					};
+					app_const.massage_imps();
+					assert_eq!(app_const.imp_styles, exp_imp);
+					assert_eq!(app_const.imp_map, exp_imp_map);
+				}
+			)*
+		}
+	}
 
 	make_massage_imps_test!(
 		test_empty: vec![] => vec![],

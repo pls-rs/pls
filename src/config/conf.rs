@@ -9,8 +9,8 @@ use std::collections::HashMap;
 macro_rules! map_str_str {
 	( $($k:expr => $v:expr,)* ) => {
 		core::convert::From::from([
-            $( (String::from($k), String::from($v)), )*
-        ])
+			$( (String::from($k), String::from($v)), )*
+		])
 	};
 }
 

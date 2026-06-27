@@ -57,8 +57,8 @@ impl UnitSys {
 		let (width, mag, prefix) = self.convert(size);
 		format!(
 			"<{mag_directive}>{mag:.1}</> \
-			 <{prefix_directive}>{prefix:>width$}</>\
-			 <{base_directive}>B</>",
+			<{prefix_directive}>{prefix:>width$}</>\
+			<{base_directive}>B</>",
 			width = width
 		)
 	}
@@ -74,7 +74,7 @@ mod tests {
 			$(
 				#[test]
 				fn $name() {
-                    let entry_const = EntryConst::default();
+					let entry_const = EntryConst::default();
 					let text = $unit.size($num, &entry_const);
 					assert_eq!(text, $str);
 				}

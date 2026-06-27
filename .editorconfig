@@ -32,9 +32,4 @@ indent_size = unset
 # § project
 # § =======
 
-# Get rid of me eventually.
-[*.py]
-indent_style = space
-indent_size = 4
-
 #	/§ project

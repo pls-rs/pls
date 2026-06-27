@@ -1,0 +1,8 @@
+[lint]
+ignore = [
+	"W191", # tab-indentation (incompatible with indent-style = "tab")
+	"D206", # docstring-tab-indentation (incompatible with indent-style = "tab")
+]
+
+[format]
+indent-style = "tab"

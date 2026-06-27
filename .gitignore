@@ -1,9 +1,12 @@
+# § global
+# § ======
+
 # `pls`
-# =====
+# -----
 !.pls.yml
 
-# Operating system
-# ================
+# Operating systems
+# -----------------
 # macOS
 .DS_Store
 ._*
@@ -12,7 +15,7 @@ Desktop.ini
 Thumbs.db
 
 # Dev environments
-# ================
+# ----------------
 # JetBrains IDEs
 .idea/
 # VS Code
@@ -37,7 +40,7 @@ Thumbs.db
 *.local.*
 
 # Python
-# ======
+# ------
 # Bytecode
 __pycache__/
 # Modules
@@ -48,7 +51,7 @@ __pycache__/
 .mypy_cache/
 
 # JavaScript / TypeScript
-# ========================
+# -----------------------
 # Modules
 node_modules/
 # Tool cache
@@ -56,19 +59,20 @@ node_modules/
 .eslintcache
 
 # Rust
-# ====
+# ----
 # Modules
 .bin/
 
 # Built artifacts
-# ===============
+# ---------------
+.astro/
 dist/
 build/
 target/
 *.tgz
 
 # LLMs
-# ====
+# ----
 # Claude Code
 .claude/
 # MCP
@@ -79,3 +83,12 @@ CLAUDE.md
 # Superpowers
 # The globstar `**` is needed because the pattern contains a slash `/`.
 **/docs/superpowers/
+
+#	/§ global
+
+# § project
+# § =======
+
+docs/src/examples/
+
+#	/§ project

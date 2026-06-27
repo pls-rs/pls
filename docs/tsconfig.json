@@ -1,11 +1,13 @@
 {
+	// `astro/tsconfigs/strict` extends `astro/tsconfigs/base`.
 	"extends": "astro/tsconfigs/strict",
+
+	// Fields "include" and "exclude" are already in `astro/tsconfigs/base`.
+
 	"compilerOptions": {
-    "jsx": "preserve",
-    "baseUrl": ".",
+		// Path mapping for cleaner imports.
 		"paths": {
-      "@/components/*": ["src/components/*"],
-      "@/examples/*": ["src/examples/*"]
+			"@/*": ["./src/*"]
 		}
 	}
 }

@@ -1,0 +1,77 @@
+#:schema https://www.schemastore.org/prek.json
+
+[[repos]]
+repo = "builtin"
+hooks = [
+	{ id = "trailing-whitespace", args = [
+		"--markdown-linebreak-ext=md,mdx",
+	] },
+	{ id = "end-of-file-fixer" },
+	{ id = "check-json", exclude = "^\\.vscode/.*\\.json|.oxlintrc\\.json|.oxfmtrc\\.json|tsconfig\\.json$" },
+	{ id = "check-toml" },
+	{ id = "check-yaml" },
+	{ id = "mixed-line-ending", args = [
+		"--fix=lf",
+	] },
+	{ id = "check-symlinks" },
+	{ id = "destroyed-symlinks" },
+	{ id = "check-merge-conflict" },
+	{ id = "detect-private-key" },
+	{ id = "check-shebang-scripts-are-executable" },
+	{ id = "check-executables-have-shebangs" },
+]
+
+[[repos]]
+repo = "https://github.com/editorconfig-checker/editorconfig-checker"
+rev = "v3.7.0"
+hooks = [{ id = "editorconfig-checker", exclude = "^LICENSE$" }]
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.0"
+hooks = [{ id = "ruff-check", args = ["--fix"] }, { id = "ruff-format" }]
+
+[[repos]]
+repo = "local"
+hooks = [
+	# Rust
+	{ id = "rustfmt", name = "rustfmt", entry = "cargo fmt", language = "system", types_or = [
+		"rust",
+	], pass_filenames = false },
+	{ id = "clippy", name = "clippy", entry = "cargo clippy --fix --all-features --allow-dirty --allow-staged -- -D warnings", language = "system", types_or = [
+		"rust",
+	], pass_filenames = false },
+	{ id = "test", name = "test", entry = "cargo nextest run", language = "system", types_or = [
+		"rust",
+	], pass_filenames = false, stages = [
+		"pre-push",
+	] },
+
+	# Oxc
+	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint:fix", language = "system", types_or = [
+		"javascript",
+		"ts",
+	] },
+	{ id = "oxfmt", name = "Oxfmt", entry = "pnpm oxfmt", language = "system", types_or = [
+		"javascript",
+		"json",
+		"markdown",
+		"mdx",
+		"toml",
+		"ts",
+		"yaml",
+	], args = [
+		# Since there are some files which match `types_or` but are ignored by
+		# `.oxfmtrc.json`, we need to silence the error raised when the staged
+		# change only has the ignored files.
+		"--no-error-on-unmatched-pattern",
+	] },
+
+	# Astro
+	{ id = "eslint", name = "ESLint", entry = "pnpm eslint:fix", language = "system", types_or = [
+		"astro",
+	] },
+	{ id = "prettier", name = "Prettier", entry = "pnpm prettier:write", language = "system", types_or = [
+		"astro",
+	] },
+]

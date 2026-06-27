@@ -1,14 +1,23 @@
 set dotenv-load := false
 
+# @ toggles quieting at the recipe-level. Without quiet, each commands is
+#   printed to STDERR before execution.
+# _ marks a recipe as private and stops it from appearing in `just --list` or
+#   `just --summary`.
+
 # Show all available recipes, also recurses inside nested justfiles.
 @_default:
 	just --list --unsorted
-    printf "\nExamples:\n"
-    printf   "=========\n"
+	just _section "Examples:"
 	just examples/
-    printf "\nDocs:\n"
-    printf   "=====\n"
+	just _section "Docs:"
 	just docs/
+
+# Print the given text with an equal number of `=` characters below it.
+@_section text:
+	printf "\n{{ text }}\n"
+	printf "%0.s=" $(seq 1 $(printf "%s" "{{ text }}" | wc -c))
+	printf "\n"
 
 #########
 # Setup #

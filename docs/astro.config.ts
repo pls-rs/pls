@@ -1,6 +1,6 @@
-import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import autoImport from "astro-auto-import";
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,7 +8,8 @@ export default defineConfig({
 		enabled: false,
 	},
 	markdown: {
-    smartypants: false, // https://daringfireball.net/projects/smartypants/
+		// See more: https://daringfireball.net/projects/smartypants/
+		smartypants: false,
 	},
 	integrations: [
 		starlight({

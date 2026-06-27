@@ -30,7 +30,7 @@ jobs:
         with:
           rust_cache_key: cargo
           rust_components: clippy, rustfmt
-          # `prettier` and `eslint` prek hooks run via `pnpm exec`.
+          # Oxfmt, Oxlint, ESLint and Prettier are all Node.js packages.
           setup_node: "true"
 
       - name: Run lint

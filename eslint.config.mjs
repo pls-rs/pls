@@ -1,48 +1,26 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import skipFormatting from "eslint-config-prettier/flat";
+import pluginAstro from "eslint-plugin-astro";
+import pluginOxlint from "eslint-plugin-oxlint";
+import { globalIgnores } from "eslint/config";
+import tseslint from "typescript-eslint";
 
-import globals from "globals";
+export default tseslint.config(
+	{ name: "app/files-to-lint", files: ["**/*.{astro,ts}"] },
 
-import { includeIgnoreFile } from "@eslint/compat";
+	globalIgnores(["**/dist/**", "**/.astro/**"]),
 
-import js from "@eslint/js";
-import ts from "typescript-eslint";
-import astro from "eslint-plugin-astro";
+	// Astro must come after `typescript-eslint`: the latter has no `files`
+	// filter and sets the parser for every file, so it would clobber the Astro
+	// parser on `.astro` files unless Astro is applied last.
+	...tseslint.configs.recommended,
 
-const __filename = fileURLToPath(import.meta.url);
-const srcDir = path.dirname(__filename);
+	// `eslint-plugin-astro` automatically enables the TypeScript parser for Astro
+	// files if it can require `@typescript-eslint/parser` from the project root.
+	// So ensure that this package is listed as a direct dev dependency.
+	...pluginAstro.configs.recommended,
 
-const gitignorePath = path.resolve(srcDir, ".gitignore");
+	...pluginOxlint.buildFromOxlintConfigFile(".oxlintrc.json"),
 
-export default [
-  includeIgnoreFile(gitignorePath),
-
-  {
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        ...globals.node,
-        ...globals.browser,
-      },
-    },
-
-    rules: {
-      "import/prefer-default-export": "off",
-      "@typescript-eslint/consistent-type-imports": "error",
-    },
-  },
-
-  js.configs.recommended,
-  ...ts.configs.strict,
-  ...ts.configs.stylistic,
-  ...astro.configs.recommended,
-
-  // Type definitions
-  {
-    files: ["**/*.d.ts"],
-    rules: {
-      "@typescript-eslint/triple-slash-reference": "off",
-    },
-  },
-];
+	// Disable formatting rules to avoid conflicts with Prettier (and also Oxfmt).
+	skipFormatting,
+);

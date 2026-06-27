@@ -1,7 +1,7 @@
 {
 	"name": "docs",
-  "type": "module",
 	"version": "0.0.0",
+	"type": "module",
 	"scripts": {
 		"dev": "astro dev --host",
 		"check": "astro check",
@@ -15,5 +15,5 @@
 		"astro": "^6.4.6",
 		"astro-auto-import": "^0.5.1"
 	},
-  "packageManager": "pnpm@9.15.5"
+	"packageManager": "pnpm@10.32.1"
 }

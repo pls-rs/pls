@@ -23,7 +23,7 @@ specs:
   - pattern: ^\.editorconfig$
     icons:
       - editorconfig
-  - pattern: ^(pre-commit\.pyz|\.pre-commit-config\.yaml)$
+  - pattern: ^prek\.toml$
     icons:
       - broom
   - pattern: ^(.prettierignore|prettier.config.mjs)$

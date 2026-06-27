@@ -11,12 +11,6 @@ export default {
 				parser: "astro",
 			},
 		},
-    {
-      files: ["*.svg"],
-      options: {
-        parser: "html",
-      },
-    },
 	],
 	proseWrap: "always",
 	plugins: ["prettier-plugin-astro"],

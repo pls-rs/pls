@@ -9,9 +9,10 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@astrojs/starlight": "^0.38.1",
-		"astro": "^6.4.6",
-		"astro-auto-import": "^0.5.1"
+		"@astrojs/markdown-satteri": "^0.3.2",
+		"@astrojs/starlight": "^0.41.1",
+		"astro": "^7.0.2",
+		"satteri": "^0.9.3"
 	},
 	"packageManager": "pnpm@10.32.1"
 }

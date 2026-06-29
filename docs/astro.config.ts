@@ -1,6 +1,16 @@
+import { satteri } from "@astrojs/markdown-satteri";
 import starlight from "@astrojs/starlight";
-import autoImport from "astro-auto-import";
 import { defineConfig } from "astro/config";
+
+import { autoImport, type AutoImport } from "./src/plugins/auto-import";
+
+// Components auto-imported into every MDX document.
+const autoImports: AutoImport[] = [
+	{ name: "Pls", from: "@/components/Pls.astro" },
+	{ name: "Stars", from: "@/components/Stars.astro" },
+	{ name: "Version", from: "@/components/Version.astro" },
+	{ name: "DocBlock", from: "@/components/DocBlock.astro" },
+];
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,8 +18,10 @@ export default defineConfig({
 		enabled: false,
 	},
 	markdown: {
-		// See more: https://daringfireball.net/projects/smartypants/
-		smartypants: false,
+		processor: satteri({
+			features: { smartPunctuation: false },
+			mdastPlugins: [autoImport(autoImports)],
+		}),
 	},
 	integrations: [
 		starlight({
@@ -91,15 +103,11 @@ export default defineConfig({
 				},
 				{
 					label: "Cookbooks",
-					autogenerate: {
-						directory: "cookbooks",
-					},
+					items: [{ autogenerate: { directory: "cookbooks" } }],
 				},
 				{
 					label: "Reference",
-					autogenerate: {
-						directory: "reference",
-					},
+					items: [{ autogenerate: { directory: "reference" } }],
 				},
 			],
 			customCss: [
@@ -117,16 +125,6 @@ export default defineConfig({
 			editLink: {
 				baseUrl: "https://github.com/pls-rs/pls/edit/main/docs/",
 			},
-		}),
-		// This causes a warning but it's harmless.
-		// Bug: https://github.com/delucis/astro-auto-import/issues/46
-		autoImport({
-			imports: [
-				"@/components/Pls.astro",
-				"@/components/Stars.astro",
-				"@/components/Version.astro",
-				"@/components/DocBlock.astro",
-			],
 		}),
 	],
 });

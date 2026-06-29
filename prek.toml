@@ -49,6 +49,7 @@ hooks = [
 
 	# Oxc
 	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint:fix", language = "system", types_or = [
+		"astro",
 		"javascript",
 		"ts",
 	] },

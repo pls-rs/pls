@@ -2,10 +2,8 @@
 const { owner = "pls-rs", repo = "pls" } = Astro.props;
 ---
 
-<gh-version
-	data-owner={owner}
-	data-repo={repo}
-	><span id="version">x.y.z</span></gh-version
+<gh-version data-owner={owner} data-repo={repo}>
+	<span id="version">x.y.z</span></gh-version
 ><script>
 	class GhVersion extends HTMLElement {
 		constructor() {
@@ -16,13 +14,12 @@ const { owner = "pls-rs", repo = "pls" } = Astro.props;
 				.then((res) => {
 					if (res.ok) {
 						return res.json();
-					} else {
-						throw new Error("Network response was not OK.");
 					}
+					throw new Error("Network response was not OK.");
 				})
 				.then((data) => {
 					const elem = this.querySelector("#version");
-					if (elem) elem.textContent = data[0].name.replace(/^v/, "");
+					if (elem) elem.textContent = data[0].name.replace(/^v/u, "");
 				})
 				.catch((err) => void err);
 		}

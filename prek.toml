@@ -27,6 +27,11 @@ rev = "v3.7.0"
 hooks = [{ id = "editorconfig-checker", exclude = "^LICENSE$" }]
 
 [[repos]]
+repo = "https://github.com/dhruvkb/styleguide"
+rev = "v0.1.0"
+hooks = [{ id = "no-inline-tabs" }]
+
+[[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
 rev = "v0.15.0"
 hooks = [{ id = "ruff-check", args = ["--fix"] }, { id = "ruff-format" }]

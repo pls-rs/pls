@@ -84,11 +84,11 @@ CLAUDE.md
 # The globstar `**` is needed because the pattern contains a slash `/`.
 **/docs/superpowers/
 
-#	/§ global
+# /§ global
 
 # § project
 # § =======
 
 docs/src/examples/
 
-#	/§ project
+# /§ project

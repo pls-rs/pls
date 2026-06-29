@@ -1,0 +1,11 @@
+{
+	"recommendations": [
+		"astro-build.astro-vscode",
+		"dbaeumer.vscode-eslint",
+		"unifiedjs.vscode-mdx",
+		"oxc.oxc-vscode",
+		"esbenp.prettier-vscode",
+		"charliermarsh.ruff",
+		"rust-lang.rust-analyzer"
+	]
+}

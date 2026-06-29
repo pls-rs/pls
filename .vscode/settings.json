@@ -1,0 +1,63 @@
+{
+	"[astro]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.oxc": "explicit",
+			"source.fixAll.eslint": "explicit"
+		}
+	},
+	"[css]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[javascript]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.oxc": "explicit"
+		}
+	},
+	"[json]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[jsonc]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[markdown]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[mdx]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[python]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "charliermarsh.ruff",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.ruff": "explicit"
+		}
+	},
+	"[rust]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "rust-lang.rust-analyzer"
+	},
+	"[toml]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[typescript]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.oxc": "explicit"
+		}
+	},
+	"[yaml]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	}
+}

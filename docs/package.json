@@ -7,8 +7,7 @@
 		"check": "astro check",
 		"build": "astro build",
 		"preview": "astro preview --host --port 4322",
-		"astro": "astro",
-		"fmt": "prettier --ignore-path .gitignore --ignore-path .prettierignore --write ."
+		"astro": "astro"
 	},
 	"dependencies": {
 		"@astrojs/starlight": "^0.38.1",

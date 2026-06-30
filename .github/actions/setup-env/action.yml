@@ -5,14 +5,8 @@ inputs:
   setup_rust:
     description: Whether to install the Rust toolchain and cache
     default: "true"
-  rust_cache_key:
-    description: The key to use to identify the Rust toolchain cache
-    default: cargo
   rust_components:
     description: dtolnay/rust-toolchain#components
-    required: false
-  rust_targets:
-    description: dtolnay/rust-toolchain#targets
     required: false
   setup_node:
     description: Whether to set up Node.js and install dependencies
@@ -24,6 +18,7 @@ runs:
     - name: Install `just`
       uses: taiki-e/install-action@v2
       with:
+        # `just` is our preferred command runner.
         tool: just
 
     - name: Install Rust toolchain
@@ -31,21 +26,19 @@ runs:
       uses: dtolnay/rust-toolchain@stable
       with:
         components: ${{ inputs.rust_components }}
-        targets: ${{ inputs.rust_targets }}
 
-    # `cargo bin` (cargo-run-bin) runs the tools pinned in `Cargo.toml`;
-    # `cargo-binstall` makes their installs fetch prebuilt binaries.
-    - name: Install `cargo bin`
+    - name: Install Cargo subcommands
       if: inputs.setup_rust == 'true'
       uses: taiki-e/install-action@v2
       with:
+        # `cargo-binstall` speeds up installs by fetching prebuilt binaries.
+        # `cargo-run-bin` allows us to provision and run tools pinned in `Cargo.toml`.
         tool: cargo-binstall,cargo-run-bin
 
     - name: Cache Rust toolchain and build artifacts
       if: inputs.setup_rust == 'true'
       uses: Swatinem/rust-cache@v2
       with:
-        key: ${{ inputs.rust_cache_key }}
         cache-directories: .bin
 
     - name: Enable Corepack

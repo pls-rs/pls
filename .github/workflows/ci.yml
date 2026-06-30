@@ -11,8 +11,11 @@ on:
 env:
   RUSTFLAGS: "-Dwarnings"
 
+permissions:
+  contents: read
+
 # Cancel superseded runs on the same ref (PRs only; never cancel `main`
-# pushes, which publish the docs).
+# pushes, which we keep as build-validation history).
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -28,7 +31,6 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
         with:
-          rust_cache_key: cargo
           rust_components: clippy, rustfmt
           # Oxfmt, Oxlint, ESLint and Prettier are all Node.js packages.
           setup_node: "true"
@@ -53,127 +55,13 @@ jobs:
 
       - name: Setup env
         uses: ./.github/actions/setup-env
-        with:
-          rust_cache_key: cargo
 
       - name: Run unit test
         run: just test
 
   build:
-    name: Build release (${{ matrix.name }})
+    name: Build targets and docs
     needs:
       - lint
       - unit
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Linux x86_64
-            build: linux
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-musl
-            suffix: x86_64-unknown-linux-musl
-          - name: Linux ARM64
-            build: linux
-            os: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-            suffix: aarch64-unknown-linux-musl
-          - name: macOS universal
-            build: macos
-            os: macos-latest
-            target: x86_64-apple-darwin,aarch64-apple-darwin
-            suffix: universal-apple-darwin
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Setup env
-        uses: ./.github/actions/setup-env
-        with:
-          rust_cache_key: build-${{ matrix.suffix }}
-          rust_targets: ${{ matrix.target }}
-
-      # Linux targets cross-compile to musl via `cross` (Docker); Apple targets
-      # build natively with `cargo` against rustup-installed targets.
-      - name: Build release
-        run: |
-          if [ "${{ matrix.build }}" = "macos" ]; then
-            just build-targets ${{ matrix.target }}
-          else
-            just cross ${{ matrix.target }}
-          fi
-
-      - name: Lipo binaries (macOS only)
-        if: matrix.build == 'macos'
-        run: |
-          just lipo ${{ matrix.suffix }} ${{ matrix.target }}
-
-      - name: Upload binary artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: pls-${{ matrix.suffix }}
-          path: target/${{ matrix.suffix }}/release/pls
-
-  docs:
-    name: Build docs
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      # The docs job uses the prebuilt `pls` binary downloaded below; it never
-      # compiles Rust, so skip the toolchain and cache entirely.
-      - name: Setup env
-        uses: ./.github/actions/setup-env
-        with:
-          setup_rust: "false"
-          setup_node: "true"
-
-      - name: Download artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: pls-x86_64-unknown-linux-musl
-          path: /tmp/pls
-
-      - name: Make binary accessible and executable
-        run: |
-          chmod +x /tmp/pls/pls
-          echo "/tmp/pls" >> $GITHUB_PATH
-
-      # This must be a separate step because `$PATH` changes are not reflected
-      # immediately.
-      - name: Ensure binary is accessible
-        run: pls --version
-
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-          working-directory: examples
-          cache-dependency-glob: uv.lock
-
-      - name: Generate examples
-        working-directory: examples/
-        run: |
-          just install
-          just all
-
-      - name: Build docs
-        working-directory: docs/
-        run: |
-          pnpm build
-
-      - name: Publish docs
-        if: github.event_name == 'push'
-        working-directory: docs/dist/
-        run: |
-          git init --initial-branch=gh-pages
-          git config user.name "Dhruv Bhanushali"
-          git config user.email "hi@dhruvkb.dev"
-          git add .
-          git commit --message "Build documentation"
-          git remote add origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/pls-rs/pls-rs.github.io.git
-          git push --force origin gh-pages
+    uses: ./.github/workflows/build.yml

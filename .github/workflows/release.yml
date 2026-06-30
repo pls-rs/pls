@@ -1,0 +1,117 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      upload-zips: "true"
+
+  release:
+    name: Publish GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release zips
+        uses: actions/download-artifact@v8
+        with:
+          pattern: asset-*
+          path: assets
+          merge-multiple: true
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: assets/*.zip
+          generate_release_notes: true
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v8
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
+
+  publish-docs:
+    name: Publish docs
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download docs site
+        uses: actions/download-artifact@v8
+        with:
+          name: docs-site
+          path: dist
+
+      - name: Configure git
+        working-directory: dist
+        run: |
+          git init --initial-branch=gh-pages
+          git config user.name "Dhruv Bhanushali"
+          git config user.email "hi@dhruvkb.dev"
+
+      - name: Publish to GitHub Pages
+        working-directory: dist
+        run: |
+          git add .
+          git commit --message "Build documentation"
+          git remote add origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/pls-rs/pls-rs.github.io.git
+          git push --force origin gh-pages
+
+  brew:
+    name: Update Homebrew tap
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          path: code
+
+      - name: Checkout tap
+        uses: actions/checkout@v6
+        with:
+          repository: pls-rs/homebrew-pls
+          path: tap
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Update tap
+        working-directory: code
+        run: |
+          ./pkg/brew/update_formula.sh "pkg/brew/pls.template.rb" "$GITHUB_WORKSPACE/tap/Formula/pls.rb"
+
+      - name: Configure git
+        working-directory: tap
+        run: |
+          git config user.name "Dhruv Bhanushali"
+          git config user.email "hi@dhruvkb.dev"
+
+      - name: Publish to Homebrew tap
+        working-directory: tap
+        run: |
+          if ! git diff-index --quiet HEAD; then
+            git commit --all --message "Update formula"
+            git push origin main
+          fi

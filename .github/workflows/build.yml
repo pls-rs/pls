@@ -135,3 +135,6 @@ jobs:
         with:
           name: docs-site
           path: docs/dist
+          # `.nojekyll` is a hidden file, excluded by default, but it is
+          # required to stop GitHub Pages from hiding the `_astro/` directory.
+          include-hidden-files: true

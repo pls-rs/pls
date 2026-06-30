@@ -85,10 +85,24 @@ might be out of date.
 
 :::
 
+### PyPI
+
+<Pls /> is published as Python binary wheel to PyPI, so you can install it using uv (recommended) or
+pipx:
+
+```bash
+uv tool install pls
+```
+
+You can suffix `@<version>` to the package name to install a specific version.
+The current latest version is v<Version />. Or you can suffix `@latest` to get
+the latest at the time of installation.
+
 ### Build from source
 
-If you have the Rust toolchain installed on your computer, you can build from
-source locally for your operating system and architecture. Also, we welcome your
+If you have the Rust toolchain and a C compiler installed on your computer, you
+can build from source locally for your operating system and architecture (libgit2
+is vendored and compiled during the build). Also, we welcome your
 [contributions](/guides/contribute/)!
 
 ```bash
@@ -148,7 +162,8 @@ eget --pre-release pls-rs/pls
      3. Scroll down to the "Artifacts" section.
 
 2. Download the binary as per your operating system.
-   - `pls-universal-apple-darwin` for macOS
+   - `pls-aarch64-apple-darwin` for macOS (Apple Silicon)
+   - `pls-x86_64-apple-darwin` for macOS (Intel)
    - `pls-x86_64-unknown-linux-musl` for Linux (x86_64 e.g. Intel, AMD)
    - `pls-aarch64-unknown-linux-musl` for Linux (arm64)
 

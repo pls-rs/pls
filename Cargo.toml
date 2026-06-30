@@ -26,7 +26,6 @@ prek = { version = "0.4.5" }
 cargo-nextest = { version = "0.9.138", locked = true }
 cargo-bloat = { version = "0.12.1" }
 cargo-release = { version = "1.1.2" }
-cross = { version = "0.2.5" }
 
 # Enable the use of Binstall.
 [package.metadata.binstall]

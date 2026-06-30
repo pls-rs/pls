@@ -34,6 +34,9 @@ jobs:
         with:
           files: assets/*.zip
           generate_release_notes: true
+          # Releases associated with tags that have a hyphenated suffix like
+          # `-(alpha|beta|rc).N` are all flagged as pre-releases.
+          prerelease: ${{ contains(github.ref_name, '-') }}
 
   publish-pypi:
     name: Publish to PyPI

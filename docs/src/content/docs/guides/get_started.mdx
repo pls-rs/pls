@@ -99,6 +99,18 @@ You can use `--tag` to install a specific version. The current latest version is
 v<Version />. Or you can use `--branch main` to get the latest, unreleased
 version.
 
+### Binstall
+
+<Pls /> complies with [Binstall](https://github.com/cargo-bins/cargo-binstall)'s requirements so you
+can use it to download pre-built binaries from releases on GitHub.
+
+```bash
+cargo binstall --git https://github.com/pls-rs/pls pls
+```
+
+You can use `--version` to install a specific version. The current latest
+version is v<Version />.
+
 ### Download binary
 
 The CI + CD job compiles binaries for each supported OS on every code push.
@@ -110,7 +122,9 @@ architecture by following these steps.
 
 [Eget](https://github.com/zyedidia/eget) downloads and extracts pre-built
 binaries from releases on GitHub. <Pls /> complies with Eget's requirements so
-you can replace steps 1 through 3 below with this one command.
+you can replace steps 1 through 3 below with this one command. If you've
+configured Eget to use a target that's already on your `$PATH`, you can also
+skip step 4.
 
 ```bash
 eget --pre-release pls-rs/pls

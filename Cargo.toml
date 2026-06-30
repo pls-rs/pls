@@ -34,11 +34,6 @@ pkg-fmt = "zip"
 # The `pls` binary sits at the archive root, not in the default subfolder.
 bin-dir = "{ bin }{ binary-ext }"
 
-# Both Apple targets are served by the single universal binary.
-[package.metadata.binstall.overrides]
-x86_64-apple-darwin = { pkg-url = "{ repo }/releases/download/v{ version }/{ name }-universal-apple-darwin.zip" }
-aarch64-apple-darwin = { pkg-url = "{ repo }/releases/download/v{ version }/{ name }-universal-apple-darwin.zip" }
-
 [package.metadata.release]
 sign-commit = true
 sign-tag = true

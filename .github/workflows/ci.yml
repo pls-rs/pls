@@ -7,9 +7,11 @@ on:
       - main
   workflow_dispatch:
 
-# Make sure CI fails on all warnings, including Clippy lints
 env:
+  # Make sure CI fails on all warnings, including Clippy lints
   RUSTFLAGS: "-Dwarnings"
+  # Authenticate `cargo-binstall`'s GitHub API calls to prevent throttling.
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
   contents: read

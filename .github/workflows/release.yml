@@ -58,32 +58,6 @@ jobs:
         with:
           packages-dir: dist
 
-  publish-docs:
-    name: Publish docs
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download docs site
-        uses: actions/download-artifact@v8
-        with:
-          name: docs-site
-          path: dist
-
-      - name: Configure git
-        working-directory: dist
-        run: |
-          git init --initial-branch=gh-pages
-          git config user.name "Dhruv Bhanushali"
-          git config user.email "hi@dhruvkb.dev"
-
-      - name: Publish to GitHub Pages
-        working-directory: dist
-        run: |
-          git add .
-          git commit --message "Build documentation"
-          git remote add origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/pls-rs/pls-rs.github.io.git
-          git push --force origin gh-pages
-
   brew:
     name: Update Homebrew tap
     needs: release

@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   build:
+    name: Build targets and docs
     uses: ./.github/workflows/build.yml
     with:
       upload-zips: "true"

@@ -1,18 +1,21 @@
 ---
+// The look and feel of this component is mirrored by the `Schema` component in
+// recivi, which documents a generated JSON schema. Keep the two visually in sync.
+// https://github.com/recivi/recivi/blob/main/docs/src/components/Schema.astro
+import { Badge } from "@astrojs/starlight/components";
+
 let { title, fqTitle, required, type, subfieldsType } = Astro.props;
 ---
 
 <div class="doc-block">
 	<div class="header">
-		<strong class="title">
-			<code class="not-content">
-				<slot name="heading">
-					<span id={fqTitle || title}>{title}</span>
-				</slot>
-			</code>
-		</strong>
-		{required && <span class="required">*</span>}
-		<code class="type">{type}</code>
+		<div class="name">
+			<slot name="heading">
+				<span id={fqTitle || title}>{title}</span>
+			</slot>
+		</div>
+		{type && <Badge text={type} />}
+		{required && <Badge text="required" variant="caution" />}
 	</div>
 
 	<slot />
@@ -23,9 +26,7 @@ let { title, fqTitle, required, type, subfieldsType } = Astro.props;
 				<summary>
 					Properties of <code>{subfieldsType || type}</code>
 				</summary>
-				<div>
-					<slot name="subfields" />
-				</div>
+				<slot name="subfields" />
 			</details>
 		)
 	}
@@ -36,50 +37,30 @@ let { title, fqTitle, required, type, subfieldsType } = Astro.props;
 				<summary>
 					Examples of <code>{title}</code>
 				</summary>
-				<div>
-					<slot name="examples" />
-				</div>
+				<slot name="examples" />
 			</details>
 		)
 	}
 </div>
 
-<style is:global>
-	div.doc-block h1,
-	div.doc-block h2,
-	div.doc-block h3,
-	div.doc-block h4,
-	div.doc-block h5,
-	div.doc-block h6 {
-		display: inline;
-	}
-</style>
-
 <style>
 	div.header {
-		margin-bottom: -1.5rem;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem;
 	}
 
-	span.required {
-		color: var(--sl-color-red);
+	/* Field names are literal config keys, so render them in the same mono face
+	used for inline code. The heading slot keeps Starlight's anchor link and TOC
+	entry; the fallback `span` is used for nested fields to avoid flooding it. */
+	div.name {
+		font-weight: 600;
+		color: var(--sl-color-white);
 	}
 
-	code.type {
-		margin-left: 0.5rem;
-	}
-
-	details {
-		padding-block: 1rem;
-		background-color: var(--color-background-tint);
-		border: 1px solid var(--sl-color-hairline-light);
-		border-radius: 0.25rem;
-	}
-
-	details summary {
-		padding-inline: 1rem;
-	}
-
-	details > div {
-		padding-inline: 1rem;
+	div.name,
+	div.name :is(h1, h2, h3, h4, h5, h6) {
+		font-family: var(--__sl-font-mono);
 	}
 </style>

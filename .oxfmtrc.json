@@ -1,4 +1,7 @@
 {
 	"$schema": "./node_modules/oxfmt/configuration_schema.json",
-	"sortImports": true
+	"sortImports": true,
+	// TODO: Enable import sorting
+	// https://oxc.rs/docs/guide/usage/formatter/sorting.html#sort-imports
+	"proseWrap": "always"
 }

@@ -1,7 +1,8 @@
 ---
 title: Detail view
-description: pls can show a lot of metadata about each file in a tabular layout when the
-  detail view has been activated.
+description:
+  pls can show a lot of metadata about each file in a tabular layout when the detail view has been
+  activated.
 ---
 
 import { Content as DetailViewNone } from "@/examples/detail_view/none.mdx";
@@ -16,12 +17,11 @@ then present in a tabular format. This is called the detail view.
 
 ## Arguments
 
-`--det`/`-d` can be used to select the detail columns the user wants to see, and
-indirectly turn the detail view on or off. The detail view is considered to be
-turned off if no detail field is chosen.
+`--det`/`-d` can be used to select the detail columns the user wants to see, and indirectly turn the
+detail view on or off. The detail view is considered to be turned off if no detail field is chosen.
 
-The `--det`/`-d` flag can be specified multiple times to enable multiple fields.
-Each time it can take one of these values.
+The `--det`/`-d` flag can be specified multiple times to enable multiple fields. Each time it can
+take one of these values.
 
 | Value    | Description                                | Standard |
 | -------- | ------------------------------------------ | -------- |
@@ -51,18 +51,16 @@ The column headers for the detail view can be toggled using the
 
 :::caution
 
-Note that the detail view is incompatible with the
-[grid view](/features/grid_view/). In case of conflict, the detail view will be
-used and the grid view will be turned off.
+Note that the detail view is incompatible with the [grid view](/features/grid_view/). In case of
+conflict, the detail view will be used and the grid view will be turned off.
 
 :::
 
 ### Mechanism
 
-When parsing the `--det`/`-d` argument, values are read from the CLI, in order,
-and added to a vector of fields till we encounter a shorthand value. If the
-shorthand value is `none`, the vector is cleared. The other two shorthands are
-expanded and added to the vector.
+When parsing the `--det`/`-d` argument, values are read from the CLI, in order, and added to a
+vector of fields till we encounter a shorthand value. If the shorthand value is `none`, the vector
+is cleared. The other two shorthands are expanded and added to the vector.
 
 - `std` can be used to show the fields shown by `ls(1)` with the `-l` flag
 - `all` can be used to show every available metadata field
@@ -76,12 +74,12 @@ pls --det=dev --det=ino --det=none --det=std --det=git
 - `dev` is added to the list.
 - `ino` is added to the list.
 - All entries so far are dropped when `none` is encountered.
-- `nlink`, `typ`, `perm`, `user`, `group`, `size` and `mtime` are added to the
-  list when `std` is encountered
+- `nlink`, `typ`, `perm`, `user`, `group`, `size` and `mtime` are added to the list when `std` is
+  encountered
 - `git` is added to the list.
 
-The final set is thus `nlink`, `typ`, `perm`, `user`, `group`, `size`, `mtime`
-and `git`. Since this is more than zero, <Pls /> will activate the detail view.
+The final set is thus `nlink`, `typ`, `perm`, `user`, `group`, `size`, `mtime` and `git`. Since this
+is more than zero, <Pls /> will activate the detail view.
 
 ### Examples
 
@@ -111,27 +109,26 @@ pls --det=all # or -d=all
 
 ## Configuration
 
-Each of the detail fields is deeply customisable. Read on to know more the
-customisation options supported by each field.
+Each of the detail fields is deeply customisable. Read on to know more the customisation options
+supported by each field.
 
 ### Fields
 
 #### `dev` - Device ID
 
-This field can by styled by specifying `entry_const.dev_style`. <Pls /> does not
-style this field by default, because a style would not add any meaning.
+This field can by styled by specifying `entry_const.dev_style`. <Pls /> does not style this field by
+default, because a style would not add any meaning.
 
 #### `ino` - Inode number
 
-This field can by styled by specifying `entry_const.ino_style`. <Pls /> does not
-style this field by default, because a style would not add any meaning.
+This field can by styled by specifying `entry_const.ino_style`. <Pls /> does not style this field by
+default, because a style would not add any meaning.
 
 #### `nlink` - Number of hard links
 
-This field can be styled different based on the type of the node and the number
-of hard links the node has. <Pls /> allows files with more than one hard link
-and directories with only one hard link to be styled differently because these
-are peculiar cases. The opposite scenario is more common.
+This field can be styled different based on the type of the node and the number of hard links the
+node has. <Pls /> allows files with more than one hard link and directories with only one hard link
+to be styled differently because these are peculiar cases. The opposite scenario is more common.
 
 | Type | `nlink` | Style                                |
 | ---- | ------- | ------------------------------------ |
@@ -158,9 +155,9 @@ type.
 
 #### `perm` - Symbolic permissions
 
-This field can be styled by specifying `entry_const.perm_styles`. <Pls /> allows
-individual customisation of each of the permission characters for read (`r`),
-write (`w`), execute (`x`), special (`s`/`S`/`t`/`T`) and none (`-`).
+This field can be styled by specifying `entry_const.perm_styles`. <Pls /> allows individual
+customisation of each of the permission characters for read (`r`), write (`w`), execute (`x`),
+special (`s`/`S`/`t`/`T`) and none (`-`).
 
 | Bit     | Style                             |
 | ------- | --------------------------------- |
@@ -172,9 +169,8 @@ write (`w`), execute (`x`), special (`s`/`S`/`t`/`T`) and none (`-`).
 
 #### `oct` - Octal permissions
 
-An octal permission has either three (user, group, other) or four (special, plus
-the previous three) digits. <Pls /> allows customisation of each of these digits
-individually.
+An octal permission has either three (user, group, other) or four (special, plus the previous three)
+digits. <Pls /> allows customisation of each of these digits individually.
 
 | Digit   | Style                            |
 | ------- | -------------------------------- |
@@ -210,9 +206,8 @@ GID.
 choose between three unit systems. See [units](/features/units/) for more information about unit
 systems.
 
-You can style the three components of a size value independently. Ideally, you
-want to emphasise magnitude and prefix and de-emphasise the base (which is
-always "B" for bytes).
+You can style the three components of a size value independently. Ideally, you want to emphasise
+magnitude and prefix and de-emphasise the base (which is always "B" for bytes).
 
 | Component | Style                            |
 | --------- | -------------------------------- |
@@ -227,14 +222,13 @@ for the node. This can be more than what the actual size on disk indicates if th
 
 :::note
 
-On macOS, the minimum block size is generally 4096 bytes so any file smaller
-than 4KiB will still take 8 blocks, and the number of blocks will also be a
-multiple of 8.
+On macOS, the minimum block size is generally 4096 bytes so any file smaller than 4KiB will still
+take 8 blocks, and the number of blocks will also be a multiple of 8.
 
 :::
 
-This field can by styled by specifying `entry_const.blocks_style`. <Pls /> does
-not style this field by default, because a style would not add any meaning.
+This field can by styled by specifying `entry_const.blocks_style`. <Pls /> does not style this field
+by default, because a style would not add any meaning.
 
 #### `btime`/`ctime`/`mtime`/`atime` - Timestamps
 
@@ -249,8 +243,8 @@ format in which you prefer the timestamps to be.
 | Accessed at | `entry_const.timestamp_formats.atime` |
 
 The timestamp can use components from the `time` crate's
-[format description](https://time-rs.github.io/book/api/format-description.html#components)
-freely mixed with [markup tags](/guides/markup/).
+[format description](https://time-rs.github.io/book/api/format-description.html#components) freely
+mixed with [markup tags](/guides/markup/).
 
 #### `git` - Git status
 
@@ -258,10 +252,9 @@ freely mixed with [markup tags](/guides/markup/).
 
 ### Examples
 
-Here is a custom config that approximately matches the output of
-[eza](https://eza.rocks) or [exa](https://the.exa.website) at least for the
-columns that they have in common with <Pls /> (<Pls /> has more, in case you
-were wondering).
+Here is a custom config that approximately matches the output of [eza](https://eza.rocks) or
+[exa](https://the.exa.website) at least for the columns that they have in common with <Pls />
+(<Pls /> has more, in case you were wondering).
 
 <DetailViewConf />
 

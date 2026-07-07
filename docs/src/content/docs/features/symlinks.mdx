@@ -1,7 +1,8 @@
 ---
 title: Symlinks
-description: pls can trace symlinks to their targets and identify broken or circular
-  symlinks in the process, even expanding chains of symlinks.
+description:
+  pls can trace symlinks to their targets and identify broken or circular symlinks in the process,
+  even expanding chains of symlinks.
 ---
 
 import { Content as SymlinkOn } from "@/examples/symlinks/on.mdx";
@@ -14,14 +15,14 @@ symlinks. <Pls /> will also expand chains of symlinks.
 
 ## Arguments
 
-`--sym`/`-l` can be used to turn symlink tracing on or off. It is turned on by
-default but disabled in grid view due to space constraints.
+`--sym`/`-l` can be used to turn symlink tracing on or off. It is turned on by default but disabled
+in grid view due to space constraints.
 
 :::caution
 
-Note that symlink tracing (which can take large amounts of horizontal space) is
-incompatible with the [grid view](/features/grid_view/). In case of conflict,
-the grid view will be used and symlink tracing will be turned off.
+Note that symlink tracing (which can take large amounts of horizontal space) is incompatible with
+the [grid view](/features/grid_view/). In case of conflict, the grid view will be used and symlink
+tracing will be turned off.
 
 Otherwise, you may disable the grid view using `--grid=false`/`-g=false`.
 
@@ -43,9 +44,8 @@ pls --sym=false # or -l=false
 
 ## Configuration
 
-Using the configuration system, you can customise the symlink styles and arrows.
-Note that for valid symlinks, the style is only applied to the arrow and not the
-target.
+Using the configuration system, you can customise the symlink styles and arrows. Note that for valid
+symlinks, the style is only applied to the arrow and not the target.
 
 ### Examples
 

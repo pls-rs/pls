@@ -1,7 +1,8 @@
 ---
 title: Collapse
-description: pls can reduce clutter in your file listing by collapsing derivative nodes
-  into their principal nodes.
+description:
+  pls can reduce clutter in your file listing by collapsing derivative nodes into their principal
+  nodes.
 ---
 
 import { Content as CollapseOn } from "@/examples/collapse/on.mdx";
@@ -9,8 +10,7 @@ import { Content as CollapseOff } from "@/examples/collapse/off.mdx";
 import { Content as CollapseConf } from "@/examples/collapse/conf.mdx";
 import { Content as CollapseConfd } from "@/examples/collapse/confd.mdx";
 
-In software development it is a common occurrence to have files that are
-generated from other files.
+In software development it is a common occurrence to have files that are generated from other files.
 
 - Lockfiles are generated from package manifests.
 - Source maps are generated from source code.
@@ -25,14 +25,14 @@ dependency relationship.
 
 ## Arguments
 
-`--collapse`/`-c` can be used to turn collapsing on or off. <Pls /> enables this
-collapsing behaviour by default.
+`--collapse`/`-c` can be used to turn collapsing on or off. <Pls /> enables this collapsing
+behaviour by default.
 
 :::caution
 
-Note that collapsing (which leads to nodes that expand to multiple lines) is
-incompatible with the [grid view](/features/grid_view/). In case of conflict,
-the grid view will be used and collapsing will be turned off.
+Note that collapsing (which leads to nodes that expand to multiple lines) is incompatible with the
+[grid view](/features/grid_view/). In case of conflict, the grid view will be used and collapsing
+will be turned off.
 
 Otherwise, you may disable the grid view using `--grid=false`/`-g=false`.
 
@@ -54,14 +54,13 @@ pls --collapse=false # or -c=false
 
 ## Configuration
 
-Using the configuration system, you can both change the appearance of the tree
-and also define additional rules for collapsing in addition to the built-in
-ones.
+Using the configuration system, you can both change the appearance of the tree and also define
+additional rules for collapsing in addition to the built-in ones.
 
 ### Examples
 
-Here is an example showing nested collapses. It uses simple ASCII characters to
-render colorful collapse trees.
+Here is an example showing nested collapses. It uses simple ASCII characters to render colorful
+collapse trees.
 
 <CollapseConf />
 

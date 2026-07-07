@@ -1,7 +1,8 @@
 ---
 title: Get started
-description: Installing and using pls is easy and straightforward. pls can be installed via
-  most package managers, downloaded as a binary, or built from source.
+description:
+  Installing and using pls is easy and straightforward. pls can be installed via most package
+  managers, downloaded as a binary, or built from source.
 ---
 
 Thanks for giving <Pls /> a try. We hope you like using it as much as we do.
@@ -9,27 +10,24 @@ Thanks for giving <Pls /> a try. We hope you like using it as much as we do.
 ## Prerequisites
 
 - **macOS or Linux:** Windows is [currently not supported](/about/faq/).
-- **Terminal:** [Ghostty](https://ghostty.org/),
-  [WezTerm](https://wezfurlong.org/wezterm/),
-  [Kitty](https://sw.kovidgoyal.net/kitty/) and [iTerm2](https://iterm2.com/)
-  are all great terminals that support most <Pls /> features.
-- **[Nerd Fonts](https://www.nerdfonts.com/):** Needed to render icons in the
-  terminal.
+- **Terminal:** [Ghostty](https://ghostty.org/), [WezTerm](https://wezfurlong.org/wezterm/),
+  [Kitty](https://sw.kovidgoyal.net/kitty/) and [iTerm2](https://iterm2.com/) are all great
+  terminals that support most <Pls /> features.
+- **[Nerd Fonts](https://www.nerdfonts.com/):** Needed to render icons in the terminal.
 
 :::tip
 
 Nerd Fonts are good for more than just <Pls />. A number of CLI tools, like
-[Starship](https://starship.rs/) and
-[Powerlevel10k](https://github.com/romkatv/powerlevel10k), recommend using Nerd
-Fonts.
+[Starship](https://starship.rs/) and [Powerlevel10k](https://github.com/romkatv/powerlevel10k),
+recommend using Nerd Fonts.
 
-Before picking a Nerd Font, check if your terminal app supports fallback fonts.
-If it does (most do), you can choose any monospaced font you like and set
-"Symbols Nerd Font" as the fallback to handle all the icons. If not, you can get
-patched versions of the most popular fonts from the Nerd Fonts website.
+Before picking a Nerd Font, check if your terminal app supports fallback fonts. If it does (most
+do), you can choose any monospaced font you like and set "Symbols Nerd Font" as the fallback to
+handle all the icons. If not, you can get patched versions of the most popular fonts from the Nerd
+Fonts website.
 
-Additionally we recommend using a font that has programming ligatures, such as
-JetBrains Mono or Monaspace Neon (used in the examples on this site).
+Additionally we recommend using a font that has programming ligatures, such as JetBrains Mono or
+Monaspace Neon (used in the examples on this site).
 
 :::
 
@@ -39,8 +37,8 @@ These are the different ways you can install <Pls /> on your machine.
 
 :::note
 
-We are working on adding <Pls /> to more package managers like `apt` and `dnf`.
-If you add <Pls /> to a package manager or repository, please let us know!
+We are working on adding <Pls /> to more package managers like `apt` and `dnf`. If you add <Pls />
+to a package manager or repository, please let us know!
 
 :::
 
@@ -72,16 +70,15 @@ environment.systemPackages = [
 
 :::note
 
-Thanks to [TomaSajt](https://github.com/TomaSajt) for creating this package and
-to
+Thanks to [TomaSajt](https://github.com/TomaSajt) for creating this package and to
 [all its maintainers](https://github.com/NixOS/nixpkgs/commits/master/pkgs/by-name/pl/pls/package.nix).
 
 :::
 
 :::caution
 
-Since `nixpkgs` is a massive centralised repository, <Pls /> obtained from there
-might be out of date.
+Since `nixpkgs` is a massive centralised repository, <Pls /> obtained from there might be out of
+date.
 
 :::
 
@@ -94,24 +91,21 @@ pipx:
 uv tool install pls --prerelease allow
 ```
 
-You can suffix `@<version>` to the package name to install a specific version.
-The current latest version is v<Version />. Or you can suffix `@latest` to get
-the latest at the time of installation.
+You can suffix `@<version>` to the package name to install a specific version. The current latest
+version is v<Version />. Or you can suffix `@latest` to get the latest at the time of installation.
 
 ### Build from source
 
-If you have the Rust toolchain and a C compiler installed on your computer, you
-can build from source locally for your operating system and architecture (libgit2
-is vendored and compiled during the build). Also, we welcome your
-[contributions](/guides/contribute/)!
+If you have the Rust toolchain and a C compiler installed on your computer, you can build from
+source locally for your operating system and architecture (libgit2 is vendored and compiled during
+the build). Also, we welcome your [contributions](/guides/contribute/)!
 
 ```bash
 cargo install --git https://github.com/pls-rs/pls
 ```
 
-You can use `--tag` to install a specific version. The current latest version is
-v<Version />. Or you can use `--branch main` to get the latest, unreleased
-version.
+You can use `--tag` to install a specific version. The current latest version is v<Version />. Or
+you can use `--branch main` to get the latest, unreleased version.
 
 ### Binstall
 
@@ -122,23 +116,20 @@ can use it to download pre-built binaries from releases on GitHub.
 cargo binstall --git https://github.com/pls-rs/pls pls
 ```
 
-You can use `--version` to install a specific version. The current latest
-version is v<Version />.
+You can use `--version` to install a specific version. The current latest version is v<Version />.
 
 ### Download binary
 
-The CI + CD job compiles binaries for each supported OS on every code push.
-Additionally, we also cut periodic releases from the `main` branch of the
-repository. You can download the binary for your operating system and
-architecture by following these steps.
+The CI + CD job compiles binaries for each supported OS on every code push. Additionally, we also
+cut periodic releases from the `main` branch of the repository. You can download the binary for your
+operating system and architecture by following these steps.
 
 :::tip
 
-[Eget](https://github.com/zyedidia/eget) downloads and extracts pre-built
-binaries from releases on GitHub. <Pls /> complies with Eget's requirements so
-you can replace steps 1 through 3 below with this one command. If you've
-configured Eget to use a target that's already on your `$PATH`, you can also
-skip step 4.
+[Eget](https://github.com/zyedidia/eget) downloads and extracts pre-built binaries from releases on
+GitHub. <Pls /> complies with Eget's requirements so you can replace steps 1 through 3 below with
+this one command. If you've configured Eget to use a target that's already on your `$PATH`, you can
+also skip step 4.
 
 ```bash
 eget --pre-release pls-rs/pls
@@ -146,13 +137,11 @@ eget --pre-release pls-rs/pls
 
 :::
 
-1. Download the binary file. You can either download the binary associated with
-   a release or a commit.
+1. Download the binary file. You can either download the binary associated with a release or a
+   commit.
    - **Release**
-     1. Go to the GitHub [Releases](https://github.com/pls-rs/pls/releases) page
-        for <Pls />.
-     2. Find the [latest release](https://github.com/pls-rs/pls/releases/latest)
-        i.e. v<Version />.
+     1. Go to the GitHub [Releases](https://github.com/pls-rs/pls/releases) page for <Pls />.
+     2. Find the [latest release](https://github.com/pls-rs/pls/releases/latest) i.e. v<Version />.
      3. Expand the "Assets" attached to the release.
 
    - **Commit**
@@ -169,14 +158,13 @@ eget --pre-release pls-rs/pls
 
 3. Unzip the archive and find the single `pls` executable.
 
-4. Place the executable on your `$PATH`. To do this, you can either add the
-   directory that contains it to the path, or move/symlink the binary to a
-   directory that is already on your `$PATH`.
+4. Place the executable on your `$PATH`. To do this, you can either add the directory that contains
+   it to the path, or move/symlink the binary to a directory that is already on your `$PATH`.
 
 ## Verification
 
-You can check if <Pls /> was installed correctly and present on your `$PATH` by
-running the following command. If you see a version number, you're good to go!
+You can check if <Pls /> was installed correctly and present on your `$PATH` by running the
+following command. If you see a version number, you're good to go!
 
 ```bash
 pls --version # or -V
@@ -194,22 +182,19 @@ To run <Pls />, type the following command into any terminal.
 pls
 ```
 
-By default, <Pls /> lists the contents of the current working directory, but you
-can pass any number of different files or directories as
-[positional arguments](/guides/paths).
+By default, <Pls /> lists the contents of the current working directory, but you can pass any number
+of different files or directories as [positional arguments](/guides/paths).
 
-If a directory path is passed, all the files and directories within that
-directory are listed. This is useful to see what's in the folder. If a file path
-is passed, only the file itself is listed. On its own, that's not very useful
-except to see if that file exists. But with the
-[`--det`/`-d` flag](/features/detail_view/), <Pls /> can display quite a lot of
-metadata for the file.
+If a directory path is passed, all the files and directories within that directory are listed. This
+is useful to see what's in the folder. If a file path is passed, only the file itself is listed. On
+its own, that's not very useful except to see if that file exists. But with the
+[`--det`/`-d` flag](/features/detail_view/), <Pls /> can display quite a lot of metadata for the
+file.
 
 ## Help
 
-To see what <Pls /> is capable of, and how to use those features, check out the
-built-in help. You can see the detailed help or a quick reference using the
-`--help`/`-h` flags respectively.
+To see what <Pls /> is capable of, and how to use those features, check out the built-in help. You
+can see the detailed help or a quick reference using the `--help`/`-h` flags respectively.
 
 ```bash
 pls --help # or -h

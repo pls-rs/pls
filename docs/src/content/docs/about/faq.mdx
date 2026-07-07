@@ -1,19 +1,19 @@
 ---
 title: FAQ
-description: The arrival of a new alternative to ls(1) is bound to raise questions. Here
-  are the answers to questions raised (or anticipated to be raised) about pls.
+description:
+  The arrival of a new alternative to ls(1) is bound to raise questions. Here are the answers to
+  questions raised (or anticipated to be raised) about pls.
 ---
 
-Here are some questions you might have about <Pls />, and the answers to those
-questions.
+Here are some questions you might have about <Pls />, and the answers to those questions.
 
 ---
 
 **Why the name <Pls />?**
 
-The name <Pls /> is a play on the `ls(1)` command. I picked it because it was
-short, [memorable](/about/intro/#features) and only one keypress away from
-`ls(1)`. If you prefer a different name you can always alias it.
+The name <Pls /> is a play on the `ls(1)` command. I picked it because it was short,
+[memorable](/about/intro/#features) and only one keypress away from `ls(1)`. If you prefer a
+different name you can always alias it.
 
 ```bash
 alias rls="pls"
@@ -23,49 +23,47 @@ alias rls="pls"
 
 **Does <Pls /> support Windows?**
 
-No. <Pls />, being a tool for pros, favours operating systems that are popular
-with those users, which Windows is not. This may change in the future if there
-is [considerable demand](https://github.com/pls-rs/pls/issues/80) and there are
-open-source contributions towards that goal.
+No. <Pls />, being a tool for pros, favours operating systems that are popular with those users,
+which Windows is not. This may change in the future if there is
+[considerable demand](https://github.com/pls-rs/pls/issues/80) and there are open-source
+contributions towards that goal.
 
 ---
 
 **Is <Pls /> a replacement for `ls(1)`?**
 
-No. <Pls /> is an alternative, not a replacement, for `ls(1)`. It has some more
-features, prints prettier output and offers a lot of customisation, which make
-it ideal for human usage, but for scripts, `ls(1)` is still a better choice
-because it is tried, tested and trusted, not to mention ubiquitous.
+No. <Pls /> is an alternative, not a replacement, for `ls(1)`. It has some more features, prints
+prettier output and offers a lot of customisation, which make it ideal for human usage, but for
+scripts, `ls(1)` is still a better choice because it is tried, tested and trusted, not to mention
+ubiquitous.
 
 ---
 
 **Why build an `ls(1)` alternative?**
 
-IDEs and code editors use helpful UI patterns like icons and colors to
-disambiguate files and provide more information about them like their file type
-and VCS status. <Pls /> brings these features to the terminal.
+IDEs and code editors use helpful UI patterns like icons and colors to disambiguate files and
+provide more information about them like their file type and VCS status. <Pls /> brings these
+features to the terminal.
 
 ---
 
 **Why build another `ls(1)` alternative?**
 
-None of the existing `ls(1)` alternatives have features that make pro workflows
-easier or more pleasant. <Pls /> is the first `ls(1)` alternative that focuses
-on the niche demographic of pros who will appreciate a powerful feature set and
-deep customisation.
+None of the existing `ls(1)` alternatives have features that make pro workflows easier or more
+pleasant. <Pls /> is the first `ls(1)` alternative that focuses on the niche demographic of pros who
+will appreciate a powerful feature set and deep customisation.
 
 ---
 
 **Why Rust and not _&lt;language&gt;_?**
 
-Rust is a good choice for CLI utilities because it enables them to be very
-performant. The pros don't want to see lag in a core part of your workflow.
+Rust is a good choice for CLI utilities because it enables them to be very performant. The pros
+don't want to see lag in a core part of your workflow.
 
-Before I learned Rust, <Pls /> was written in Python (which was another reason
-it's called <Pls />). It seemed like a good fit at the time because it was
-decently fast and easy to develop and distribute, but at a certain point Python
-started becoming a speed bottleneck. The point being, give me a good reason, and
-I'll rewrite it.
+Before I learned Rust, <Pls /> was written in Python (which was another reason it's called <Pls />).
+It seemed like a good fit at the time because it was decently fast and easy to develop and
+distribute, but at a certain point Python started becoming a speed bottleneck. The point being, give
+me a good reason, and I'll rewrite it.
 
 ---
 

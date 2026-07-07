@@ -1,15 +1,15 @@
 ---
 title: Comparison
-description: There are many alternatives to ls(1) but pls is unique in its target
-  demographic of pro users and its focus on customisation.
+description:
+  There are many alternatives to ls(1) but pls is unique in its target demographic of pro users and
+  its focus on customisation.
 ---
 
 <Pls /> has the distinction of being an `ls(1)` replacement specifically targeted at a pro audience.
 This leads to different motivations, different decisions, different choices and different defaults.
 This also gives us the advantage of being able to provide features that are powerful but complex.
 
-There are other `ls(1)` alternatives that have been around for longer and have
-sizeable user bases.
+There are other `ls(1)` alternatives that have been around for longer and have sizeable user bases.
 
 | Tool                                                 | Language | GitHub stars                                  |
 | ---------------------------------------------------- | -------- | --------------------------------------------- |
@@ -24,41 +24,38 @@ predecessor [exa](https://the.exa.website).
 
 ## Pros
 
-- eza hides files with a leading dot by default, an approach it inherits from
-  `ls(1)`. <Pls /> dims or hides files based on their
-  [importance](/features/importance/), making it suitable for modern dev
-  workflows involving tooling configs.
+- eza hides files with a leading dot by default, an approach it inherits from `ls(1)`. <Pls /> dims
+  or hides files based on their [importance](/features/importance/), making it suitable for modern
+  dev workflows involving tooling configs.
 
-- eza supports theming using a global YAML file like <Pls />. But <Pls /> goes
-  further with [cascading YAML files](/reference/conf/) to enable per-project
-  configuration that's also more readable, maintainable and ergonomic. You can
-  also check these config files into your VCS and share them with your team.
+- eza supports theming using a global YAML file like <Pls />. But <Pls /> goes further with
+  [cascading YAML files](/reference/conf/) to enable per-project configuration that's also more
+  readable, maintainable and ergonomic. You can also check these config files into your VCS and
+  share them with your team.
 
-- eza uses globs which limits the match to simple queries. <Pls /> uses
-  [specs](/guides/specs/) which match files using the full power of regex and
-  then provide both styling and [icons](/features/icons/) for their matches.
-  These specs can also be cascaded.
+- eza uses globs which limits the match to simple queries. <Pls /> uses [specs](/guides/specs/)
+  which match files using the full power of regex and then provide both styling and
+  [icons](/features/icons/) for their matches. These specs can also be cascaded.
 
-- eza's output is very colorful by default whereas <Pls /> employs sparse color
-  and formatting, to add meaning or context. <Pls />'s [markup](/guides/markup/)
-  syntax is more compact than eza's separate fields for colors and styles.
+- eza's output is very colorful by default whereas <Pls /> employs sparse color and formatting, to
+  add meaning or context. <Pls />'s [markup](/guides/markup/) syntax is more compact than eza's
+  separate fields for colors and styles.
 
 - <Pls /> has more [metadata fields](/features/detail_view/) compared to eza. It also allows the
   user to view some metadata fields in multiple ways (including simultaneously), which eza cannot
   do.
 
-- eza provides filtering by glob matches and sorting by one field. <Pls />
-  provides filtering (by [regex](/features/name_filter/) or
-  [type](/features/type_filter/)) and [sorting](/features/sorting/) (by multiple
-  selections out of 18 bases &times; 2 directions).
+- eza provides filtering by glob matches and sorting by one field. <Pls /> provides filtering (by
+  [regex](/features/name_filter/) or [type](/features/type_filter/)) and
+  [sorting](/features/sorting/) (by multiple selections out of 18 bases &times; 2 directions).
 
 - eza can dim a small list of generated files. <Pls /> has a much more powerful
-  [collapse](/features/collapse/) feature that can render generated files
-  differently and can be extended with specs.
+  [collapse](/features/collapse/) feature that can render generated files differently and can be
+  extended with specs.
 
-- eza defaults to no icons, grid view, files mixed with folders and sorting by
-  name. <Pls /> defaults to showing icons, list view, folders listed first and
-  leading dots aligned and sorting by canonical name.
+- eza defaults to no icons, grid view, files mixed with folders and sorting by name. <Pls />
+  defaults to showing icons, list view, folders listed first and leading dots aligned and sorting by
+  canonical name.
 
 - <Pls /> can render high-quality [SVG icons](/features/icons/) from icon packs like
   [Catppuccin](https://github.com/catppuccin/vscode-icons) for files and directories. eza cannot do
@@ -69,25 +66,23 @@ predecessor [exa](https://the.exa.website).
 
 ## Cons
 
-- eza's interface is much more compatible with `ls(1)` in the base case. A lot
-  of `ls(1)` options map 1:1 with eza. <Pls /> does not maintain compatibility
-  with `ls(1)` CLI flags.
+- eza's interface is much more compatible with `ls(1)` in the base case. A lot of `ls(1)` options
+  map 1:1 with eza. <Pls /> does not maintain compatibility with `ls(1)` CLI flags.
 
-- eza is a mature product with a large contributor base. <Pls /> is a young
-  project with a [novice 🦀 Rustacean maintainer](https://dhruvkb.dev/).
-  Contributions, both in [code](https://github.com/pls-rs/pls) and as
-  [sponsorship](https://github.com/sponsors/dhruvkb), are welcome!
+- eza is a mature product with a large contributor base. <Pls /> is a young project with a
+  [novice 🦀 Rustacean maintainer](https://dhruvkb.dev/). Contributions, both in
+  [code](https://github.com/pls-rs/pls) and as [sponsorship](https://github.com/sponsors/dhruvkb),
+  are welcome!
 
-- The spec system <Pls /> uses might be slow when listing lots of files due to
-  its Cartesian product complexity. Also, <Pls /> lacks the speed optimisations
-  that a mature tool like eza has built over time.
+- The spec system <Pls /> uses might be slow when listing lots of files due to its Cartesian product
+  complexity. Also, <Pls /> lacks the speed optimisations that a mature tool like eza has built over
+  time.
 
-- eza can show if a file has extended attributes. <Pls /> opted not to do this
-  because it's not a common use case.
+- eza can show if a file has extended attributes. <Pls /> opted not to do this because it's not a
+  common use case.
 
-- eza has a long grid view (which is a combination of <Pls />'s
-  [detail](/features/detail_view/) and [grid](/features/grid_view/) views) that
-  [are not yet present](/features/upcoming/) in <Pls />.
+- eza has a long grid view (which is a combination of <Pls />'s [detail](/features/detail_view/) and
+  [grid](/features/grid_view/) views) that [are not yet present](/features/upcoming/) in <Pls />.
 
 - eza has a tree mode that <Pls /> [does not yet have](/features/upcoming/).
 

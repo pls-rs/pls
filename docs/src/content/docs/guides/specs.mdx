@@ -1,7 +1,8 @@
 ---
 title: Specs
-descriptions: Specs are the backbone of pls, enabling it to match individual nodes to style
-  rules. This makes pls more powerful than tools that match extensions or types.
+descriptions:
+  Specs are the backbone of pls, enabling it to match individual nodes to style rules. This makes
+  pls more powerful than tools that match extensions or types.
 ---
 
 import { Content as SpecsDef } from "@/examples/specs/def.mdx";
@@ -9,9 +10,8 @@ import { Content as SpecsConf } from "@/examples/specs/conf.mdx";
 import { Content as SpecsConfd } from "@/examples/specs/confd.mdx";
 import { Content as SpecsConfdSrc } from "@/examples/specs/confd_src.mdx";
 
-At its core, the output of <Pls /> is a list of nodes. Each node in the list has
-a specific color, style and importance, all of which collectively determine how
-it is rendered and displayed.
+At its core, the output of <Pls /> is a list of nodes. Each node in the list has a specific color,
+style and importance, all of which collectively determine how it is rendered and displayed.
 
 <Pls /> uses specs to match each node to its visual properties, using a powerful regex matching
 system, which allows nodes to be matched by their name, extension or even fragments of both.
@@ -20,59 +20,56 @@ system, which allows nodes to be matched by their name, extension or even fragme
 
 A spec consists of five components, of which only the first is mandatory.
 
-- **pattern:**
-  [`regex::bytes::Regex`](https://docs.rs/regex/latest/regex/bytes/struct.Regex.html)
+- **pattern:** [`regex::bytes::Regex`](https://docs.rs/regex/latest/regex/bytes/struct.Regex.html)
 
-  This is a regex pattern that will be compared against the node name. If the
-  node matches this regex, this spec will be associated with the node.
+  This is a regex pattern that will be compared against the node name. If the node matches this
+  regex, this spec will be associated with the node.
 
 - **icons:** `String[]`
 
-  This is a list of names, and not the actual glyphs, of the
-  [icon](/features/icons) to use for nodes matching this spec. When specs
-  cascade, the last defined icon definition is used. If no specs match a node,
-  the default icon for the node type is used.
+  This is a list of names, and not the actual glyphs, of the [icon](/features/icons) to use for
+  nodes matching this spec. When specs cascade, the last defined icon definition is used. If no
+  specs match a node, the default icon for the node type is used.
 
-  One spec may define multiple icons. This is useful to specify an SVG icon with
-  a Nerd Font fallback. When a terminal doesn't support SVGs, the SVG icons are
-  skipped over and the Nerd Font fallback is rendered instead.
+  One spec may define multiple icons. This is useful to specify an SVG icon with a Nerd Font
+  fallback. When a terminal doesn't support SVGs, the SVG icons are skipped over and the Nerd Font
+  fallback is rendered instead.
 
 - **style:** `String`
 
-  This is a [markup](/guides/markup) directive that must be applied to the nodes
-  that match this spec. When specs cascade, their directives are combined with
-  latter rules overriding previous ones if they conflict.
+  This is a [markup](/guides/markup) directive that must be applied to the nodes that match this
+  spec. When specs cascade, their directives are combined with latter rules overriding previous ones
+  if they conflict.
 
 - **importance:** `i8`
 
-  This defines the [importance level](/features/importance/) of the file and
-  overrides the default value (determined by the leading dot).
+  This defines the [importance level](/features/importance/) of the file and overrides the default
+  value (determined by the leading dot).
 
 - **collapse:** [`Collapse`](#collapse)
 
 ### Collapse
 
-The goal of collapsing is to indicate that a node is a derivative of another
-adjacent node. Collapsing can be performed in three ways.
+The goal of collapsing is to indicate that a node is a derivative of another adjacent node.
+Collapsing can be performed in three ways.
 
 - **name**
 
-  In this case, a node with a specific name is collapsed into another with a
-  specific name. For example, `Cargo.lock` collapses into `Cargo.toml`.
+  In this case, a node with a specific name is collapsed into another with a specific name. For
+  example, `Cargo.lock` collapses into `Cargo.toml`.
 
 - **ext**
 
-  In this case, every node with a specific extension is collapsed into another
-  node with the same stem but different extension. For example, `index.js` and
-  `lib.js` collapse into `index.ts` and `lib.ts` respectively.
+  In this case, every node with a specific extension is collapsed into another node with the same
+  stem but different extension. For example, `index.js` and `lib.js` collapse into `index.ts` and
+  `lib.ts` respectively.
 
 - **sub**
 
-  In this case, the parent's name is built by expanding a replacement template
-  against the capture groups of the spec's own `pattern`. This handles cases
-  that `name` and `ext` cannot, such as transformations in the middle of a name.
-  For example, a pattern of `^(?<base>.+)\.min\.js$` with a substitution of
-  `$base.js` collapses `app.min.js` into `app.js`. Both `$name`/`${name}` and
+  In this case, the parent's name is built by expanding a replacement template against the capture
+  groups of the spec's own `pattern`. This handles cases that `name` and `ext` cannot, such as
+  transformations in the middle of a name. For example, a pattern of `^(?<base>.+)\.min\.js$` with a
+  substitution of `$base.js` collapses `app.min.js` into `app.js`. Both `$name`/`${name}` and
   numbered `$1` references are supported.
 
 ## Configuration
@@ -81,9 +78,8 @@ Specs are configured in the [`.pls.yml` file](/reference/conf/).
 
 ### Examples
 
-Consider a typical JavaScript project. When listing it with <Pls /> the output
-is very plain. That's because <Pls /> ships with a very lean config out of the
-box.
+Consider a typical JavaScript project. When listing it with <Pls /> the output is very plain. That's
+because <Pls /> ships with a very lean config out of the box.
 
 ```bash
 pls

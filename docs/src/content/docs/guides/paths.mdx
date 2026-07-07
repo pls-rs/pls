@@ -1,7 +1,7 @@
 ---
 title: Paths
-description: pls organises paths supplied as CLI arguments into groups of files and
-  individual directories.
+description:
+  pls organises paths supplied as CLI arguments into groups of files and individual directories.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
@@ -13,8 +13,8 @@ import { Content as FileGroup } from "@/examples/file_group/file_group.mdx";
 import { Content as Symlinks } from "@/examples/symlinks/symlinks.mdx";
 import { Content as Destination } from "@/examples/symlinks/destination.mdx";
 
-First <Pls /> organises paths supplied as CLI arguments into groups of solo
-files and individual directories. Then it prints each group one by one.
+First <Pls /> organises paths supplied as CLI arguments into groups of solo files and individual
+directories. Then it prints each group one by one.
 
 ```bash
 pls README.md Cargo.toml Cargo.lock src docs
@@ -24,14 +24,13 @@ pls README.md Cargo.toml Cargo.lock src docs
 
 ## Solo files
 
-The solo files group consists of all files supplied individually. These files
-are collected into one group. Each of the files in this group comes with its own
-separate [configuration](/reference/conf/) derived from `.pls.yml` files.
+The solo files group consists of all files supplied individually. These files are collected into one
+group. Each of the files in this group comes with its own separate [configuration](/reference/conf/)
+derived from `.pls.yml` files.
 
-The special thing here is that the group also has its own configuration
-determined from the common ancestor of all these files. This group-level
-configuration sets top-level options such as table headings, box-drawing
-characters and importance scales.
+The special thing here is that the group also has its own configuration determined from the common
+ancestor of all these files. This group-level configuration sets top-level options such as table
+headings, box-drawing characters and importance scales.
 
 Consider the following filesystem tree:
 
@@ -59,15 +58,14 @@ pls a ./../file_group/./subdir/a
 
 <FileGroup />
 
-Note how both files retain their individual configurations for the row, but the
-table settings come from the outer `.pls.yml` file. Also note that the file
-names are shown exactly as they were passed on the command line.
+Note how both files retain their individual configurations for the row, but the table settings come
+from the outer `.pls.yml` file. Also note that the file names are shown exactly as they were passed
+on the command line.
 
 ## Symlinks
 
-By default, <Pls /> does not follow symlinks in the arguments provided to it. So
-a symlink to a directory will be treated as a file input and will not list the
-contents of the target directory.
+By default, <Pls /> does not follow symlinks in the arguments provided to it. So a symlink to a
+directory will be treated as a file input and will not list the contents of the target directory.
 
 ```bash
 pls sym

@@ -1,7 +1,8 @@
 ---
 title: Grid view
-description: pls can display node names in two dimensions by showing multiple nodes per row
-  reducing vertical space when the grid view has been activated.
+description:
+  pls can display node names in two dimensions by showing multiple nodes per row reducing vertical
+  space when the grid view has been activated.
 ---
 
 import { Content as GridViewOff } from "@/examples/grid_view/off.mdx";
@@ -12,17 +13,15 @@ scrolling required, by placing the node names in a grid instead of a column.
 
 ## Arguments
 
-`--grid`/`-g` can be used to turn the grid mode on or off. Grid mode is turned
-off by default because it reduces the amount of info shown per file.
+`--grid`/`-g` can be used to turn the grid mode on or off. Grid mode is turned off by default
+because it reduces the amount of info shown per file.
 
-The direction of the grid can be changed with the
-[`--down`/`-D` flag](/features/direction/).
+The direction of the grid can be changed with the [`--down`/`-D` flag](/features/direction/).
 
 :::caution
 
-Note that the grid view is incompatible with the
-[detail view](/features/detail_view/). In case of conflict, the detail view will
-be used and the grid view will be turned off.
+Note that the grid view is incompatible with the [detail view](/features/detail_view/). In case of
+conflict, the detail view will be used and the grid view will be turned off.
 
 Otherwise, you may disable the detail view using `--det=none`/`-d=none`.
 
@@ -30,24 +29,21 @@ Otherwise, you may disable the detail view using `--det=none`/`-d=none`.
 
 :::caution
 
-Note that the grid view is also incompatible with
-[symlink tracing](/features/symlinks/) (which can take large amounts of
-horizontal space). In case of conflict, the grid view will be used and symlink
+Note that the grid view is also incompatible with [symlink tracing](/features/symlinks/) (which can
+take large amounts of horizontal space). In case of conflict, the grid view will be used and symlink
 tracing will be turned off.
 
 :::
 
 :::caution
 
-Note that the grid view is also incompatible with
-[collapsing](/features/collapse/) (which leads to nodes that expand to multiple
-lines). In case of conflict, the grid view will be used and collapsing will be
-turned off.
+Note that the grid view is also incompatible with [collapsing](/features/collapse/) (which leads to
+nodes that expand to multiple lines). In case of conflict, the grid view will be used and collapsing
+will be turned off.
 
 :::
 
-All these incompatibilities are the reason why the grid view is not the default
-view.
+All these incompatibilities are the reason why the grid view is not the default view.
 
 ### Examples
 

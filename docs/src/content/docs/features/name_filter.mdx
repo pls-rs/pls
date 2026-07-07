@@ -1,7 +1,8 @@
 ---
 title: Name filter
-description: pls provides a way to filter the contents by regex matching on names,
-  providing a way to exclude, or only include, certain names.
+description:
+  pls provides a way to filter the contents by regex matching on names, providing a way to exclude,
+  or only include, certain names.
 ---
 
 import { Content as NameFilterOn } from "@/examples/name_filter/on.mdx";
@@ -14,14 +15,13 @@ pattern. Both can be used in tandem to perform very powerful filtering.
 
 ## Arguments
 
-`--exclude`/`-e` can be used to remove the files that match the given pattern.
-`--only`/`-o` can be used to remove the files that do not match the given
-pattern.
+`--exclude`/`-e` can be used to remove the files that match the given pattern. `--only`/`-o` can be
+used to remove the files that do not match the given pattern.
 
 :::caution
 
-Specifying both `--only`/`-o` and `--exclude`/`-e` will limit <Pls /> to only
-showing files that simultaneously match both rules.
+Specifying both `--only`/`-o` and `--exclude`/`-e` will limit <Pls /> to only showing files that
+simultaneously match both rules.
 
 :::
 

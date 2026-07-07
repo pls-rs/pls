@@ -23,23 +23,66 @@ hooks = [
 
 [[repos]]
 repo = "https://github.com/editorconfig-checker/editorconfig-checker"
-rev = "v3.7.0"
+rev = "v3.8.0"
 hooks = [{ id = "editorconfig-checker", exclude = "^LICENSE$" }]
 
 [[repos]]
 repo = "https://github.com/dhruvkb/styleguide"
-rev = "v0.1.0"
-hooks = [{ id = "no-inline-tabs" }]
+rev = "v0.2.0"
+hooks = [{ id = "no-inline-tabs" }, { id = "no-autosquash-commits" }]
 
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.15.0"
+rev = "v0.15.20"
 hooks = [{ id = "ruff-check", args = ["--fix"] }, { id = "ruff-format" }]
 
 [[repos]]
 repo = "local"
 hooks = [
-	# Rust
+	{ id = "oxfmt", name = "Oxfmt", entry = "pnpm oxfmt", language = "system", types_or = [
+		# Taken from the Oxc compatibility list: https://oxc.rs/compatibility.html
+		"javascript",
+		"ts",
+		"vue",
+		"css",
+		"html",
+		"json",
+		"yaml",
+		"markdown",
+		"mdx",
+		"toml",
+	], args = [
+		# Since there may be files which match `types_or` but are ignored by
+		# `.oxfmtrc.json`, we need to silence the error raised when the staged
+		# change only has the ignored files.
+		"--no-error-on-unmatched-pattern",
+	] },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint:fix", language = "system", types_or = [
+		"astro",
+		"javascript",
+		"ts",
+	] },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+	{ id = "eslint", name = "ESLint", entry = "pnpm eslint:fix", language = "system", types_or = [
+		"astro",
+	] },
+	{ id = "prettier", name = "Prettier", entry = "pnpm prettier:write", language = "system", types_or = [
+		"astro",
+	] },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
 	{ id = "rustfmt", name = "rustfmt", entry = "cargo fmt", language = "system", types_or = [
 		"rust",
 	], pass_filenames = false },
@@ -51,33 +94,9 @@ hooks = [
 	], pass_filenames = false, stages = [
 		"pre-push",
 	] },
-
-	# Oxc
-	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint:fix", language = "system", types_or = [
-		"astro",
-		"javascript",
-		"ts",
-	] },
-	{ id = "oxfmt", name = "Oxfmt", entry = "pnpm oxfmt", language = "system", types_or = [
-		"javascript",
-		"json",
-		"markdown",
-		"mdx",
-		"toml",
-		"ts",
-		"yaml",
-	], args = [
-		# Since there are some files which match `types_or` but are ignored by
-		# `.oxfmtrc.json`, we need to silence the error raised when the staged
-		# change only has the ignored files.
-		"--no-error-on-unmatched-pattern",
-	] },
-
-	# Astro
-	{ id = "eslint", name = "ESLint", entry = "pnpm eslint:fix", language = "system", types_or = [
-		"astro",
-	] },
-	{ id = "prettier", name = "Prettier", entry = "pnpm prettier:write", language = "system", types_or = [
-		"astro",
-	] },
 ]
+
+# § project
+# § =======
+
+# /§ project

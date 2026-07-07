@@ -38,11 +38,11 @@ alias i := install
 # ====
 
 # This abstracts the underlying provisioning of `prek` through the appropriate
-# package manager (which may be uv, npm or Cargo).
+# package manager (which may be pnpm, or even uv or Cargo).
 #
 # Run `prek` commands through package manager.
 prek *args:
-	cargo bin prek {{ args }}
+	pnpm prek {{ args }}
 
 # Run one, or all, of `prek`'s hooks on specific, or all, files.
 lint hook="" *files="":

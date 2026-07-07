@@ -1,4 +1,7 @@
 {
+	"files.associations": {
+		"**/.sg/_*": "jinja"
+	},
 	"[astro]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode",

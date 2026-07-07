@@ -25,6 +25,7 @@ rust-version = "1.80.0"
 cargo-nextest = { version = "0.9.138", locked = true }
 cargo-bloat = { version = "0.12.1" }
 cargo-release = { version = "1.1.2" }
+hyperfine = { version = "1.20.0" }
 
 # Enable the use of Binstall.
 [package.metadata.binstall]
@@ -53,6 +54,7 @@ figment = { version = "0.10.19", features = ["yaml", "test"] }
 git2 = { version = "0.20.4", default-features = false, features = ["vendored-libgit2"] }
 home = "0.5.12"
 indexmap = "2.13.0"
+json5 = "0.4.1"
 libc = "0.2.180"
 log = { version = "0.4.29", features = ["release_max_level_off"] }
 number_prefix = "0.4.0"
@@ -70,8 +72,10 @@ time = { version = "0.3.47", default-features = false, features = [
 	"formatting",
 ] }
 unicode-segmentation = "1.12.0"
+ureq = "3.3"
 uzers = { version = "0.12.2", default-features = false, features = ["cache"] }
 xterm-query = "0.5.2"
+zip = { version = "8.6", default-features = false, features = ["deflate"] }
 
 [profile.release]
 # Reference: https://github.com/johnthagen/min-sized-rust

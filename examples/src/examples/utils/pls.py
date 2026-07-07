@@ -1,4 +1,4 @@
-from decouple import config
+import os
 
 from examples.utils.sub import run_cmd
 
@@ -15,7 +15,7 @@ def run_pls(args: list[str], **kwargs) -> str:
 	:return: the output of the ``pls`` command
 	"""
 
-	pls_bin = config("PLS_BIN", default="pls")
+	pls_bin = os.getenv("PLS_BIN", "pls")
 	cmd = [pls_bin, *args]
 	print(f"Running command {cmd}")
 

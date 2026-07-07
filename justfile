@@ -24,7 +24,6 @@ set dotenv-load := false
 
 # Install dependencies.
 install:
-	uv sync
 	pnpm i
 	cargo bin --install
 	just docs/install

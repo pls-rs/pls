@@ -1,8 +1,9 @@
 import os
+from contextlib import suppress
 
 from examples.bench import typ_bench
 from examples.utils.fs import fs, mksock
-from examples.utils.main import write_out, copy_write_conf
+from examples.utils.main import copy_write_conf, write_out
 
 
 def suffixes():
@@ -51,10 +52,8 @@ def symlinks():
 		)
 	) as bench:
 		# Make the symlink unreadable.
-		try:
-			os.chmod(bench / "e", 000, follow_symlinks=False)
-		except NotImplementedError:
-			pass
+		with suppress(NotImplementedError):
+			(bench / "e").chmod(0o000, follow_symlinks=False)
 
 		write_out(bench=bench, dest_name="on")
 		write_out("--sym=false", bench=bench, dest_name="off")
@@ -62,10 +61,8 @@ def symlinks():
 		write_out(bench=bench, dest_name="confd")
 
 		# Re-allow deletion during cleanup.
-		try:
-			os.chmod(bench / "e", 777, follow_symlinks=False)
-		except NotImplementedError:
-			pass
+		with suppress(NotImplementedError):
+			(bench / "e").chmod(0o777, follow_symlinks=False)
 
 
 def collapse():

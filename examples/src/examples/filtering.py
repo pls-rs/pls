@@ -1,6 +1,6 @@
 from examples.bench import typ_bench
-from examples.utils.main import write_out, copy_write_conf
 from examples.utils.fs import fs
+from examples.utils.main import copy_write_conf, write_out
 
 
 def type_filter():

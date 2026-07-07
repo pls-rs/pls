@@ -6,10 +6,10 @@ generation files.
 import os
 import uuid
 
-from examples.utils.fs import mksock, mkbigfile, fs
+from examples.utils.fs import fs, mkbigfile, mksock
 
 
-def typ_bench(name: str = None):
+def typ_bench(name: str | None = None):
 	if name is None:
 		name = uuid.uuid4().hex
 
@@ -29,7 +29,7 @@ def typ_bench(name: str = None):
 	)
 
 
-def grid_bench(name: str = None):
+def grid_bench(name: str | None = None):
 	if name is None:
 		name = uuid.uuid4().hex
 
@@ -46,7 +46,7 @@ def grid_bench(name: str = None):
 	)
 
 
-def ts_bench(name: str = None):
+def ts_bench(name: str | None = None):
 	if name is None:
 		name = uuid.uuid4().hex
 

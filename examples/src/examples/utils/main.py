@@ -2,9 +2,8 @@ import inspect
 import shutil
 from pathlib import Path
 
-from examples.utils.pls import run_pls
 from examples.utils.io import write_content
-
+from examples.utils.pls import run_pls
 
 CONFS = Path(__file__).parents[1] / "confs"
 
@@ -71,5 +70,4 @@ def _caller() -> str:
 	"""
 
 	prev_frame = inspect.currentframe().f_back.f_back
-	func_name = inspect.getframeinfo(prev_frame).function
-	return func_name
+	return inspect.getframeinfo(prev_frame).function

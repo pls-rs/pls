@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from examples.utils.fs import fs
-from examples.utils.main import write_out, copy_write_conf
+from examples.utils.main import copy_write_conf, write_out
 
 PROJECT_ROOT = Path(__file__).parents[3]
 

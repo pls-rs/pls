@@ -1,6 +1,6 @@
 from examples.bench import typ_bench
 from examples.utils.fs import fs, mkbigfile
-from examples.utils.main import write_out, copy_write_conf
+from examples.utils.main import copy_write_conf, write_out
 
 
 def detail_view():
@@ -24,7 +24,7 @@ def units():
 		(
 			"units",
 			[
-				(name, lambda p: mkbigfile(p, size=1024**idx))
+				(name, lambda p, i=idx: mkbigfile(p, size=1024**i))
 				for (idx, name) in enumerate("abc")
 			],
 		)

@@ -1,7 +1,41 @@
 [lint]
+select = [
+	"B", # flake8-bugbear
+	"C4", # flake8-comprehensions
+	"LOG", # flake8-logging
+	"G", # flake8-logging-format
+	"PIE", # flake8-pie
+	"T20", # flake8-print
+	"RET", # flake8-return
+	"SIM", # flake8-simplify
+	"TID", # flake8-tidy-imports
+	"TC", # flake8-type-checking — move type-only imports under TYPE_CHECKING
+	"PTH", # flake8-use-pathlib
+	"I", # isort
+	"N", # pep8-naming
+	"PERF", # Perflint
+	"E", # pycodestyle/Error
+	"W", # pycodestyle/Warning
+	"F", # Pyflakes
+	"UP", # pyupgrade
+	"FURB", # refurb
+	"RUF", # Ruff-specific rules
+
+	# § project
+	# § =======
+
+	# /§ project
+]
 ignore = [
 	"W191", # tab-indentation (incompatible with indent-style = "tab")
 	"D206", # docstring-tab-indentation (incompatible with indent-style = "tab")
+
+	# § project
+	# § =======
+
+	"T201", # print (used extensively in the project)
+
+	# /§ project
 ]
 
 [format]

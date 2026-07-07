@@ -1,7 +1,7 @@
 import subprocess
 
 from examples.bench import ts_bench
-from examples.utils.main import write_out, copy_write_conf
+from examples.utils.main import copy_write_conf, write_out
 
 
 def specs():

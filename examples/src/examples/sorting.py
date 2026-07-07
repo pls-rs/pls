@@ -1,5 +1,5 @@
+from examples.utils.fs import fs, mkbigfile
 from examples.utils.main import write_out
-from examples.utils.fs import mkbigfile, fs
 
 
 def sorting():

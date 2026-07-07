@@ -1,11 +1,8 @@
-import os
 import shutil
 import socket
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable
-
 
 Creator = Callable[[Path], None]
 FsStructure = str | tuple[str, Creator] | tuple[str, list["FsStructure"]]
@@ -118,4 +115,4 @@ def _destroy_fs(path: Path):
 	if path.is_dir():
 		shutil.rmtree(path)
 	else:
-		os.remove(path)
+		path.unlink()

@@ -16,6 +16,7 @@
 mod hash;
 mod kitty;
 mod svg;
+mod term;
 
 pub use hash::compute_hash;
 pub use kitty::{is_supported, render_image, send_image, strip_image};

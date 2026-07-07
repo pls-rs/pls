@@ -1,7 +1,6 @@
 use crate::exc::Exc;
 use crate::PLS;
 use base64::prelude::*;
-use crossterm::terminal::*;
 use log::debug;
 use regex::Regex;
 use std::borrow::Cow;
@@ -84,7 +83,7 @@ pub fn send_image(hash: u32, size: u8, rgba_data: &[u8]) -> Result<u32, Exc> {
 
 	query.push_str("\x1b_Gm=0;\x1b\\");
 
-	let res = query_raw(&query, 200)?;
+	let res = super::term::query_raw(&query, 200)?;
 	IMAGE_ID
 		.captures(&res)
 		.map(|cap| cap["id"].parse().unwrap())
@@ -137,24 +136,6 @@ pub fn strip_image(text: &str) -> Cow<'_, str> {
 	} else {
 		stripped
 	}
-}
-
-/// Perform the given query in the terminal raw mode.
-///
-/// This function enables the terminal raw mode, performs the query,
-/// records the response and then disables the terminal raw mode. The
-/// response is returned as a string.
-///
-/// # Arguments
-///
-/// * `query` - the query to perform
-/// * `timeout_ms` - the timeout in milliseconds
-fn query_raw(query: &str, timeout_ms: u64) -> Result<String, Exc> {
-	enable_raw_mode().map_err(Exc::Io)?;
-	let res = xterm_query::query_osc(query, timeout_ms).map_err(|e| Exc::Xterm(Box::new(e)));
-	disable_raw_mode().map_err(Exc::Io)?;
-
-	res
 }
 
 #[cfg(test)]

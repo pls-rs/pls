@@ -7,7 +7,7 @@ hooks = [
 		"--markdown-linebreak-ext=md,mdx",
 	] },
 	{ id = "end-of-file-fixer" },
-	{ id = "check-json", exclude = "^\\.vscode/.*\\.json|.oxlintrc\\.json|.oxfmtrc\\.json|tsconfig\\.json$" },
+	{ id = "check-json", exclude = "\\.vscode/.*\\.json|\\.oxlintrc\\.json|\\.oxfmtrc\\.json|tsconfig\\.json" },
 	{ id = "check-toml" },
 	{ id = "check-yaml" },
 	{ id = "mixed-line-ending", args = [
@@ -24,7 +24,7 @@ hooks = [
 [[repos]]
 repo = "https://github.com/editorconfig-checker/editorconfig-checker"
 rev = "v3.8.0"
-hooks = [{ id = "editorconfig-checker", exclude = "^LICENSE$" }]
+hooks = [{ id = "editorconfig-checker", exclude = "LICENSE$" }]
 
 [[repos]]
 repo = "https://github.com/dhruvkb/styleguide"

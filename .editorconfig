@@ -1,6 +1,3 @@
-# § global
-# § ======
-
 root = true
 
 [*]
@@ -26,8 +23,6 @@ indent_style = space
 # alignment, regardless of `.editorconfig`. So just give in and use spaces.
 indent_style = space
 indent_size = unset
-
-# /§ global
 
 # § project
 # § =======

@@ -2,8 +2,7 @@
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
 	"plugins": ["eslint", "typescript", "unicorn", "oxc"],
 	"env": {
-		"browser": true,
-		"node": true
+		"browser": true
 	},
 	"categories": {
 		"correctness": "error",

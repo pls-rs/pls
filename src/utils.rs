@@ -6,7 +6,9 @@
 //! * [`paths`]
 //! * [`urls`]
 //! * [`vectors`]
+//! * [`dirs`]
 
+pub mod dirs;
 pub mod paths;
 pub mod urls;
 pub mod vectors;

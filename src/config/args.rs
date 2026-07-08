@@ -1,4 +1,4 @@
-use crate::enums::{DetailField, SortField, Typ, UnitSys};
+use crate::enums::{Command, DetailField, SortField, Typ, UnitSys};
 use crate::fmt::render;
 use crate::utils::urls::get_osc;
 use clap::Parser;
@@ -44,8 +44,14 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
 		get_osc("https://github.com/sponsors/dhruvkb/", None),
 	)),
 	args_override_self = true,
+	args_conflicts_with_subcommands = true,
+	propagate_version = true,
 )]
 pub struct Args {
+	/// the subcommand to run, which will be absent for the default list action
+	#[command(subcommand)]
+	pub command: Option<Command>,
+
 	/// the paths to list, each of which may be a file or directory
 	#[clap(default_value = ".")]
 	pub paths: Vec<PathBuf>,
@@ -155,6 +161,9 @@ impl Args {
 	/// The output of this function is similar to the format used by
 	/// [`Exc`](crate::exc::Exc) as they serve similar purposes.
 	fn post_process(&mut self) {
+		if self.command.is_some() {
+			return;
+		}
 		self.clean().iter().for_each(|warning| {
 			warn!("{warning}");
 		});

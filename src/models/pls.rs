@@ -1,5 +1,6 @@
 use crate::args::{Group, Input};
 use crate::config::{Args, ConfMan};
+use crate::enums::{Command, IconPackAction};
 use crate::fmt::render;
 use crate::models::{OwnerMan, Window};
 
@@ -25,8 +26,21 @@ impl Pls {
 	/// This is the entrypoint of the application that takes over the
 	/// control from `main`.
 	pub fn cmd(&self) {
-		// TODO: Handle subcommands.
-		self.run();
+		match &self.args.command {
+			Some(Command::IconPack { action }) => self.icon_pack(action),
+			None => self.run(),
+		}
+	}
+
+	/// Handle the `icon-pack` subcommand.
+	fn icon_pack(&self, action: &IconPackAction) {
+		let res = match action {
+			IconPackAction::Add { source } => crate::pack::add(source),
+			IconPackAction::List { source } => crate::pack::list(source.as_deref()),
+		};
+		if let Err(exc) = res {
+			println!("{exc}");
+		}
 	}
 
 	/// Run `pls`.

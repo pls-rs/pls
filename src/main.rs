@@ -7,6 +7,7 @@ mod fmt;
 mod gfx;
 mod models;
 mod output;
+mod pack;
 mod traits;
 mod utils;
 

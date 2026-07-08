@@ -50,6 +50,7 @@ clap = { version = "4.5.57", features = ["derive", "wrap_help"] }
 colored = "3.1.1"
 crossterm = { version = "0.29.0", default-features = false }
 env_logger = { version = "0.11.8", default-features = false }
+# TODO: Migrate to figment2
 figment = { version = "0.10.19", features = ["yaml", "test"] }
 git2 = { version = "0.20.4", default-features = false, features = ["vendored-libgit2"] }
 home = "0.5.12"

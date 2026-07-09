@@ -1,31 +1,34 @@
 use crate::exc::Exc;
 
-/// Represents a reference to a VS Code extension resolved from user input.
+/// Represents a reference to a VS Code icon pack resolved from user input.
+///
+/// A pack is distributed as a VS Code extension, so the accepted forms are the
+/// extension's ID and marketplace URLs (see [`parse`]).
 #[derive(Debug, PartialEq, Eq)]
-pub struct ExtensionRef {
+pub struct PackRef {
 	pub publisher: String,
 	pub name: String,
 	pub version: Option<String>,
 }
 
-/// Parse a source string into an [`ExtensionRef`].
+/// Parse a source string into a [`PackRef`].
 ///
 /// This accepts three forms of input:
 ///
-/// * an extension ID of the form `<publisher>.<name>` (which can include a
-///   version with `@<version>` suffix)
-/// * a VS Code Marketplace URL which contains the extension ID as a query param
+/// * a pack ID of the form `<publisher>.<name>` (which can include a version
+///   with `@<version>` suffix)
+/// * a VS Code Marketplace URL which contains the pack ID as a query param
 ///   `?itemName=<publisher>.<name>`
-/// * an Open VSX URL of the which contains the extension publisher and name as
-///   path fragments `/extension/<publisher>/<name>`
-pub fn parse(source: &str) -> Result<ExtensionRef, Exc> {
+/// * an Open VSX URL which contains the pack's publisher and name as path
+///   fragments `/extension/<publisher>/<name>`
+pub fn parse(source: &str) -> Result<PackRef, Exc> {
 	let source = source.trim();
 
 	// Open VSX URL: /extension/<publisher>/<name>
 	if let Some(rest) = source.split("/extension/").nth(1) {
 		let mut segs = rest.split('/').filter(|s| !s.is_empty());
 		if let (Some(publisher), Some(name)) = (segs.next(), segs.next()) {
-			return Ok(ExtensionRef {
+			return Ok(PackRef {
 				publisher: publisher.to_string(),
 				name: name.to_string(),
 				version: None,
@@ -38,7 +41,7 @@ pub fn parse(source: &str) -> Result<ExtensionRef, Exc> {
 		&source[idx + "itemName=".len()..]
 	} else if source.contains("://") {
 		return Err(Exc::Other(format!(
-			"Unrecognised extension URL: {source:?}."
+			"Unrecognised icon pack URL: {source:?}."
 		)));
 	} else {
 		source
@@ -54,11 +57,11 @@ pub fn parse(source: &str) -> Result<ExtensionRef, Exc> {
 		.filter(|(p, n)| !p.is_empty() && !n.is_empty())
 		.ok_or_else(|| {
 			Exc::Other(format!(
-				"Invalid extension ID: {id:?} (expected `publisher.name`)."
+				"Invalid pack ID: {id:?} (expected `publisher.name`)."
 			))
 		})?;
 
-	Ok(ExtensionRef {
+	Ok(PackRef {
 		publisher: publisher.to_string(),
 		name: name.to_string(),
 		version,

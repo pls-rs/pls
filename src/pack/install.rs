@@ -6,10 +6,10 @@ use std::fs::remove_dir_all;
 /// Download and install the icon pack identified by `source`, printing the
 /// installed location and the icon themes it provides.
 pub fn add(source: &str) -> Result<(), Exc> {
-	let ext = source::parse(source)?;
-	let resolved = openvsx::resolve(&ext)?;
+	let pack = source::parse(source)?;
+	let resolved = openvsx::resolve(&pack)?;
 
-	let id = format!("{}.{}", ext.publisher, ext.name);
+	let id = format!("{}.{}", pack.publisher, pack.name);
 	let dest = list::packs_dir()?.join(&id);
 
 	print!(

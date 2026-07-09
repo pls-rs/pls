@@ -1,8 +1,8 @@
 use crate::exc::Exc;
-use crate::pack::source::ExtensionRef;
+use crate::pack::source::PackRef;
 use serde::Deserialize;
 
-/// The resolved download coordinates for an extension version.
+/// The resolved download coordinates for a pack version.
 pub struct Resolved {
 	pub version: String,
 	pub download_url: String,
@@ -33,19 +33,19 @@ fn parse_metadata(body: &str) -> Result<Resolved, Exc> {
 	})
 }
 
-/// Resolve an extension's download URL and version from Open VSX.
+/// Resolve a pack's download URL and version from Open VSX.
 ///
-/// Queries the latest version, or the pinned version when `ext.version` is set.
-pub fn resolve(ext: &ExtensionRef) -> Result<Resolved, Exc> {
-	let mut url = format!("https://open-vsx.org/api/{}/{}", ext.publisher, ext.name);
-	if let Some(version) = &ext.version {
+/// Queries the latest version, or the pinned version when `pack.version` is set.
+pub fn resolve(pack: &PackRef) -> Result<Resolved, Exc> {
+	let mut url = format!("https://open-vsx.org/api/{}/{}", pack.publisher, pack.name);
+	if let Some(version) = &pack.version {
 		url.push('/');
 		url.push_str(version);
 	}
 	let mut res = ureq::get(&url).call().map_err(|e| match e {
 		ureq::Error::StatusCode(404) => Exc::Other(format!(
 			"{}.{} was not found on Open VSX — it may only be on the VS Code Marketplace.",
-			ext.publisher, ext.name
+			pack.publisher, pack.name
 		)),
 		other => Exc::Http(Box::new(other)),
 	})?;

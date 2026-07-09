@@ -1,7 +1,7 @@
 use crate::exc::{fmt_warning, Exc};
 use crate::fmt::render;
 use crate::pack::source;
-use crate::pack::vsix::{self, IconTheme};
+use crate::pack::vsix::{self, ThemeEntry};
 use crate::utils::dirs::data_dir;
 use std::fs::{read_dir, read_to_string};
 use std::path::{Path, PathBuf};
@@ -19,8 +19,8 @@ pub fn list(source: Option<&str>) -> Result<(), Exc> {
 
 	let packs = match source {
 		Some(source) => {
-			let ext = source::parse(source)?;
-			let id = format!("{}.{}", ext.publisher, ext.name);
+			let pack = source::parse(source)?;
+			let id = format!("{}.{}", pack.publisher, pack.name);
 			let dir = root.join(&id);
 			if !dir.is_dir() {
 				println!("{}", fmt_warning(&format!("{id} is not installed.")),);
@@ -63,37 +63,37 @@ pub fn packs_dir() -> Result<PathBuf, Exc> {
 // Private
 // =======
 
-/// Print a pack's extension id and the tree of icon themes it exposes.
+/// Print a pack's ID and the tree of icon themes it provides.
 ///
-/// Each theme's `id` is what goes after the `:` in an `svg.default` config
-/// reference (`<publisher>.<name>:<id>`).
+/// Each theme's `id` is what disambiguates it in the `icon_pack` config (via
+/// `default.name` or a `per_scheme` entry) when a pack provides more than one.
 fn report(dest: &Path) {
 	let name = dest.file_name().unwrap().to_string_lossy();
 	println!("{}", render(format!("<bold>{name}</>")));
 
-	let themes = themes_of(dest);
-	if themes.is_empty() {
+	let entries = themes_of(dest);
+	if entries.is_empty() {
 		println!("{}", fmt_warning("This pack contributes no icon themes."));
 		return;
 	}
-	for (i, theme) in themes.iter().enumerate() {
-		let connector = if i + 1 == themes.len() { BEND } else { TEE };
-		let id = theme.id.as_deref().unwrap_or("—");
+	for (i, entry) in entries.iter().enumerate() {
+		let connector = if i + 1 == entries.len() { BEND } else { TEE };
+		let id = entry.id.as_deref().unwrap_or("—");
 		println!(
 			"{}",
 			render(format!(
 				"<dimmed>{connector}</><cyan>{id:<24}</> <dimmed>{}</>",
-				theme.label
+				entry.label
 			))
 		);
 	}
 }
 
-/// The icon themes a pack exposes, empty when it declares none.
-fn themes_of(dest: &Path) -> Vec<IconTheme> {
+/// The icon themes a pack provides, empty when it declares none.
+fn themes_of(dest: &Path) -> Vec<ThemeEntry> {
 	let package_json =
 		read_to_string(dest.join("package.json")).expect("installed icon pack has a package.json");
-	vsix::icon_themes(&package_json)
+	vsix::theme_entries(&package_json)
 }
 
 /// The installed pack directories under `root`, or an empty vector when `root`

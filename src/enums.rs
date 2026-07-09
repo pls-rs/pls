@@ -1,5 +1,6 @@
 mod appearance;
 mod collapse;
+mod color_scheme;
 mod command;
 mod detail_field;
 mod entity;
@@ -12,6 +13,7 @@ mod unit_sys;
 
 pub use appearance::Appearance;
 pub use collapse::Collapse;
+pub use color_scheme::ColorScheme;
 pub use command::{Command, IconPackAction};
 pub use detail_field::DetailField;
 pub use entity::Entity;

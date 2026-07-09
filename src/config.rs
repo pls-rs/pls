@@ -25,6 +25,6 @@ mod man;
 
 pub use app_const::AppConst;
 pub use args::Args;
-pub use conf::Conf;
+pub use conf::{Conf, LightTransform};
 pub use entry_const::EntryConst;
 pub use man::ConfMan;

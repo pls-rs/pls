@@ -1,0 +1,143 @@
+use crate::exc::Exc;
+use crate::pack::list::packs_dir;
+use crate::pack::vsix::{self, ThemeEntry};
+use log::debug;
+use std::fs::read_to_string;
+use std::path::{Path, PathBuf};
+
+/// Resolve an installed pack and theme to its theme file's path.
+///
+/// Returns `None` when resolution fails, logging the reason at debug level. The
+/// caller resolves the active theme once per run, so this is not itself memoised.
+///
+/// # Arguments
+///
+/// * `pack_id` - the pack's ID (`<publisher>.<name>`)
+/// * `theme_id` - the ID of the theme within the pack, if disambiguation is
+///   needed (packs contributing a single theme need none)
+pub fn resolve(pack_id: &str, theme_id: Option<&str>) -> Option<PathBuf> {
+	resolve_ref(pack_id, theme_id)
+		.map_err(|e| debug!("Could not resolve icon theme: {e}"))
+		.ok()
+}
+
+/// Resolve against the installed packs directory.
+fn resolve_ref(pack_id: &str, theme_id: Option<&str>) -> Result<PathBuf, Exc> {
+	resolve_in(&packs_dir()?, pack_id, theme_id)
+}
+
+/// Resolve against `packs_root`, the directory holding installed packs. Split
+/// out from [`resolve`] so resolution is testable without a real data directory.
+fn resolve_in(packs_root: &Path, pack_id: &str, theme_id: Option<&str>) -> Result<PathBuf, Exc> {
+	let root = packs_root.join(pack_id);
+	if !root.is_dir() {
+		return Err(Exc::Other(format!(
+			"Icon pack {pack_id} is not installed — run `pls icon-pack add {pack_id}`."
+		)));
+	}
+
+	let contents = read_to_string(root.join("package.json")).map_err(Exc::Io)?;
+	let entries = vsix::theme_entries(&contents);
+
+	let entry = match theme_id {
+		Some(id) => entries
+			.iter()
+			.find(|t| t.id.as_deref() == Some(id))
+			.ok_or_else(|| {
+				Exc::Other(format!(
+					"Icon pack {pack_id} has no theme {id:?}. Available: {}.",
+					available(&entries)
+				))
+			})?,
+		None => match entries.as_slice() {
+			[entry] => entry,
+			[] => {
+				return Err(Exc::Other(format!(
+					"Icon pack {pack_id} contributes no icon themes."
+				)))
+			}
+			_ => {
+				return Err(Exc::Other(format!(
+					"Icon pack {pack_id} contributes multiple themes; disambiguate with a theme ID. Available: {}.",
+					available(&entries)
+				)))
+			}
+		},
+	};
+
+	Ok(root.join(entry.path.trim_start_matches("./")))
+}
+
+/// A comma-separated list of the selectable theme IDs, for error messages.
+fn available(entries: &[ThemeEntry]) -> String {
+	entries
+		.iter()
+		.filter_map(|t| t.id.as_deref())
+		.collect::<Vec<_>>()
+		.join(", ")
+}
+
+#[cfg(test)]
+mod tests {
+	use super::resolve_in;
+	use std::fs::{create_dir_all, write};
+	use std::path::{Path, PathBuf};
+
+	/// Prepare an empty, unique packs root under the temp directory.
+	fn temp_root(name: &str) -> PathBuf {
+		let root = std::env::temp_dir().join(name);
+		std::fs::remove_dir_all(&root).ok();
+		root
+	}
+
+	/// Write a fake installed pack (its `package.json`) into `root`.
+	fn install(root: &Path, pack_id: &str, package_json: &str) {
+		let dir = root.join(pack_id);
+		create_dir_all(&dir).unwrap();
+		write(dir.join("package.json"), package_json).unwrap();
+	}
+
+	#[test]
+	fn test_resolve_single_theme_without_id() {
+		let root = temp_root("pls-theme-single");
+		install(
+			&root,
+			"test-pub.single",
+			r#"{ "version": "1.2.3", "contributes": { "iconThemes": [
+				{ "id": "only", "label": "Only", "path": "./dist/theme.json" }
+			] } }"#,
+		);
+		let path = resolve_in(&root, "test-pub.single", None).unwrap();
+		assert!(path.ends_with("test-pub.single/dist/theme.json"));
+		std::fs::remove_dir_all(&root).ok();
+	}
+
+	#[test]
+	fn test_resolve_selects_theme_by_id() {
+		let root = temp_root("pls-theme-multi");
+		install(
+			&root,
+			"test-pub.multi",
+			r#"{ "contributes": { "iconThemes": [
+				{ "id": "dark", "label": "Dark", "path": "./dark.json" },
+				{ "id": "light", "label": "Light", "path": "./light.json" }
+			] } }"#,
+		);
+		assert!(resolve_in(&root, "test-pub.multi", Some("light"))
+			.unwrap()
+			.ends_with("light.json"));
+		// Ambiguous without a theme ID.
+		assert!(resolve_in(&root, "test-pub.multi", None).is_err());
+		// Unknown theme ID.
+		assert!(resolve_in(&root, "test-pub.multi", Some("nope")).is_err());
+		std::fs::remove_dir_all(&root).ok();
+	}
+
+	#[test]
+	fn test_resolve_missing_pack_is_error() {
+		let root = temp_root("pls-theme-missing");
+		create_dir_all(&root).unwrap();
+		assert!(resolve_in(&root, "test-pub.absent", None).is_err());
+		std::fs::remove_dir_all(&root).ok();
+	}
+}

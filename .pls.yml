@@ -1,35 +1,114 @@
+icon_pack:
+  name: Catppuccin.catppuccin-vsc-icons
+  per_scheme:
+    dark: catppuccin-mocha
+    light: catppuccin-latte
 icons:
-  editorconfig: "" # nf-seti-editorconfig
-  egg: "󰪯" # nf-md-egg
-  rocket: "" # nf-oct-rocket
+  editorconfig: "" # nf-seti-editorconfig, not part of the default icon set
 specs:
-  - pattern: ^docs$
-    icons:
-      - book
-  - pattern: ^examples$
-    icons:
-      - egg
-  - pattern: ^.idea$
-    importance: -2
-  - pattern: ^src$
-    style: bold
-    importance: 1
-  - pattern: ^target$
-    icons:
-      - rocket
-  - pattern: ^(justfile|README.md)$
+  # By extension.
+  - pattern: \.rs$
+    icons: [theme:rust, rust]
+  - pattern: \.sh$
+    icons: [theme:bash, shell]
+  - pattern: \.mdx?$
+    icons: [theme:markdown, markdown]
+  - pattern: \.toml$
+    icons: [theme:toml, json]
+  - pattern: \.ya?ml$
+    icons: [theme:yaml, json]
+  - pattern: \.json$
+    icons: [theme:json, json]
+  - pattern: \.(txt|rtf)$
+    icons: [theme:text, text]
+  - pattern: \.(jpg|jpeg|png|webp|gif|ico)$
+    icons: [theme:image, image]
+  - pattern: \.svg$
+    icons: [theme:svg, image]
+  - pattern: \.(mov|mp4|mkv|webm|avi|flv)$
+    icons: [theme:video, video]
+  - pattern: \.(mp3|flac|ogg|wav)$
+    icons: [theme:audio, audio]
+  - pattern: \.ini$
+    icons: [theme:config, config]
+  - pattern: \.[cm]?js$
+    icons: [theme:javascript, source]
+  - pattern: \.ts$
+    icons: [theme:typescript, source]
+
+  # By name.
+  - pattern: ^\.env\b
+    icons: [theme:env, env]
+  - pattern: ^README
+    icons: [theme:readme, book]
     style: green bold
     importance: 2
+  - pattern: ^LICENSE
+    icons: [theme:license, law]
+  - pattern: (docker-compose.*\.yml$|Dockerfile)
+    icons: [theme:docker, container]
+  - pattern: ^\.gitignore$
+    icons: [theme:git, git]
+  - pattern: ^\.git$
+    icons: [theme:git, git]
+    importance: -2
+  - pattern: ^\.github$
+    icons: [theme:folder_github, github]
+  - pattern: ^\.vscode$
+    icons: [theme:folder_vscode]
+  - pattern: ^\.cargo$
+    icons: [theme:folder_cargo]
+  - pattern: ^Cargo\.toml$
+    icons: [theme:cargo, package]
+  - pattern: ^Cargo\.lock$
+    icons: [theme:cargo-lock, lock]
+  - pattern: ^\.rustfmt\.toml$
+    icons: [theme:rust-config, config]
+  - pattern: ^justfile$
+    icons: [theme:just, runner]
+  - pattern: ^Makefile$
+    icons: [theme:makefile, runner]
   - pattern: ^\.editorconfig$
-    icons:
-      - editorconfig
+    icons: [theme:editorconfig, editorconfig]
+  - pattern: ^\.ruff\.toml$
+    icons: [theme:ruff, config]
   - pattern: ^prek\.toml$
-    icons:
-      - broom
-  - pattern: ^(.prettierignore|prettier.config.mjs)$
-    icons:
-      - broom
+    icons: [theme:pre-commit, broom]
+  - pattern: ^\.prettier\.ignore$
+    icons: [theme:prettier-ignore, broom]
+  - pattern: ^\.prettierrc\.json$
+    icons: [theme:prettier, json]
+  - pattern: ^eslint\.config\.
+    icons: [theme:eslint, config]
+  - pattern: ^package\.json$
+    icons: [theme:package-json, package]
+  - pattern: ^pnpm-workspace\.yaml$
+    icons: [theme:pnpm, package]
+  - pattern: ^pnpm-lock\.yaml$
+    icons: [theme:pnpm-lock, lock]
+  - pattern: ^\.pls\.yml$
+    icons: [theme:rocket, pls]
+    importance: 0
+  - pattern: ^src$
+    icons: [theme:folder_src, source]
+    style: bold
+    importance: 1
+  - pattern: ^docs$
+    icons: [theme:folder_docs, book]
+  - pattern: ^examples$
+    icons: [theme:folder_examples]
+  - pattern: ^node_modules$
+    icons: [theme:folder_node]
+    importance: -1
+  - pattern: ^target$
+    icons: [theme:folder_dist]
+    importance: -1
 entry_const:
   typ:
     dir:
       style: cyan
+      icons:
+        - theme:_folder
+    symlink:
+      icons:
+        - theme:symlink

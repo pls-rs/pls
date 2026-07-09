@@ -259,30 +259,14 @@ impl<'pls> Node<'pls> {
 	/// * specs associated with the node
 	/// * the node's type
 	fn icon(&self, conf: &Conf, entry_const: &EntryConst) -> Icon {
-		let icon = self
-			.specs
+		self.specs
 			.iter()
 			.rev()
 			.filter_map(|spec| spec.icons.as_ref())
 			.chain(self.typ.icons(entry_const))
 			.flatten()
-			.find_map(|icon_name| {
-				conf.icons
-					.get(icon_name.as_str())
-					.filter(|icon| !icon.ends_with(".svg") || PLS.supports_gfx)
-			});
-
-		match icon {
-			Some(icon) => {
-				let icon = String::from(icon);
-				if icon.ends_with(".svg") {
-					Icon::Image(icon)
-				} else {
-					Icon::Text(icon)
-				}
-			}
-			None => Icon::Text(String::default()),
-		}
+			.find_map(|icon_name| Icon::resolve(icon_name, conf))
+			.unwrap_or_else(|| Icon::Text(String::default()))
 	}
 
 	// ===========

@@ -113,6 +113,8 @@ impl ConfMan {
 			}
 		}
 
-		fig.extract().map_err(|e| Exc::Conf(Box::new(e)))
+		let mut conf: Conf = fig.extract().map_err(|e| Exc::Conf(Box::new(e)))?;
+		conf.entry_const.prioritize_user_icons();
+		Ok(conf)
 	}
 }

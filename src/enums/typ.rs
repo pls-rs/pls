@@ -206,7 +206,7 @@ mod tests {
 				#[test]
 				fn $name() {
 					let entry_const = EntryConst::default();
-					assert_eq!($typ.icons(&entry_const), &Some(vec![format!("{}-svg", $icon), String::from($icon)]));
+					assert_eq!($typ.icons(&entry_const), &Some(vec![String::from($icon)]));
 					assert_eq!($typ.suffix(&entry_const), $suffix);
 				}
 			)*

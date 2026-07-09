@@ -64,6 +64,33 @@ impl EntryConst {
 			})
 			.get(&field)
 	}
+
+	/// Move each node type's built-in icons behind the user's own choices.
+	///
+	/// Configs are combined with figment's *adjoining* merge, which appends
+	/// each layer's array to the previous one. Since the built-in defaults form
+	/// the base layer, they always end up in front of any user additions —
+	/// the opposite of what we want, as the first icon that resolves wins. This
+	/// detaches that known default prefix and rotates it to the back, so every
+	/// user icon (in config order) precedes the built-ins, which remain as a
+	/// fallback. Figment cannot express this "prepend" directly, hence the
+	/// post-merge fix-up.
+	pub fn prioritize_user_icons(&mut self) {
+		let defaults = Self::default();
+		for (typ, info) in self.typ.iter_mut() {
+			let Some(default_icons) = defaults.typ.get(typ).and_then(|d| d.icons.as_deref()) else {
+				continue;
+			};
+			let Some(icons) = info.icons.as_mut() else {
+				continue;
+			};
+			// Only rotate when the list still leads with the built-in prefix,
+			// i.e. the user actually added icons on top of the defaults.
+			if icons.len() > default_icons.len() && &icons[..default_icons.len()] == default_icons {
+				icons.rotate_left(default_icons.len());
+			}
+		}
+	}
 }
 
 impl Default for EntryConst {
@@ -94,7 +121,7 @@ impl Default for EntryConst {
 					TypInfo {
 						ch: ch.to_string(),
 						suffix: suffix.to_string(),
-						icons: Some(vec![format!("{}-svg", icon), String::from(icon)]),
+						icons: Some(vec![String::from(icon)]),
 						style: style.to_string(),
 					},
 				)
@@ -235,4 +262,52 @@ pub struct SymlinkInfo {
 	pub style: String, // applies to name and separator
 	/// the style to use for the symlink reference
 	pub ref_style: String, // applies to reference only
+}
+
+#[cfg(test)]
+mod tests {
+	use super::EntryConst;
+	use crate::enums::Typ;
+
+	/// Set the merged icon list for a node type, mimicking the state left by
+	/// figment's adjoining merge (built-in prefix followed by user additions).
+	fn set_icons(ec: &mut EntryConst, typ: Typ, icons: &[&str]) {
+		ec.typ.get_mut(&typ).unwrap().icons = Some(icons.iter().map(|s| s.to_string()).collect());
+	}
+
+	fn icons(ec: &EntryConst, typ: Typ) -> Vec<String> {
+		ec.typ.get(&typ).unwrap().icons.clone().unwrap()
+	}
+
+	#[test]
+	fn test_moves_single_default_behind_user_icon() {
+		let mut ec = EntryConst::default();
+		let default = icons(&ec, Typ::Dir); // built-in prefix
+		set_icons(&mut ec, Typ::Dir, &["dir", "theme:_folder"]);
+		ec.prioritize_user_icons();
+
+		let mut expected = vec![String::from("theme:_folder")];
+		expected.extend(default);
+		assert_eq!(icons(&ec, Typ::Dir), expected);
+	}
+
+	#[test]
+	fn test_preserves_order_of_multiple_user_icons() {
+		let mut ec = EntryConst::default();
+		set_icons(&mut ec, Typ::Dir, &["dir", "theme:a", "theme:b", "glyph"]);
+		ec.prioritize_user_icons();
+
+		assert_eq!(
+			icons(&ec, Typ::Dir),
+			vec!["theme:a", "theme:b", "glyph", "dir"]
+		);
+	}
+
+	#[test]
+	fn test_leaves_untouched_default_only_list() {
+		let mut ec = EntryConst::default();
+		let default = icons(&ec, Typ::Dir);
+		ec.prioritize_user_icons();
+		assert_eq!(icons(&ec, Typ::Dir), default);
+	}
 }

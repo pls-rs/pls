@@ -5,7 +5,15 @@ use log::debug;
 use std::fs::read_to_string;
 use std::path::{Path, PathBuf};
 
-/// Resolve an installed pack and theme to its theme file's path.
+/// A resolved icon theme: its theme file and the version of the pack it came
+/// from (the latter feeds the icon cache key, see
+/// [`compute_hash`](crate::gfx::compute_hash)).
+pub struct ResolvedTheme {
+	pub file: PathBuf,
+	pub version: String,
+}
+
+/// Resolve an installed pack and theme to its theme file and pack version.
 ///
 /// Returns `None` when resolution fails, logging the reason at debug level. The
 /// caller resolves the active theme once per run, so this is not itself memoised.
@@ -15,20 +23,24 @@ use std::path::{Path, PathBuf};
 /// * `pack_id` - the pack's ID (`<publisher>.<name>`)
 /// * `theme_id` - the ID of the theme within the pack, if disambiguation is
 ///   needed (packs contributing a single theme need none)
-pub fn resolve(pack_id: &str, theme_id: Option<&str>) -> Option<PathBuf> {
+pub fn resolve(pack_id: &str, theme_id: Option<&str>) -> Option<ResolvedTheme> {
 	resolve_ref(pack_id, theme_id)
 		.map_err(|e| debug!("Could not resolve icon theme: {e}"))
 		.ok()
 }
 
 /// Resolve against the installed packs directory.
-fn resolve_ref(pack_id: &str, theme_id: Option<&str>) -> Result<PathBuf, Exc> {
+fn resolve_ref(pack_id: &str, theme_id: Option<&str>) -> Result<ResolvedTheme, Exc> {
 	resolve_in(&packs_dir()?, pack_id, theme_id)
 }
 
 /// Resolve against `packs_root`, the directory holding installed packs. Split
 /// out from [`resolve`] so resolution is testable without a real data directory.
-fn resolve_in(packs_root: &Path, pack_id: &str, theme_id: Option<&str>) -> Result<PathBuf, Exc> {
+fn resolve_in(
+	packs_root: &Path,
+	pack_id: &str,
+	theme_id: Option<&str>,
+) -> Result<ResolvedTheme, Exc> {
 	let root = packs_root.join(pack_id);
 	if !root.is_dir() {
 		return Err(Exc::Other(format!(
@@ -65,7 +77,10 @@ fn resolve_in(packs_root: &Path, pack_id: &str, theme_id: Option<&str>) -> Resul
 		},
 	};
 
-	Ok(root.join(entry.path.trim_start_matches("./")))
+	Ok(ResolvedTheme {
+		file: root.join(entry.path.trim_start_matches("./")),
+		version: vsix::version(&contents),
+	})
 }
 
 /// A comma-separated list of the selectable theme IDs, for error messages.
@@ -107,8 +122,9 @@ mod tests {
 				{ "id": "only", "label": "Only", "path": "./dist/theme.json" }
 			] } }"#,
 		);
-		let path = resolve_in(&root, "test-pub.single", None).unwrap();
-		assert!(path.ends_with("test-pub.single/dist/theme.json"));
+		let resolved = resolve_in(&root, "test-pub.single", None).unwrap();
+		assert!(resolved.file.ends_with("test-pub.single/dist/theme.json"));
+		assert_eq!(resolved.version, "1.2.3");
 		std::fs::remove_dir_all(&root).ok();
 	}
 
@@ -125,6 +141,7 @@ mod tests {
 		);
 		assert!(resolve_in(&root, "test-pub.multi", Some("light"))
 			.unwrap()
+			.file
 			.ends_with("light.json"));
 		// Ambiguous without a theme ID.
 		assert!(resolve_in(&root, "test-pub.multi", None).is_err());

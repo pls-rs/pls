@@ -15,7 +15,7 @@ use std::path::{Path, PathBuf};
 ///
 /// # Arguments
 ///
-/// * `id` - the unique ID of the image
+/// * `id` - the icon's cache key (see [`compute_hash`](super::compute_hash))
 /// * `path` - the path to the SVG file
 /// * `size` - the size at which to render the icon
 pub fn get_rgba(id: u32, path: &Path, size: u8) -> Option<Vec<u8>> {
@@ -40,7 +40,7 @@ pub fn get_rgba(id: u32, path: &Path, size: u8) -> Option<Vec<u8>> {
 	Some(rgba_data)
 }
 
-/// The path of the cache file for the given image ID, if a cache directory can
+/// The path of the cache file for the given cache key, if a cache directory can
 /// be located.
 fn cache_file(id: u32) -> Option<PathBuf> {
 	Some(cache_dir()?.join("icons").join(id.to_string()))

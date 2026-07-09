@@ -17,6 +17,7 @@ pub struct ThemeEntry {
 
 #[derive(Deserialize)]
 struct PackageJson {
+	version: Option<String>,
 	contributes: Option<Contributes>,
 }
 
@@ -51,6 +52,17 @@ pub fn theme_entries(package_json: &str) -> Vec<ThemeEntry> {
 			path: d.path,
 		})
 		.collect()
+}
+
+/// Parse the `version` of a pack's `package.json`, empty when it declares none.
+///
+/// The version is folded into an icon's cache key so that updating a pack
+/// invalidates its previously rendered icons.
+pub fn version(package_json: &str) -> String {
+	json5::from_str::<PackageJson>(package_json)
+		.ok()
+		.and_then(|p| p.version)
+		.unwrap_or_default()
 }
 
 /// Extract the `extension/` subtree of a `.vsix` (a zip) into `dest`, stripping

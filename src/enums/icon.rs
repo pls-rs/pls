@@ -39,31 +39,29 @@ static IMAGE_DATA: LazyLock<Mutex<HashMap<u32, ImageData>>> =
 static ACTIVE_THEME: OnceLock<Option<ActiveTheme>> = OnceLock::new();
 
 /// The resolved icon theme for this run, together with the color scheme it was
-/// chosen for.
+/// chosen for and the pack version it came from.
 struct ActiveTheme {
 	/// the detected terminal color scheme, used to pick light-variant keys
 	scheme: ColorScheme,
 	/// the loaded theme; owned by the [`ACTIVE_THEME`] static, so borrows of its
 	/// icon paths are effectively `'static`
 	theme: IconTheme,
+	/// the version of the pack, folded into each icon's cache key so an update
+	/// invalidates previously cached renders
+	version: String,
 }
 
 /// This enum contains the two formats of icons supported by `pls`.
 pub enum Icon {
 	/// a Nerd Font or emoji icon
 	Text(String),
-	/// the path to an SVG icon
-	Image(String),
-}
-
-impl From<&str> for Icon {
-	fn from(s: &str) -> Self {
-		if s.ends_with(".svg") {
-			Icon::Image(s.to_string())
-		} else {
-			Icon::Text(s.to_string())
-		}
-	}
+	/// an SVG image icon
+	Image {
+		/// the path to the SVG file to rasterise
+		path: String,
+		/// the icon's cache key (see [`compute_hash`])
+		id: u32,
+	},
 }
 
 /// Resolve an icon key against a theme, preferring the light-terminal variant
@@ -118,9 +116,13 @@ fn active_theme(conf: &Conf) -> &'static Option<ActiveTheme> {
 		} else {
 			ColorScheme::Dark
 		};
-		let path = resolve_theme(&icon_pack.name, icon_pack.theme_id(scheme))?;
-		let theme = IconTheme::load(&path)?;
-		Some(ActiveTheme { scheme, theme })
+		let resolved = resolve_theme(&icon_pack.name, icon_pack.theme_id(scheme))?;
+		let theme = IconTheme::load(&resolved.file)?;
+		Some(ActiveTheme {
+			scheme,
+			theme,
+			version: resolved.version,
+		})
 	})
 }
 
@@ -148,10 +150,23 @@ impl Icon {
 		if let Some(key) = value.strip_prefix("theme:") {
 			return Self::theme_icon(key, conf);
 		}
-		if value.ends_with(".svg") && !PLS.supports_gfx {
+		if value.ends_with(".svg") {
+			return Self::path_icon(value);
+		}
+		Some(Icon::Text(value.clone()))
+	}
+
+	/// Build an image icon from a literal SVG path (a `.svg` value in the
+	/// [`icons`](Conf::icons) map). Its cache key is the path itself, since such
+	/// an icon has no pack, theme or key. Yields `None` without graphics support.
+	fn path_icon(path: &str) -> Option<Icon> {
+		if !PLS.supports_gfx {
 			return None;
 		}
-		Some(Icon::from(value.as_str()))
+		Some(Icon::Image {
+			path: path.to_string(),
+			id: compute_hash(path, Icon::size()),
+		})
 	}
 
 	/// Resolve an icon key (the body of a `theme:` name) to an image icon from
@@ -162,6 +177,11 @@ impl Icon {
 	/// when the terminal lacks graphics support, no pack is configured, or the
 	/// key is absent.
 	///
+	/// The cache key combines the pack, its version, the theme, the color scheme
+	/// and the icon key, so it survives the pack moving on disk and is
+	/// invalidated when the pack is updated. The color scheme is included because
+	/// a `light_transform` can resolve the same key to a different SVG per scheme.
+	///
 	/// # Arguments
 	///
 	/// * `key` - the part of a `theme:` name after the prefix
@@ -171,12 +191,30 @@ impl Icon {
 			return None;
 		}
 		let active = active_theme(conf).as_ref()?;
-		let light_transform = conf
-			.icon_pack
-			.as_ref()
-			.and_then(|icon_pack| icon_pack.light_transform());
-		let icon_path = resolve_key(&active.theme, key.trim(), active.scheme, light_transform)?;
-		Some(Icon::Image(icon_path.to_string_lossy().into_owned()))
+		let icon_pack = conf.icon_pack.as_ref()?;
+		let key = key.trim();
+
+		let icon_path = resolve_key(
+			&active.theme,
+			key,
+			active.scheme,
+			icon_pack.light_transform(),
+		)?;
+
+		let theme = icon_pack.theme_id(active.scheme).unwrap_or_default();
+		let scheme = match active.scheme {
+			ColorScheme::Dark => "dark",
+			ColorScheme::Light => "light",
+		};
+		let ident = format!(
+			"{}@{}/{theme}/{scheme}/{key}",
+			icon_pack.name, active.version
+		);
+
+		Some(Icon::Image {
+			path: icon_path.to_string_lossy().into_owned(),
+			id: compute_hash(&ident, Icon::size()),
+		})
 	}
 
 	/// Get the size of the icon in pixels.
@@ -221,7 +259,7 @@ impl Icon {
 				format!("<{directives}>{text:<1} </>")
 			}
 
-			Icon::Image(path) => {
+			Icon::Image { path, id } => {
 				let default = String::from("  ");
 
 				// SVG icons support expanding environment variables in
@@ -232,11 +270,10 @@ impl Icon {
 				};
 
 				let size = Icon::size();
-				let hash = compute_hash(&PathBuf::from(path.as_ref()), size);
 
 				let mut image_data_store = IMAGE_DATA.lock().unwrap();
 				let data = image_data_store
-					.entry(hash)
+					.entry(*id)
 					.or_insert_with(|| ImageData { count: 0, id: 0 });
 
 				data.count += 1;
@@ -244,9 +281,9 @@ impl Icon {
 					// If the image is appearing for the first time in
 					// this session, we send it to the terminal and get
 					// an ID assigned to it.
-					match get_rgba(hash, &PathBuf::from(path.as_ref()), size) {
+					match get_rgba(*id, &PathBuf::from(path.as_ref()), size) {
 						Some(rgba_data) => {
-							data.id = send_image(hash, size, &rgba_data).unwrap();
+							data.id = send_image(*id, size, &rgba_data).unwrap();
 						}
 						None => return default,
 					}

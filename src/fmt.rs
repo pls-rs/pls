@@ -10,12 +10,13 @@
 //! a list of supported directives. Tags can be nested, with inner tags capable
 //! of overwriting directives from outer tags.
 //!
-//! The public interface of the module consists of two functions:
+//! The public interface of the module consists of three functions:
 //!
 //! * [`len`]
 //! * [`render`]
+//! * [`render_and_len`]
 
 mod format;
 mod markup;
 
-pub use markup::{len, render, render_and_measure};
+pub use markup::{len, render, render_and_len};

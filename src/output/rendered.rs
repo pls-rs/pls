@@ -1,4 +1,4 @@
-use crate::fmt::render_and_measure;
+use crate::fmt::render_and_len;
 use rayon::prelude::*;
 
 /// A cell whose markup has already been converted to ANSI escape codes, paired
@@ -19,7 +19,7 @@ pub struct Rendered {
 impl Rendered {
 	/// Render and measure the given markup string into a `Rendered` cell.
 	pub fn new(markup: &str) -> Self {
-		let (text, width) = render_and_measure(markup);
+		let (text, width) = render_and_len(markup);
 		Self { text, width }
 	}
 }

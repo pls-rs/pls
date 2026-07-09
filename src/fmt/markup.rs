@@ -137,46 +137,23 @@ where
 	reducer(&stack, &mut curr, acc)
 }
 
-/// Render the given markup string into ANSI escape codes.
-///
-/// This function converts the the markup tags into ANSI formatting codes so
-/// that if printed to the console, the output matches the tags. This conversion
-/// is not reversible as it flattens any nested tags.
-///
-/// # Arguments
-///
-/// * `markup` - the marked-up string to be rendered
-pub fn render<S>(markup: S) -> String
-where
-	S: AsRef<str>,
-{
-	reduce_markup(
-		markup.as_ref(),
-		String::default(),
-		|stack, curr, mut acc| {
-			if !curr.is_empty() {
-				let directives: Vec<&str> = stack.iter().flatten().copied().collect();
-				if !directives.contains(&"hidden") {
-					write_run(&mut acc, &directives, curr);
-				}
-				curr.clear();
-			}
-			acc
-		},
-	)
-}
-
 /// Render the given markup string into ANSI escape codes and measure its
 /// rendered width in a single pass.
 ///
-/// This is equivalent to calling [`render`] and [`len`] separately but parses
-/// the markup only once, which matters because every rendered cell needs both
-/// its ANSI form (to print) and its display width (to align columns).
+/// This function
+///
+/// * converts the markup tags into ANSI formatting codes so that, if printed to
+///   the console, the output matches the tags. This conversion is irreversible
+///   as it flattens any nested tags.
+/// * counts the number of graphemes (not characters, not bytes) and excludes
+///   markup tags from the count. This length can be used to align tables.
+///
+/// Prefer this function over calling [`render`] and [`len`] separately.
 ///
 /// # Arguments
 ///
 /// * `markup` - the marked-up string to be rendered and measured
-pub fn render_and_measure<S>(markup: S) -> (String, usize)
+pub fn render_and_len<S>(markup: S) -> (String, usize)
 where
 	S: AsRef<str>,
 {
@@ -197,10 +174,21 @@ where
 	)
 }
 
-/// Get the true length of a markup string.
+/// Render the given markup string into ANSI escape codes. See
+/// [`render_and_len`] for more details.
 ///
-/// This counts the number of graphemes (not characters, not bytes) and excludes
-/// markup tags from the count. This length can be used to align tables.
+/// # Arguments
+///
+/// * `markup` - the marked-up string to be rendered
+pub fn render<S>(markup: S) -> String
+where
+	S: AsRef<str>,
+{
+	render_and_len(markup).0
+}
+
+/// Get the true length of a markup string. See [`render_and_len`] for more
+/// details.
 ///
 /// # Arguments
 ///
@@ -209,20 +197,12 @@ pub fn len<S>(markup: S) -> usize
 where
 	S: AsRef<str>,
 {
-	reduce_markup(markup.as_ref(), 0, |stack, curr, acc| {
-		let count = if curr.is_empty() || stack.iter().flatten().any(|tag| *tag == "hidden") {
-			0
-		} else {
-			curr.graphemes(true).count()
-		};
-		curr.clear();
-		acc + count
-	})
+	render_and_len(markup).1
 }
 
 #[cfg(test)]
 mod tests {
-	use super::{len, render, render_and_measure};
+	use super::{len, render};
 
 	macro_rules! make_render_test {
 		( $($name:ident: $markup:expr => $rendered:expr,)* ) => {
@@ -286,30 +266,5 @@ mod tests {
 
 		test_len_ignores_tags: "<bold>bold</>" => 4,
 		test_len_drops_hidden_text: "<blue>blue<hidden>hidden</></>" => 4,
-	);
-
-	macro_rules! make_render_and_measure_test {
-		( $($name:ident: $markup:expr,)* ) => {
-			$(
-				#[test]
-				fn $name() {
-					colored::control::set_override(true); // needed when running tests in CLion
-					// The single-pass helper must stay equivalent to calling
-					// `render` and `len` separately.
-					assert_eq!(render_and_measure($markup), (render($markup), len($markup)));
-				}
-			)*
-		};
-	}
-
-	make_render_and_measure_test!(
-		test_render_and_measure_matches_plain: "plain text",
-		test_render_and_measure_matches_single_style: "<bold>bold</>",
-		test_render_and_measure_matches_multiple_styles: "<bold italic>bold italic</>",
-		test_render_and_measure_matches_nested_tags: "<blue><italic>blue italic</> blue</>",
-		test_render_and_measure_matches_trailing_text: "<bold>bold</> trailing",
-		test_render_and_measure_matches_hidden_text: "<blue>blue<hidden>hidden</></>",
-		test_render_and_measure_matches_escaped_tags: "\\<bold>\\bold",
-		test_render_and_measure_matches_unicode: "<bold>मैं</> 🤦🏽‍♂️",
 	);
 }

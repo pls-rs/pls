@@ -1,9 +1,10 @@
-//! This module contains code for locating `pls`'s config and data directories.
+//! This module contains code for locating `pls`'s config, data and cache
+//! directories.
 //!
 //! The logic is consistently applied as follows:
 //!
-//! * If the `XDG_DATA_HOME` or `XDG_CONFIG_HOME` env vars are set, we will use
-//!   them directly, which is very respectful to the user.
+//! * If the `XDG_CONFIG_HOME`, `XDG_DATA_HOME` or `XDG_CACHE_HOME` env vars are
+//!   set, we will use them directly, which is very respectful to the user.
 //! * If the env vars are not set, but their conventional locations exist, we
 //!   will use them, and assume the user forgot to set the env vars.
 //! * If neither of the above is true, we will fall back to `~/.pls`, which is
@@ -13,6 +14,7 @@
 //!
 //! * [`config_dir`]
 //! * [`data_dir`]
+//! * [`cache_dir`]
 
 use std::env;
 use std::path::PathBuf;
@@ -25,6 +27,11 @@ pub fn data_dir() -> Option<PathBuf> {
 /// Get the directory under which `pls` stores its config, e.g. `pls.yml`.
 pub fn config_dir() -> Option<PathBuf> {
 	resolve(xdg_dir("XDG_CONFIG_HOME", ".config"), home::home_dir())
+}
+
+/// Get the directory under which `pls` stores its cache, e.g. rendered icons.
+pub fn cache_dir() -> Option<PathBuf> {
+	resolve(xdg_dir("XDG_CACHE_HOME", ".cache"), home::home_dir())
 }
 
 // =======

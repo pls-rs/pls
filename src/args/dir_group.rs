@@ -105,7 +105,7 @@ impl DirGroup {
 			.args
 			.only
 			.as_ref()
-			.map_or(true, |pat| pat.is_match(haystack));
+			.is_none_or(|pat| pat.is_match(haystack));
 		if !include {
 			debug!("Name {name:?} did not match `--only`.");
 			return None;

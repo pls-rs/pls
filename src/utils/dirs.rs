@@ -21,17 +21,17 @@ use std::path::PathBuf;
 
 /// Get the directory under which `pls` stores its data, e.g. icon packs.
 pub fn data_dir() -> Option<PathBuf> {
-	resolve(xdg_dir("XDG_DATA_HOME", ".local/share"), home::home_dir())
+	resolve(xdg_dir("XDG_DATA_HOME", ".local/share"), env::home_dir())
 }
 
 /// Get the directory under which `pls` stores its config, e.g. `pls.yml`.
 pub fn config_dir() -> Option<PathBuf> {
-	resolve(xdg_dir("XDG_CONFIG_HOME", ".config"), home::home_dir())
+	resolve(xdg_dir("XDG_CONFIG_HOME", ".config"), env::home_dir())
 }
 
 /// Get the directory under which `pls` stores its cache, e.g. rendered icons.
 pub fn cache_dir() -> Option<PathBuf> {
-	resolve(xdg_dir("XDG_CACHE_HOME", ".cache"), home::home_dir())
+	resolve(xdg_dir("XDG_CACHE_HOME", ".cache"), env::home_dir())
 }
 
 // =======
@@ -52,7 +52,7 @@ fn xdg_dir(var: &str, home_default: &str) -> Option<PathBuf> {
 	match env::var(var) {
 		Ok(dir) if !dir.is_empty() => Some(PathBuf::from(dir)),
 		_ => {
-			let default = home::home_dir()?.join(home_default);
+			let default = env::home_dir()?.join(home_default);
 			default.is_dir().then_some(default)
 		}
 	}

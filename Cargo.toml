@@ -17,7 +17,7 @@ keywords = ["cli", "terminal", "posix", "ls"]
 categories = ["command-line-utilities"]
 
 edition = "2021"
-rust-version = "1.80.0"
+rust-version = "1.97.0"
 
 # Assuming `cargo-binstall` is present globally, all these packages will install
 # using pre-built binaries and the process will be quite fast.
@@ -53,7 +53,6 @@ env_logger = { version = "0.11.8", default-features = false }
 # TODO: Migrate to figment2
 figment = { version = "0.10.19", features = ["yaml", "test"] }
 git2 = { version = "0.20.4", default-features = false, features = ["vendored-libgit2"] }
-home = "0.5.12"
 indexmap = "2.13.0"
 json5 = "0.4.1"
 libc = "0.2.180"

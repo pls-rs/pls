@@ -1,5 +1,8 @@
 use regex::Regex;
 use serde::Deserialize;
+use std::fs::{create_dir_all, File};
+use std::io::{Cursor, Read, Write};
+use std::path::{Path, PathBuf};
 use std::{str::FromStr, sync::LazyLock};
 
 use crate::exc::Exc;
@@ -61,20 +64,51 @@ impl FromStr for ExtRef {
 }
 
 impl ExtRef {
-	pub fn download(&self) -> Result<Vec<u8>, Exc> {
-		let url = self.fetch_download_url()?;
-		let mut res = ureq::get(&url).call().map_err(|e| Exc::Http(Box::new(e)))?;
-		res.body_mut()
-			.with_config()
-			.limit(64 * 1024 * 1024) // `.vsix` packages can exceed ureq's default 10 MB cap.
-			.read_to_vec()
-			.map_err(|e| Exc::Http(Box::new(e)))
+	/// Download this extension and extract the `.vsix` package.
+	///
+	/// The package contains a subdirectory `extension/` which is the main thing
+	/// that we are interested in, so we unnest it by one level. Siblings of
+	/// `extension/` are ignored.
+	///
+	/// # Arguments
+	///
+	/// `dest` - The destination directory to extract the `.vsix` package into.
+	pub fn download(&self, dest: &PathBuf) -> Result<(), Exc> {
+		let bytes = self.get_bytes()?;
+		let mut archive =
+			zip::ZipArchive::new(Cursor::new(bytes)).map_err(|e| Exc::Zip(Box::new(e)))?;
+		for i in 0..archive.len() {
+			let mut entry = archive.by_index(i).map_err(|e| Exc::Zip(Box::new(e)))?;
+			let name = entry.name().to_string();
+			let Ok(rel) = Path::new(&name).strip_prefix("extension") else {
+				continue;
+			};
+			if entry.is_dir() || rel.as_os_str().is_empty() {
+				continue;
+			}
+			let out = dest.join(rel);
+			if let Some(parent) = out.parent() {
+				create_dir_all(parent).map_err(Exc::Io)?;
+			}
+			let mut bytes = Vec::with_capacity(entry.size() as usize);
+			entry.read_to_end(&mut bytes).map_err(Exc::Io)?;
+			File::create(&out)
+				.map_err(Exc::Io)?
+				.write_all(&bytes)
+				.map_err(Exc::Io)?;
+		}
+		Ok(())
 	}
 
 	// =======
 	// Private
 	// =======
 
+	/// Get the URL from which the `.vsix` package for an extension can be
+	/// downloaded.
+	///
+	/// programmatically. We need to get the URL from the API.
+	/// The URL typically contains a version so we cannot construct it
 	fn fetch_download_url(&self) -> Result<String, Exc> {
 		let url = format!("https://open-vsx.org/api/{}/{}", self.publisher, self.name);
 		let mut res = ureq::get(&url).call().map_err(|e| Exc::Http(Box::new(e)))?;
@@ -88,6 +122,20 @@ impl ExtRef {
 		meta.files
 			.download
 			.ok_or_else(|| Exc::Other("Open VSX response has no download URL.".to_string()))
+	}
+
+	/// Get the bytes of the `.vsix` package for this extension.
+	///
+	/// These bytes can be directed into any file path to get the extension on
+	/// disk, and then the file can be extracted as a zip archive.
+	pub fn get_bytes(&self) -> Result<Vec<u8>, Exc> {
+		let url = self.fetch_download_url()?;
+		let mut res = ureq::get(&url).call().map_err(|e| Exc::Http(Box::new(e)))?;
+		res.body_mut()
+			.with_config()
+			.limit(64 * 1024 * 1024) // `.vsix` packages can exceed ureq's default 10 MB cap.
+			.read_to_vec()
+			.map_err(|e| Exc::Http(Box::new(e)))
 	}
 }
 

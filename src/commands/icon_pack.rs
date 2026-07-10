@@ -1,5 +1,5 @@
 use crate::exc::Exc;
-use crate::pack::{add, list};
+use crate::pack::{add, bust, list, remove};
 use clap::Subcommand;
 
 /// This enum covers actions under `pls icon-pack` subcommand.
@@ -15,6 +15,14 @@ pub enum IconPackSubcommand {
 		/// the ID (or URL) of the icon pack
 		source: Option<String>,
 	},
+	/// Remove an installed icon pack.
+	#[command(visible_alias = "rm")]
+	Remove {
+		/// the ID (or URL) of the icon pack
+		source: String,
+	},
+	/// Bust the rasterised icon cache.
+	Bust,
 }
 
 // ===============
@@ -26,6 +34,8 @@ impl IconPackSubcommand {
 		match self {
 			Self::Add { source } => add(source),
 			Self::List { source } => list(source.as_deref()),
+			Self::Remove { source } => remove(source),
+			Self::Bust => bust(),
 		}
 	}
 }

@@ -150,6 +150,7 @@ mod tests {
 		( $($name:ident: $colorterm: expr, $styles:expr => $prefix:expr, $suffix:expr,)* ) => {
 			$(
 				#[test]
+				// `Jail::expect_with` requires a closure returning the large `figment::Error`.
 				#[allow(clippy::result_large_err)]
 				fn $name() {
 					colored::control::set_override(true); // needed when running tests in CLion

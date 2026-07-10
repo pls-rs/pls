@@ -12,12 +12,19 @@ static VSX: LazyLock<Regex> =
 static ID_OR_VSC: LazyLock<Regex> =
 	LazyLock::new(|| Regex::new(r"(\?itemName=)?(?P<pub>[\w-]+)\.(?P<name>[\w-]+)$").unwrap());
 
+// ======
+// Models
+// ======
+
 /// Represents a reference to a VS Code extension resolved from user input.
-#[derive(Debug, PartialEq, Eq)]
 pub struct ExtRef {
 	pub publisher: String,
 	pub name: String,
 }
+
+// ===============
+// Implementations
+// ===============
 
 impl FromStr for ExtRef {
 	type Err = Exc;

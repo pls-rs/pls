@@ -1,4 +1,5 @@
-use crate::enums::{Command, DetailField, SortField, Typ, UnitSys};
+use crate::commands::PlsSubcommand;
+use crate::enums::{DetailField, SortField, Typ, UnitSys};
 use crate::fmt::render;
 use crate::utils::urls::get_osc;
 use clap::Parser;
@@ -50,7 +51,7 @@ fn regex_parser(s: &str) -> Result<Regex, RegexError> {
 pub struct Args {
 	/// the subcommand to run, which will be absent for the default list action
 	#[command(subcommand)]
-	pub command: Option<Command>,
+	pub command: Option<PlsSubcommand>,
 
 	/// the paths to list, each of which may be a file or directory
 	#[arg(default_value = ".")]

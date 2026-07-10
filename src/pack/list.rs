@@ -1,8 +1,8 @@
 use crate::exc::{fmt_warning, Exc};
 use crate::fmt::render;
-use crate::pack::source;
 use crate::pack::vsix::{self, ThemeEntry};
 use crate::utils::dirs::data_dir;
+use crate::vsc::ExtRef;
 use std::fs::{read_dir, read_to_string};
 use std::path::{Path, PathBuf};
 
@@ -19,7 +19,7 @@ pub fn list(source: Option<&str>) -> Result<(), Exc> {
 
 	let packs = match source {
 		Some(source) => {
-			let pack = source::parse(source)?;
+			let pack = source.parse::<ExtRef>()?;
 			let id = format!("{}.{}", pack.publisher, pack.name);
 			let dir = root.join(&id);
 			if !dir.is_dir() {

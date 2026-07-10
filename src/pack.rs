@@ -6,8 +6,6 @@
 
 mod install;
 mod list;
-mod openvsx;
-mod source;
 mod theme;
 mod vsix;
 

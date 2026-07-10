@@ -10,6 +10,7 @@ mod output;
 mod pack;
 mod traits;
 mod utils;
+mod vsc;
 
 use crate::gfx::is_supported;
 use crate::models::Pls;

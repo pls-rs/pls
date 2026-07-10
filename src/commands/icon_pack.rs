@@ -11,6 +11,7 @@ pub enum IconPackSubcommand {
 		source: String,
 	},
 	/// List the themes provided by every, or a specific, icon pack.
+	#[command(visible_alias = "ls")]
 	List {
 		/// the ID (or URL) of the icon pack
 		source: Option<String>,

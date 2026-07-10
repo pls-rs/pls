@@ -15,6 +15,8 @@ pub enum Exc {
 	Xterm(Box<xterm_query::XQError>),
 	/// wraps errors from the `zip` crate
 	Zip(Box<zip::result::ZipError>),
+	/// wraps errors from the `json5` crate
+	Json(Box<json5::Error>),
 	/// wraps all other errors
 	Other(String),
 }
@@ -30,6 +32,7 @@ impl Display for Exc {
 			Exc::Http(err) => err.to_string(),
 			Exc::Xterm(err) => err.to_string(),
 			Exc::Zip(err) => err.to_string(),
+			Exc::Json(err) => err.to_string(),
 		};
 		let msg = format!("{attn} {err}");
 		write!(f, "{}", render(msg))

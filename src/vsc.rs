@@ -4,5 +4,7 @@
 //! are much more expressive, colorful and pretty compared to Nerd Fonts.
 
 mod ext;
+mod package;
 
 pub use ext::ExtRef;
+pub use package::{ExtPackage, IconThemeDef};

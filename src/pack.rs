@@ -6,13 +6,14 @@
 
 mod add;
 mod bust;
+mod dirs;
 mod list;
 mod remove;
 mod theme;
-mod vsix;
 
 pub use add::add;
 pub use bust::bust;
+pub use dirs::packs_dir;
 pub use list::list;
 pub use remove::remove;
 pub use theme::resolve;

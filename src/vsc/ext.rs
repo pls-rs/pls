@@ -1,8 +1,9 @@
 use regex::Regex;
 use serde::Deserialize;
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::fs::{create_dir_all, File};
 use std::io::{Cursor, Read, Write};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::{str::FromStr, sync::LazyLock};
 
 use crate::exc::Exc;
@@ -63,6 +64,12 @@ impl FromStr for ExtRef {
 	}
 }
 
+impl Display for ExtRef {
+	fn fmt(&self, f: &mut Formatter) -> FmtResult {
+		write!(f, "{}.{}", self.publisher, self.name)
+	}
+}
+
 impl ExtRef {
 	/// Download this extension and extract the `.vsix` package.
 	///
@@ -73,7 +80,7 @@ impl ExtRef {
 	/// # Arguments
 	///
 	/// `dest` - The destination directory to extract the `.vsix` package into.
-	pub fn download(&self, dest: &PathBuf) -> Result<(), Exc> {
+	pub fn download(&self, dest: &Path) -> Result<(), Exc> {
 		let bytes = self.get_bytes()?;
 		let mut archive =
 			zip::ZipArchive::new(Cursor::new(bytes)).map_err(|e| Exc::Zip(Box::new(e)))?;
@@ -198,9 +205,6 @@ mod tests {
 			$",
 		)
 		.unwrap();
-		assert_eq!(
-			valid_url.is_match(&ext_ref.fetch_download_url().unwrap()),
-			true
-		);
+		assert!(valid_url.is_match(&ext_ref.fetch_download_url().unwrap()));
 	}
 }

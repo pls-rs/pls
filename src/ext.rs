@@ -4,9 +4,12 @@
 //!
 //! * [`Abs`]
 //! * [`Ctime`]
+//! * [`SubDirs`]
 
 mod abs;
 mod ctime;
+mod sub_dirs;
 
 pub use abs::Abs;
 pub use ctime::Ctime;
+pub use sub_dirs::SubDirs;

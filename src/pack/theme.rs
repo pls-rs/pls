@@ -1,8 +1,7 @@
 use crate::exc::Exc;
-use crate::pack::list::packs_dir;
-use crate::pack::vsix::{self, ThemeEntry};
+use crate::pack::packs_dir;
+use crate::vsc::{ExtPackage, IconThemeDef};
 use log::debug;
-use std::fs::read_to_string;
 use std::path::{Path, PathBuf};
 
 /// A resolved icon theme: its theme file and the version of the pack it came
@@ -47,9 +46,8 @@ fn resolve_in(
 			"Icon pack {pack_id} is not installed — run `pls icon-pack add {pack_id}`."
 		)));
 	}
-
-	let contents = read_to_string(root.join("package.json")).map_err(Exc::Io)?;
-	let entries = vsix::theme_entries(&contents);
+	let ext_package = ExtPackage::try_from(root.as_path())?;
+	let entries = ext_package.icon_themes();
 
 	let entry = match theme_id {
 		Some(id) => entries
@@ -58,10 +56,10 @@ fn resolve_in(
 			.ok_or_else(|| {
 				Exc::Other(format!(
 					"Icon pack {pack_id} has no theme {id:?}. Available: {}.",
-					available(&entries)
+					available(entries)
 				))
 			})?,
-		None => match entries.as_slice() {
+		None => match entries {
 			[entry] => entry,
 			[] => {
 				return Err(Exc::Other(format!(
@@ -71,7 +69,7 @@ fn resolve_in(
 			_ => {
 				return Err(Exc::Other(format!(
 					"Icon pack {pack_id} contributes multiple themes; disambiguate with a theme ID. Available: {}.",
-					available(&entries)
+					available(entries)
 				)))
 			}
 		},
@@ -79,12 +77,12 @@ fn resolve_in(
 
 	Ok(ResolvedTheme {
 		file: root.join(entry.path.trim_start_matches("./")),
-		version: vsix::version(&contents),
+		version: ext_package.version().clone(),
 	})
 }
 
 /// A comma-separated list of the selectable theme IDs, for error messages.
-fn available(entries: &[ThemeEntry]) -> String {
+fn available(entries: &[IconThemeDef]) -> String {
 	entries
 		.iter()
 		.filter_map(|t| t.id.as_deref())
@@ -118,7 +116,7 @@ mod tests {
 		install(
 			&root,
 			"test-pub.single",
-			r#"{ "version": "1.2.3", "contributes": { "iconThemes": [
+			r#"{ "publisher": "test-pub", "name": "single", "version": "1.2.3", "contributes": { "iconThemes": [
 				{ "id": "only", "label": "Only", "path": "./dist/theme.json" }
 			] } }"#,
 		);
@@ -134,7 +132,7 @@ mod tests {
 		install(
 			&root,
 			"test-pub.multi",
-			r#"{ "contributes": { "iconThemes": [
+			r#"{ "publisher": "test-pub", "name": "multi", "version": "1.2.3", "contributes": { "iconThemes": [
 				{ "id": "dark", "label": "Dark", "path": "./dark.json" },
 				{ "id": "light", "label": "Light", "path": "./light.json" }
 			] } }"#,

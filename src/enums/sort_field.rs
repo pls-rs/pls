@@ -62,41 +62,41 @@ pub enum SortField {
 	Ext,   // file extension
 
 	// Reversed sort by the field
-	#[clap(name = "dev_")]
+	#[value(name = "dev_")]
 	Dev_,
-	#[clap(name = "ino_")]
+	#[value(name = "ino_")]
 	Ino_,
-	#[clap(name = "nlink_")]
+	#[value(name = "nlink_")]
 	Nlink_,
-	#[clap(name = "typ_")]
+	#[value(name = "typ_")]
 	Typ_,
-	#[clap(name = "cat_")]
+	#[value(name = "cat_")]
 	Cat_,
-	#[clap(name = "user_")]
+	#[value(name = "user_")]
 	User_,
-	#[clap(name = "uid_")]
+	#[value(name = "uid_")]
 	Uid_,
-	#[clap(name = "group_")]
+	#[value(name = "group_")]
 	Group_,
-	#[clap(name = "gid_")]
+	#[value(name = "gid_")]
 	Gid_,
-	#[clap(name = "size_")]
+	#[value(name = "size_")]
 	Size_,
-	#[clap(name = "blocks_")]
+	#[value(name = "blocks_")]
 	Blocks_,
-	#[clap(name = "btime_")]
+	#[value(name = "btime_")]
 	Btime_,
-	#[clap(name = "ctime_")]
+	#[value(name = "ctime_")]
 	Ctime_,
-	#[clap(name = "mtime_")]
+	#[value(name = "mtime_")]
 	Mtime_,
-	#[clap(name = "atime_")]
+	#[value(name = "atime_")]
 	Atime_,
-	#[clap(name = "name_")]
+	#[value(name = "name_")]
 	Name_,
-	#[clap(name = "cname_")]
+	#[value(name = "cname_")]
 	Cname_,
-	#[clap(name = "ext_")]
+	#[value(name = "ext_")]
 	Ext_,
 
 	None, // shorthand: no sorting

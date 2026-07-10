@@ -42,7 +42,7 @@ pub enum Typ {
 	None, // shorthand: no node types
 	All,  // shorthand: all node types
 
-	#[clap(skip)]
+	#[value(skip)]
 	Unknown, // unrecognised type (not a CLI argument)
 }
 

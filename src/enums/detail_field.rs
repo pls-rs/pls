@@ -78,7 +78,7 @@ pub enum DetailField {
 	Std,  // shorthand: the standard set of details
 	All,  // shorthand: all details
 
-	#[clap(skip)]
+	#[value(skip)]
 	Name, // node name (not a CLI argument)
 }
 

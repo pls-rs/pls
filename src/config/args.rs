@@ -53,11 +53,11 @@ pub struct Args {
 	pub command: Option<Command>,
 
 	/// the paths to list, each of which may be a file or directory
-	#[clap(default_value = ".")]
+	#[arg(default_value = ".")]
 	pub paths: Vec<PathBuf>,
 
 	/// the data points to show about each node
-	#[clap(
+	#[arg(
 		help_heading = "Detail view",
 		short,
 		long = "det",
@@ -67,11 +67,11 @@ pub struct Args {
 	pub details: Vec<DetailField>,
 
 	/// show headers above columnar data
-	#[clap(help_heading = "Detail view", short = 'H', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Detail view", short = 'H', long, default_value = "true", action = clap::ArgAction::Set)]
 	pub header: bool,
 
 	/// the type of units to use for the node sizes
-	#[clap(
+	#[arg(
 		help_heading = "Detail view",
 		short,
 		long,
@@ -81,35 +81,35 @@ pub struct Args {
 	pub unit: UnitSys,
 
 	/// display node names in multiple columns
-	#[clap(help_heading = "Grid view", short, long, default_value = "false", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Grid view", short, long, default_value = "false", action = clap::ArgAction::Set)]
 	pub grid: bool,
 
 	/// display node names column-first
-	#[clap(help_heading = "Grid view", short = 'D', long, default_value = "false", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Grid view", short = 'D', long, default_value = "false", action = clap::ArgAction::Set)]
 	pub down: bool,
 
 	/// display icons next to node names
-	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
 	pub icon: bool,
 
 	/// display node type suffixes after the node name
-	#[clap(help_heading = "Presentation", short = 'S', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Presentation", short = 'S', long, default_value = "true", action = clap::ArgAction::Set)]
 	pub suffix: bool,
 
 	/// show symlink targets
-	#[clap(help_heading = "Presentation", short = 'l', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Presentation", short = 'l', long, default_value = "true", action = clap::ArgAction::Set)]
 	pub sym: bool,
 
 	/// show dependent nodes as children of their principal nodes
-	#[clap(help_heading = "Presentation", short = 'c', long, default_value = "true", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Presentation", short = 'c', long, default_value = "true", action = clap::ArgAction::Set)]
 	pub collapse: bool,
 
 	/// align items accounting for leading dots
-	#[clap(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
+	#[arg(help_heading = "Presentation", short, long, default_value = "true", action = clap::ArgAction::Set)]
 	pub align: bool,
 
 	/// the set of node types to include in the output
-	#[clap(
+	#[arg(
 		help_heading = "Filtering",
 		short = 't',
 		long = "typ",
@@ -120,19 +120,19 @@ pub struct Args {
 	pub typs: Vec<Typ>,
 
 	/// the importance cutoff to dim or hide unimportant files
-	#[clap(help_heading = "Filtering", short = 'I', long, default_value = "0")]
+	#[arg(help_heading = "Filtering", short = 'I', long, default_value = "0")]
 	pub imp: i8,
 
 	/// the pattern of files to selectively hide from the output
-	#[clap(help_heading = "Filtering", short, long, value_parser = regex_parser)]
+	#[arg(help_heading = "Filtering", short, long, value_parser = regex_parser)]
 	pub exclude: Option<Regex>,
 
 	/// the pattern of files to exclusively show in the output
-	#[clap(help_heading = "Filtering", short, long, value_parser = regex_parser)]
+	#[arg(help_heading = "Filtering", short, long, value_parser = regex_parser)]
 	pub only: Option<Regex>,
 
 	/// the set of fields to sort by, trailing `_` reverses the direction
-	#[clap(help_heading = "Sorting", short, long = "sort", default_values = ["cat", "cname"], value_enum)]
+	#[arg(help_heading = "Sorting", short, long = "sort", default_values = ["cat", "cname"], value_enum)]
 	pub sort_bases: Vec<SortField>,
 }
 

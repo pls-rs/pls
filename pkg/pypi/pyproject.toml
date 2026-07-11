@@ -6,7 +6,8 @@ build-backend = "maturin"
 name = "pls"
 description = "pls is a prettier and powerful ls(1) for the pros"
 requires-python = ">=3.8"
-license = { text = "GPL-3.0-or-later" }
+license = "GPL-3.0-or-later"
+license-files = ["../../LICENSE"]
 readme = "../../README.md"
 authors = [{ name = "Dhruv Bhanushali", email = "hi@dhruvkb.dev" }]
 keywords = ["cli", "terminal", "posix", "ls"]

@@ -28,8 +28,13 @@ hooks = [{ id = "editorconfig-checker", exclude = "LICENSE$" }]
 
 [[repos]]
 repo = "https://github.com/dhruvkb/styleguide"
-rev = "v0.2.0"
-hooks = [{ id = "no-inline-tabs" }, { id = "no-autosquash-commits" }]
+rev = "v0.5.0"
+hooks = [
+	{ id = "no-inline-tabs" },
+	{ id = "no-autosquash-commits" },
+	{ id = "sg-status" },
+	{ id = "sg-validate" },
+]
 
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"

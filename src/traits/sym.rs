@@ -26,10 +26,11 @@ impl Sym for Node<'_> {
 		// relative path as target.
 		let abs_target_path = if target_path.is_absolute() {
 			target_path.clone()
-		} else if let Some(parent) = self.path.parent() {
-			parent.join(&target_path)
 		} else {
-			self.path.join(&target_path)
+			self.path
+				.parent()
+				.unwrap_or(self.path.as_path())
+				.join(&target_path)
 		};
 
 		let target = match abs_target_path.try_exists() {

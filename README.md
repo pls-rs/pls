@@ -4,7 +4,7 @@
 <a href="https://pypi.org/project/pls/"><img src="https://img.shields.io/badge/platforms-macOS,_Linux-blue" alt="Platforms"/></a>
 <a href="https://github.com/pls-rs/pls/actions/workflows/ci.yml"><img src="https://github.com/pls-rs/pls/actions/workflows/ci.yml/badge.svg" alt="CI status"/></a>
 <a href="https://pls.cli.rs/"><img src="https://img.shields.io/badge/docs-pls.cli.rs-blue" alt="Documentation"/></a>
-<a href="https://pls.cli.rs/guides/get_started"><img src="https://img.shields.io/github/v/tag/pls-rs/pls?label=rel" alt="Release"/></a>
+<a href="https://pls.cli.rs/guides/get_started"><img src="https://img.shields.io/github/v/tag/pls-rs/pls?label=ver" alt="Release"/></a>
 
 [`pls`](https://pls.cli.rs/) is a prettier and powerful `ls(1)` for the pros. The "p" stands for
 

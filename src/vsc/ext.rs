@@ -46,21 +46,14 @@ impl FromStr for ExtRef {
 	fn from_str(source: &str) -> Result<Self, Self::Err> {
 		let source = source.trim();
 
-		// Open VSX URL: /extension/<publisher>/<name>
-		if let Some(caps) = VSX.captures(source) {
-			return Ok(ExtRef {
+		// Open VSX URL: /extension/<publisher>/<name>, else a bare ID or VSC URL.
+		VSX.captures(source)
+			.or_else(|| ID_OR_VSC.captures(source))
+			.map(|caps| ExtRef {
 				publisher: caps["pub"].to_string(),
 				name: caps["name"].to_string(),
-			});
-		}
-		if let Some(caps) = ID_OR_VSC.captures(source) {
-			return Ok(ExtRef {
-				publisher: caps["pub"].to_string(),
-				name: caps["name"].to_string(),
-			});
-		}
-
-		Err(Exc::Other("Invalid extension ID or URL.".to_string()))
+			})
+			.ok_or_else(|| Exc::Other("Invalid extension ID or URL.".to_string()))
 	}
 }
 

@@ -1,9 +1,9 @@
+use crate::PLS;
 use crate::config::{Conf, LightTransform};
 use crate::enums::ColorScheme;
 use crate::gfx::{compute_hash, get_rgba, render_image, send_image};
 use crate::models::IconTheme;
 use crate::pack::resolve as resolve_theme;
-use crate::PLS;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, Mutex, OnceLock};
@@ -84,14 +84,14 @@ fn resolve_key<'theme>(
 	color_scheme: ColorScheme,
 	light_transform: Option<&LightTransform>,
 ) -> Option<&'theme Path> {
-	if color_scheme == ColorScheme::Light {
-		if let Some(transform) = light_transform {
-			let light_key = transform.apply(key);
-			if light_key.as_ref() != key {
-				if let Some(path) = theme.resolve(&light_key) {
-					return Some(path);
-				}
-			}
+	if color_scheme == ColorScheme::Light
+		&& let Some(transform) = light_transform
+	{
+		let light_key = transform.apply(key);
+		if light_key.as_ref() != key
+			&& let Some(path) = theme.resolve(&light_key)
+		{
+			return Some(path);
 		}
 	}
 	theme.resolve(key)
@@ -296,7 +296,7 @@ impl Icon {
 
 #[cfg(test)]
 mod tests {
-	use super::{resolve_key, Icon};
+	use super::{Icon, resolve_key};
 	use crate::config::{Conf, LightTransform};
 	use crate::enums::ColorScheme;
 	use crate::models::IconTheme;

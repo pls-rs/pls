@@ -44,10 +44,10 @@ where
 	P: AsRef<Path>,
 {
 	let path = path.as_ref();
-	if !path.is_absolute() {
-		if let Ok(cwd) = current_dir() {
-			return cwd.join(path);
-		}
+	if !path.is_absolute()
+		&& let Ok(cwd) = current_dir()
+	{
+		return cwd.join(path);
 	}
 	path.to_path_buf()
 }

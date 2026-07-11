@@ -358,9 +358,11 @@ mod tests {
 	#[test]
 	fn test_half_configured_pair_is_rejected() {
 		// `per_scheme` demands both keys; a lone `light` cannot deserialize.
-		assert!(json5::from_str::<IconPackConfig>(
-			r#"{ "name": "pub.pack", "per_scheme": { "light": "latte" } }"#
-		)
-		.is_err());
+		assert!(
+			json5::from_str::<IconPackConfig>(
+				r#"{ "name": "pub.pack", "per_scheme": { "light": "latte" } }"#
+			)
+			.is_err()
+		);
 	}
 }

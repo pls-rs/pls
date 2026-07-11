@@ -1,8 +1,8 @@
 use crate::config::Conf;
 use crate::exc::Exc;
 use crate::utils::dirs::config_dir;
-use figment::providers::{Data, Format, Serialized, Yaml};
 use figment::Figment;
+use figment::providers::{Data, Format, Serialized, Yaml};
 use git2::Repository;
 use log::{debug, info};
 use std::env;

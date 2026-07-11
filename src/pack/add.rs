@@ -4,7 +4,7 @@ use crate::pack::list;
 use crate::pack::packs_dir;
 use crate::vsc::ExtRef;
 use std::fs::remove_dir_all;
-use std::io::{stdout, Write};
+use std::io::{Write, stdout};
 
 /// Download the specified icon pack and print the icon themes it provides.
 ///

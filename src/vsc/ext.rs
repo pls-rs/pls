@@ -1,7 +1,7 @@
 use regex::Regex;
 use serde::Deserialize;
 use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::fs::{create_dir_all, File};
+use std::fs::{File, create_dir_all};
 use std::io::{Cursor, Read, Write};
 use std::path::Path;
 use std::{str::FromStr, sync::LazyLock};

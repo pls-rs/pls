@@ -1,7 +1,7 @@
+use crate::PLS;
 use crate::config::AppConst;
 use crate::enums::DetailField;
 use crate::output::{Cell, Rendered};
-use crate::PLS;
 use rayon::prelude::*;
 use std::fmt::Alignment;
 use std::io::{self, BufWriter, Write};

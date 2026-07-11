@@ -1,6 +1,6 @@
+use crate::PLS;
 use crate::config::{AppConst, Conf};
 use crate::models::Node;
-use crate::PLS;
 use log::debug;
 
 pub trait Imp {
@@ -19,11 +19,7 @@ impl Imp for Node<'_> {
 	/// any matching spec. By default we assume nodes with a leading dot to be
 	/// less important, as they are normally hidden by the `ls(1)` command.
 	fn default_imp(&self) -> i8 {
-		if self.name.starts_with('.') {
-			-1
-		} else {
-			0
-		}
+		if self.name.starts_with('.') { -1 } else { 0 }
 	}
 
 	/// Get the relative importance of the node.

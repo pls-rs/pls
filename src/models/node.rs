@@ -1,8 +1,8 @@
+use crate::PLS;
 use crate::config::{AppConst, Conf, EntryConst};
 use crate::enums::{Appearance, Collapse, DetailField, Icon, Typ};
 use crate::models::{Owners, Spec};
 use crate::traits::{Detail, Imp, Name, Sym};
-use crate::PLS;
 use std::collections::HashSet;
 use std::fmt::Write;
 use std::fmt::{Display, Formatter, Result as FmtResult};
@@ -326,10 +326,10 @@ impl<'pls> Node<'pls> {
 		};
 		parts.push_str("</>");
 
-		if PLS.args.sym {
-			if let Some(target) = self.target() {
-				parts.push_str(&target.print(conf));
-			}
+		if PLS.args.sym
+			&& let Some(target) = self.target()
+		{
+			parts.push_str(&target.print(conf));
 		}
 
 		parts
@@ -467,8 +467,10 @@ mod tests {
 
 	#[test]
 	fn sub_collapse_expands_capture_groups_into_parent_name() {
-		let specs = vec![Spec::new(r"^(?<base>.+)\.min\.js$", "javascript")
-			.collapse(Collapse::Sub(String::from("$base.js")))];
+		let specs = vec![
+			Spec::new(r"^(?<base>.+)\.min\.js$", "javascript")
+				.collapse(Collapse::Sub(String::from("$base.js"))),
+		];
 
 		assert_eq!(
 			collapse_name_for("app.min.js", &specs),

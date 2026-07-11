@@ -64,13 +64,13 @@ fn resolve_in(
 			[] => {
 				return Err(Exc::Other(format!(
 					"Icon pack {pack_id} contributes no icon themes."
-				)))
+				)));
 			}
 			_ => {
 				return Err(Exc::Other(format!(
 					"Icon pack {pack_id} contributes multiple themes; disambiguate with a theme ID. Available: {}.",
 					available(entries)
-				)))
+				)));
 			}
 		},
 	};
@@ -137,10 +137,12 @@ mod tests {
 				{ "id": "light", "label": "Light", "path": "./light.json" }
 			] } }"#,
 		);
-		assert!(resolve_in(&root, "test-pub.multi", Some("light"))
-			.unwrap()
-			.file
-			.ends_with("light.json"));
+		assert!(
+			resolve_in(&root, "test-pub.multi", Some("light"))
+				.unwrap()
+				.file
+				.ends_with("light.json")
+		);
 		// Ambiguous without a theme ID.
 		assert!(resolve_in(&root, "test-pub.multi", None).is_err());
 		// Unknown theme ID.

@@ -1,7 +1,7 @@
+use crate::PLS;
 use crate::config::AppConst;
 use crate::fmt::len;
-use crate::output::{render_rows, Rendered};
-use crate::PLS;
+use crate::output::{Rendered, render_rows};
 use std::io::{self, BufWriter, Write};
 use std::iter::once;
 

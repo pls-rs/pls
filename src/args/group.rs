@@ -1,3 +1,4 @@
+use crate::PLS;
 use crate::args::dir_group::DirGroup;
 use crate::args::files_group::FilesGroup;
 use crate::args::input::Input;
@@ -7,7 +8,6 @@ use crate::exc::Exc;
 use crate::fmt::render;
 use crate::models::OwnerMan;
 use crate::output::{Grid, Table};
-use crate::PLS;
 
 // ======
 // Models
@@ -53,13 +53,11 @@ impl Group {
 	}
 
 	pub fn render(&self, show_title: bool, owner_man: &mut OwnerMan) -> Result<(), Exc> {
-		if show_title {
-			if let Self::Dir(group) = self {
-				println!(
-					"\n{}",
-					render(format!("<bold>{}:</bold>", group.input.path.display()))
-				);
-			}
+		if show_title && let Self::Dir(group) = self {
+			println!(
+				"\n{}",
+				render(format!("<bold>{}:</bold>", group.input.path.display()))
+			);
 		}
 
 		let entries = self.entries(owner_man)?;

@@ -1,4 +1,4 @@
-use crate::exc::{fmt_warning, Exc};
+use crate::exc::{Exc, fmt_warning};
 use crate::ext::SubDirs;
 use crate::pack::packs_dir;
 use crate::vsc::ExtPackage;

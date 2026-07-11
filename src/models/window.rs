@@ -1,4 +1,4 @@
-use libc::{c_ushort, ioctl, STDOUT_FILENO, TIOCGWINSZ};
+use libc::{STDOUT_FILENO, TIOCGWINSZ, c_ushort, ioctl};
 use log::warn;
 
 /// See http://www.delorie.com/djgpp/doc/libc/libc_495.html

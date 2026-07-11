@@ -155,11 +155,7 @@ impl SortField {
 			.or_else(|| basis.compare_time(a, b))
 			.unwrap_or(Ordering::Equal);
 
-		if is_reverse {
-			ord.reverse()
-		} else {
-			ord
-		}
+		if is_reverse { ord.reverse() } else { ord }
 	}
 
 	// =======

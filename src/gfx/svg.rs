@@ -21,20 +21,20 @@ use std::path::{Path, PathBuf};
 pub fn get_rgba(id: u32, path: &Path, size: u8) -> Option<Vec<u8>> {
 	let cache_file = cache_file(id);
 
-	if let Some(cache_file) = &cache_file {
-		if let Some(rgba_data) = load_from_cache(cache_file) {
-			return Some(rgba_data);
-		}
+	if let Some(cache_file) = &cache_file
+		&& let Some(rgba_data) = load_from_cache(cache_file)
+	{
+		return Some(rgba_data);
 	}
 
 	let rgba_data = compute_rgba(path, size)
 		.map_err(|e| debug!("Could not render icon: {e}"))
 		.ok()?;
 
-	if let Some(cache_file) = &cache_file {
-		if let Err(e) = save_to_cache(cache_file, &rgba_data) {
-			debug!("Could not cache icon {id}: {e}");
-		}
+	if let Some(cache_file) = &cache_file
+		&& let Err(e) = save_to_cache(cache_file, &rgba_data)
+	{
+		debug!("Could not cache icon {id}: {e}");
 	}
 
 	Some(rgba_data)

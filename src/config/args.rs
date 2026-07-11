@@ -4,11 +4,12 @@ use crate::fmt::render;
 use crate::utils::urls::get_osc;
 use clap::Parser;
 use log::warn;
-use regex::bytes::{Regex, RegexBuilder};
 use regex::Error as RegexError;
+use regex::bytes::{Regex, RegexBuilder};
+use std::path::PathBuf;
+
 #[cfg(test)]
 use std::ffi::OsString;
-use std::path::PathBuf;
 
 /// Parse the given string into a [`Regex`] while turning off Unicode mode.
 ///

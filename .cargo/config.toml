@@ -1,4 +1,5 @@
 [alias]
 bloat = ["bin", "cargo-bloat"]
+msrv = ["bin", "cargo-msrv"]
 nextest = ["bin", "cargo-nextest"]
 release = ["bin", "cargo-release"]

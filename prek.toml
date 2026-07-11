@@ -94,6 +94,11 @@ hooks = [
 	], pass_filenames = false, stages = [
 		"pre-push",
 	] },
+	{ id = "msrv", name = "verify MSRV", entry = "cargo msrv verify", language = "system", types_or = [
+		"rust",
+	], pass_filenames = false, stages = [
+		"pre-push",
+	] },
 ]
 
 # § project

@@ -23,6 +23,7 @@ rust-version = "1.88.0"
 # using pre-built binaries and the process will be quite fast.
 [package.metadata.bin]
 cargo-bloat = { version = "0.12.1" }
+cargo-msrv = { version = "0.19.3" }
 cargo-nextest = { version = "0.9.138", locked = true }
 cargo-release = { version = "1.1.2" }
 hyperfine = { version = "1.20.0" }

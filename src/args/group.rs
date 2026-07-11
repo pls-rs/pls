@@ -37,15 +37,13 @@ impl Group {
 	/// all files are collected into a single group denoted by [`FilesGroup`].
 	/// This separation is an implementation detail.
 	pub fn partition(inputs: Vec<Input>, conf_man: &ConfMan) -> Vec<Self> {
-		let mut groups = vec![];
-		let mut files = vec![];
-		for input in inputs {
-			if input.typ == Typ::Dir {
-				groups.push(Self::Dir(DirGroup::new(input)));
-			} else {
-				files.push(input);
-			}
-		}
+		let (dirs, files): (Vec<_>, Vec<_>) =
+			inputs.into_iter().partition(|input| input.typ == Typ::Dir);
+
+		let mut groups: Vec<_> = dirs
+			.into_iter()
+			.map(|i| Self::Dir(DirGroup::new(i)))
+			.collect();
 		if !files.is_empty() {
 			groups.insert(0, Self::Files(FilesGroup::new(files, conf_man)));
 		}

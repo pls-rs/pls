@@ -45,11 +45,12 @@ where
 	S: AsRef<str>,
 	T: AsRef<str>,
 {
-	let mut string = ColoredString::from(text.as_ref());
-	for directive in directives {
-		string = apply_directive(string, directive.as_ref())
-	}
-	string.to_string()
+	directives
+		.iter()
+		.fold(ColoredString::from(text.as_ref()), |string, directive| {
+			apply_directive(string, directive.as_ref())
+		})
+		.to_string()
 }
 
 /// Apply a single directive to a `ColoredString` instance, consuming it and

@@ -29,11 +29,8 @@ pub fn common_ancestor(paths: &[&Path]) -> Option<PathBuf> {
 
 	let mut paths = paths.iter().map(|path| path.clean());
 
-	let mut common = paths.next().unwrap().to_path_buf();
-	for path in paths {
-		common = common_ancestor_two(&common, &path)?;
-	}
-	Some(common)
+	let first = paths.next().unwrap();
+	paths.try_fold(first, |common, path| common_ancestor_two(&common, &path))
 }
 
 // =======

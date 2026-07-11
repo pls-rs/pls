@@ -19,9 +19,6 @@ use std::hash::Hash;
 ///
 /// * `vec` - the vector to deduplicate
 pub fn dedup<T: Hash + Eq>(vec: Vec<T>) -> Vec<T> {
-	let mut set: IndexSet<T> = IndexSet::with_capacity(vec.len());
-	for item in vec.into_iter().rev() {
-		set.insert(item);
-	}
+	let set: IndexSet<T> = vec.into_iter().rev().collect();
 	set.into_iter().rev().collect()
 }

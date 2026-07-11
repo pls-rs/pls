@@ -52,7 +52,7 @@ alias l := lint
 # Development
 # ===========
 
-# Run the program.
+# Run the program in development mode.
 run *args:
 	cargo run -- {{ args }}
 
@@ -70,6 +70,12 @@ test *args:
 
 alias t := test
 
+# Benchmark the release binary.
+bench *args: release
+	cargo bin hyperfine --warmup 10 --shell=none './target/release/pls {{ args }}'
+
+alias b := bench
+
 # Release
 # =======
 
@@ -78,3 +84,9 @@ release:
 	cargo build --release
 
 alias R := release
+
+# Bump the version and create a release commit and tag.
+bump *args:
+	cargo release {{ args }}
+
+alias B := bump

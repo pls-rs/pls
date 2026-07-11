@@ -56,6 +56,8 @@ jobs:
           args: --release --out dist
           manylinux: ${{ matrix.manylinux }}
           working-directory: pkg/pypi
+          # Use the latest stable toolchain instead of relying on the system.
+          rust-toolchain: stable
           # Makes builds faster.
           sccache: "true"
           # libgit2 is vendored, so the Linux build containers need a C

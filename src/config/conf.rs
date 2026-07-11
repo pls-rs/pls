@@ -173,13 +173,13 @@ impl IconPackConfig {
 	/// The ID of the theme to use for the given color scheme, or `None` when the
 	/// pack needs no disambiguation (it provides a single theme).
 	pub fn theme_id(&self, color_scheme: ColorScheme) -> Option<&str> {
-		if let Some(per_scheme) = &self.per_scheme {
-			return Some(match color_scheme {
-				ColorScheme::Dark => &per_scheme.dark,
-				ColorScheme::Light => &per_scheme.light,
-			});
-		}
-		self.default.as_ref().and_then(|d| d.name.as_deref())
+		self.per_scheme
+			.as_ref()
+			.map(|per_scheme| match color_scheme {
+				ColorScheme::Dark => per_scheme.dark.as_str(),
+				ColorScheme::Light => per_scheme.light.as_str(),
+			})
+			.or_else(|| self.default.as_ref().and_then(|d| d.name.as_deref()))
 	}
 
 	/// The light-variant key rewrite, if one is configured on the default theme.

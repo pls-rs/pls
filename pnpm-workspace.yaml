@@ -1,2 +1,5 @@
+minimumReleaseAge: 0
 packages:
   - "docs"
+allowBuilds:
+  esbuild: true

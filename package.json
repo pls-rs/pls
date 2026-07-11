@@ -11,18 +11,18 @@
 		"prettier:write": "prettier --ignore-path .prettier.ignore --write"
 	},
 	"devDependencies": {
-		"@j178/prek": "^0.4.8",
-		"@typescript-eslint/parser": "^8.62.0",
-		"eslint": "^9.39.2",
+		"@j178/prek": "^0.4.9",
+		"@typescript-eslint/parser": "^8.63.0",
+		"eslint": "^9.39.5",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-astro": "^1.5.0",
-		"eslint-plugin-oxlint": "^1.71.0",
-		"oxfmt": "^0.56.0",
-		"oxlint": "^1.71.0",
-		"prettier": "^3.8.1",
+		"eslint-plugin-astro": "^1.7.0",
+		"eslint-plugin-oxlint": "^1.73.0",
+		"oxfmt": "^0.58.0",
+		"oxlint": "^1.73.0",
+		"prettier": "^3.9.5",
 		"prettier-plugin-astro": "^0.14.1",
-		"typescript": "^5.9.3",
-		"typescript-eslint": "^8.62.0"
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.63.0"
 	},
-	"packageManager": "pnpm@10.32.1"
+	"packageManager": "pnpm@11.12.0"
 }

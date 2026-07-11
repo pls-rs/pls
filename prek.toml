@@ -39,6 +39,16 @@ hooks = [{ id = "ruff-check", args = ["--fix"] }, { id = "ruff-format" }]
 [[repos]]
 repo = "local"
 hooks = [
+	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint:fix", language = "system", types_or = [
+		"astro",
+		"javascript",
+		"ts",
+	] },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
 	{ id = "oxfmt", name = "Oxfmt", entry = "pnpm oxfmt", language = "system", types_or = [
 		# Taken from the Oxc compatibility list: https://oxc.rs/compatibility.html
 		"javascript",
@@ -62,16 +72,6 @@ hooks = [
 [[repos]]
 repo = "local"
 hooks = [
-	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint:fix", language = "system", types_or = [
-		"astro",
-		"javascript",
-		"ts",
-	] },
-]
-
-[[repos]]
-repo = "local"
-hooks = [
 	{ id = "eslint", name = "ESLint", entry = "pnpm eslint:fix", language = "system", types_or = [
 		"astro",
 	] },
@@ -83,10 +83,10 @@ hooks = [
 [[repos]]
 repo = "local"
 hooks = [
-	{ id = "rustfmt", name = "rustfmt", entry = "cargo fmt", language = "system", types_or = [
+	{ id = "clippy", name = "clippy", entry = "cargo clippy --fix --all-features --allow-dirty --allow-staged -- -D warnings", language = "system", types_or = [
 		"rust",
 	], pass_filenames = false },
-	{ id = "clippy", name = "clippy", entry = "cargo clippy --fix --all-features --allow-dirty --allow-staged -- -D warnings", language = "system", types_or = [
+	{ id = "rustfmt", name = "rustfmt", entry = "cargo fmt", language = "system", types_or = [
 		"rust",
 	], pass_filenames = false },
 	{ id = "test", name = "test", entry = "cargo nextest run", language = "system", types_or = [

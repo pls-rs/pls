@@ -59,11 +59,11 @@ fn resolve(var: &str, typical: &str) -> Option<PathBuf> {
 }
 
 #[cfg(test)]
-// `Jail::expect_with` requires a closure returning the large `figment::Error`.
+// `Jail::expect_with` requires a closure returning the large `figment2::Error`.
 #[allow(clippy::result_large_err)]
 mod tests {
 	use super::*;
-	use figment::Jail;
+	use figment2::Jail;
 
 	/// Isolate the environment and point `$HOME` at the jail's temp directory.
 	///

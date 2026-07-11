@@ -115,7 +115,7 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 #[cfg(test)]
 mod tests {
 	use super::fmt;
-	use figment::Jail;
+	use figment2::Jail;
 
 	macro_rules! make_test {
 		( $($name:ident: $styles:expr => $prefix:expr, $suffix:expr,)* ) => {
@@ -151,7 +151,7 @@ mod tests {
 		( $($name:ident: $colorterm: expr, $styles:expr => $prefix:expr, $suffix:expr,)* ) => {
 			$(
 				#[test]
-				// `Jail::expect_with` requires a closure returning the large `figment::Error`.
+				// `Jail::expect_with` requires a closure returning the large `figment2::Error`.
 				#[allow(clippy::result_large_err)]
 				fn $name() {
 					colored::control::set_override(true); // needed when running tests in CLion

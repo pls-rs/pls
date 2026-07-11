@@ -8,7 +8,7 @@ pub enum Exc {
 	/// wraps all occurrences of errors in SVG operations
 	Svg(Box<resvg::usvg::Error>),
 	/// wraps all occurrences of errors in configuration loading
-	Conf(Box<figment::Error>),
+	Conf(Box<figment2::Error>),
 	/// wraps errors from the `ureq` HTTP client
 	Http(Box<ureq::Error>),
 	/// wraps exceptions from the `xterm-query` crate

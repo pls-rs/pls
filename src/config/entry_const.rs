@@ -67,7 +67,7 @@ impl EntryConst {
 
 	/// Move each node type's built-in icons behind the user's own choices.
 	///
-	/// Configs are combined with figment's *adjoining* merge, which appends
+	/// Configs are combined with Figment's *adjoining* merge, which appends
 	/// each layer's array to the previous one. Since the built-in defaults form
 	/// the base layer, they always end up in front of any user additions —
 	/// the opposite of what we want, as the first icon that resolves wins. This
@@ -270,7 +270,7 @@ mod tests {
 	use crate::enums::Typ;
 
 	/// Set the merged icon list for a node type, mimicking the state left by
-	/// figment's adjoining merge (built-in prefix followed by user additions).
+	/// Figment's adjoining merge (built-in prefix followed by user additions).
 	fn set_icons(ec: &mut EntryConst, typ: Typ, icons: &[&str]) {
 		ec.typ.get_mut(&typ).unwrap().icons = Some(icons.iter().map(|s| s.to_string()).collect());
 	}

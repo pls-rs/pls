@@ -1,6 +1,6 @@
 {
 	"files.associations": {
-		"**/.sg/_*": "jinja"
+		"**/.sg/*.j2": "jinja"
 	},
 	"[astro]": {
 		"editor.formatOnSave": true,

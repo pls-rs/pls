@@ -44,10 +44,12 @@ hooks = [{ id = "ruff-check", args = ["--fix"] }, { id = "ruff-format" }]
 [[repos]]
 repo = "local"
 hooks = [
-	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint:fix", language = "system", types_or = [
+	{ id = "oxlint", name = "Oxlint", entry = "pnpm oxlint", language = "system", types_or = [
 		"astro",
 		"javascript",
 		"ts",
+	], args = [
+		"--fix",
 	] },
 ]
 
@@ -77,11 +79,16 @@ hooks = [
 [[repos]]
 repo = "local"
 hooks = [
-	{ id = "eslint", name = "ESLint", entry = "pnpm eslint:fix", language = "system", types_or = [
+	{ id = "eslint", name = "ESLint", entry = "pnpm eslint", language = "system", types_or = [
 		"astro",
+	], args = [
+		"--fix",
 	] },
-	{ id = "prettier", name = "Prettier", entry = "pnpm prettier:write", language = "system", types_or = [
+	{ id = "prettier", name = "Prettier", entry = "pnpm prettier", language = "system", types_or = [
 		"astro",
+	], args = [
+		"--ignore-path=.prettierignore",
+		"--write",
 	] },
 ]
 

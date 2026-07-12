@@ -1,15 +1,5 @@
 {
 	"private": true,
-	"scripts": {
-		"oxlint": "oxlint",
-		"oxlint:fix": "oxlint --fix",
-		"eslint": "eslint",
-		"eslint:fix": "eslint --fix",
-		"oxfmt": "oxfmt",
-		"oxfmt:check": "oxfmt --check",
-		"prettier:check": "prettier --ignore-path .prettier.ignore --check",
-		"prettier:write": "prettier --ignore-path .prettier.ignore --write"
-	},
 	"devDependencies": {
 		"@j178/prek": "^0.4.9",
 		"@typescript-eslint/parser": "^8.63.0",

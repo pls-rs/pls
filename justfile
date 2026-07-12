@@ -29,23 +29,16 @@ install:
 	just docs/install
 	just examples/install
 
-	just prek install --hook-type pre-commit --hook-type pre-push
+	pnpm prek install --hook-type pre-commit --hook-type pre-push
 
 alias i := install
 
 # Lint
 # ====
 
-# This abstracts the underlying provisioning of `prek` through the appropriate
-# package manager (which may be pnpm, or even uv or Cargo).
-#
-# Run `prek` commands through package manager.
-prek *args:
-	pnpm prek {{ args }}
-
 # Run one, or all, of `prek`'s hooks on specific, or all, files.
 lint hook="" *files="":
-	just prek run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
+	pnpm prek run {{ hook }} {{ if files == "" { "--all-files" } else { "--files" } }} {{ files }}
 
 alias l := lint
 

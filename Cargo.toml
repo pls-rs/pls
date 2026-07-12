@@ -3,21 +3,22 @@ name = "pls"
 description = "pls is a prettier and powerful ls(1) for the pros"
 version = "7.0.0-beta.1"
 
-authors = ["Dhruv Bhanushali <hi@dhruvkb.dev>"]
+categories = ["command-line-utilities"]
+keywords = ["cli", "terminal", "posix", "ls"]
 
 license = "GPL-3.0-or-later"
-
-homepage = "https://pls.cli.rs/"
-repository = "https://github.com/pls-rs/pls"
-documentation = "https://pls.cli.rs/"
 readme = "README.md"
-exclude = [".github/", "/readme_assets", "/justfile", "/.gitignore"]
 
-keywords = ["cli", "terminal", "posix", "ls"]
-categories = ["command-line-utilities"]
+authors = ["Dhruv Bhanushali <hi@dhruvkb.dev>"]
 
 edition = "2024"
 rust-version = "1.88.0"
+
+homepage = "https://pls.cli.rs/"
+documentation = "https://pls.cli.rs/"
+repository = "https://github.com/pls-rs/pls"
+
+exclude = [".github/", "/readme_assets", "/justfile", "/.gitignore"]
 
 # Assuming `cargo-binstall` is present globally, all these packages will install
 # using pre-built binaries and the process will be quite fast.

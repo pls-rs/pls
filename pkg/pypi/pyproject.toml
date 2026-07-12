@@ -1,16 +1,6 @@
-[build-system]
-requires = ["maturin>=1.7,<2.0"]
-build-backend = "maturin"
-
 [project]
 name = "pls"
 description = "pls is a prettier and powerful ls(1) for the pros"
-requires-python = ">=3.8"
-license = "GPL-3.0-or-later"
-license-files = ["../../LICENSE"]
-readme = "../../README.md"
-authors = [{ name = "Dhruv Bhanushali", email = "hi@dhruvkb.dev" }]
-keywords = ["cli", "terminal", "posix", "ls"]
 classifiers = [
 	"Environment :: Console",
 	"Programming Language :: Rust",
@@ -18,12 +8,23 @@ classifiers = [
 	"Operating System :: POSIX :: Linux",
 	"Topic :: Utilities",
 ]
+keywords = ["cli", "terminal", "posix", "ls"]
+license = "GPL-3.0-or-later"
+license-files = ["../../LICENSE"]
+readme = "../../README.md"
+authors = [{ name = "Dhruv Bhanushali", email = "hi@dhruvkb.dev" }]
+requires-python = ">=3.8"
 dynamic = ["version"]
 
 [project.urls]
 Homepage = "https://pls.cli.rs/"
-Repository = "https://github.com/pls-rs/pls"
 Documentation = "https://pls.cli.rs/"
+Repository = "https://github.com/pls-rs/pls.git"
+Issues = "https://github.com/pls-rs/pls/issues"
+
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
 
 [tool.maturin]
 bindings = "bin"

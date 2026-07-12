@@ -1,0 +1,3 @@
+suppressions = [
+	"assert_logo_is_present_in_readme_assets", # logo is fetched from `.github` repository
+]

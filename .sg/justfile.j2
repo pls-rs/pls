@@ -1,0 +1,58 @@
+{% set languages = ["rust", "javascript"] %}
+{% extends "base/justfile.j2" %}
+
+{% block recipe_default %}
+just _section "Examples:"
+just examples/
+just _section "Docs:"
+just docs/
+{% endblock recipe_default %}
+
+{% block recipe_install %}
+just docs/install
+just examples/install
+{% endblock recipe_install %}
+
+{% block project %}
+# Development
+# ===========
+
+# Run the program in development mode.
+run *args:
+	cargo run -- {{ args }}
+
+alias r := run
+
+# Run the program with debug logging.
+debug *args:
+	env RUST_LOG=debug just run {{ args }}
+
+alias d := debug
+
+# Run tests.
+test *args:
+	cargo nextest run {{ args }}
+
+alias t := test
+
+# Benchmark the release binary.
+bench *args: release
+	cargo bin hyperfine --warmup 10 --shell=none './target/release/pls {{ args }}'
+
+alias b := bench
+
+# Release
+# =======
+
+# Build the release binary.
+release:
+	cargo build --release
+
+alias R := release
+
+# Bump the version and create a release commit and tag.
+bump *args:
+	cargo release {{ args }}
+
+alias B := bump
+{% endblock project %}

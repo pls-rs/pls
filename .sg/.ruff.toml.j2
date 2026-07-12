@@ -1,0 +1,6 @@
+{% extends "base/.ruff.toml.j2" %}
+
+{% block project_ignore %}
+"T201", # print (used extensively in the project)
+
+{% endblock project_ignore %}

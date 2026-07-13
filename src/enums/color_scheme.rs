@@ -16,28 +16,36 @@ static DETECTED: OnceLock<ColorScheme> = OnceLock::new();
 /// This enum contains the color schemes that the terminal can be in.
 ///
 /// `pls` uses this to pick between a dark and a light icon pack so that SVG
-/// icons (whose colors are baked in) stay visible, mirroring the way Nerd Font
-/// glyphs inherit the terminal foreground color.
+/// icons (whose colors are baked in) stay visible.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum ColorScheme {
 	Dark,
 	Light,
 }
 
-impl ColorScheme {
+// ===============
+// Implementations
+// ===============
+
+impl Default for ColorScheme {
 	/// Get the terminal's color scheme, detecting and caching it on first call.
 	///
-	/// Detection is lazy: it only runs the first time a light/dark decision is
+	/// Detection is lazy and only runs the first time a light/dark decision is
 	/// actually needed (e.g. when resolving a `theme:` icon).
-	pub fn detect() -> Self {
+	fn default() -> Self {
 		*DETECTED.get_or_init(|| Self::decide(env::var("PLS_COLOR_SCHEME").ok(), Self::query_bg))
 	}
+}
 
-	/// Decide the color scheme from the available signals, in order of precedence.
+impl ColorScheme {
+	/// Decide the color scheme from the available signals, in order of
+	/// precedence.
 	///
-	/// 1. The `PLS_COLOR_SCHEME` override (`light`/`dark`), if valid.
-	/// 2. The queried terminal background, if available.
-	/// 3. A `Dark` default.
+	/// * the env var `PLS_COLOR_SCHEME`
+	/// * the queried terminal background
+	///
+	/// If neither of those is available, we default to dark as that is the mark
+	/// of a real programmer™.
 	///
 	/// # Arguments
 	///
@@ -64,7 +72,7 @@ impl ColorScheme {
 
 	/// Classify an OSC 11 background-color response as light or dark.
 	///
-	/// The relative luminance is computed from the parsed RGB channels; a value
+	/// The relative luminance is computed from the parsed RGB channels. A value
 	/// above 0.5 is considered light.
 	///
 	/// # Arguments

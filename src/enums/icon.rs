@@ -112,7 +112,7 @@ fn active_theme(conf: &Conf) -> &'static Option<ActiveTheme> {
 	ACTIVE_THEME.get_or_init(|| {
 		let icon_pack = conf.icon_pack.as_ref()?;
 		let scheme = if icon_pack.needs_scheme() {
-			ColorScheme::detect()
+			ColorScheme::default() // auto-detects
 		} else {
 			ColorScheme::Dark
 		};

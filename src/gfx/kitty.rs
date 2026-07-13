@@ -1,5 +1,6 @@
 use crate::PLS;
 use crate::exc::Exc;
+use crate::utils::term::query_raw;
 use base64::prelude::*;
 use log::debug;
 use regex::Regex;
@@ -83,7 +84,7 @@ pub fn send_image(hash: u32, size: u8, rgba_data: &[u8]) -> Result<u32, Exc> {
 
 	query.push_str("\x1b_Gm=0;\x1b\\");
 
-	let res = super::term::query_raw(&query, 200)?;
+	let res = query_raw(&query, 200)?;
 	IMAGE_ID
 		.captures(&res)
 		.map(|cap| cap["id"].parse().unwrap())

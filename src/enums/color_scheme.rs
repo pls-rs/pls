@@ -1,4 +1,4 @@
-use crate::gfx::query_raw;
+use crate::utils::term::query_raw;
 use log::debug;
 use regex::Regex;
 use std::env;

@@ -11,7 +11,7 @@ use crossterm::terminal::*;
 ///
 /// * `query` - the query to perform
 /// * `timeout_ms` - the timeout in milliseconds
-pub(crate) fn query_raw(query: &str, timeout_ms: u64) -> Result<String, Exc> {
+pub fn query_raw(query: &str, timeout_ms: u64) -> Result<String, Exc> {
 	enable_raw_mode().map_err(Exc::Io)?;
 	let res = xterm_query::query_osc(query, timeout_ms).map_err(|e| Exc::Xterm(Box::new(e)));
 	disable_raw_mode().map_err(Exc::Io)?;

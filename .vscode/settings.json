@@ -1,7 +1,4 @@
 {
-	"files.associations": {
-		"**/.sg/*.j2": "jinja"
-	},
 	"[astro]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -63,5 +60,8 @@
 	"[yaml]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"files.associations": {
+		"**/.sg/*.j2": "jinja"
 	}
 }

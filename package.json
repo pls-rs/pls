@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"private": true,
 	"devDependencies": {
 		"@j178/prek": "^0.4.9",
@@ -7,12 +8,12 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-astro": "^1.7.0",
 		"eslint-plugin-oxlint": "^1.73.0",
-		"oxfmt": "^0.58.0",
-		"oxlint": "^1.73.0",
+		"oxfmt": "^0.59.0",
+		"oxlint": "^1.74.0",
 		"prettier": "^3.9.5",
 		"prettier-plugin-astro": "^0.14.1",
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.63.0"
 	},
-	"packageManager": "pnpm@11.12.0"
+	"packageManager": "pnpm@11.13.0"
 }

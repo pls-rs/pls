@@ -10,7 +10,7 @@ classifiers = [
 ]
 keywords = ["cli", "terminal", "posix", "ls"]
 license = "GPL-3.0-or-later"
-license-files = ["../../LICENSE"]
+license-files = ["LICENSE"]
 readme = "../../README.md"
 authors = [{ name = "Dhruv Bhanushali", email = "hi@dhruvkb.dev" }]
 requires-python = ">=3.8"

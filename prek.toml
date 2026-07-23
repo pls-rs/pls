@@ -87,7 +87,7 @@ hooks = [
 	{ id = "prettier", name = "Prettier", entry = "pnpm prettier", language = "system", types_or = [
 		"astro",
 	], args = [
-		"--ignore-path=.prettierignore",
+		"--ignore-path=.prettier.ignore",
 		"--write",
 	] },
 ]

@@ -2,7 +2,7 @@
 bin = "bin/pls"
 
 [tools]
-rust = "latest"
+rust = "stable"
 
 [tasks.build]
 description = "Build for production"

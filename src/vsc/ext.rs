@@ -79,8 +79,12 @@ impl ExtRef {
 			zip::ZipArchive::new(Cursor::new(bytes)).map_err(|e| Exc::Zip(Box::new(e)))?;
 		for i in 0..archive.len() {
 			let mut entry = archive.by_index(i).map_err(|e| Exc::Zip(Box::new(e)))?;
-			let name = entry.name().to_string();
-			let Ok(rel) = Path::new(&name).strip_prefix("extension") else {
+			// `enclosed_name` rejects undecodable, absolute and `..`-escaping
+			// names, so a crafted archive cannot write outside `dest`.
+			let Some(name) = entry.enclosed_name() else {
+				continue;
+			};
+			let Ok(rel) = name.strip_prefix("extension") else {
 				continue;
 			};
 			if entry.is_dir() || rel.as_os_str().is_empty() {

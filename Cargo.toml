@@ -76,7 +76,7 @@ unicode-segmentation = "1.12.0"
 ureq = "3.3"
 uzers = { version = "0.12.2", default-features = false, features = ["cache"] }
 xterm-query = "0.5.2"
-zip = { version = "8.6", default-features = false, features = ["deflate"] }
+zip = { version = "9.0", default-features = false, features = ["deflate"] }
 
 [profile.release]
 # Reference: https://github.com/johnthagen/min-sized-rust
